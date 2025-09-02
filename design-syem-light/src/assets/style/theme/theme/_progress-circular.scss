@@ -1,0 +1,10 @@
+.sy-theme{
+    /* progress-circluar */
+  --progress-circluar-complete-border-enabled: var(--border-extended-green-bold);
+  --progress-circluar-complete-icon-enabled: var(--icon-extended-green-default);
+  --progress-circluar-error-border-enabled: var(--border-extended-red-bold);
+  --progress-circluar-error-icon-enabled: var(--icon-extended-red-default);
+  --progress-circluar-initial-inner-background-enabled: var(--background-bold);
+  --progress-circluar-initial-inner-text-enabled: var(--text-bold);
+  --progress-circluar-inprogress-border-enabled: var(--border-extended-blue-bold);
+}

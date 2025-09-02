@@ -1,0 +1,17 @@
+.sy-theme{
+    --badge-error-background-enabled: var(--background-error-contrast-default);
+    --badge-error-icon-enabled: var(--icon-invert);
+    --badge-error-text-enabled: var(--text-invert);
+    --badge-info-background-enabled: var(--background-information-contrast-default);
+    --badge-info-icon-enabled: var(--icon-invert);
+    --badge-info-text-enabled: var(--text-invert);
+    --badge-neutral-background-enabled: var(--background-boldest);
+    --badge-neutral-icon-enabled: var(--icon-invert);
+    --badge-neutral-text-enabled: var(--text-invert);
+    --badge-success-background-enabled: var(--background-success-contrast-default);
+    --badge-success-icon-enabled: var(--icon-invert);
+    --badge-success-text-enabled: var(--text-invert);
+    --badge-warning-background-enabled: var(--background-warning-contrast-default);
+    --badge-warning-icon-enabled: var(--icon-invert);
+    --badge-warning-text-enabled: var(--text-invert);
+}

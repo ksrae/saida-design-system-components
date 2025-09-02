@@ -1,0 +1,27 @@
+.sy-theme{
+    --slider-handle-background-active: var(--background-default);
+    --slider-handle-background-disabled: var(--background-default);
+    --slider-handle-background-enabled: var(--background-default);
+    --slider-handle-background-hover: var(--background-default);
+    --slider-handle-background-readonly: var(--background-extended-lightgray-bold);
+    --slider-handle-border-active: var(--border-brand-subtle);
+    --slider-handle-border-disabled: var(--border-extended-lightgray-bold);
+    --slider-handle-border-enabled: var(--border-extended-purple-default);
+    --slider-handle-border-hover: var(--border-brand-subtle);
+    --slider-handle-border-readonly: var(--border-extended-purple-default);
+    --slider-mark-background-active: var(--background-default);
+    --slider-mark-background-enabled: var(--background-default);
+    --slider-mark-border-active: var(--border-extended-purple-default);
+    --slider-mark-border-enabled: var(--border-extended-lightgray-default);
+    --slider-mark-text-active: var(--text-subtle);
+    --slider-mark-text-disabled: var(--text-subtlest);
+    --slider-mark-text-enabled: var(--text-subtle);
+    --slider-message-text-enabled: var(--text-subtler);
+    --slider-rail-background-enabled: var(--background-extended-lightgray-bold);
+    --slider-rail-background-hover: var(--background-bolder);
+    --slider-track-background-active: var(--background-brand-contrast-subtle);
+    --slider-track-background-disabled: var(--background-boldest);
+    --slider-track-background-enabled: var(--background-brand-bolder);
+    --slider-track-background-hover: var(--background-brand-contrast-subtle);
+    --slider-track-background-readonly: var(--background-boldest);
+  }

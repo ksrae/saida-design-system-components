@@ -1,0 +1,18 @@
+.sy-theme{
+  --inlinemessage-error-background-enabled: var(--background-error-default);
+  --inlinemessage-error-border-enabled: var(--border-extended-red-default);
+  --inlinemessage-error-icon-enabled: var(--icon-extended-red-bold);
+  --inlinemessage-error-text-enabled: var(--text-bold);
+  --inlinemessage-informational-background-enabled: var(--background-information-default);
+  --inlinemessage-informational-border-enabled: var(--border-extended-blue-default);
+  --inlinemessage-informational-icon-enabled: var(--icon-extended-blue-bold);
+  --inlinemessage-informational-text-enabled: var(--text-bold);
+  --inlinemessage-success-background-enabled: var(--background-success-default);
+  --inlinemessage-success-border-enabled: var(--border-extended-green-default);
+  --inlinemessage-success-icon-enabled: var(--icon-extended-green-bold);
+  --inlinemessage-success-text-enabled: var(--text-bold);
+  --inlinemessage-warning-background-enabled: var(--background-warning-default);
+  --inlinemessage-warning-border-enabled: var(--border-extended-yellow-default);
+  --inlinemessage-warning-icon-enabled: var(--icon-extended-yellow-bold);
+  --inlinemessage-warning-text-enabled: var(--text-bold);
+}

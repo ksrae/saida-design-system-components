@@ -1,0 +1,36 @@
+.sy-theme{
+    --breadcrumb-current-default-text-enabled: var(--text-default);
+    --breadcrumb-current-withdropdown-icon-enabled: var(--icon-default);
+    --breadcrumb-current-withdropdown-text-enabled: var(--text-default);
+    --breadcrumb-current-withicon-icon-enabled: var(--icon-default);
+    --breadcrumb-current-withicon-text-enabled: var(--text-bold);
+    --breadcrumb-current-withicondropdown-focusoutline: var(--border-brand-bold);
+    --breadcrumb-current-withicondropdown-icon-enabled: var(--icon-default);
+    --breadcrumb-previous-default-focusoutline: var(--border-brand-bold);
+    --breadcrumb-previous-default-border-focus: var(--border-brand-bold);
+    --breadcrumb-previous-default-text-enabled: var(--text-subtler);
+    --breadcrumb-previous-default-text-focus: var(--text-default);
+    --breadcrumb-previous-default-text-hover: var(--text-default);
+    --breadcrumb-previous-withdropdown-focusoutline: var(--border-brand-bold);
+    --breadcrumb-previous-withdropdown-border-focus: var(--border-brand-bold);
+    --breadcrumb-previous-withdropdown-icon-enabled: var(--icon-subtler);
+    --breadcrumb-previous-withdropdown-icon-focus: var(--icon-default);
+    --breadcrumb-previous-withdropdown-icon-hover: var(--icon-default);
+    --breadcrumb-previous-withdropdown-text-disabled: var(--text-subtlest);
+    --breadcrumb-previous-withdropdown-text-enabled: var(--text-subtler);
+    --breadcrumb-previous-withdropdown-text-focus: var(--text-default);
+    --breadcrumb-previous-withdropdown-text-hover: var(--text-default);
+    --breadcrumb-previous-withicon-focusoutline: var(--border-brand-bold);
+    --breadcrumb-previous-withicon-border-focus: var(--border-brand-bold);
+    --breadcrumb-previous-withicon-icon-enabled: var(--icon-subtler);
+    --breadcrumb-previous-withicon-icon-focus: var(--icon-default);
+    --breadcrumb-previous-withicon-icon-hover: var(--icon-default);
+    --breadcrumb-previous-withicon-text-disabled: var(--text-subtlest);
+    --breadcrumb-previous-withicon-text-enabled: var(--text-subtler);
+    --breadcrumb-previous-withicon-text-focus: var(--text-default);
+    --breadcrumb-previous-withicon-text-hover: var(--text-default);
+    --breadcrumb-previous-withicondropdown-focusoutline: var(--border-brand-bold);
+    --breadcrumb-previous-withicondropdown-icon-enabled: var(--icon-subtler);
+    --breadcrumb-previous-withicondropdown-icon-focus: var(--icon-default);
+    --breadcrumb-previous-withicondropdown-icon-hover: var(--icon-default);
+}

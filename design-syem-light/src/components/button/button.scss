@@ -1,0 +1,297 @@
+// @use "../../../style/global/font" as font;
+// 전역 SCSS 파일 import는 stencil.config.ts의 `injectGlobalPaths`를 사용하거나
+// 정확한 상대 경로로 @import 또는 @use를 사용해주세요.
+
+// :host 대신 컴포넌트 태그인 `sy-button`을 직접 사용하여 호스트 요소를 스타일링합니다.
+sy-button {
+    display: inline-block;
+
+    /* CSS 변수 정의 */
+    --button-size-large: var(--component-large, 44px);
+    --button-size-medium: var(--component-medium, 36px);
+    --button-size-small: var(--component-small, 28px);
+    --button-spacing-large: var(--spacing-large, 10px);
+    --button-spacing-medium: var(--spacing-2xsmall, 8px);
+    --button-spacing-small: var(--spacing-3xsmall, 6px);
+    --button-justified: 100%;
+
+    // Stencil 스코핑은 자식 컴포넌트의 Light DOM에는 영향을 주지 않으므로
+    // sy-spinner와 같은 자식 컴포넌트 스타일링이 가능합니다.
+    sy-spinner {
+        width: min-content;
+    }
+}
+
+// `justified` prop(속성)이 있을 때의 호스트 스타일
+sy-button[justified] {
+    width: 100%;
+    display: block;
+}
+
+
+/* Button 내부 요소 스타일 */
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px var(--button-spacing-medium);
+    line-height: normal;
+    width: 100%;
+    box-sizing: border-box;
+
+    &.button--first {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    &.button--middle {
+        border-radius: 0px;
+    }
+
+    &.button--last {
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    &.button--vertical {
+        &.button--first {
+            border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
+        }
+
+        &.button--middle {
+            border-radius: 0px;
+        }
+
+        &.button--last {
+            border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+        }
+    }
+
+    &[disabled],
+    &[disabled]:hover,
+    &[disabled]:active,
+    &[disabled]:focus {
+        border: var(--border-small) solid var(--button-default-border-disabled);
+        background-color: var(--button-default-background-disabled);
+        color: var(--button-default-text-disabled);
+        cursor: not-allowed;
+    }
+
+    &[loading] {
+        .spinner--wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            padding: 0 var(--spacing-3xsmall);
+
+            .spinner-contents {
+                padding: var(--spacing-xsmall);
+            }
+        }
+
+        $offset: 187;
+        $duration: 1.4s;
+
+        .spinner {
+            svg {
+                width: 100%;
+                height: 100%;
+                animation: rotator $duration linear infinite;
+            }
+        }
+
+        @keyframes rotator {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(270deg); }
+        }
+
+        .path {
+            stroke-dasharray: $offset;
+            stroke-dashoffset: 0;
+            transform-origin: center;
+            animation:
+                dash $duration ease-in-out infinite,
+                colors ($duration*4) ease-in-out infinite;
+        }
+
+        @keyframes colors {
+            0%, 100% {
+                stroke: var(--button-default-icon-disabled);
+            }
+        }
+
+        @keyframes dash {
+            0% { stroke-dashoffset: $offset; }
+            50% { stroke-dashoffset: calc($offset/4); transform: rotate(135deg); }
+            100% { stroke-dashoffset: $offset; transform: rotate(450deg); }
+        }
+    }
+}
+
+/* Variant Styles */
+.button--primary {
+    background-color: var(--button-primary-background-enabled);
+    border: var(--border-small) solid var(--button-primary-border-enabled);
+    color: var(--button-primary-text-enabled);
+    cursor: var(--cursor-button, pointer);
+
+    &:hover:not([disabled]) {
+        background-color: var(--button-primary-background-hover);
+        border-color: var(--button-primary-border-hover);
+        color: var(--button-primary-text-hover);
+    }
+    &:active:not([disabled]) {
+        background-color: var(--button-primary-background-active);
+        border-color: var(--button-primary-border-active);
+        color: var(--button-primary-text-active);
+    }
+    &:focus-visible:not([disabled]) {
+        background-color: var(--button-primary-background-focus);
+        color: var(--button-primary-text-focus);
+        border-color: var(--button-primary-border-focus);
+        outline: var(--border-small) solid var(--button-primary-border-focus);
+    }
+}
+
+.button--default {
+    background-color: var(--button-default-background-enabled);
+    border: var(--border-small) solid var(--button-default-border-enabled);
+    color: var(--button-default-text-enabled);
+    cursor: var(--cursor-button, pointer);
+
+    &:hover:not([disabled]) {
+        background-color: var(--button-default-background-enabled);
+        border-color: var(--button-default-border-hover);
+        color: var(--button-default-text-hover);
+    }
+    &:active:not([disabled]) {
+        background-color: var(--button-default-background-enabled);
+        border-color: var(--button-default-border-active);
+        color: var(--button-default-text-active);
+    }
+    &:focus-visible:not([disabled]) {
+        background-color: var(--button-default-background-enabled);
+        border-color: var(--button-default-border-focus);
+        outline: var(--border-small) solid var(--button-default-text-focus);
+    }
+}
+
+.button--secondary {
+    background-color: var(--button-secondary-background-enabled);
+    border: var(--border-small) solid var(--button-secondary-border-enabled);
+    color: var(--button-secondary-text-enabled);
+    cursor: var(--cursor-button, pointer);
+
+    &:hover:not([disabled]) {
+        background-color: var(--button-secondary-background-enabled);
+        border-color: var(--button-secondary-border-hover);
+        color: var(--button-secondary-text-hover);
+    }
+    &:active:not([disabled]) {
+        background-color: var(--button-secondary-background-enabled);
+        border-color: var(--button-secondary-border-active);
+        color: var(--button-secondary-text-active);
+    }
+    &:focus-visible:not([disabled]) {
+        background-color: var(--button-secondary-background-enabled);
+        border-color: var(--button-secondary-border-focus);
+        outline: var(--border-small) solid var(--button-secondary-border-focus);
+    }
+}
+
+.button--borderless {
+    background-color: transparent;
+    border: var(--border-small) solid transparent;
+    color: var(--button-borderless-text-enabled);
+    cursor: var(--cursor-button, pointer);
+
+    &:hover:not([disabled]) {
+        background-color: var(--button-borderless-background-hover);
+        border-color: var(--button-borderless-background-hover);
+        color: var(--button-borderless-text-hover);
+    }
+    &:active:not([disabled]) {
+        background-color: var(--button-borderless-background-active);
+        border-color: var(--button-borderless-background-active);
+        color: var(--button-borderless-text-active);
+    }
+    &:focus-visible:not([disabled]) {
+        background-color: var(--button-borderless-background-focus);
+        border-color: var(--button-borderless-background-focus);
+        color: var(--button-borderless-text-focus);
+        outline: var(--border-small) solid var(--button-borderless-border-focus);
+    }
+}
+
+/* Button Size */
+.button--large {
+    border-radius: var(--border-radius-medium);
+    height: var(--button-size-large);
+    min-width: var(--button-size-large);
+    padding: 0 var(--button-spacing-large);
+    @include text-style-large-regular; // 👈 주석 해제 및 `font.` 접두사 제거
+    gap: var(--spacing-2xsmall);
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.button--medium {
+    border-radius: var(--border-radius-medium);
+    height: var(--button-size-medium);
+    min-width: var(--button-size-medium);
+    padding: 0 var(--button-spacing-medium);
+    @include text-style-base-regular; // 👈 주석 해제 및 `font.` 접두사 제거
+    gap: var(--spacing-3xsmall);
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.button--small {
+    border-radius: var(--border-radius-small);
+    height: var(--button-size-small);
+    min-width: var(--button-size-small);
+    padding: 0 var(--button-spacing-small);
+    @include text-style-small-regular; // 👈 주석 해제 및 `font.` 접두사 제거
+    gap: var(--spacing-4xsmall);
+
+    .spinner {
+        width: 12px;
+        height: 12px;
+    }
+
+    // small 사이즈의 vertical 버튼 그룹 radius
+    &.button--vertical {
+        &.button--first {
+            border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+        }
+        &.button--last {
+            border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+        }
+    }
+}
+
+
+
+/* Button Round Shapes */
+.button--square {
+    border-radius: 0px;
+}
+.button--circle {
+    border-radius: var(--border-radius-full);
+}
+.button--round {
+    border-radius: var(--border-radius-medium);
+}
+
+/*
+  NOTE: 'sy-radio-button' 관련 스타일은 해당 컴포넌트의 SCSS 파일로 이동해야 합니다.
+  이 스타일들은 'sy-button' 컴포넌트의 스타일이 아니므로 여기서 제외합니다.
+*/
