@@ -6,20 +6,6 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
-    }
     interface SyButton {
         /**
           * @default false
@@ -53,40 +39,52 @@ export namespace Components {
          */
         "variant": 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    interface SyIcon {
+        "path"?: string;
+        /**
+          * @default false
+         */
+        "selectable": boolean;
+        /**
+          * @default 'medium'
+         */
+        "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+    }
+}
+export interface SyIconCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyIconElement;
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
-    }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
-    };
     interface HTMLSyButtonElement extends Components.SyButton, HTMLStencilElement {
     }
     var HTMLSyButtonElement: {
         prototype: HTMLSyButtonElement;
         new (): HTMLSyButtonElement;
     };
+    interface HTMLSyIconElementEventMap {
+        "selected": { value: string };
+    }
+    interface HTMLSyIconElement extends Components.SyIcon, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyIconElementEventMap>(type: K, listener: (this: HTMLSyIconElement, ev: SyIconCustomEvent<HTMLSyIconElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyIconElementEventMap>(type: K, listener: (this: HTMLSyIconElement, ev: SyIconCustomEvent<HTMLSyIconElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyIconElement: {
+        prototype: HTMLSyIconElement;
+        new (): HTMLSyIconElement;
+    };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
         "sy-button": HTMLSyButtonElement;
+        "sy-icon": HTMLSyIconElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
-    }
     interface SyButton {
         /**
           * @default false
@@ -117,17 +115,29 @@ declare namespace LocalJSX {
          */
         "variant"?: 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    interface SyIcon {
+        "onSelected"?: (event: SyIconCustomEvent<{ value: string }>) => void;
+        "path"?: string;
+        /**
+          * @default false
+         */
+        "selectable"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+    }
     interface IntrinsicElements {
-        "my-component": MyComponent;
         "sy-button": SyButton;
+        "sy-icon": SyIcon;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
+            "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
         }
     }
 }

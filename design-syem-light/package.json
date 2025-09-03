@@ -13,18 +13,14 @@
       "import": "./dist/design-syem-light/design-syem-light.esm.js",
       "require": "./dist/design-syem-light/design-syem-light.cjs.js"
     },
-    "./my-component": {
-      "import": "./dist/components/my-component.js",
-      "types": "./dist/components/my-component.d.ts"
-    },
-    "./button": {
-      "import": "./dist/components/button.js",
-      "types": "./dist/components/button.d.ts"
-    },
     "./loader": {
       "import": "./loader/index.js",
       "require": "./loader/index.cjs",
       "types": "./loader/index.d.ts"
+    },
+    "./sy-button": {
+      "import": "./dist/components/sy-button.js",
+      "types": "./dist/components/sy-button.d.ts"
     }
   },
   "repository": {

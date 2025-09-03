@@ -6,7 +6,6 @@ export const config: Config = {
   plugins: [
     sass({
       injectGlobalPaths: [
-        'src/assets/style/global.scss',
         'src/assets/style/global/_font.scss'
       ]
     })
@@ -16,6 +15,9 @@ export const config: Config = {
     {
       type: 'dist',
       esmLoaderPath: '../loader',
+      copy: [
+        { src: 'assets/style', dest: 'assets/style' }, // 스타일 폴더를 dist의 style로 복사
+      ],
     },
     {
       type: 'dist-custom-elements',

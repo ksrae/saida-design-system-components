@@ -1,18 +1,17 @@
 // src/components/sy-button/sy-button.tsx
 
 import { Component, h, Prop, State, Method, Element } from '@stencil/core';
+import { getAssignedNodesContent } from '../../utils/utils';
 
 @Component({
   tag: 'sy-button',
-  styleUrl: 'button.scss',
-  shadow: false, // 요청 사항: shadow DOM 비활성화
-  scoped: true,  // 요청 사항: Light DOM에서 CSS 스코프 유지
+  styleUrl: 'sy-button.scss',
+  shadow: false,
+  scoped: true,
+  formAssociated: true, // Form Association 활성화
 })
 export class SyButton {
   @Element() host: HTMLElement;
-
-  // Form Association (웹 표준 기능으로 Lit과 동일)
-  static formAssociated = true;
   private internals: ElementInternals;
 
   // --- Props (Lit의 @property에 해당) ---
@@ -88,11 +87,9 @@ export class SyButton {
     }
   }
 
-  private handleSlotChange = (e: Event) => {
-    const slot = e.target as HTMLSlotElement;
-    const nodes = slot.assignedNodes({ flatten: true });
-    this.hasContent = nodes.some(node => node.nodeType === Node.TEXT_NODE ? node.textContent.trim() !== '' : true);
-  };
+  componentWillRender() {
+    this.hasContent = !!getAssignedNodesContent(this.host);
+  }
 
   private handleButtonClick = (event: MouseEvent) => {
     if (this.disabled || this.loading) {
@@ -171,7 +168,7 @@ export class SyButton {
             </div>
           </div>
         )}
-        <slot onSlotchange={this.handleSlotChange}></slot>
+  <slot></slot>
       </button>
     );
   }

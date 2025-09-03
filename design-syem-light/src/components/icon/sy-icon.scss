@@ -1,0 +1,143 @@
+:host {
+    /* icon size */
+    --icon-xxsmall: 10px;
+    --icon-xsmall: 12px;
+    --icon-small: 14px;
+    --icon-medium: 16px;
+    --icon-large: 18px;
+    --icon-xlarge: 20px;
+    --icon-xxlarge: 24px;
+    --icon-xxxlarge: 30px;
+    --icon-xxxxlarge: 40px;
+
+    display: inline-flex;
+    width: var(--icon-medium);
+    height: var(--icon-medium);
+}
+
+sy-icon[size="xxsmall"] {
+    width: var(--icon-xxsmall);
+    height: var(--icon-xxsmall);
+}
+
+sy-icon[size="xsmall"] {
+    width: var(--icon-xsmall);
+    height: var(--icon-xsmall);
+}
+
+sy-icon[size="small"] {
+    width: var(--icon-small);
+    height: var(--icon-small);
+}
+
+sy-icon[size="medium"] {
+    width: var(--icon-medium);
+    height: var(--icon-medium);
+}
+
+sy-icon[size="large"] {
+    width: var(--icon-large);
+    height: var(--icon-large);
+}
+
+sy-icon[size="xlarge"] {
+    width: var(--icon-xlarge);
+    height: var(--icon-xlarge);
+}
+
+sy-icon[size="xxlarge"] {
+    width: var(--icon-xxlarge);
+    height: var(--icon-xxlarge);
+}
+
+sy-icon[size="xxxlarge"] {
+    width: var(--icon-xxxlarge);
+    height: var(--icon-xxxlarge);
+}
+
+
+.icon {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+
+    &.selectable {
+        cursor: pointer;
+    }
+}
+
+.svg-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.svg-container svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.icon {
+    font-size: initial;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon.xxsmall {
+    zoom: 0.8;
+    font-size: var(--icon-xxsmall);
+    width: var(--icon-xxsmall);
+    height: var(--icon-xxsmall);
+}
+
+.icon.xsmall {
+    zoom: 0.92;
+    font-size: var(--icon-xsmall);
+    width: var(--icon-xsmall);
+    height: var(--icon-xsmall);
+}
+
+.icon.small {
+    font-size: calc(var(--icon-small) - 2px);
+    width: var(--icon-small);
+    height: var(--icon-small);
+}
+
+.icon.medium {
+    font-size: calc(var(--icon-medium) - 3px);
+    width: var(--icon-medium);
+    height: var(--icon-medium);
+}
+
+.icon.large {
+    font-size: calc(var(--icon-large) - 3px);
+    width: var(--icon-large);
+    height: var(--icon-large);
+}
+
+.icon.xlarge {
+    font-size: calc(var(--icon-xlarge) - 4px);
+    width: var(--icon-xlarge);
+    height: var(--icon-xlarge);
+}
+
+.icon.xxlarge {
+    font-size: calc(var(--icon-xxlarge) - 6px);
+    width: var(--icon-xxlarge);
+    height: var(--icon-xxlarge);
+}
+
+.icon.xxxlarge {
+    font-size: calc(var(--icon-xxxlarge) - 6px);
+    width: var(--icon-xxxlarge);
+    height: var(--icon-xxxlarge);
+}
