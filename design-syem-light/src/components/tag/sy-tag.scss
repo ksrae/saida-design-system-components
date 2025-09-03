@@ -1,0 +1,165 @@
+// src/components/sy-tag/sy-tag.scss
+
+// 호스트 요소의 기본 스타일
+:host {
+  // CSS 변수 정의
+  --tag-small: 18px;
+  --tag-medium: 22px;
+  --tag-large: 26px;
+}
+
+// [핵심 수정]
+// sy-tag 선택자는 컴포넌트 "자체"의 외부 스타일(레이아웃 등)에 사용합니다.
+sy-tag {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+// --- Selectable ---
+sy-tag[selectable] .tag {
+  background-color: var(--tag-selectable-unselected-background-enabled);
+  border: var(--border-small) var(--tag-selectable-unselected-border-enabled);
+  color: var(--tag-selectable-unselected-text-enabled);
+  cursor: var(--cursor-button);
+
+  &:hover {
+    color: var(--tag-selectable-unselected-text-hover);
+  }
+
+  &.tag--checked {
+    background-color: var(--tag-selectable-selected-background-enabled);
+    border: var(--border-small) var(--tag-selectable-selected-border-enabled);
+  }
+}
+
+sy-tag[selectable][disabled] .tag {
+  background-color: var(--tag-gray-background-disabled);
+  border: var(--border-small) var(--tag-gray-border-disabled);
+  color: var(--tag-gray-text-disabled);
+  cursor: auto;
+
+  &:hover {
+    color: var(--tag-gray-text-disabled);
+  }
+}
+
+sy-tag[selectable][readonly] .tag {
+  background-color: var(--tag-gray-background-readonly);
+  border: var(--border-small) var(--tag-gray-border-readonly);
+  color: var(--tag-gray-text-readonly);
+  cursor: auto;
+
+  &:hover {
+    color: var(--tag-gray-text-readonly);
+  }
+}
+
+// --- General Styles ---
+.tag {
+  padding: var(--spacing-4xsmall) var(--spacing-xsmall);
+  border-width: var(--border-small);
+  box-sizing: border-box;
+  border-radius: var(--border-radius-small);
+  height: var(--tag-medium);
+  gap: var(--spacing-3xsmall);
+  line-height: normal;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+
+  // 기본값은 gray variant
+  background-color: var(--tag-gray-background-enabled);
+  border: var(--border-small) var(--tag-gray-border-enabled);
+  color: var(--tag-gray-text-enabled);
+
+  slot {
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  &.tag--rounded {
+    border-radius: var(--border-radius-full);
+  }
+
+  // Sizes
+  &.tag--small { height: var(--tag-small); }
+  &.tag--large { height: var(--tag-large); }
+
+  // Variants
+  &.tag--purple {
+    background-color: var(--tag-purple-background-enabled);
+    border: var(--border-small) var(--tag-purple-border-enabled);
+    color: var(--tag-purple-text-enabled);
+    .icon { color: var(--tag-purple-icon-enabled); }
+  }
+  &.tag--blue {
+    background-color: var(--tag-blue-background-enabled);
+    border: var(--border-small) var(--tag-blue-border-enabled);
+    color: var(--tag-blue-text-enabled);
+    .icon { color: var(--tag-blue-icon-enabled); }
+  }
+  &.tag--green {
+    background-color: var(--tag-green-background-enabled);
+    border: var(--border-small) var(--tag-green-border-enabled);
+    color: var(--tag-green-text-enabled);
+    .icon { color: var(--tag-green-icon-enabled); }
+  }
+  &.tag--cyan {
+    background-color: var(--tag-cyan-background-enabled);
+    border: var(--border-small) var(--tag-cyan-border-enabled);
+    color: var(--tag-cyan-text-enabled);
+    .icon { color: var(--tag-cyan-icon-enabled); }
+  }
+  &.tag--yellow {
+    background-color: var(--tag-yellow-background-enabled);
+    border: var(--border-small) var(--tag-yellow-border-enabled);
+    color: var(--tag-yellow-text-enabled);
+    .icon { color: var(--tag-yellow-icon-enabled); }
+  }
+  &.tag--orange {
+    background-color: var(--tag-orange-background-enabled);
+    border: var(--border-small) var(--tag-orange-border-enabled);
+    color: var(--tag-orange-text-enabled);
+    .icon { color: var(--tag-orange-icon-enabled); }
+  }
+  &.tag--red {
+    background-color: var(--tag-red-background-enabled);
+    border: var(--border-small) var(--tag-red-border-enabled);
+    color: var(--tag-red-text-enabled);
+    .icon { color: var(--tag-red-icon-enabled); }
+  }
+
+  // States
+  &.tag--disabled {
+    background-color: var(--tag-gray-background-disabled);
+    border: var(--border-small) var(--tag-gray-border-disabled);
+    color: var(--tag-gray-text-disabled);
+    .icon { color: var(--tag-gray-icon-disabled); }
+    .tag-remove {
+      color: var(--tag-gray-icon-disabled);
+      cursor: auto !important;
+      &:hover { color: var(--tag-gray-icon-disabled); }
+    }
+  }
+
+  &.tag--readonly {
+    .tag-remove {
+        cursor: auto;
+        color: var(--tag-removable-icon-enabled);
+        &:hover { color: var(--tag-removable-icon-enabled); }
+    }
+  }
+}
+
+// --- Removable ---
+.tag--removable .tag-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--tag-removable-icon-enabled);
+
+  &:hover {
+    color: var(--tag-removable-icon-hover);
+  }
+}

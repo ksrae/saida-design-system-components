@@ -1,0 +1,44 @@
+// src/components/sy-empty/sy-empty.tsx
+
+import { Component, h, Prop } from '@stencil/core';
+
+@Component({
+  tag: 'sy-empty',
+  styleUrl: 'sy-empty.scss',
+  shadow: false,  // 버튼 샘플과 동일하게 shadow DOM을 사용하지 않음
+  scoped: true,   // 버튼 샘플과 동일하게 scoped CSS를 사용
+})
+export class SyEmpty {
+
+  /**
+   * Empty 컴포넌트에 표시될 설명 텍스트입니다.
+   * Lit의 @property에 해당합니다.
+   */
+  @Prop() description: string;
+
+  /**
+   * Lit의 render() 메서드에 해당하며, JSX 문법을 사용합니다.
+   */
+  render() {
+    return (
+      <div class="empty-wrapper">
+        <div class="empty">
+          {/* sy-icon 컴포넌트와 SVG 아이콘 */}
+          <sy-icon size="xxxlarge">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+              <path d="M139.3 158C140.3 150 147.1 144 155.2 144L484.9 144C492.9 144 499.7 150 500.8 158L525.8 352L440.6 352C427.2 352 414.7 358.7 407.3 369.8L387.2 400L252.9 400L232.8 369.8C225.4 358.7 212.9 352 199.5 352L114.3 352L139.3 158zM112 400L195.2 400L215.3 430.2C222.7 441.3 235.2 448 248.6 448L391.5 448C404.9 448 417.4 441.3 424.8 430.2L444.9 400L528.1 400L528.1 480C528.1 488.8 520.9 496 512.1 496L128 496C119.2 496 112 488.8 112 480L112 400zM155.2 96C123 96 95.8 119.9 91.7 151.8L64.2 364.9L64 366.5L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 366.5L575.8 365L548.3 151.9C544.2 119.9 517 96 484.8 96L155.2 96z" />
+            </svg>
+          </sy-icon>
+
+          {/*
+            Lit의 조건부 렌더링: ${this.description ? html`...` : nothing}
+            JSX에서는 && 연산자를 사용하여 동일하게 구현할 수 있습니다.
+          */}
+          {this.description && (
+            <span class="description">{this.description}</span>
+          )}
+        </div>
+      </div>
+    );
+  }
+}

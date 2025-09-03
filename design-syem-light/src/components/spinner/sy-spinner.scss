@@ -1,0 +1,99 @@
+// src/components/sy-spinner/sy-spinner.scss
+
+// --- 호스트 요소 스타일 ---
+
+sy-spinner {
+  display: contents;
+}
+
+sy-spinner[hidden] {
+  display: none;
+}
+
+// --- 내부 컨테이너 스타일 ---
+
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  // [핵심] 스피너와 슬롯을 세로로 쌓기 위해 column 방향으로 변경
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  background-color: transparent;
+
+  &.has-mask {
+    background-color: var(--spinner-mask-background, rgba(255, 255, 255, 0.8));
+  }
+}
+
+// --- 공통 스피너 코어 스타일 ---
+.spinner-core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &.size--small .spinner { width: 12px; height: 12px; }
+  &.size--medium .spinner { width: 16px; height: 16px; }
+  &.size--large .spinner { width: 20px; height: 20px; }
+  &.size--xlarge .spinner { width: 24px; height: 24px; }
+}
+
+.spinner--text {
+  padding-top: var(--spacing-3xsmall);
+  color: var(--spinner-text);
+}
+
+// [핵심] 슬롯 컨텐츠를 위한 스타일 추가
+.spinner-slot-content {
+  margin-top: var(--spacing-medium, 1rem); // 스피너/설명과의 간격
+}
+
+
+// --- SVG 애니메이션 ---
+$offset: 187;
+$duration: 1.4s;
+
+.spinner {
+  svg {
+    width: 100%;
+    height: 100%;
+    animation: rotator $duration linear infinite;
+  }
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+.path {
+  stroke-dasharray: $offset;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation:
+    dash $duration ease-in-out infinite,
+    colors ($duration*4) ease-in-out infinite;
+}
+
+@keyframes colors {
+	0% { stroke: var(--spinner-icon); }
+  100% { stroke: var(--spinner-icon); }
+}
+
+@keyframes dash {
+  0% { stroke-dashoffset: $offset; }
+  50% {
+    stroke-dashoffset: calc($offset/4);
+    transform:rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: $offset;
+    transform:rotate(450deg);
+  }
+}

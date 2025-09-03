@@ -39,6 +39,13 @@ export namespace Components {
          */
         "variant": 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    interface SyEmpty {
+        /**
+          * Empty 컴포넌트에 표시될 설명 텍스트입니다. Lit의
+          * @property에 해당합니다.
+         */
+        "description": string;
+    }
     interface SyIcon {
         "path"?: string;
         /**
@@ -50,10 +57,66 @@ export namespace Components {
          */
         "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
     }
+    interface SySpinner {
+        /**
+          * @default 0
+         */
+        "delay": number;
+        /**
+          * @default ''
+         */
+        "description": string;
+        /**
+          * @default false
+         */
+        "hidden": boolean;
+        /**
+          * @default false
+         */
+        "inline": boolean;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large' | 'xlarge';
+    }
+    interface SyTag {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default false
+         */
+        "removable": boolean;
+        /**
+          * @default false
+         */
+        "rounded": boolean;
+        /**
+          * @default false
+         */
+        "selectable": boolean;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        /**
+          * @default 'gray'
+         */
+        "variant": 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
+    }
 }
 export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
+}
+export interface SyTagCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTagElement;
 }
 declare global {
     interface HTMLSyButtonElement extends Components.SyButton, HTMLStencilElement {
@@ -61,6 +124,12 @@ declare global {
     var HTMLSyButtonElement: {
         prototype: HTMLSyButtonElement;
         new (): HTMLSyButtonElement;
+    };
+    interface HTMLSyEmptyElement extends Components.SyEmpty, HTMLStencilElement {
+    }
+    var HTMLSyEmptyElement: {
+        prototype: HTMLSyEmptyElement;
+        new (): HTMLSyEmptyElement;
     };
     interface HTMLSyIconElementEventMap {
         "selected": { value: string };
@@ -79,9 +148,36 @@ declare global {
         prototype: HTMLSyIconElement;
         new (): HTMLSyIconElement;
     };
+    interface HTMLSySpinnerElement extends Components.SySpinner, HTMLStencilElement {
+    }
+    var HTMLSySpinnerElement: {
+        prototype: HTMLSySpinnerElement;
+        new (): HTMLSySpinnerElement;
+    };
+    interface HTMLSyTagElementEventMap {
+        "selected": { tag: HTMLElement };
+        "removed": { tag: HTMLElement };
+    }
+    interface HTMLSyTagElement extends Components.SyTag, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTagElementEventMap>(type: K, listener: (this: HTMLSyTagElement, ev: SyTagCustomEvent<HTMLSyTagElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTagElementEventMap>(type: K, listener: (this: HTMLSyTagElement, ev: SyTagCustomEvent<HTMLSyTagElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTagElement: {
+        prototype: HTMLSyTagElement;
+        new (): HTMLSyTagElement;
+    };
     interface HTMLElementTagNameMap {
         "sy-button": HTMLSyButtonElement;
+        "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
+        "sy-spinner": HTMLSySpinnerElement;
+        "sy-tag": HTMLSyTagElement;
     }
 }
 declare namespace LocalJSX {
@@ -115,6 +211,13 @@ declare namespace LocalJSX {
          */
         "variant"?: 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    interface SyEmpty {
+        /**
+          * Empty 컴포넌트에 표시될 설명 텍스트입니다. Lit의
+          * @property에 해당합니다.
+         */
+        "description"?: string;
+    }
     interface SyIcon {
         "onSelected"?: (event: SyIconCustomEvent<{ value: string }>) => void;
         "path"?: string;
@@ -127,9 +230,66 @@ declare namespace LocalJSX {
          */
         "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
     }
+    interface SySpinner {
+        /**
+          * @default 0
+         */
+        "delay"?: number;
+        /**
+          * @default ''
+         */
+        "description"?: string;
+        /**
+          * @default false
+         */
+        "hidden"?: boolean;
+        /**
+          * @default false
+         */
+        "inline"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large' | 'xlarge';
+    }
+    interface SyTag {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "onRemoved"?: (event: SyTagCustomEvent<{ tag: HTMLElement }>) => void;
+        "onSelected"?: (event: SyTagCustomEvent<{ tag: HTMLElement }>) => void;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "removable"?: boolean;
+        /**
+          * @default false
+         */
+        "rounded"?: boolean;
+        /**
+          * @default false
+         */
+        "selectable"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        /**
+          * @default 'gray'
+         */
+        "variant"?: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
+    }
     interface IntrinsicElements {
         "sy-button": SyButton;
+        "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
+        "sy-spinner": SySpinner;
+        "sy-tag": SyTag;
     }
 }
 export { LocalJSX as JSX };
@@ -137,7 +297,10 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
+            "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
+            "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
+            "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
         }
     }
 }

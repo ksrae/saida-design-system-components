@@ -1,0 +1,29 @@
+// src/components/sy-empty/sy-empty.scss (수정본)
+
+// :host 래퍼를 제거합니다. Stencil의 scoped 옵션이 자동으로 범위를 지정해줍니다.
+.empty-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: var(--spacing-3xsmall);
+
+        sy-icon {
+            fill: var(--empty-default-icon-enabled);
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .description {
+            color: var(--empty-default-text-enabled);
+        }
+    }
+}
