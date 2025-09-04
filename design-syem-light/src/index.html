@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>Stencil Component Starter</title>
-    <link rel="stylesheet" href="/build/design-syem-light.css">
-    <script type="module" src="/build/design-syem-light.esm.js"></script>
-    <script nomodule src="/build/design-syem-light.js"></script>
+    <link rel="stylesheet" href="/build/design-system-light.css">
+    <script type="module" src="/build/design-system-light.esm.js"></script>
+    <script nomodule src="/build/design-system-light.js"></script>
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
@@ -229,5 +229,108 @@
         removedResult.textContent += `'${tagText}' `;
       });
     </script>
+
+<!-- ===================================================================== -->
+    <!-- sy-divider Test Cases                                                 -->
+    <!-- ===================================================================== -->
+    <h2>sy-divider</h2>
+    <div style="padding: 10px;">
+      <h3>Horizontal</h3>
+        <div style="width:400px; height:100px">
+          <sy-divider></sy-divider>
+        </div>
+
+      <h3 style="margin-top: 2rem;">Vertical</h3>
+      <div style="display: flex; height: 30px; gap: 1rem; padding: 0 1rem;">
+          <div style="width:100px;">Profile</div>
+          <sy-divider type="vertical"></sy-divider>
+          <div style="width:100px;">Settings</div>
+          <sy-divider type="vertical"></sy-divider>
+          <div style="width:100px;">Logout</div>
+      </div>
+
+      <div style="display: flex; height: 120px;margin-top:5px;">
+        <div style="padding: 1rem; background-color: #f0f0f0; width: 150px;">
+          <strong>User Menu</strong>
+        </div>
+
+        <sy-divider type="vertical"></sy-divider>
+
+        <div style="padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+          <p>Main content area.</p>
+          <p>The divider stretches to match this container's height.</p>
+        </div>
+      </div>
+    </div>
+
+<!-- ===================================================================== -->
+    <!-- sy-banner-messsage Test Cases                                         -->
+    <!-- ===================================================================== -->
+<sy-banner-messsage
+  header="Closable banner"
+  variant="success"
+  message="Banner message will be displayed here."
+  closable
+  showIcon>
+</sy-banner-messsage>
+
+
+    <!-- ====================================================== -->
+    <!-- 예제 1: 기본 사용법                                        -->
+    <!-- ====================================================== -->
+    <h2>기본 사용법 (기본 구분자: slash)</h2>
+    <span>active 가 class는 되지만 스타일이 적용되지 않음</span>
+    <sy-breadcrumb>
+      <sy-breadcrumb-item>홈</sy-breadcrumb-item>
+      <sy-breadcrumb-item>라이브러리</sy-breadcrumb-item>
+      <sy-breadcrumb-item active>데이터</sy-breadcrumb-item>
+    </sy-breadcrumb>
+
+
+    <!-- ====================================================== -->
+    <!-- 예제 2: Arrow 구분자 및 비활성화 아이템                      -->
+    <!-- ====================================================== -->
+    <h2>Arrow 구분자 및 비활성화(disabled) 아이템</h2>
+    <sy-breadcrumb separator="arrow">
+      <sy-breadcrumb-item>대시보드</sy-breadcrumb-item>
+      <sy-breadcrumb-item disabled>설정</sy-breadcrumb-item>
+      <sy-breadcrumb-item active>프로필</sy-breadcrumb-item>
+    </sy-breadcrumb>
+
+
+    <!-- ====================================================== -->
+    <!-- 예제 3: 이벤트 핸들링                                     -->
+    <!-- ====================================================== -->
+    <h2>이벤트 핸들링</h2>
+    <sy-breadcrumb id="event-breadcrumb">
+      <sy-breadcrumb-item>사용자</sy-breadcrumb-item>
+      <sy-breadcrumb-item>계정 관리</sy-breadcrumb-item>
+      <sy-breadcrumb-item active>비밀번호 변경</sy-breadcrumb-item>
+    </sy-breadcrumb>
+
+    <pre id="event-log">여기에 클릭 이벤트 결과가 표시됩니다.</pre>
+
+  </div>
+
+  <script>
+    const eventBreadcrumb = document.getElementById('event-breadcrumb');
+    const eventLog = document.getElementById('event-log');
+
+    // 'selected' 커스텀 이벤트를 수신합니다.
+    eventBreadcrumb.addEventListener('selected', (event) => {
+      console.log('Selected Event:', event.detail);
+
+      // event.detail은 클릭된 sy-breadcrumb-item 컴포넌트 인스턴스입니다.
+      const clickedItem = event.detail;
+
+      eventLog.textContent = `
+이벤트가 발생했습니다!
+-------------------------
+- 클릭된 아이템: "${clickedItem.textContent.trim()}"
+- active 속성: ${clickedItem.active}
+- disabled 속성: ${clickedItem.disabled}
+      `;
+    });
+  </script>
   </body>
 </html>

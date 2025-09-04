@@ -2,12 +2,13 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 
 export const config: Config = {
-  namespace: 'design-syem-light',
+  namespace: 'design-system-light',
   plugins: [
     sass({
       injectGlobalPaths: [
         'src/assets/style/global/_font.scss'
-      ]
+      ],
+      includePaths: ['src/assets/style/theme']
     })
   ],
   globalStyle: 'src/assets/style/global.scss',

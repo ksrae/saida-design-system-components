@@ -1,8 +1,9 @@
 // Foundation
+@use './theme/theme.scss';
 @use './_foundation';
 @use './foundation/color-light';
 @use './foundation/color-dark';
-@use './theme/theme.scss';
+
 // @use './theme/theme-dark.scss';
 
 // @import './icons';
@@ -15,7 +16,7 @@
 @use './global/_z-index';
 @use './typography.scss';
 
-// Chart 
+// Chart
 @use './third-party/highcharts';
 
 // Ag-Grid
@@ -24,7 +25,7 @@
 .sy-theme {
     background-color: var(--background-default);
     font-family: "roboto", "Apple SD Gothic Neo", "Arial", "Noto Sans KR", "Dotum", "돋움" ;
-    @include font.text-style-base-regular();    
+    @include font.text-style-base-regular();
     /* Gloabl Font */
     sy-autocomplete,
     sy-autocomplete-option,
@@ -90,7 +91,7 @@
         --header-shadow: 0px 1px 2px var(--border-default);
         --box-shadow: 2px 2px 8px var(--border-default);
         --switch-shadow: 0px 2px 4px var(--border-default);
-        
+
 
         /* Border Transtare */
         --border-transrate: translate;

@@ -1,5 +1,5 @@
 {
-  "name": "design-syem-light",
+  "name": "design-system-light",
   "version": "0.0.1",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
@@ -7,11 +7,11 @@
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/design-syem-light/design-syem-light.esm.js",
+  "unpkg": "dist/design-system-light/design-system-light.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/design-syem-light/design-syem-light.esm.js",
-      "require": "./dist/design-syem-light/design-syem-light.cjs.js"
+      "import": "./dist/design-system-light/design-system-light.esm.js",
+      "require": "./dist/design-system-light/design-system-light.cjs.js"
     },
     "./loader": {
       "import": "./loader/index.js",

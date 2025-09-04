@@ -6,6 +6,58 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface SyBannerMesssage {
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        /**
+          * @default ''
+         */
+        "header": string;
+        /**
+          * @default ''
+         */
+        "message": string;
+        /**
+          * @default ''
+         */
+        "neutralIcon": string;
+        /**
+          * @default false
+         */
+        "showIcon": boolean;
+        /**
+          * @default 'info'
+         */
+        "variant": 'info' | 'success' | 'warning' | 'error' | 'neutral';
+    }
+    interface SyBreadcrumb {
+        /**
+          * @default 'slash'
+         */
+        "separator": 'slash' | 'arrow';
+    }
+    interface SyBreadcrumbItem {
+        /**
+          * @default false
+         */
+        "active": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "forceUpdate": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "isLast": boolean;
+        /**
+          * @default 'slash'
+         */
+        "parentSeparator": 'slash' | 'arrow';
+        "separator"?: 'slash' | 'arrow';
+    }
     interface SyButton {
         /**
           * @default false
@@ -38,6 +90,12 @@ export namespace Components {
           * @default 'default'
          */
         "variant": 'default' | 'primary' | 'secondary' | 'borderless';
+    }
+    interface SyDivider {
+        /**
+          * @default 'horizontal'
+         */
+        "type": 'horizontal' | 'vertical';
     }
     interface SyEmpty {
         /**
@@ -110,6 +168,10 @@ export namespace Components {
         "variant": 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
 }
+export interface SyBreadcrumbItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyBreadcrumbItemElement;
+}
 export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
@@ -119,11 +181,46 @@ export interface SyTagCustomEvent<T> extends CustomEvent<T> {
     target: HTMLSyTagElement;
 }
 declare global {
+    interface HTMLSyBannerMesssageElement extends Components.SyBannerMesssage, HTMLStencilElement {
+    }
+    var HTMLSyBannerMesssageElement: {
+        prototype: HTMLSyBannerMesssageElement;
+        new (): HTMLSyBannerMesssageElement;
+    };
+    interface HTMLSyBreadcrumbElement extends Components.SyBreadcrumb, HTMLStencilElement {
+    }
+    var HTMLSyBreadcrumbElement: {
+        prototype: HTMLSyBreadcrumbElement;
+        new (): HTMLSyBreadcrumbElement;
+    };
+    interface HTMLSyBreadcrumbItemElementEventMap {
+        "selected": HTMLElement;
+    }
+    interface HTMLSyBreadcrumbItemElement extends Components.SyBreadcrumbItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyBreadcrumbItemElementEventMap>(type: K, listener: (this: HTMLSyBreadcrumbItemElement, ev: SyBreadcrumbItemCustomEvent<HTMLSyBreadcrumbItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyBreadcrumbItemElementEventMap>(type: K, listener: (this: HTMLSyBreadcrumbItemElement, ev: SyBreadcrumbItemCustomEvent<HTMLSyBreadcrumbItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyBreadcrumbItemElement: {
+        prototype: HTMLSyBreadcrumbItemElement;
+        new (): HTMLSyBreadcrumbItemElement;
+    };
     interface HTMLSyButtonElement extends Components.SyButton, HTMLStencilElement {
     }
     var HTMLSyButtonElement: {
         prototype: HTMLSyButtonElement;
         new (): HTMLSyButtonElement;
+    };
+    interface HTMLSyDividerElement extends Components.SyDivider, HTMLStencilElement {
+    }
+    var HTMLSyDividerElement: {
+        prototype: HTMLSyDividerElement;
+        new (): HTMLSyDividerElement;
     };
     interface HTMLSyEmptyElement extends Components.SyEmpty, HTMLStencilElement {
     }
@@ -173,7 +270,11 @@ declare global {
         new (): HTMLSyTagElement;
     };
     interface HTMLElementTagNameMap {
+        "sy-banner-messsage": HTMLSyBannerMesssageElement;
+        "sy-breadcrumb": HTMLSyBreadcrumbElement;
+        "sy-breadcrumb-item": HTMLSyBreadcrumbItemElement;
         "sy-button": HTMLSyButtonElement;
+        "sy-divider": HTMLSyDividerElement;
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
         "sy-spinner": HTMLSySpinnerElement;
@@ -181,6 +282,58 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface SyBannerMesssage {
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        /**
+          * @default ''
+         */
+        "header"?: string;
+        /**
+          * @default ''
+         */
+        "message"?: string;
+        /**
+          * @default ''
+         */
+        "neutralIcon"?: string;
+        /**
+          * @default false
+         */
+        "showIcon"?: boolean;
+        /**
+          * @default 'info'
+         */
+        "variant"?: 'info' | 'success' | 'warning' | 'error' | 'neutral';
+    }
+    interface SyBreadcrumb {
+        /**
+          * @default 'slash'
+         */
+        "separator"?: 'slash' | 'arrow';
+    }
+    interface SyBreadcrumbItem {
+        /**
+          * @default false
+         */
+        "active"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "isLast"?: boolean;
+        "onSelected"?: (event: SyBreadcrumbItemCustomEvent<HTMLElement>) => void;
+        /**
+          * @default 'slash'
+         */
+        "parentSeparator"?: 'slash' | 'arrow';
+        "separator"?: 'slash' | 'arrow';
+    }
     interface SyButton {
         /**
           * @default false
@@ -210,6 +363,12 @@ declare namespace LocalJSX {
           * @default 'default'
          */
         "variant"?: 'default' | 'primary' | 'secondary' | 'borderless';
+    }
+    interface SyDivider {
+        /**
+          * @default 'horizontal'
+         */
+        "type"?: 'horizontal' | 'vertical';
     }
     interface SyEmpty {
         /**
@@ -285,7 +444,11 @@ declare namespace LocalJSX {
         "variant"?: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
     interface IntrinsicElements {
+        "sy-banner-messsage": SyBannerMesssage;
+        "sy-breadcrumb": SyBreadcrumb;
+        "sy-breadcrumb-item": SyBreadcrumbItem;
         "sy-button": SyButton;
+        "sy-divider": SyDivider;
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
         "sy-spinner": SySpinner;
@@ -296,7 +459,11 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "sy-banner-messsage": LocalJSX.SyBannerMesssage & JSXBase.HTMLAttributes<HTMLSyBannerMesssageElement>;
+            "sy-breadcrumb": LocalJSX.SyBreadcrumb & JSXBase.HTMLAttributes<HTMLSyBreadcrumbElement>;
+            "sy-breadcrumb-item": LocalJSX.SyBreadcrumbItem & JSXBase.HTMLAttributes<HTMLSyBreadcrumbItemElement>;
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
+            "sy-divider": LocalJSX.SyDivider & JSXBase.HTMLAttributes<HTMLSyDividerElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;

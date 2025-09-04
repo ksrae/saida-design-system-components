@@ -1,8 +1,8 @@
-@use "./theme/_autocomplete.scss";
-@use "./theme/_avatar.scss";
-@use "./theme/_badge.scss";
-@use "./theme/_banner.scss";
-@use "./theme/_breadcrumb.scss";
+@forward "./theme/_breadcrumb.scss";
+@forward "./theme/_autocomplete.scss";
+@forward "./theme/_avatar.scss";
+@forward "./theme/_badge.scss";
+@forward "./theme/_banner.scss";
 @use "./theme/_button-group.scss";
 @use "./theme/_button.scss";
 @use "./theme/_card.scss";
@@ -21,7 +21,7 @@
 @use "./theme/_input-number.scss";
 @use "./theme/_input.scss";
 // @use "./theme/_layout.scss";
-@use "./theme/_menu.scss"; 
+@use "./theme/_menu.scss";
 @use "./theme/_modal.scss";
 @use "./theme/_modeless.scss";
 @use "./theme/_nav.scss";

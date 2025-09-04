@@ -1,0 +1,59 @@
+// src/components/sy-divider/sy-divider.scss
+
+// [CSS 변수 정의]
+// 변수는 :host에 정의하는 것이 올바른 방식입니다.
+:host {
+  --border-small: 1px solid;
+  --divider-horizontal-border-enabled: #e0e0e0;
+  --divider-vertical-border-enabled: #e0e0e0;
+}
+
+// [호스트 요소 스타일]
+// 내부 div가 공간을 차지할 수 있도록 호스트 요소의 레이아웃을 설정합니다.
+sy-divider[type="horizontal"] {
+  display: block;
+  width: 100%;
+  margin: 1rem 0; // 구분선은 보통 상하 여백을 가집니다.
+}
+sy-divider[type="vertical"] {
+  display: block; // block으로 설정하고 부모 flex에서 align-self: stretch를 사용
+  height: 100%;
+  margin: 0 1rem; // 구분선은 보통 좌우 여백을 가집니다.
+}
+
+// --- 제공해주신 원본 SCSS 코드를 그대로 사용 (바깥쪽 :host만 제거) ---
+.horizontal {
+    display: block;
+    width: 100%;
+    height: fit-content;
+
+    &.divider--small {
+        border-top: var(--border-small) var(--divider-horizontal-border-enabled);
+    }
+
+    // &.divider--medium {
+    //     border-top: var(--border-medium) var(--divider-horizontal-border-enabled);
+    // }
+
+    // &.divider--large {
+    //     border-top: var(--border-large) var(--divider-horizontal-border-enabled);
+    // }
+}
+
+.vertical {
+    display: block;
+    height: 100%;
+    width: fit-content;
+
+    &.divider--small {
+        border-left: var(--border-small) var(--divider-vertical-border-enabled);
+    }
+
+    // &.divider--medium {
+    //     border-left: var(--border-medium) var(--divider-vertical-border-enabled);
+    // }
+
+    // &.divider--large {
+    //     border-left: var(--border-large) var(--divider-vertical-border-enabled);
+    // }
+}
