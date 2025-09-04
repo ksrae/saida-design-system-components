@@ -6,9 +6,9 @@ export const config: Config = {
   plugins: [
     sass({
       injectGlobalPaths: [
-        'src/assets/style/global/_font.scss'
+
       ],
-      includePaths: ['src/assets/style/theme']
+
     })
   ],
   globalStyle: 'src/assets/style/global.scss',

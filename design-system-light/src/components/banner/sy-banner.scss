@@ -1,4 +1,5 @@
 // src/components/banner/sy-banner.scss
+@use "../../assets/style/global/font" as font;
 
 sy-banner-messsage {
   display: flex;
@@ -42,7 +43,7 @@ sy-banner-messsage {
   gap: var(--spacing-3xsmall);
 
   .banner-title {
-    @include text-style-large-medium();
+    @include font.text-style-large-medium();
     width: 100%;
   }
 

@@ -1,3 +1,5 @@
+@use "../../assets/style/global/font" as font;
+
 :root,
 :host {
     display: inline-block;
@@ -238,7 +240,7 @@ button {
     height: var(--button-size-large);
     min-width: var(--button-size-large);
     padding: 0 var(--button-spacing-large);
-    @include text-style-large-regular;
+    @include font.text-style-large-regular;
     gap: var(--spacing-2xsmall);
     .spinner {
         width: 20px;
@@ -251,7 +253,7 @@ button {
     height: var(--button-size-medium);
     min-width: var(--button-size-medium);
     padding: 0 var(--button-spacing-medium);
-    @include text-style-base-regular;
+    @include font.text-style-base-regular;
     gap: var(--spacing-3xsmall);
     .spinner {
         width: 16px;
@@ -265,7 +267,7 @@ button {
     height: var(--button-size-small);
     min-width: var(--button-size-small);
     padding: 0 var(--button-spacing-small);
-    @include text-style-small-regular;
+    @include font.text-style-small-regular;
     gap: var(--spacing-4xsmall);
     .spinner {
         width: 12px;
