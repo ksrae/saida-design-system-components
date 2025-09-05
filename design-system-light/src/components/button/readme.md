@@ -30,6 +30,22 @@ Type: `Promise<void>`
 
 
 
+### `setButtonGroupState(state: ButtonGroupState) => Promise<void>`
+
+
+
+#### Parameters
+
+| Name    | Type               | Description |
+| ------- | ------------------ | ----------- |
+| `state` | `ButtonGroupState` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setClick() => Promise<void>`
 
 

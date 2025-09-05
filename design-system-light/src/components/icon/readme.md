@@ -27,6 +27,8 @@
 
  - [sy-banner-messsage](../banner)
  - [sy-breadcrumb-item](../breadcrumb)
+ - [sy-checkbox](../checkbox)
+ - [sy-drawer](../drawer)
  - [sy-empty](../empty)
  - [sy-tag](../tag)
 
@@ -35,6 +37,8 @@
 graph TD;
   sy-banner-messsage --> sy-icon
   sy-breadcrumb-item --> sy-icon
+  sy-checkbox --> sy-icon
+  sy-drawer --> sy-icon
   sy-empty --> sy-icon
   sy-tag --> sy-icon
   style sy-icon fill:#f9f,stroke:#333,stroke-width:4px

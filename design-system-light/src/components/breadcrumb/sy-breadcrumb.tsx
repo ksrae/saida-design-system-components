@@ -6,7 +6,7 @@ import { Component, h, Prop, Element, Watch, JSX } from '@stencil/core';
   tag: 'sy-breadcrumb',
   styleUrl: 'sy-breadcrumb.scss',
   shadow: false,
-  scoped: false,
+  scoped: true,
 })
 export class BreadcrumbElement {
 

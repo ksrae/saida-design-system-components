@@ -10,12 +10,12 @@
 
 // [호스트 요소 스타일]
 // 내부 div가 공간을 차지할 수 있도록 호스트 요소의 레이아웃을 설정합니다.
-sy-divider[type="horizontal"] {
+:host[type="horizontal"] {
   display: block;
   width: 100%;
   margin: 1rem 0; // 구분선은 보통 상하 여백을 가집니다.
 }
-sy-divider[type="vertical"] {
+:host[type="vertical"] {
   display: block; // block으로 설정하고 부모 flex에서 align-self: stretch를 사용
   height: 100%;
   margin: 0 1rem; // 구분선은 보통 좌우 여백을 가집니다.

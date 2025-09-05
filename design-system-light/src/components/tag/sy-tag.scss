@@ -10,13 +10,13 @@
 
 // [핵심 수정]
 // sy-tag 선택자는 컴포넌트 "자체"의 외부 스타일(레이아웃 등)에 사용합니다.
-sy-tag {
+:host {
   display: inline-flex;
   max-width: 100%;
 }
 
 // --- Selectable ---
-sy-tag[selectable] .tag {
+:host[selectable] .tag {
   background-color: var(--tag-selectable-unselected-background-enabled);
   border: var(--border-small) var(--tag-selectable-unselected-border-enabled);
   color: var(--tag-selectable-unselected-text-enabled);
@@ -32,7 +32,7 @@ sy-tag[selectable] .tag {
   }
 }
 
-sy-tag[selectable][disabled] .tag {
+:host[selectable][disabled] .tag {
   background-color: var(--tag-gray-background-disabled);
   border: var(--border-small) var(--tag-gray-border-disabled);
   color: var(--tag-gray-text-disabled);
@@ -43,7 +43,7 @@ sy-tag[selectable][disabled] .tag {
   }
 }
 
-sy-tag[selectable][readonly] .tag {
+:host[selectable][readonly] .tag {
   background-color: var(--tag-gray-background-readonly);
   border: var(--border-small) var(--tag-gray-border-readonly);
   color: var(--tag-gray-text-readonly);

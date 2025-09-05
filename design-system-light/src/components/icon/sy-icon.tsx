@@ -68,7 +68,7 @@ export class SyIcon {
 
   render() {
     const classNames = {
-      icon: true,      
+      icon: true,
       xxsmall: this.size === 'xxsmall',
       xsmall: this.size === 'xsmall',
       small: this.size === 'small',
@@ -79,7 +79,7 @@ export class SyIcon {
       xxxlarge: this.size === 'xxxlarge',
       selectable: this.selectable,
     };
-    
+
     return (
       <span
         class={Object.keys(classNames).filter(key => classNames[key]).join(' ')}

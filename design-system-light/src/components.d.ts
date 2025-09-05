@@ -5,6 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ButtonGroupState } from "./components/button/sy-button";
+export { ButtonGroupState } from "./components/button/sy-button";
 export namespace Components {
     interface SyBannerMesssage {
         /**
@@ -76,6 +78,7 @@ export namespace Components {
          */
         "loading": boolean;
         "setBlur": () => Promise<void>;
+        "setButtonGroupState": (state: ButtonGroupState) => Promise<void>;
         "setClick": () => Promise<void>;
         "setFocus": () => Promise<void>;
         /**
@@ -91,11 +94,83 @@ export namespace Components {
          */
         "variant": 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    interface SyButtonGroup {
+        /**
+          * @default false
+         */
+        "vertical": boolean;
+    }
+    interface SyCheckbox {
+        "checkValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "checked": boolean;
+        "clearCustomError": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "indeterminate": boolean;
+        /**
+          * @default ''
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setBlur": () => Promise<void>;
+        "setCustomError": () => Promise<void>;
+        "setFocus": () => Promise<void>;
+        /**
+          * @default ''
+         */
+        "titleText": string;
+    }
     interface SyDivider {
         /**
           * @default 'horizontal'
          */
         "type": 'horizontal' | 'vertical';
+    }
+    interface SyDrawer {
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        /**
+          * @default 100
+         */
+        "customSize": number;
+        /**
+          * @default false
+         */
+        "maskless": boolean;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 'right'
+         */
+        "position": 'top' | 'left' | 'right' | 'bottom';
+        /**
+          * @default false
+         */
+        "preventClose": boolean;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large' | 'custom';
     }
     interface SyEmpty {
         /**
@@ -172,6 +247,14 @@ export interface SyBreadcrumbItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyBreadcrumbItemElement;
 }
+export interface SyCheckboxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyCheckboxElement;
+}
+export interface SyDrawerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyDrawerElement;
+}
 export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
@@ -216,11 +299,54 @@ declare global {
         prototype: HTMLSyButtonElement;
         new (): HTMLSyButtonElement;
     };
+    interface HTMLSyButtonGroupElement extends Components.SyButtonGroup, HTMLStencilElement {
+    }
+    var HTMLSyButtonGroupElement: {
+        prototype: HTMLSyButtonGroupElement;
+        new (): HTMLSyButtonGroupElement;
+    };
+    interface HTMLSyCheckboxElementEventMap {
+        "changed": { value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; };
+        "focused": boolean;
+        "blured": boolean;
+    }
+    interface HTMLSyCheckboxElement extends Components.SyCheckbox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyCheckboxElementEventMap>(type: K, listener: (this: HTMLSyCheckboxElement, ev: SyCheckboxCustomEvent<HTMLSyCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyCheckboxElementEventMap>(type: K, listener: (this: HTMLSyCheckboxElement, ev: SyCheckboxCustomEvent<HTMLSyCheckboxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyCheckboxElement: {
+        prototype: HTMLSyCheckboxElement;
+        new (): HTMLSyCheckboxElement;
+    };
     interface HTMLSyDividerElement extends Components.SyDivider, HTMLStencilElement {
     }
     var HTMLSyDividerElement: {
         prototype: HTMLSyDividerElement;
         new (): HTMLSyDividerElement;
+    };
+    interface HTMLSyDrawerElementEventMap {
+        "opened": void;
+        "closed": void;
+    }
+    interface HTMLSyDrawerElement extends Components.SyDrawer, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyDrawerElementEventMap>(type: K, listener: (this: HTMLSyDrawerElement, ev: SyDrawerCustomEvent<HTMLSyDrawerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyDrawerElementEventMap>(type: K, listener: (this: HTMLSyDrawerElement, ev: SyDrawerCustomEvent<HTMLSyDrawerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyDrawerElement: {
+        prototype: HTMLSyDrawerElement;
+        new (): HTMLSyDrawerElement;
     };
     interface HTMLSyEmptyElement extends Components.SyEmpty, HTMLStencilElement {
     }
@@ -274,7 +400,10 @@ declare global {
         "sy-breadcrumb": HTMLSyBreadcrumbElement;
         "sy-breadcrumb-item": HTMLSyBreadcrumbItemElement;
         "sy-button": HTMLSyButtonElement;
+        "sy-button-group": HTMLSyButtonGroupElement;
+        "sy-checkbox": HTMLSyCheckboxElement;
         "sy-divider": HTMLSyDividerElement;
+        "sy-drawer": HTMLSyDrawerElement;
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
         "sy-spinner": HTMLSySpinnerElement;
@@ -364,11 +493,82 @@ declare namespace LocalJSX {
          */
         "variant"?: 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    interface SyButtonGroup {
+        /**
+          * @default false
+         */
+        "vertical"?: boolean;
+    }
+    interface SyCheckbox {
+        /**
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "indeterminate"?: boolean;
+        /**
+          * @default ''
+         */
+        "name"?: string;
+        "onBlured"?: (event: SyCheckboxCustomEvent<boolean>) => void;
+        "onChanged"?: (event: SyCheckboxCustomEvent<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>) => void;
+        "onFocused"?: (event: SyCheckboxCustomEvent<boolean>) => void;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default ''
+         */
+        "titleText"?: string;
+    }
     interface SyDivider {
         /**
           * @default 'horizontal'
          */
         "type"?: 'horizontal' | 'vertical';
+    }
+    interface SyDrawer {
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        /**
+          * @default 100
+         */
+        "customSize"?: number;
+        /**
+          * @default false
+         */
+        "maskless"?: boolean;
+        "onClosed"?: (event: SyDrawerCustomEvent<void>) => void;
+        "onOpened"?: (event: SyDrawerCustomEvent<void>) => void;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 'right'
+         */
+        "position"?: 'top' | 'left' | 'right' | 'bottom';
+        /**
+          * @default false
+         */
+        "preventClose"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large' | 'custom';
     }
     interface SyEmpty {
         /**
@@ -448,7 +648,10 @@ declare namespace LocalJSX {
         "sy-breadcrumb": SyBreadcrumb;
         "sy-breadcrumb-item": SyBreadcrumbItem;
         "sy-button": SyButton;
+        "sy-button-group": SyButtonGroup;
+        "sy-checkbox": SyCheckbox;
         "sy-divider": SyDivider;
+        "sy-drawer": SyDrawer;
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
         "sy-spinner": SySpinner;
@@ -463,7 +666,10 @@ declare module "@stencil/core" {
             "sy-breadcrumb": LocalJSX.SyBreadcrumb & JSXBase.HTMLAttributes<HTMLSyBreadcrumbElement>;
             "sy-breadcrumb-item": LocalJSX.SyBreadcrumbItem & JSXBase.HTMLAttributes<HTMLSyBreadcrumbItemElement>;
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
+            "sy-button-group": LocalJSX.SyButtonGroup & JSXBase.HTMLAttributes<HTMLSyButtonGroupElement>;
+            "sy-checkbox": LocalJSX.SyCheckbox & JSXBase.HTMLAttributes<HTMLSyCheckboxElement>;
             "sy-divider": LocalJSX.SyDivider & JSXBase.HTMLAttributes<HTMLSyDividerElement>;
+            "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;

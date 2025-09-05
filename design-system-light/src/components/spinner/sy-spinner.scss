@@ -2,11 +2,11 @@
 
 // --- 호스트 요소 스타일 ---
 
-sy-spinner {
+:host {
   display: contents;
 }
 
-sy-spinner[hidden] {
+:host[hidden] {
   display: none;
 }
 

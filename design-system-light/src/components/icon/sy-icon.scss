@@ -15,42 +15,42 @@
     height: var(--icon-medium);
 }
 
-sy-icon[size="xxsmall"] {
+:host[size="xxsmall"] {
     width: var(--icon-xxsmall);
     height: var(--icon-xxsmall);
 }
 
-sy-icon[size="xsmall"] {
+:host[size="xsmall"] {
     width: var(--icon-xsmall);
     height: var(--icon-xsmall);
 }
 
-sy-icon[size="small"] {
+:host[size="small"] {
     width: var(--icon-small);
     height: var(--icon-small);
 }
 
-sy-icon[size="medium"] {
+:host[size="medium"] {
     width: var(--icon-medium);
     height: var(--icon-medium);
 }
 
-sy-icon[size="large"] {
+:host[size="large"] {
     width: var(--icon-large);
     height: var(--icon-large);
 }
 
-sy-icon[size="xlarge"] {
+:host[size="xlarge"] {
     width: var(--icon-xlarge);
     height: var(--icon-xlarge);
 }
 
-sy-icon[size="xxlarge"] {
+:host[size="xxlarge"] {
     width: var(--icon-xxlarge);
     height: var(--icon-xxlarge);
 }
 
-sy-icon[size="xxxlarge"] {
+:host[size="xxxlarge"] {
     width: var(--icon-xxxlarge);
     height: var(--icon-xxxlarge);
 }

@@ -1,0 +1,287 @@
+@use "../../assets/style/global/font" as font;
+
+
+// --- 원본 Lit 컴포넌트의 <style> 블록 내용 시작 ---
+sy-checkbox {
+  position: relative; /* 상대 위치 추가 */
+  display: flex;
+}
+
+sy-checkbox .checkbox-wrapper {
+  position: relative; /* 상대 위치 추가 */
+}
+
+sy-checkbox .error-container {
+  width: 100%;
+  /* 일반 텍스트 에러를 위한 스타일 */
+  color: var(--required);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+sy-checkbox .popup-error-container {
+  /* 에러 팝업이 input 위를 덮지 않도록 position, z-index, height, pointer-events 모두 제거 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: 0;
+  z-index: 1;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+sy-checkbox slot[name="error"] { // .error-message 클래스를 가진 slot
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+// ::slotted(*)에 해당하는 스타일은 Light DOM에서는 자식 선택자로 직접 적용됩니다.
+sy-checkbox slot[name="error"] > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+sy-checkbox .visible-error {
+  display: block;
+}
+// --- 원본 Lit 컴포넌트의 <style> 블록 내용 끝 ---
+
+
+// --- 원본 globalCSS 파일 내용 시작 ---
+sy-checkbox {
+    display: inline-flex;
+    align-self: center;
+    flex-direction: column;
+}
+
+sy-checkbox .checkbox-wrapper {
+    display: inline-flex;
+    min-height: var(--component-small);
+}
+
+sy-checkbox .checkbox {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: var(--cursor-button);
+    gap: var(--spacing-3xsmall);
+
+    sy-icon.checked,
+    sy-icon.indeterminate {
+        display: none;
+    }
+
+    &.readonly {
+        cursor: auto;
+
+        .checkbox-slot { // slot -> .checkbox-slot
+            color: var(--checkbox-unchecked-text-readonly);
+        }
+
+        &:hover {
+            .checkbox-visual-label { // input+label -> .checkbox-visual-label
+                border: var(--border-small) var(--checkbox-unchecked-border-readonly);
+                cursor: auto;
+            }
+        }
+
+        &:focus {
+            // label 자체에 focus가 가므로 내부 요소 스타일링으로 변경
+            .checkbox-visual-label {
+                border: var(--border-small) var(--checkbox-unchecked-border-disabled) !important;
+                outline: none !important;
+            }
+        }
+    }
+
+    &:hover {
+        .checkbox-visual-label { // input+label -> .checkbox-visual-label
+            border: var(--border-small) var(--checkbox-unchecked-border-hover);
+        }
+    }
+
+    &:focus {
+        // label 자체에 focus가 가므로 내부 요소 스타일링으로 변경
+        .checkbox-visual-label {
+            border: var(--border-small) var(--checkbox-unchecked-border-focus) !important;
+            outline: var(--border-small) var(--checkbox-unchecked-border-focus) !important;
+        }
+    }
+
+    input[type="checkbox"] {
+        display: none;
+    }
+
+    // 원본의 input+label에 해당
+    .checkbox-visual-label {
+        display: inline-flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 16px;
+        height: 16px;
+        border: var(--border-small) var(--checkbox-unchecked-border-enabled);
+        position: relative;
+        border-radius: var(--border-radius-medium);
+        cursor: var(--cursor-button);
+
+        &:hover {
+            border: var(--border-small) var(--checkbox-unchecked-border-hover);
+        }
+    }
+
+    &.checkbox--disabled {
+        color: var(--checkbox-unchecked-text-disabled);
+
+        &:hover {
+            cursor: auto;
+            .checkbox-visual-label {
+                border: var(--border-small) var(--checkbox-unchecked-border-disabled);
+                cursor: auto;
+            }
+        }
+
+        .checkbox-visual-label {
+            &:hover {
+                border: var(--border-small) var(--checkbox-unchecked-border-disabled);
+            }
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    &.readonly {
+        .checkbox-visual-label {
+            background-color: var(--checkbox-unchecked-background-disabled);
+
+            &:hover {
+                background-color: var(--checkbox-checked-background-readonly);
+                border: var(--border-small) var(--checkbox-checked-border-readonly);
+                color: var(--checkbox-checked-icon-readonly);
+                outline: none;
+            }
+        }
+    }
+
+    .checkbox-slot {
+        display: inline-flex;
+        line-height: normal;
+        align-items: center;
+        flex: 1;
+    }
+}
+
+/* Checked */
+sy-checkbox .checkbox.checkbox--checked {
+    sy-icon.checked {
+        display: inline-flex;
+    }
+
+    .checkbox-visual-label {
+        border: var(--border-small) var(--checkbox-checked-background-enabled);
+        background-color: var(--checkbox-checked-background-enabled);
+        color: var(--checkbox-checked-icon-enabled);
+        position: relative;
+        border-radius: var(--border-radius-medium);
+
+        &:hover {
+            border: var(--border-small) var(--checkbox-checked-border-hover);
+        }
+    }
+
+    &.checkbox--disabled {
+        color: var(--checkbox-unchecked-text-disabled);
+        .checkbox-visual-label {
+            background-color: var(--checkbox-checked-background-disabled);
+            border: var(--border-small) var(--checkbox-checked-border-disabled);
+            color: var(--checkbox-checked-icon-disabled);
+            outline: none;
+
+            &:hover {
+                border: var(--border-small) var(--checkbox-checked-border-disabled);
+            }
+        }
+    }
+
+    &.readonly {
+        cursor: auto;
+        .checkbox-visual-label {
+            background-color: var(--checkbox-checked-background-readonly);
+            border: var(--border-small) var(--checkbox-checked-border-readonly);
+            color: var(--checkbox-checked-icon-readonly);
+            outline: none;
+            cursor: auto;
+
+            &:hover {
+                background-color: var(--checkbox-unchecked-background-readonly);
+                color: var(--checkbox-checked-icon-readonly);
+            }
+        }
+    }
+}
+
+/* Indeterminate */
+sy-checkbox .checkbox.checkbox--indeterminate {
+    sy-icon.indeterminate {
+        display: inline-flex;
+        color: var(--checkbox-indeterminate-icon-enabled)
+    }
+    sy-icon.checked {
+        display: none;
+    }
+    .checkbox-visual-label {
+        background-color: var(--background-default);
+        display: flex;
+    }
+
+    &.checkbox--disabled {
+        color: var(--checkbox-unchecked-text-disabled);
+        .checkbox-visual-label {
+            background-color: var(--checkbox-checked-background-disabled);
+            border: var(--border-small) var(--checkbox-checked-border-disabled);
+            color: var(--checkbox-checked-icon-disabled);
+
+            &:hover {
+                border: var(--border-small) var(--checkbox-checked-border-disabled);
+                cursor: auto;
+            }
+        }
+    }
+
+    &.readonly {
+        .checkbox-visual-label {
+            background-color: var(--checkbox-checked-background-disabled);
+            border: var(--border-small) var(--checkbox-checked-border-disabled);
+            color: var(--checkbox-checked-icon-disabled);
+
+            &:hover {
+                background-color: var(--checkbox-unchecked-background-disabled);
+                color: var(--checkbox-checked-icon-disabled);
+            }
+        }
+    }
+}
+
+/* Checkbox Size */
+sy-checkbox .checkbox--medium {
+    @include font.text-style-large-regular;
+    align-items: center;
+}
+
+/* When the checkbox is in the tree */
+sy-checkbox .checkbox-label {
+    margin: var(--spacing-4xsmall);
+}
+
+sy-checkbox .checkbox-slot {
+    padding-left: 0px !important;
+}
+
+// --- 원본 globalCSS 파일 내용 끝 ---

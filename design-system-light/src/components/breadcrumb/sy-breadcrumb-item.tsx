@@ -6,7 +6,7 @@ import { Component, h, Prop, State, Event, EventEmitter, Method, forceUpdate, El
   tag: 'sy-breadcrumb-item',
   styleUrl: 'sy-breadcrumb.scss',
   shadow: false,
-  scoped: false,
+  scoped: true,
 })
 export class BreadcrumbItemElement {
 

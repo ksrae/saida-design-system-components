@@ -1,82 +1,100 @@
-// src/components/sy-button/sy-button.tsx
-
-import { Component, h, Prop, State, Method, Element } from '@stencil/core';
+import { Component, h, Prop, State, Method, Element, Watch } from '@stencil/core';
 import { getAssignedNodesContent } from '../../utils/utils';
+
+// [추가] button-group과 통신하기 위한 인터페이스
+export interface ButtonGroupState {
+  buttonGroup: boolean;
+  vertical: boolean;
+  first: boolean;
+  last: boolean;
+}
+
+export interface HTMLSyButtonElement extends HTMLElement {
+  setButtonGroupState: (state: ButtonGroupState) => Promise<void>;
+  setClick: () => Promise<void>;
+  setFocus: () => Promise<void>;
+  setBlur: () => Promise<void>;
+}
 
 @Component({
   tag: 'sy-button',
   styleUrl: 'sy-button.scss',
   shadow: false,
   scoped: true,
-  formAssociated: true, // Form Association 활성화
+  formAssociated: true,
 })
 export class SyButton {
   @Element() host: HTMLElement;
   private internals: ElementInternals;
 
-  // --- Props (Lit의 @property에 해당) ---
-  // reflect: true를 추가하여 prop 값이 HTML attribute에도 반영되도록 합니다.
-  // CSS에서 [disabled], [size="small"] 같은 속성 셀렉터를 사용하기 위해 필요합니다.
+  // --- Props (원본과 동일) ---
   @Prop({ reflect: true }) disabled = false;
   @Prop({ reflect: true }) justified = false;
   @Prop({ reflect: true }) loading = false;
   @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';
   @Prop({ reflect: true }) variant: 'default' | 'primary' | 'secondary' | 'borderless' = 'default';
-
   @Prop() type: 'button' | 'submit' | 'reset' = 'button';
   @Prop() formnovalidate = false;
 
-  // --- State (Lit의 @state에 해당) ---
+  // --- State (원본과 동일) ---
   @State() buttonGroup = false;
   @State() vertical = false;
   @State() first = false;
   @State() last = false;
   @State() private hasContent = false;
   @State() private isInsideHeader = false;
+  // [추가] Prop 직접 수정을 막기 위한 내부 상태
+  @State() private internalDisabled: boolean;
 
   constructor() {
-    // Stencil에서는 this.host를 통해 host 요소에 접근하여 attachInternals를 호출합니다.
     this.internals = (this.host as any).attachInternals();
   }
 
-  // --- Public Methods (Lit의 public method에 해당) ---
-  // @Method() 데코레이터는 외부에서 이 메서드를 호출할 수 있음을 Stencil에 알립니다.
-  @Method()
-  async setClick() {
-    // Lit의 @query와 달리, 직접 요소를 찾아 호출합니다.
-    this.host.querySelector('button')?.click();
+  // [추가] Prop 변경을 감지하여 내부 State와 동기화
+  @Watch('disabled')
+  handleDisabledChange(newValue: boolean) {
+    this.internalDisabled = newValue;
   }
 
+  // [추가] Public Method for button-group
   @Method()
-  async setFocus() {
-    this.host.querySelector('button')?.focus();
+  async setButtonGroupState(state: ButtonGroupState) {
+    this.buttonGroup = state.buttonGroup;
+    this.vertical = state.vertical;
+    this.first = state.first;
+    this.last = state.last;
   }
 
+  // --- Public Methods (원본과 동일) ---
   @Method()
-  async setBlur() {
-    this.host.querySelector('button')?.blur();
-  }
+  async setClick() { this.host.querySelector('button')?.click(); }
+  @Method()
+  async setFocus() { this.host.querySelector('button')?.focus(); }
+  @Method()
+  async setBlur() { this.host.querySelector('button')?.blur(); }
 
   // --- Lifecycle Hooks ---
-  // Lit의 firstUpdated와 유사한 역할을 합니다.
+  componentWillLoad() {
+    // [추가] 컴포넌트 로드 시 Prop으로 State 초기화
+    this.internalDisabled = this.disabled;
+  }
   componentDidLoad() {
     this.checkParentElement();
   }
+  componentWillRender() {
+    this.hasContent = !!getAssignedNodesContent(this.host);
+  }
 
-  // --- Form Callbacks (웹 표준 기능으로 Lit과 동일) ---
+  // --- Form Callbacks ---
   formAssociatedCallback() {}
-
   formDisabledCallback(disabled: boolean) {
-    this.disabled = disabled;
+    // [수정] Prop 대신 내부 State를 수정 (무한 루프 방지)
+    this.internalDisabled = disabled;
   }
-
-  formResetCallback() {
-    this.host.dispatchEvent(new CustomEvent('form-reset'));
-  }
-
+  formResetCallback() { this.host.dispatchEvent(new CustomEvent('form-reset')); }
   formStateRestoreCallback(_state: any, _mode: any) {}
 
-  // --- Private Methods (Lit의 private method와 동일) ---
+  // --- Private Methods (원본과 동일) ---
   private checkParentElement() {
     this.isInsideHeader = false;
     let parent = this.host.parentElement as any;
@@ -87,12 +105,9 @@ export class SyButton {
     }
   }
 
-  componentWillRender() {
-    this.hasContent = !!getAssignedNodesContent(this.host);
-  }
-
   private handleButtonClick = (event: MouseEvent) => {
-    if (this.disabled || this.loading) {
+    // [수정] Prop 대신 내부 State와 loading을 함께 체크
+    if (this.internalDisabled || this.loading) {
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -104,15 +119,9 @@ export class SyButton {
         case 'submit':
           event.preventDefault();
           const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-          if (!form.dispatchEvent(submitEvent)) {
-            // submit 이벤트가 취소됨
-            return;
-          }
-          if (this.formnovalidate || form.checkValidity()) {
-            form.submit();
-          } else {
-            form.reportValidity();
-          }
+          if (!form.dispatchEvent(submitEvent)) { return; }
+          if (this.formnovalidate || form.checkValidity()) { form.submit(); }
+          else { form.reportValidity(); }
           break;
         case 'reset':
           event.preventDefault();
@@ -124,9 +133,7 @@ export class SyButton {
   };
 
   render() {
-    // Lit의 classMap과 동일한 역할을 하는 로직
     const classNames = {
-      // 클래스 이름은 원본과 동일하게 유지
       'button--default': this.variant === 'default',
       'button--primary': this.variant === 'primary',
       'button--secondary': this.variant === 'secondary',
@@ -145,16 +152,10 @@ export class SyButton {
     return (
       <button
         class={Object.keys(classNames).filter(key => classNames[key]).join(' ')}
-        // Lit의 `ifDefined`와 같은 효과. 값이 falsy(빈 문자열 등)이면 속성이 렌더링되지 않음.
-        // title={this.title || undefined}
-        // name={this.name || undefined}
         type={this.type}
-        // boolean 속성은 값으로 직접 전달
-        disabled={this.disabled || this.loading}
+        // [수정] disabled 속성에 State와 loading을 모두 반영
+        disabled={this.internalDisabled || this.loading}
         formnovalidate={this.formnovalidate}
-        // 사용자 정의 속성. Stencil은 자동으로 소문자로 변환해 줍니다.
-        // CSS에서 [loading], [justified] 셀렉터를 사용하려면 값이 없어도 속성 자체가 존재해야 합니다.
-        // `attr:` 접두사를 사용하거나 아래와 같이 처리할 수 있습니다.
         {...(this.loading && { loading: 'true' })}
         {...(this.justified && { justified: 'true' })}
         onClick={this.handleButtonClick}
@@ -168,7 +169,7 @@ export class SyButton {
             </div>
           </div>
         )}
-  <slot></slot>
+        <slot></slot>
       </button>
     );
   }

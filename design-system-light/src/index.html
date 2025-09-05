@@ -10,6 +10,45 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+
+    <h2>Checkbox</h2>
+    <sy-checkbox>Default</sy-checkbox>
+    <sy-checkbox checked>Checked</sy-checkbox>
+    <sy-checkbox indeterminate>Indeterminate</sy-checkbox>
+    <sy-checkbox disabled>Disabled</sy-checkbox>
+    <sy-checkbox checked disabled>Checked & Disabled</sy-checkbox>
+    <sy-checkbox indeterminate disabled>Indeterminate & Disabled</sy-checkbox>
+    <sy-checkbox readonly>Readonly</sy-checkbox>
+    <sy-checkbox checked readonly>Checked & Readonly</sy-checkbox>
+    <!-- 테스트에 사용될 Drawer 컴포넌트들 -->
+    <sy-drawer id="drawer" closable open>
+      <div slot="header">Default Drawer (Right)</div>
+      <div slot="body" class="drawer-content">This is the default drawer.</div>
+      <div slot="footer">Footer</div>
+    </sy-drawer>
+
+    <h2>Button Group</h2>
+    <section>
+      <h2>Test 1: Default (Horizontal) Button Group</h2>
+      <p><code>vertical</code> 속성이 없는 기본 형태입니다.</p>
+      <sy-button-group>
+        <sy-button variant="primary">Button 1</sy-button>
+        <sy-button variant="primary">Button 2</sy-button>
+        <sy-button variant="primary">Button 3</sy-button>
+      </sy-button-group>
+    </section>
+
+    <section>
+      <h2>Test 2: Vertical Button Group</h2>
+      <p><code>vertical="true"</code> 또는 <code>vertical</code> 속성을 추가한 형태입니다.</p>
+      <sy-button-group vertical>
+        <sy-button variant="secondary">Button A</sy-button>
+        <sy-button variant="secondary">Button B</sy-button>
+        <sy-button variant="secondary">Button C</sy-button>
+      </sy-button-group>
+    </section>
+
+
     <h2>Button</h2>
     <h3>Variant</h3>
     <div style="padding: 5px;">
@@ -194,7 +233,7 @@
       </div>
 
       <div>
-        <h3>Selectable (auto-variant to purple)</h3>
+        <h3>Selectable</h3>
         <div style="display: flex; gap: 5px; align-items: center;" id="selectable-container">
           <sy-tag selectable>Selectable 1</sy-tag>
           <sy-tag selectable>Selectable 2</sy-tag>
@@ -278,8 +317,7 @@
     <!-- ====================================================== -->
     <!-- 예제 1: 기본 사용법                                        -->
     <!-- ====================================================== -->
-    <h2>기본 사용법 (기본 구분자: slash)</h2>
-    <span>active 가 class는 되지만 스타일이 적용되지 않음</span>
+    <h2>Breadcrumb (기본 구분자: slash)</h2>
     <sy-breadcrumb>
       <sy-breadcrumb-item>홈</sy-breadcrumb-item>
       <sy-breadcrumb-item>라이브러리</sy-breadcrumb-item>

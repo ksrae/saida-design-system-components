@@ -10,14 +10,14 @@
 }
 
 // sy-breadcrumb-item 컴포넌트 자체의 스타일
-sy-breadcrumb-item {
+:host(sy-breadcrumb-item) {
   display: inline-flex;
   align-items: center;
 }
 
 // sy-breadcrumb-item 내부의 요소들에 대한 스타일
 // 태그 이름을 사용하면 :host(sy-breadcrumb-item)와 동일한 효과를 냅니다.
-sy-breadcrumb-item {
+:host(sy-breadcrumb-item) {
   .breadcrumb--item {
     cursor: pointer;
     display: inline-flex;
@@ -60,13 +60,13 @@ sy-breadcrumb-item {
 }
 
 // hover 효과는 sy-breadcrumb-item 태그를 기준으로 적용
-sy-breadcrumb-item .breadcrumb--item:not(.breadcrumb--item-disabled):hover {
+:host(sy-breadcrumb-item) .breadcrumb--item:not(.breadcrumb--item-disabled):hover {
   color: var(--breadcrumb-previous-default-text-hover);
 }
 
 // 마지막 아이템 관련 스타일
 // :last-child 가상 클래스를 태그 선택자와 함께 사용
-sy-breadcrumb-item:last-child {
+:host(sy-breadcrumb-item):last-child {
   .breadcrumb--item slot {
     cursor: pointer;
   }

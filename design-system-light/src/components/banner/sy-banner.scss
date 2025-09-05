@@ -1,7 +1,7 @@
 // src/components/banner/sy-banner.scss
 @use "../../assets/style/global/font" as font;
 
-sy-banner-messsage {
+:host {
   display: flex;
   box-sizing: border-box;
   width: 100%;
