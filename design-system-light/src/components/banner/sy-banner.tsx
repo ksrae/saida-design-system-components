@@ -2,6 +2,15 @@
 
 import { Component, h, Prop, State, Watch, Element, JSX } from '@stencil/core';
 
+export interface HTMLSyBannerElement extends HTMLElement {
+  closable: boolean;
+  showIcon: boolean;
+  neutralIcon: string;
+  message: string;
+  header: string;
+  variant: 'info' | 'success' | 'warning' | 'error' | 'neutral';
+}
+
 @Component({
   tag: 'sy-banner-messsage',
   styleUrl: 'sy-banner.scss',
@@ -10,11 +19,11 @@ import { Component, h, Prop, State, Watch, Element, JSX } from '@stencil/core';
 })
 export class BannerElement {
 
-  @Element() hostElement: HTMLElement;
+  @Element() host: HTMLSyBannerElement;
 
   @Prop({ reflect: true }) closable: boolean = false;
+  @Prop({ attribute: 'showIcon' }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
   @Prop() neutralIcon: string = '';
-  @Prop({ attribute: 'showicon' }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
   @Prop() message: string = '';
   @Prop() header: string = '';
   @Prop() variant: 'info' | 'success' | 'warning' | 'error' | 'neutral' = 'info';
@@ -26,7 +35,7 @@ export class BannerElement {
   @Watch('showIcon')
   handlePropsChange() {
     this.updateIconVariant();
-    if (this.hostElement.isConnected) {
+    if (this.host.isConnected) {
       this.createBanner();
     }
   }
@@ -66,17 +75,17 @@ export class BannerElement {
 
   private createBanner(): void {
     document.querySelectorAll('sy-banner-messsage').forEach(banner => {
-      if (banner !== this.hostElement) {
+      if (banner !== this.host) {
         banner.remove();
       }
     });
-    if (document.body.firstChild !== this.hostElement) {
-      document.body.prepend(this.hostElement);
+    if (document.body.firstChild !== this.host) {
+      document.body.prepend(this.host);
     }
   }
 
   private removeBanner = (): void => {
-    document.body.removeChild(this.hostElement);
+    document.body.removeChild(this.host);
   };
 
   render(): JSX.Element {
@@ -90,7 +99,7 @@ export class BannerElement {
               <sy-icon
                 size="xxlarge"
                 class="banner-icon"
-                innerHTML={this.iconVariant} // === 최종 해결책 ===
+                innerHTML={this.iconVariant}
               ></sy-icon>
             )}
             <div class="banner-message-group">

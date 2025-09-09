@@ -2,11 +2,15 @@
 
 import { Component, h, Prop } from '@stencil/core';
 
+export interface HTMLSyEmptyElement extends HTMLElement {
+  description: string;
+}
+
 @Component({
   tag: 'sy-empty',
   styleUrl: 'sy-empty.scss',
-  shadow: false,  // 버튼 샘플과 동일하게 shadow DOM을 사용하지 않음
-  scoped: true,   // 버튼 샘플과 동일하게 scoped CSS를 사용
+  shadow: false,
+  scoped: true,
 })
 export class SyEmpty {
 
@@ -30,10 +34,6 @@ export class SyEmpty {
             </svg>
           </sy-icon>
 
-          {/*
-            Lit의 조건부 렌더링: ${this.description ? html`...` : nothing}
-            JSX에서는 && 연산자를 사용하여 동일하게 구현할 수 있습니다.
-          */}
           {this.description && (
             <span class="description">{this.description}</span>
           )}

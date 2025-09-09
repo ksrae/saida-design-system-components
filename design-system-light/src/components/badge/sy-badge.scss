@@ -1,0 +1,226 @@
+@use "../../assets/style/global/font" as font;
+
+:host {
+  /* Token Size */
+  --badge-size-medium: 20px;
+  --badge-size-small: 16px;
+  --badge-dot-size-medium: 8px;
+  --badge-dot-size-small: 6px;
+
+  display: flex;
+}
+
+:host(sy-badge) .container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host([standalone]) {
+  display: inline-flex; /* standalone일 때 인라인 플렉스로 설정 */
+}
+
+:host([standalone]) .badge-content {
+  display: none;
+}
+
+.badge {
+  display: flex;
+  font-weight: bold;
+  visibility: hidden;
+  position: absolute; /* 배지 자체는 절대 위치 설정 */
+  align-items: center;
+  justify-content: center;
+  @include font.text-style-small-regular;
+  border-radius: var(--border-radius-full);
+  background-color: var(--badge-error-background-enabled);
+  color: var(--badge-error-text-enabled);
+
+  sy-icon {
+    color: var(--badge-error-icon-enabled);
+  }
+
+  &.badge-over {
+    padding: 0 var(--spacing-2xsmall);
+  }
+
+  &.small {
+    min-width: var(--badge-size-small);
+    height: var(--badge-size-small);
+
+    &.dot {
+      min-width: auto;
+      width: var(--badge-dot-size-small);
+      height: var(--badge-dot-size-small);
+      border-radius: var(--border-radius-full);
+      padding: 0;
+    }
+  }
+
+  &.medium {
+    min-width: var(--badge-size-medium);
+    height: var(--badge-size-medium);
+
+    &.dot {
+      min-width: auto;
+      width: var(--badge-dot-size-medium);
+      height: var(--badge-dot-size-medium);
+      border-radius: var(--border-radius-full);
+      padding: 0;
+    }
+  }
+
+  &.topLeft {
+    top: -10px;
+    left: -10px;
+
+    &.small {
+      top: -8px;
+      left: -8px;
+
+      &.dot {
+        min-width: auto;
+        top: -3px;
+        left: -3px;
+      }
+    }
+
+    &.dot {
+      min-width: auto;
+      top: -4px;
+      left: -4px;
+    }
+  }
+
+  &.topRight {
+    top: -10px;
+    right: -10px;
+
+    &.small {
+      top: -8px;
+      right: -8px;
+
+      &.dot {
+        top: -3px;
+        right: -3px;
+      }
+    }
+
+    &.dot {
+      top: -4px;
+      right: -4px;
+    }
+  }
+
+  &.bottomLeft {
+    bottom: -10px;
+    left: -10px;
+
+    &.small {
+      bottom: -8px;
+      left: -8px;
+
+      &.dot {
+        bottom: -3px;
+        left: -3px;
+      }
+    }
+
+    &.dot {
+      bottom: -4px;
+      left: -4px;
+    }
+  }
+
+  &.bottomRight {
+    bottom: -10px;
+    right: -10px;
+
+    &.small {
+      bottom: -8px;
+      right: -8px;
+
+      &.dot {
+        bottom: -3px;
+        right: -3px;
+      }
+    }
+
+    &.dot {
+      bottom: -4px;
+      right: -4px;
+    }
+  }
+}
+
+:host([standalone]) .badge {
+  position: relative;
+}
+
+.badge.visible {
+  visibility: visible;
+}
+
+:host(sy-badge[size="medium"]) {
+  width: var(--component-medium);
+  height: var(--component-medium);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+:host(sy-badge[size="small"]) {
+  width: var(--component-medium);
+  height: var(--component-medium);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Colors */
+.badge-red {
+  background-color: var(--badge-error-background-enabled);
+  color: var(--badge-error-text-enabled);
+
+  sy-icon {
+    color: var(--badge-error-icon-enabled);
+  }
+}
+
+.badge-yellow {
+  background-color: var(--badge-warning-background-enabled);
+  color: var(--badge-warning-text-enabled);
+
+  sy-icon {
+    color: var(--badge-warning-icon-enabled);
+  }
+}
+
+.badge-green {
+  background-color: var(--badge-success-background-enabled);
+  color: var(--badge-success-text-enabled);
+
+  sy-icon {
+    color: var(--badge-success-icon-enabled);
+  }
+}
+
+.badge-blue {
+  background-color: var(--badge-info-background-enabled);
+  color: var(--badge-info-text-enabled);
+
+  sy-icon {
+    color: var(--badge-info-icon-enabled);
+  }
+}
+
+.badge-gray {
+  background-color: var(--badge-neutral-background-enabled);
+  color: var(--badge-neutral-text-enabled);
+
+  sy-icon {
+    color: var(--badge-neutral-icon-enabled);
+  }
+}
+

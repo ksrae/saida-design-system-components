@@ -1,73 +1,55 @@
-// src/components/breadcrumb/sy-breadcrumb.scss
-
-// === 수정된 핵심: 모든 :host를 컴포넌트 태그 이름으로 변경 ===
-
-// sy-breadcrumb 컴포넌트 자체의 스타일
+:root,
 :host {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-family);
-}
-
-// sy-breadcrumb-item 컴포넌트 자체의 스타일
-:host(sy-breadcrumb-item) {
-  display: inline-flex;
-  align-items: center;
-}
-
-// sy-breadcrumb-item 내부의 요소들에 대한 스타일
-// 태그 이름을 사용하면 :host(sy-breadcrumb-item)와 동일한 효과를 냅니다.
-:host(sy-breadcrumb-item) {
-  .breadcrumb--item {
-    cursor: pointer;
-    display: inline-flex;
+     display: inline-flex;
     align-items: center;
-    height: 22px;
-    color: var(--breadcrumb-previous-default-text-enabled);
-    line-height: normal;
-
-    &:focus-visible {
-      border: var(--border-small) var(--button-primary-border-focus);
-      outline: var(--border-small) var(--button-primary-border-focus);
-    }
-
-    &.breadcrumb--item-current {
-      color: var(--breadcrumb-current-default-text-enabled);
-      cursor: default;
-    }
-
-    &.breadcrumb--item-focused {
-      // 포커스 스타일 필요 시 추가
-    }
-
-    &.breadcrumb--item-disabled {
-      cursor: auto !important;
-
-      &:hover {
+    .breadcrumb--item {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        height: 22px;
         color: var(--breadcrumb-previous-default-text-enabled);
-      }
+        line-height: normal;
+
+        &:focus-visible {
+            border: var(--border-small) var(--button-primary-border-focus);
+            outline: var(--border-small) var(--button-primary-border-focus);
+        }
+
+        &.breadcrumb--item-current {
+            color: var(--breadcrumb-current-default-text-enabled);
+        }
+
+        &.breadcrumb--item-focused {
+
+        }
+
+        &.breadcrumb--item-disabled {
+            cursor: auto !important;
+
+            &:hover {
+                color: var(--breadcrumb-previous-default-text-enabled);
+            }
+        }
     }
-  }
 
-  .separator {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--breadcrumb-previous-withicon-icon-enabled);
-    padding: 5px;
-    user-select: none;
-  }
+    .separator {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--breadcrumb-previous-withicon-icon-enabled);
+        padding:5px;
+    }
 }
 
-// hover 효과는 sy-breadcrumb-item 태그를 기준으로 적용
-:host(sy-breadcrumb-item) .breadcrumb--item:not(.breadcrumb--item-disabled):hover {
-  color: var(--breadcrumb-previous-default-text-hover);
+
+:host(sy-breadcrumb-item) {
+    .breadcrumb--item:hover {
+        color: var(--breadcrumb-previous-default-text-hover);
+    }
 }
 
-// 마지막 아이템 관련 스타일
-// :last-child 가상 클래스를 태그 선택자와 함께 사용
-:host(sy-breadcrumb-item):last-child {
-  .breadcrumb--item slot {
-    cursor: pointer;
-  }
+:host(sy-breadcrumb-item:last-child) {
+    .breadcrumb--item slot {
+        cursor: pointer;
+    }
 }

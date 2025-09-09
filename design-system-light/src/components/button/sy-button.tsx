@@ -1,13 +1,6 @@
 import { Component, h, Prop, State, Method, Element, Watch } from '@stencil/core';
-import { getAssignedNodesContent } from '../../utils/utils';
-
-// [추가] button-group과 통신하기 위한 인터페이스
-export interface ButtonGroupState {
-  buttonGroup: boolean;
-  vertical: boolean;
-  first: boolean;
-  last: boolean;
-}
+import { fnFindClosestParentByTagName, fnGetAssignedNodesContent } from '../../utils/utils';
+import { ButtonGroupState } from '../button-group';
 
 export interface HTMLSyButtonElement extends HTMLElement {
   setButtonGroupState: (state: ButtonGroupState) => Promise<void>;
@@ -24,10 +17,9 @@ export interface HTMLSyButtonElement extends HTMLElement {
   formAssociated: true,
 })
 export class SyButton {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyButtonElement;
   private internals: ElementInternals;
 
-  // --- Props (원본과 동일) ---
   @Prop({ reflect: true }) disabled = false;
   @Prop({ reflect: true }) justified = false;
   @Prop({ reflect: true }) loading = false;
@@ -36,13 +28,13 @@ export class SyButton {
   @Prop() type: 'button' | 'submit' | 'reset' = 'button';
   @Prop() formnovalidate = false;
 
-  // --- State (원본과 동일) ---
   @State() buttonGroup = false;
   @State() vertical = false;
   @State() first = false;
   @State() last = false;
   @State() private hasContent = false;
   @State() private isInsideHeader = false;
+
   // [추가] Prop 직접 수정을 막기 위한 내부 상태
   @State() private internalDisabled: boolean;
 
@@ -50,13 +42,11 @@ export class SyButton {
     this.internals = (this.host as any).attachInternals();
   }
 
-  // [추가] Prop 변경을 감지하여 내부 State와 동기화
   @Watch('disabled')
   handleDisabledChange(newValue: boolean) {
     this.internalDisabled = newValue;
   }
 
-  // [추가] Public Method for button-group
   @Method()
   async setButtonGroupState(state: ButtonGroupState) {
     this.buttonGroup = state.buttonGroup;
@@ -65,7 +55,6 @@ export class SyButton {
     this.last = state.last;
   }
 
-  // --- Public Methods (원본과 동일) ---
   @Method()
   async setClick() { this.host.querySelector('button')?.click(); }
   @Method()
@@ -75,35 +64,31 @@ export class SyButton {
 
   // --- Lifecycle Hooks ---
   componentWillLoad() {
-    // [추가] 컴포넌트 로드 시 Prop으로 State 초기화
     this.internalDisabled = this.disabled;
   }
   componentDidLoad() {
-    this.checkParentElement();
+    this.isInsideHeader = fnFindClosestParentByTagName(this.host, 'sy-global-header');
   }
   componentWillRender() {
-    this.hasContent = !!getAssignedNodesContent(this.host);
+    this.hasContent = !!fnGetAssignedNodesContent(this.host);
   }
 
   // --- Form Callbacks ---
   formAssociatedCallback() {}
-  formDisabledCallback(disabled: boolean) {
-    // [수정] Prop 대신 내부 State를 수정 (무한 루프 방지)
-    this.internalDisabled = disabled;
-  }
+  formDisabledCallback(disabled: boolean) { this.internalDisabled = disabled; }
   formResetCallback() { this.host.dispatchEvent(new CustomEvent('form-reset')); }
   formStateRestoreCallback(_state: any, _mode: any) {}
 
-  // --- Private Methods (원본과 동일) ---
-  private checkParentElement() {
-    this.isInsideHeader = false;
-    let parent = this.host.parentElement as any;
-    if (parent?.getRootNode() instanceof ShadowRoot) {
-      const shadowRoot = parent.getRootNode() as ShadowRoot;
-      const grandparent = shadowRoot?.host;
-      this.isInsideHeader = grandparent?.tagName.toLowerCase() === 'sy-global-header';
-    }
-  }
+  // --- Private Methods ---
+  // private checkParentElement() {
+  //   this.isInsideHeader = false;
+  //   let parent = this.host.parentElement as any;
+  //   if (parent?.getRootNode() instanceof ShadowRoot) {
+  //     const shadowRoot = parent.getRootNode() as ShadowRoot;
+  //     const grandparent = shadowRoot?.host;
+  //     this.isInsideHeader = grandparent?.tagName.toLowerCase() === 'sy-global-header';
+  //   }
+  // }
 
   private handleButtonClick = (event: MouseEvent) => {
     // [수정] Prop 대신 내부 State와 loading을 함께 체크
@@ -169,7 +154,7 @@ export class SyButton {
             </div>
           </div>
         )}
-        <slot></slot>
+        <slot />
       </button>
     );
   }

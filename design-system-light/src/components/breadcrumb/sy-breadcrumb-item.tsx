@@ -1,6 +1,16 @@
 // src/components/breadcrumb-item/sy-breadcrumb-item.tsx
 
-import { Component, h, Prop, State, Event, EventEmitter, Method, forceUpdate, Element, JSX } from '@stencil/core';
+import { Component, h, Prop, State, Event, EventEmitter, Method, forceUpdate, Element } from '@stencil/core';
+
+export interface HTMLSyBreadcrumbItemElement extends HTMLElement {
+  active: boolean;
+  disabled: boolean;
+  separator?: 'slash' | 'arrow';
+  parentSeparator: 'slash' | 'arrow';
+  isLast: boolean;
+  forceUpdate: () => Promise<void>;
+  selected: EventEmitter<HTMLSyBreadcrumbItemElement>;
+}
 
 @Component({
   tag: 'sy-breadcrumb-item',
@@ -10,13 +20,11 @@ import { Component, h, Prop, State, Event, EventEmitter, Method, forceUpdate, El
 })
 export class BreadcrumbItemElement {
 
-  // === 수정된 핵심 1: 호스트 엘리먼트를 참조하기 위해 @Element 추가 ===
-  @Element() hostElement: HTMLElement;
+  @Element() hostElement: HTMLSyBreadcrumbItemElement;
 
-  @Prop() active: boolean = false;
-  @Prop() disabled: boolean = false;
+  @Prop({ reflect: true }) active: boolean = false;
+  @Prop({ reflect: true }) disabled: boolean = false;
   @Prop() separator?: 'slash' | 'arrow';
-
   @Prop({ mutable: true }) parentSeparator: 'slash' | 'arrow' = 'slash';
   @Prop({ mutable: true }) isLast: boolean = false;
 
@@ -26,7 +34,7 @@ export class BreadcrumbItemElement {
     eventName: 'selected',
     composed: true,
     bubbles: true,
-  }) selected: EventEmitter<HTMLElement>; // 이벤트 타입을 HTMLElement로 명확히 함
+  }) selected: EventEmitter<HTMLSyBreadcrumbItemElement>; // 이벤트 타입을 HTMLElement로 명확히 함
 
   @Method()
   async forceUpdate() {
@@ -38,12 +46,11 @@ export class BreadcrumbItemElement {
 
   private handleClick = () => {
     if (!this.disabled) {
-      // === 수정된 핵심 2: 'this' 대신 실제 DOM 엘리먼트인 'this.hostElement'를 전달 ===
       this.selected.emit(this.hostElement);
     }
   }
 
-  render(): JSX.Element {
+  render() {
     const finalSeparator = this.separator || this.parentSeparator;
 
     const arrowIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M433.5 303C442.9 312.4 442.9 327.6 433.5 336.9L273.5 497C264.1 506.4 248.9 506.4 239.6 497C230.3 487.6 230.2 472.4 239.6 463.1L382.6 320.1L239.6 177.1C230.2 167.7 230.2 152.5 239.6 143.2C249 133.9 264.2 133.8 273.5 143.2L433.5 303.2z"/></svg>';

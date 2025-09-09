@@ -12,17 +12,19 @@
 | `checked`       | `checked`       |             | `boolean` | `false` |
 | `disabled`      | `disabled`      |             | `boolean` | `false` |
 | `indeterminate` | `indeterminate` |             | `boolean` | `false` |
+| `name`          | `name`          |             | `string`  | `''`    |
 | `readonly`      | `readonly`      |             | `boolean` | `false` |
 | `required`      | `required`      |             | `boolean` | `false` |
+| `titleText`     | `title-text`    |             | `string`  | `''`    |
 
 
 ## Events
 
 | Event     | Description | Type                                                                                           |
 | --------- | ----------- | ---------------------------------------------------------------------------------------------- |
-| `blured`  |             | `CustomEvent<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>` |
+| `blured`  |             | `CustomEvent<boolean>`                                                                         |
 | `changed` |             | `CustomEvent<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>` |
-| `focused` |             | `CustomEvent<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>` |
+| `focused` |             | `CustomEvent<boolean>`                                                                         |
 
 
 ## Methods

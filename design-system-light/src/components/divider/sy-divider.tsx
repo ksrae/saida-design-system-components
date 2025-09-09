@@ -2,6 +2,10 @@
 
 import { Component, h, Prop, Element } from '@stencil/core';
 
+export interface HTMLSyDividerElement extends HTMLElement {
+  type: 'horizontal' | 'vertical';
+}
+
 @Component({
   tag: 'sy-divider',
   styleUrl: 'sy-divider.scss',
@@ -9,9 +13,9 @@ import { Component, h, Prop, Element } from '@stencil/core';
   scoped: true,
 })
 export class SyDivider {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyDividerElement;
 
-  @Prop({ reflect: true }) type: 'horizontal' | 'vertical' = 'horizontal';
+  @Prop() type: 'horizontal' | 'vertical' = 'horizontal';
 
   connectedCallback() {
     this.host.setAttribute('role', 'separator');

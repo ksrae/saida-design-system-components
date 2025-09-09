@@ -18,9 +18,9 @@
 
 ## Events
 
-| Event      | Description | Type                       |
-| ---------- | ----------- | -------------------------- |
-| `selected` |             | `CustomEvent<HTMLElement>` |
+| Event      | Description | Type                                       |
+| ---------- | ----------- | ------------------------------------------ |
+| `selected` |             | `CustomEvent<HTMLSyBreadcrumbItemElement>` |
 
 
 ## Methods

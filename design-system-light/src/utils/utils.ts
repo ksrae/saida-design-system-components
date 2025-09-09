@@ -8,7 +8,7 @@
  * @returns slot에 들어간 콘텐츠의 HTML 문자열
  */
 // slot 태그를 제외한 모든 자식 노드를 slot 콘텐츠로 처리 (Light DOM 대응)
-export function getAssignedNodesContent(host: HTMLElement): string {
+export function fnGetAssignedNodesContent(host: HTMLElement): string {
 	return Array.from(host.childNodes)
 		.filter(node =>
 			node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName !== 'SLOT' ||
@@ -20,6 +20,34 @@ export function getAssignedNodesContent(host: HTMLElement): string {
 		.join('')
 		.trim();
 }
-// export function format(first?: string, middle?: string, last?: string): string {
-//   return (first || '') + (middle ? ` ${middle}` : '') + (last ? ` ${last}` : '');
-// }
+
+// 특정 tagName을 가진 slot 할당 요소들을 배열로 반환합니다.
+export function fnGetChildrenByTagName(parentElement: HTMLElement, childTagName: string): any[] {
+	if (!parentElement) {
+		return [];
+	}
+
+	return Array.from(parentElement.children).filter(
+		(child: any) => child.tagName.toLowerCase() === childTagName.toLowerCase()
+	) as any[];
+}
+
+// 특정 태그 이름을 가진 부모 요소가 존재하는지 확인하는 함수
+export function fnFindClosestParentByTagName(host: HTMLElement, tagName: string): boolean {
+  let parent = host.parentElement;
+
+  while (parent) {
+    if (parent.tagName.toLowerCase() === tagName.toLowerCase()) {
+      return true; // 원하는 부모 태그를 찾으면 true 반환
+    }
+    parent = parent.parentElement; // 부모 요소를 계속 탐색
+  }
+
+  return false; // body까지 탐색했지만 원하는 부모 태그를 찾지 못한 경우 false 반환
+}
+
+// 특정 이름의 slot에 콘텐츠가 있는지 확인하는 함수
+export function fnHasSlotContentByName(host: HTMLElement, slotName: string): boolean {
+	if (!host.isConnected) return false;
+	return !!host.querySelector(`[slot="${slotName}"]`);
+}

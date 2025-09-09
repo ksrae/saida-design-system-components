@@ -1,6 +1,11 @@
 // src/components/breadcrumb/sy-breadcrumb.tsx
 
-import { Component, h, Prop, Element, Watch, JSX } from '@stencil/core';
+import { Component, h, Prop, Element, Watch } from '@stencil/core';
+import { fnGetChildrenByTagName } from '../../utils/utils';
+
+export interface HTMLSyBreadcrumbElement extends HTMLElement {
+  separator: 'slash' | 'arrow';
+}
 
 @Component({
   tag: 'sy-breadcrumb',
@@ -10,26 +15,36 @@ import { Component, h, Prop, Element, Watch, JSX } from '@stencil/core';
 })
 export class BreadcrumbElement {
 
-  @Element() hostElement: HTMLElement;
+  @Element() host: HTMLSyBreadcrumbElement;
 
   @Prop() separator: 'slash' | 'arrow' = 'slash';
 
-  // === 수정된 핵심: @Event와 @Listen을 모두 삭제 ===
-  // 부모는 더 이상 이벤트 중계 역할을 하지 않습니다.
-  // 자식의 이벤트가 자연스럽게 버블링되도록 내버려 둡니다.
-
-  private slotEl: HTMLSlotElement;
+  private containerEl: HTMLSpanElement;
+  private mutationObserver: MutationObserver;
 
   componentDidLoad() {
     this.updateChildren();
-    if (this.slotEl) {
-      this.slotEl.addEventListener('slotchange', this.updateChildren);
-    }
   }
 
+  componentDidRender() {
+    // MutationObserver가 아직 설정되지 않았고, containerEl이 Ref를 통해 할당되었다면
+    if (!this.mutationObserver && this.containerEl) {
+      this.mutationObserver = new MutationObserver(() => {
+        // 자식 노드에 변화가 생기면 updateButtons를 다시 호출
+        this.updateChildren();
+      });
+      // 감시 대상을 Ref로 직접 지정
+      this.mutationObserver.observe(this.containerEl, { childList: true });
+    }
+    // 렌더링이 완료될 때마다 버튼 상태를 업데이트
+    this.updateChildren();
+  }
+
+
+
   disconnectedCallback() {
-    if (this.slotEl) {
-      this.slotEl.removeEventListener('slotchange', this.updateChildren);
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
     }
   }
 
@@ -38,19 +53,13 @@ export class BreadcrumbElement {
     this.updateChildren();
   }
 
-  private getBreadcrumbItems(): HTMLSyBreadcrumbItemElement[] {
-    if (!this.slotEl) return [];
-    return this.slotEl.assignedElements().filter(
-      (el): el is HTMLSyBreadcrumbItemElement => el.tagName.toLowerCase() === 'sy-breadcrumb-item'
-    );
-  }
-
   private updateChildren = () => {
-    const items = this.getBreadcrumbItems();
-    if (items.length > 0) {
-      items.forEach((item, index) => {
+    const children = fnGetChildrenByTagName(this.containerEl, 'sy-breadcrumb-item') as HTMLSyBreadcrumbItemElement[];
+
+    if (children.length > 0) {
+      children.forEach((item, index) => {
         item.parentSeparator = this.separator;
-        item.isLast = index === items.length - 1;
+        item.isLast = index === children.length - 1;
         if (typeof item.forceUpdate === 'function') {
           item.forceUpdate();
         }
@@ -58,17 +67,13 @@ export class BreadcrumbElement {
     }
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <nav class="breadcrumb">
-        <slot ref={el => this.slotEl = el as HTMLSlotElement}></slot>
+        <span ref={(el) => this.containerEl = el as HTMLSpanElement}>
+          <slot />
+        </span>
       </nav>
     );
   }
-}
-
-interface HTMLSyBreadcrumbItemElement extends HTMLElement {
-  parentSeparator: 'slash' | 'arrow';
-  isLast: boolean;
-  forceUpdate: () => void;
 }

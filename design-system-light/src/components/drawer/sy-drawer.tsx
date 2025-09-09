@@ -1,23 +1,36 @@
 // src/components/drawer/drawer.tsx
 
 import { Component, h, Prop, Element, Watch, Event, EventEmitter } from '@stencil/core';
+import { fnHasSlotContentByName } from '../../utils/utils';
+
+export interface HTMLSyDrawerElement extends HTMLElement {
+  maskless: boolean;
+  preventClose: boolean;
+  position: 'top' | 'left' | 'right' | 'bottom';
+  size: 'small' | 'medium' | 'large' | 'custom';
+  closable: boolean;
+  open: boolean;
+  customSize: number;
+  opened: EventEmitter<void>;
+  closed: EventEmitter<void>;
+}
 
 @Component({
   tag: 'sy-drawer',
+  styleUrl: 'sy-drawer.scss',
   shadow: false,
   scoped: true,
-  styleUrl: 'sy-drawer.scss'
 })
 export class Drawer {
-  @Element() hostElement: HTMLElement;
+  @Element() host: HTMLSyDrawerElement;
 
-  @Prop() maskless: boolean = false;
-  @Prop() preventClose: boolean = false;
+  @Prop({ reflect: true }) maskless: boolean = false;
+  @Prop({ reflect: true }) preventClose: boolean = false;
+  @Prop({ reflect: true }) closable: boolean = false;
+  @Prop({ mutable: true, reflect: true }) open: boolean = false;
+  @Prop({ reflect: true }) customSize: number = 100;
   @Prop() position: 'top' | 'left' | 'right' | 'bottom' = 'right';
   @Prop() size: 'small' | 'medium' | 'large' | 'custom' = 'medium';
-  @Prop() closable: boolean = false;
-  @Prop({ mutable: true, reflect: true }) open: boolean = false;
-  @Prop() customSize: number = 100;
 
   @Event() opened: EventEmitter<void>;
   @Event() closed: EventEmitter<void>;
@@ -34,8 +47,8 @@ export class Drawer {
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleOutsideClick, true);
-    if (this.hasBeenAppendedToBody && document.body.contains(this.hostElement)) {
-        document.body.removeChild(this.hostElement);
+    if (this.hasBeenAppendedToBody && document.body.contains(this.host)) {
+        document.body.removeChild(this.host);
     }
   }
 
@@ -45,14 +58,14 @@ export class Drawer {
       this.appendToBody();
       this.opened.emit();
     } else {
-      this.hostElement.removeAttribute('open');
+      this.host.removeAttribute('open');
       this.closed.emit();
     }
   }
 
   private appendToBody() {
     if (!this.hasBeenAppendedToBody) {
-      document.body.appendChild(this.hostElement);
+      document.body.appendChild(this.host);
       this.hasBeenAppendedToBody = true;
     }
   }
@@ -61,7 +74,7 @@ export class Drawer {
     if (!this.open || this.preventClose) {
       return;
     }
-    const container = this.hostElement.querySelector('.drawer-container');
+    const container = this.host.querySelector('.drawer-container');
     const path = event.composedPath();
     if (container && !path.includes(container)) {
       this.open = false;
@@ -78,11 +91,6 @@ export class Drawer {
     this.open = false;
   }
 
-  private hasSlotContent(slotName: string): boolean {
-    // 컴포넌트가 DOM에 완전히 연결된 후에만 쿼리하도록
-    if (!this.hostElement.isConnected) return false;
-    return !!this.hostElement.querySelector(`[slot="${slotName}"]`);
-  }
 
   private getCustomSizeStyles() {
     if (this.size !== 'custom') {
@@ -101,11 +109,8 @@ export class Drawer {
   }
 
   render() {
-    // !!!! 제가 임의로 추가했던 if(!this.open) return null; 구문을 완전히 제거했습니다. !!!!
-    // 이제 원본처럼 항상 렌더링합니다.
-
-    const hasHeader = this.hasSlotContent('header');
-    const hasFooter = this.hasSlotContent('footer');
+    const hasHeader = fnHasSlotContentByName(this.host, 'header');
+    const hasFooter = fnHasSlotContentByName(this.host, 'footer');
 
     const containerClasses = {
       'drawer-container': true,

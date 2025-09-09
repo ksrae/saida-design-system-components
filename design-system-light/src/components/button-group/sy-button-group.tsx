@@ -1,5 +1,16 @@
 import { Component, h, Prop, Element, Watch } from '@stencil/core';
-import { ButtonGroupState } from '../button/sy-button';
+import { fnGetChildrenByTagName } from '../../utils/utils';
+
+export interface HTMLSyButtonGroupElement extends HTMLElement {
+  vertical: boolean;
+}
+
+export interface ButtonGroupState {
+  buttonGroup: boolean;
+  vertical: boolean;
+  first: boolean;
+  last: boolean;
+}
 
 @Component({
   tag: 'sy-button-group',
@@ -8,7 +19,7 @@ import { ButtonGroupState } from '../button/sy-button';
   styleUrl: 'sy-button-group.scss'
 })
 export class ButtonGroup {
-  @Element() hostElement: HTMLElement;
+  @Element() host: HTMLSyButtonGroupElement;
   @Prop({ reflect: true }) vertical: boolean = false;
 
   private containerEl: HTMLDivElement; // Ref로 참조할 div 요소를 담을 변수
@@ -42,21 +53,11 @@ export class ButtonGroup {
     // 그 후에 componentDidRender가 호출되므로 이 메서드는 비워둬도 괜찮습니다.
   }
 
-  private getButtons(): HTMLSyButtonElement[] {
-    // [핵심 수정] querySelector 대신 Ref로 참조한 containerEl을 사용합니다.
-    if (!this.containerEl) {
-      return [];
-    }
-    return Array.from(this.containerEl.children).filter(
-      (child): child is HTMLSyButtonElement => child.tagName === 'SY-BUTTON'
-    );
-  }
-
   private updateButtons() {
-    const newButtons = this.getButtons();
+    const children = fnGetChildrenByTagName(this.containerEl, 'sy-button') as HTMLSyButtonElement[];
 
-    if (this.haveButtonsChanged(newButtons)) {
-      this.buttons = newButtons;
+    if (this.haveButtonsChanged(children)) {
+      this.buttons = children;
       if (this.buttons.length === 0) return;
 
       this.buttons.forEach((button, index) => {

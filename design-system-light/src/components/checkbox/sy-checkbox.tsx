@@ -2,7 +2,27 @@
 
 import { Component, h, Prop, State, Method, Element, Event, EventEmitter, Watch } from '@stencil/core';
 
-// ### 불필요한 interface 선언을 완전히 제거했습니다. ###
+export interface HTMLSyCheckboxElement extends HTMLElement {
+  titleText: string;
+  name: string;
+  checked: boolean;
+  disabled: boolean;
+  indeterminate: boolean;
+  readonly: boolean;
+  required: boolean;
+  changed: EventEmitter<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>;
+  focused: EventEmitter<boolean>;
+  blured: EventEmitter<boolean>;
+  setFocus: () => Promise<void>;
+  setBlur: () => Promise<void>;
+  checkValidity: () => Promise<boolean>;
+  reportValidity: () => Promise<boolean>;
+  setCustomError: () => Promise<void>;
+  clearCustomError: () => Promise<void>;
+  validity: ValidityState;
+  validationMessage: string;
+  willValidate: boolean;
+}
 
 @Component({
   tag: 'sy-checkbox',
@@ -10,13 +30,21 @@ import { Component, h, Prop, State, Method, Element, Event, EventEmitter, Watch 
   shadow: false,
   formAssociated: true
 })
-// ### 불필요한 implements 구문을 완전히 제거했습니다. ###
+
 export class SyCheckbox {
   @Element() hostElement: HTMLElement;
 
   private internals: ElementInternals;
   private inputEl?: HTMLInputElement;
   private labelEl?: HTMLLabelElement;
+
+  @Prop() titleText = '';
+  @Prop() name = '';
+  @Prop({ mutable: true, reflect: true }) checked = false;
+  @Prop({ reflect: true }) disabled = false;
+  @Prop({ mutable: true, reflect: true }) indeterminate = false;
+  @Prop({ reflect: true }) readonly = false;
+  @Prop() required = false;
 
   @State() private hasFocus = false;
   @State() isTree = false;
@@ -27,13 +55,6 @@ export class SyCheckbox {
   @State() private hasPopupErrorComponent: boolean = false;
   @State() private formSubmitted: boolean = false;
 
-  @Prop() titleText = '';
-  @Prop() name = '';
-  @Prop({ mutable: true, reflect: true }) checked = false;
-  @Prop({ reflect: true }) disabled = false;
-  @Prop({ mutable: true, reflect: true }) indeterminate = false;
-  @Prop({ reflect: true }) readonly = false;
-  @Prop() required = false;
 
   @Event() changed: EventEmitter<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>;
   @Event() focused: EventEmitter<boolean>;

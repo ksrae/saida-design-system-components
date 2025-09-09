@@ -1,5 +1,11 @@
 import { Component, h, Prop, State, Element, Event, EventEmitter, Watch } from '@stencil/core';
-import { getAssignedNodesContent } from '../../utils/utils';
+
+export interface HTMLSyIconElement extends HTMLElement {
+  size: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+  path?: string;
+  selectable: boolean;
+  selected: EventEmitter<{ value: string }>;
+}
 
 @Component({
   tag: 'sy-icon',
@@ -11,19 +17,38 @@ export class SyIcon {
   @Element() host: HTMLElement;
 
   @Prop({ reflect: true }) size: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge' = 'medium';
-  @Prop({ reflect: true }) path?: string;
+  @Prop({ reflect: true }) path?: string; // slot보다 path가 우선함.
   @Prop({ reflect: true }) selectable: boolean = false;
 
-  @State() svgContent: string = '';
-  @State() hasSlotContent: boolean = false;
+  @State() private svgContent: string = '';
 
   @Event() selected: EventEmitter<{ value: string }>;
 
-  async componentWillRender() {
-    // slotchange 이벤트 및 slot 관련 코드 제거
-    this.hasSlotContent = !!getAssignedNodesContent(this.host).trim();
-    if (!this.hasSlotContent && this.path) {
-      await this.loadExternalSvg(this.path);
+  private containerEl: HTMLSpanElement;
+  private mutationObserver: MutationObserver;
+  
+
+  componentWillLoad() {
+    // Load external SVG if path is provided
+    if (this.path) {
+      this.loadExternalSvg(this.path);
+    }
+  }
+
+  componentDidLoad() {
+    // Initialize MutationObserver to detect slot changes
+    if (!this.mutationObserver && this.containerEl) {
+      this.mutationObserver = new MutationObserver(() => {
+        // Slot content changed - Stencil will automatically re-render
+        console.log('Slot content changed');
+      });
+      this.mutationObserver.observe(this.containerEl, { childList: true });
+    }
+  }
+
+  disconnectedCallback() {
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
     }
   }
 
@@ -34,31 +59,22 @@ export class SyIcon {
     }
   }
 
-  @Watch('hasSlotContent')
-  watchHasSlotContent(newValue: boolean) {
-    // slot이 실제로 있을 때만 svgContent를 비움
-    if (newValue && this.svgContent && getAssignedNodesContent(this.host)) {
-      this.svgContent = '';
-    }
-  }
-
   private async loadExternalSvg(path: string) {
-    if (this.hasSlotContent) return;
     try {
       const res = await fetch(path);
       if (res.ok) {
         this.svgContent = await res.text();
       } else {
-        this.svgContent = '';
+        console.error(`Failed to load SVG from path: ${path}, status: ${res.status}`);
       }
     } catch (e) {
-      this.svgContent = '';
+      console.error(`Error loading SVG: ${e.message}`);
     }
   }
 
   private handleClick = () => {
     if (this.selectable) {
-      const slotContent = getAssignedNodesContent(this.host);
+      const slotContent = Array.from(this.containerEl.childNodes).map(node => node.textContent).join('');
       const value = this.path || slotContent;
       if (value) {
         this.selected.emit({ value });
@@ -85,8 +101,13 @@ export class SyIcon {
         class={Object.keys(classNames).filter(key => classNames[key]).join(' ')}
         onClick={this.handleClick}
       >
-        <slot></slot>
-        {!this.hasSlotContent && this.svgContent && (
+        {/* Always render slot container */}
+        <span ref={(el) => this.containerEl = el as HTMLSpanElement} class="svg-container">
+          <slot />
+        </span>
+
+        {/* Render path SVG if svgContent is available */}
+        {this.svgContent && (
           <span class="svg-container" innerHTML={this.svgContent}></span>
         )}
       </span>

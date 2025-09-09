@@ -11,6 +11,7 @@ export const config: Config = {
 
     })
   ],
+  sourceMap: false,
   globalStyle: 'src/assets/style/global.scss',
   outputTargets: [
     {

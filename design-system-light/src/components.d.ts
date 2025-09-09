@@ -5,9 +5,45 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ButtonGroupState } from "./components/button/sy-button";
-export { ButtonGroupState } from "./components/button/sy-button";
+import { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
+import { ButtonGroupState } from "./components/button-group";
+export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
+export { ButtonGroupState } from "./components/button-group";
 export namespace Components {
+    interface SyBadge {
+        /**
+          * @default false
+         */
+        "dot": boolean;
+        /**
+          * @default false
+         */
+        "hidden": boolean;
+        /**
+          * @default Infinity
+         */
+        "overflowCount": number;
+        /**
+          * @default 'topRight'
+         */
+        "position": 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium';
+        /**
+          * @default false
+         */
+        "standalone": boolean;
+        /**
+          * @default 0
+         */
+        "value": number;
+        /**
+          * @default 'red'
+         */
+        "variant": 'red' | 'yellow' | 'green' | 'blue' | 'gray';
+    }
     interface SyBannerMesssage {
         /**
           * @default false
@@ -264,6 +300,12 @@ export interface SyTagCustomEvent<T> extends CustomEvent<T> {
     target: HTMLSyTagElement;
 }
 declare global {
+    interface HTMLSyBadgeElement extends Components.SyBadge, HTMLStencilElement {
+    }
+    var HTMLSyBadgeElement: {
+        prototype: HTMLSyBadgeElement;
+        new (): HTMLSyBadgeElement;
+    };
     interface HTMLSyBannerMesssageElement extends Components.SyBannerMesssage, HTMLStencilElement {
     }
     var HTMLSyBannerMesssageElement: {
@@ -277,7 +319,7 @@ declare global {
         new (): HTMLSyBreadcrumbElement;
     };
     interface HTMLSyBreadcrumbItemElementEventMap {
-        "selected": HTMLElement;
+        "selected": HTMLSyBreadcrumbItemElement;
     }
     interface HTMLSyBreadcrumbItemElement extends Components.SyBreadcrumbItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyBreadcrumbItemElementEventMap>(type: K, listener: (this: HTMLSyBreadcrumbItemElement, ev: SyBreadcrumbItemCustomEvent<HTMLSyBreadcrumbItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -396,6 +438,7 @@ declare global {
         new (): HTMLSyTagElement;
     };
     interface HTMLElementTagNameMap {
+        "sy-badge": HTMLSyBadgeElement;
         "sy-banner-messsage": HTMLSyBannerMesssageElement;
         "sy-breadcrumb": HTMLSyBreadcrumbElement;
         "sy-breadcrumb-item": HTMLSyBreadcrumbItemElement;
@@ -411,6 +454,40 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface SyBadge {
+        /**
+          * @default false
+         */
+        "dot"?: boolean;
+        /**
+          * @default false
+         */
+        "hidden"?: boolean;
+        /**
+          * @default Infinity
+         */
+        "overflowCount"?: number;
+        /**
+          * @default 'topRight'
+         */
+        "position"?: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium';
+        /**
+          * @default false
+         */
+        "standalone"?: boolean;
+        /**
+          * @default 0
+         */
+        "value"?: number;
+        /**
+          * @default 'red'
+         */
+        "variant"?: 'red' | 'yellow' | 'green' | 'blue' | 'gray';
+    }
     interface SyBannerMesssage {
         /**
           * @default false
@@ -456,7 +533,7 @@ declare namespace LocalJSX {
           * @default false
          */
         "isLast"?: boolean;
-        "onSelected"?: (event: SyBreadcrumbItemCustomEvent<HTMLElement>) => void;
+        "onSelected"?: (event: SyBreadcrumbItemCustomEvent<HTMLSyBreadcrumbItemElement>) => void;
         /**
           * @default 'slash'
          */
@@ -644,6 +721,7 @@ declare namespace LocalJSX {
         "variant"?: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
     interface IntrinsicElements {
+        "sy-badge": SyBadge;
         "sy-banner-messsage": SyBannerMesssage;
         "sy-breadcrumb": SyBreadcrumb;
         "sy-breadcrumb-item": SyBreadcrumbItem;
@@ -662,6 +740,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "sy-badge": LocalJSX.SyBadge & JSXBase.HTMLAttributes<HTMLSyBadgeElement>;
             "sy-banner-messsage": LocalJSX.SyBannerMesssage & JSXBase.HTMLAttributes<HTMLSyBannerMesssageElement>;
             "sy-breadcrumb": LocalJSX.SyBreadcrumb & JSXBase.HTMLAttributes<HTMLSyBreadcrumbElement>;
             "sy-breadcrumb-item": LocalJSX.SyBreadcrumbItem & JSXBase.HTMLAttributes<HTMLSyBreadcrumbItemElement>;

@@ -7,6 +7,7 @@
     line-height: 22px;
     text-decoration: none;
     text-transform: none;
+    letter-spacing: 0.25px;
 }
 
 @mixin text-style-base-medium() {
@@ -54,6 +55,7 @@
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
+    letter-spacing: 0;
 }
 
 @mixin text-style-small-medium() {
@@ -61,6 +63,7 @@
     font-size: 12px;
     font-weight: 500;
     line-height: 18px;
+    letter-spacing: 0;
 }
 
 @mixin text-style-small-bold() {
@@ -68,13 +71,14 @@
     font-size: 12px;
     font-weight: 700;
     line-height: 18px;
+    letter-spacing: 0;
 }
 @mixin text-style-xsmall-regular() {
     font-family: "Roboto";
     font-size: 11px;
     font-weight: 400;
     line-height: 18px;
-    letter-spacing: 0.003em;
+    letter-spacing: 0.3px;
 }
 
 @mixin text-style-xsmall-medium() {
