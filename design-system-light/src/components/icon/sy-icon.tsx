@@ -25,7 +25,6 @@ export class SyIcon {
   @Event() selected: EventEmitter<{ value: string }>;
 
   private containerEl: HTMLSpanElement;
-  private mutationObserver: MutationObserver;
   
 
   componentWillLoad() {
@@ -36,20 +35,11 @@ export class SyIcon {
   }
 
   componentDidLoad() {
-    // Initialize MutationObserver to detect slot changes
-    if (!this.mutationObserver && this.containerEl) {
-      this.mutationObserver = new MutationObserver(() => {
-        // Slot content changed - Stencil will automatically re-render
-        console.log('Slot content changed');
-      });
-      this.mutationObserver.observe(this.containerEl, { childList: true });
-    }
+
   }
 
   disconnectedCallback() {
-    if (this.mutationObserver) {
-      this.mutationObserver.disconnect();
-    }
+
   }
 
   @Watch('path')

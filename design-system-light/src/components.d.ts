@@ -10,6 +10,44 @@ import { ButtonGroupState } from "./components/button-group";
 export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 export { ButtonGroupState } from "./components/button-group";
 export namespace Components {
+    interface SyAvatar {
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "icon": string;
+        /**
+          * @default ''
+         */
+        "image": string;
+        /**
+          * @default ''
+         */
+        "letter": string;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        /**
+          * @default ''
+         */
+        "text": string;
+        /**
+          * @default ''
+         */
+        "tooltipContent": string;
+        /**
+          * @default "lightgray"
+         */
+        "variant": "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
+    }
     interface SyBadge {
         /**
           * @default false
@@ -226,6 +264,44 @@ export namespace Components {
          */
         "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
     }
+    /**
+     * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
+     * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+     */
+    interface SyPopover {
+        /**
+          * @default false
+         */
+        "arrow": boolean;
+        /**
+          * @default 100
+         */
+        "closedelay": number;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 0
+         */
+        "opendelay": number;
+        /**
+          * @default 'bottom'
+         */
+        "position": 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+        /**
+          * 팝업을 닫기 위한 공개 메서드
+         */
+        "setClose": () => Promise<void>;
+        /**
+          * 팝업을 열기 위한 공개 메서드
+         */
+        "setOpen": () => Promise<void>;
+        /**
+          * @default 'hover'
+         */
+        "trigger": 'hover' | 'click' | 'focus' | 'null';
+    }
     interface SySpinner {
         /**
           * @default 0
@@ -247,6 +323,28 @@ export namespace Components {
           * @default 'medium'
          */
         "size": 'small' | 'medium' | 'large' | 'xlarge';
+    }
+    interface SySplitPanel {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "hideDivider": boolean;
+        /**
+          * @default 0
+         */
+        "minRatio": number;
+        /**
+          * @default 50
+         */
+        "ratio": number;
+        /**
+          * @default 'horizontal'
+         */
+        "type": 'horizontal' | 'vertical';
     }
     interface SyTag {
         /**
@@ -278,6 +376,44 @@ export namespace Components {
          */
         "variant": 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
+    interface SyTooltip {
+        /**
+          * @default 0
+         */
+        "closedelay": number;
+        /**
+          * @default ''
+         */
+        "content": string;
+        /**
+          * @default false
+         */
+        "hideArrow": boolean;
+        /**
+          * @default null
+         */
+        "maxWidth": number | null;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 0
+         */
+        "opendelay": number;
+        /**
+          * @default 'top'
+         */
+        "position": 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
+        /**
+          * @default 'hover'
+         */
+        "trigger": 'hover' | 'click' | 'focus' | 'none';
+    }
+}
+export interface SyAvatarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyAvatarElement;
 }
 export interface SyBreadcrumbItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -295,11 +431,38 @@ export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
 }
+export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSySplitPanelElement;
+}
 export interface SyTagCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyTagElement;
 }
 declare global {
+    interface HTMLSyAvatarElementEventMap {
+        "selected": {
+    letter: string;
+    text: string;
+    icon: string;
+    image: string;
+  };
+        "disableStatus": { disabled: boolean };
+    }
+    interface HTMLSyAvatarElement extends Components.SyAvatar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyAvatarElementEventMap>(type: K, listener: (this: HTMLSyAvatarElement, ev: SyAvatarCustomEvent<HTMLSyAvatarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyAvatarElementEventMap>(type: K, listener: (this: HTMLSyAvatarElement, ev: SyAvatarCustomEvent<HTMLSyAvatarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyAvatarElement: {
+        prototype: HTMLSyAvatarElement;
+        new (): HTMLSyAvatarElement;
+    };
     interface HTMLSyBadgeElement extends Components.SyBadge, HTMLStencilElement {
     }
     var HTMLSyBadgeElement: {
@@ -413,11 +576,45 @@ declare global {
         prototype: HTMLSyIconElement;
         new (): HTMLSyIconElement;
     };
+    /**
+     * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
+     * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+     */
+    interface HTMLSyPopoverElement extends Components.SyPopover, HTMLStencilElement {
+    }
+    var HTMLSyPopoverElement: {
+        prototype: HTMLSyPopoverElement;
+        new (): HTMLSyPopoverElement;
+    };
     interface HTMLSySpinnerElement extends Components.SySpinner, HTMLStencilElement {
     }
     var HTMLSySpinnerElement: {
         prototype: HTMLSySpinnerElement;
         new (): HTMLSySpinnerElement;
+    };
+    interface HTMLSySplitPanelElementEventMap {
+        "horizontalChanged": {
+    leftRatio: number;
+    rightRatio: number;
+  };
+        "verticalChanged": {
+    topRatio: number;
+    bottomRatio: number;
+  };
+    }
+    interface HTMLSySplitPanelElement extends Components.SySplitPanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSySplitPanelElementEventMap>(type: K, listener: (this: HTMLSySplitPanelElement, ev: SySplitPanelCustomEvent<HTMLSySplitPanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSySplitPanelElementEventMap>(type: K, listener: (this: HTMLSySplitPanelElement, ev: SySplitPanelCustomEvent<HTMLSySplitPanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSySplitPanelElement: {
+        prototype: HTMLSySplitPanelElement;
+        new (): HTMLSySplitPanelElement;
     };
     interface HTMLSyTagElementEventMap {
         "selected": { tag: HTMLElement };
@@ -437,7 +634,14 @@ declare global {
         prototype: HTMLSyTagElement;
         new (): HTMLSyTagElement;
     };
+    interface HTMLSyTooltipElement extends Components.SyTooltip, HTMLStencilElement {
+    }
+    var HTMLSyTooltipElement: {
+        prototype: HTMLSyTooltipElement;
+        new (): HTMLSyTooltipElement;
+    };
     interface HTMLElementTagNameMap {
+        "sy-avatar": HTMLSyAvatarElement;
         "sy-badge": HTMLSyBadgeElement;
         "sy-banner-messsage": HTMLSyBannerMesssageElement;
         "sy-breadcrumb": HTMLSyBreadcrumbElement;
@@ -449,11 +653,59 @@ declare global {
         "sy-drawer": HTMLSyDrawerElement;
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
+        "sy-popover": HTMLSyPopoverElement;
         "sy-spinner": HTMLSySpinnerElement;
+        "sy-split-panel": HTMLSySplitPanelElement;
         "sy-tag": HTMLSyTagElement;
+        "sy-tooltip": HTMLSyTooltipElement;
     }
 }
 declare namespace LocalJSX {
+    interface SyAvatar {
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "icon"?: string;
+        /**
+          * @default ''
+         */
+        "image"?: string;
+        /**
+          * @default ''
+         */
+        "letter"?: string;
+        "onDisableStatus"?: (event: SyAvatarCustomEvent<{ disabled: boolean }>) => void;
+        "onSelected"?: (event: SyAvatarCustomEvent<{
+    letter: string;
+    text: string;
+    icon: string;
+    image: string;
+  }>) => void;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        /**
+          * @default ''
+         */
+        "text"?: string;
+        /**
+          * @default ''
+         */
+        "tooltipContent"?: string;
+        /**
+          * @default "lightgray"
+         */
+        "variant"?: "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
+    }
     interface SyBadge {
         /**
           * @default false
@@ -666,6 +918,36 @@ declare namespace LocalJSX {
          */
         "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
     }
+    /**
+     * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
+     * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+     */
+    interface SyPopover {
+        /**
+          * @default false
+         */
+        "arrow"?: boolean;
+        /**
+          * @default 100
+         */
+        "closedelay"?: number;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 0
+         */
+        "opendelay"?: number;
+        /**
+          * @default 'bottom'
+         */
+        "position"?: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+        /**
+          * @default 'hover'
+         */
+        "trigger"?: 'hover' | 'click' | 'focus' | 'null';
+    }
     interface SySpinner {
         /**
           * @default 0
@@ -687,6 +969,36 @@ declare namespace LocalJSX {
           * @default 'medium'
          */
         "size"?: 'small' | 'medium' | 'large' | 'xlarge';
+    }
+    interface SySplitPanel {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "hideDivider"?: boolean;
+        /**
+          * @default 0
+         */
+        "minRatio"?: number;
+        "onHorizontalChanged"?: (event: SySplitPanelCustomEvent<{
+    leftRatio: number;
+    rightRatio: number;
+  }>) => void;
+        "onVerticalChanged"?: (event: SySplitPanelCustomEvent<{
+    topRatio: number;
+    bottomRatio: number;
+  }>) => void;
+        /**
+          * @default 50
+         */
+        "ratio"?: number;
+        /**
+          * @default 'horizontal'
+         */
+        "type"?: 'horizontal' | 'vertical';
     }
     interface SyTag {
         /**
@@ -720,7 +1032,42 @@ declare namespace LocalJSX {
          */
         "variant"?: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
+    interface SyTooltip {
+        /**
+          * @default 0
+         */
+        "closedelay"?: number;
+        /**
+          * @default ''
+         */
+        "content"?: string;
+        /**
+          * @default false
+         */
+        "hideArrow"?: boolean;
+        /**
+          * @default null
+         */
+        "maxWidth"?: number | null;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 0
+         */
+        "opendelay"?: number;
+        /**
+          * @default 'top'
+         */
+        "position"?: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
+        /**
+          * @default 'hover'
+         */
+        "trigger"?: 'hover' | 'click' | 'focus' | 'none';
+    }
     interface IntrinsicElements {
+        "sy-avatar": SyAvatar;
         "sy-badge": SyBadge;
         "sy-banner-messsage": SyBannerMesssage;
         "sy-breadcrumb": SyBreadcrumb;
@@ -732,14 +1079,18 @@ declare namespace LocalJSX {
         "sy-drawer": SyDrawer;
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
+        "sy-popover": SyPopover;
         "sy-spinner": SySpinner;
+        "sy-split-panel": SySplitPanel;
         "sy-tag": SyTag;
+        "sy-tooltip": SyTooltip;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "sy-avatar": LocalJSX.SyAvatar & JSXBase.HTMLAttributes<HTMLSyAvatarElement>;
             "sy-badge": LocalJSX.SyBadge & JSXBase.HTMLAttributes<HTMLSyBadgeElement>;
             "sy-banner-messsage": LocalJSX.SyBannerMesssage & JSXBase.HTMLAttributes<HTMLSyBannerMesssageElement>;
             "sy-breadcrumb": LocalJSX.SyBreadcrumb & JSXBase.HTMLAttributes<HTMLSyBreadcrumbElement>;
@@ -751,8 +1102,15 @@ declare module "@stencil/core" {
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
+            /**
+             * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
+             * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+             */
+            "sy-popover": LocalJSX.SyPopover & JSXBase.HTMLAttributes<HTMLSyPopoverElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
+            "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
+            "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;
         }
     }
 }
