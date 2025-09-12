@@ -19,21 +19,21 @@ export interface HTMLSyBadgeElement extends HTMLElement {
 })
 export class Sybadge {
   @Element() host: HTMLSyBadgeElement;
- 
+
   @Prop({ reflect: true }) dot = false;
   @Prop({ reflect: true }) hidden = false;
-  @Prop({ reflect: true }) standalone: boolean = false; 
+  @Prop({ reflect: true }) standalone: boolean = false;
   @Prop({ reflect: true, attribute: 'overflowCount' }) overflowCount: number = Infinity;
   @Prop({ reflect: true }) value: number = 0;
   @Prop() position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'topRight';
   @Prop() size: 'small' | 'medium' = 'medium';
   @Prop() variant: 'red' | 'yellow' | 'green' | 'blue' | 'gray' = 'red';
-  
+
   @State() private displayValue!: string;
 
   componentWillLoad() {
     this.setValue();
-  }    
+  }
   // updated
   @Watch('dot')
   @Watch('value')
@@ -71,7 +71,7 @@ export class Sybadge {
       </div>
     );
   }
-  
+
   private setValue() {
     // this.overflowCount = this.overflowCount !== null ? parseFloat(this.overflowCount as any) : Infinity;
 

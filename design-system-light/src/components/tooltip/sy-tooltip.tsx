@@ -9,7 +9,6 @@ export interface HTMLSyTooltipElement extends HTMLElement {
   content: string;
   position: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
   trigger: 'hover' | 'click' | 'focus' | 'none';
-  id: string;  
 }
 
 @Component({
@@ -27,11 +26,10 @@ export class SyTooltip {
   @Prop({ reflect: true }) closedelay: number = 0;
   @Prop({ reflect: true, attribute: 'maxWidth' }) maxWidth: number | null = null;
   @Prop({ reflect: true }) opendelay: number = 0;
-  
+
   @Prop() content: string = '';
   @Prop() position: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom' = 'top';
   @Prop() trigger: 'hover' | 'click' | 'focus' | 'none' = 'hover';
-  // @Prop({ reflect: true }) id: string = `tooltip-${Date.now()}`;
 
   @State() private arrowElement: any;
   @State() replaceContent: string = '';
@@ -78,7 +76,6 @@ export class SyTooltip {
       this.el.id = `tooltip-${Date.now()}`;
     }
 
-    // Initialize replaceContent with the initial content value
     const sanitized = this.sanitizeHtml(this.content);
     this.replaceContent = this.replaceSpecialChars(sanitized);
 
@@ -87,7 +84,6 @@ export class SyTooltip {
   }
 
   componentDidLoad() {
-    // 전역 이벤트 리스너를 한 번만 등록
     this.setupGlobalClickListener();
 
     if (!this.hideArrow) {
@@ -100,59 +96,135 @@ export class SyTooltip {
     this.setOpened();
   }
 
-  /**
-   * 전역 클릭 리스너를 설정합니다.
-   */
   private setupGlobalClickListener() {
-    // 기존 리스너 제거 (중복 방지)
     document.removeEventListener('click', this.handleOutsideClick, true);
-    
-    // 새로운 리스너 등록
     document.addEventListener('click', this.handleOutsideClick, true);
-    
-    // 스크롤/리사이즈 이벤트도 등록
+
     window.addEventListener("scroll", this.onScroll, { passive: true });
     window.addEventListener("resize", this.updateTooltipPosition, true);
   }
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleOutsideClick, true);
-  
+
     if (this.addedToBody) {
       window.removeEventListener("scroll", this.onScroll);
       window.removeEventListener("resize", this.updateTooltipPosition, true);
     }
-    
+
     this.disconnectParentObserver();
-    
-    if (this.openTimer) {
-      clearTimeout(this.openTimer);
-    }
-    
-    if (this.closeTimer) {
-      clearTimeout(this.closeTimer);
-    }
+
+    if (this.openTimer) clearTimeout(this.openTimer);
+    if (this.closeTimer) clearTimeout(this.closeTimer);
   }
 
   public remove() {
     this.open = false;
   }
 
+  private isParentInView(): boolean {
+    if (!this.parentDom) {
+      return false;
+    }
+    const rect = this.parentDom.getBoundingClientRect();
+    return (
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0
+    );
+  }
+
+  private updateTooltipPosition() {
+    if (!this.open || !this.addedToBody || !this.parentDom) {
+      return;
+    }
+
+    if (!this.isParentInView()) {
+      this.el.style.visibility = 'hidden';
+      return;
+    }
+
+    const parentRect = this.parentDom.getBoundingClientRect();
+
+    if (!parentRect || (parentRect.width === 0 && parentRect.height === 0)) {
+      console.warn('Tooltip parent not found or has zero size');
+      this.open = false;
+      return;
+    }
+
+    this.el.style.display = 'block';
+    this.el.style.visibility = 'hidden';
+    this.el.style.position = 'absolute';
+    this.el.style.left = '0';
+    this.el.style.top = '0';
+
+    requestAnimationFrame(() => {
+      if (!this.open) return;
+
+      const tooltipRect = this.el.getBoundingClientRect();
+      const positions = this.calculateAllPositions(parentRect, tooltipRect);
+
+      const { position: bestPosition, coords } = this.findBestPosition(
+        positions,
+        this.position,
+        parentRect,
+        tooltipRect
+      );
+
+      this.el.style.top = `${coords.top}px`;
+      this.el.style.left = `${coords.left}px`;
+
+      const adjusted = this.adjustForScreenBounds(tooltipRect);
+
+      if (this.el.contains(this.arrowElement)) {
+        this.el.removeChild(this.arrowElement);
+      }
+
+      if (!this.hideArrow) {
+        this.arrowElement = this.createArrow(
+          bestPosition,
+          parentRect,
+          adjusted ? { top: parseFloat(this.el.style.top), left: parseFloat(this.el.style.left) } : coords,
+          tooltipRect,
+          adjusted
+        );
+        this.el.appendChild(this.arrowElement);
+      }
+
+      this.openTimer = setTimeout(() => {
+        if (this.open) {
+          this.el.style.visibility = 'visible';
+        }
+      }, this.opendelay);
+    });
+  }
+
+  private onScroll = () => {
+    if (!this.open || !this.addedToBody) return;
+
+    this.el.style.visibility = 'hidden';
+
+    if (this.openTimer) {
+      clearTimeout(this.openTimer);
+    }
+
+    this.openTimer = setTimeout(() => {
+      this.updateTooltipPosition();
+    }, 100);
+  }
+
   private appendToRoot = () => {
-    if (this.parentDom !== document.body) {    
+    if (this.parentDom !== document.body) {
       document.body.appendChild(this.el);
       this.addedToBody = true;
-      
-      // 툴팁이 body로 이동한 후 이벤트 리스너 재설정
-      this.setupGlobalClickListener();
-      
-      this.updateTooltipPosition();  
+      this.updateTooltipPosition();
     }
   }
 
   private addEvent() {
     const parent = this.parentDom;
-    
+
     if(!this.open && parent) {
       if (this.trigger === 'hover') {
         parent.removeEventListener('focus', this.setFocus);
@@ -185,15 +257,13 @@ export class SyTooltip {
 
   private observeParentRemoval() {
     if (this.parentObserver || !this.parentDom) {
-      return; // Prevent duplicate initialization
+      return;
     }
 
-    // to watch for parent removal
     this.parentObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'childList') {
           const removedNodes = Array.from(mutation.removedNodes);
-          // Check if parent is removed
           if (removedNodes.some(node => node === this.parentDom || node.contains(this.parentDom))) {
             this.disconnectParentObserver();
             this.open = false;
@@ -213,7 +283,7 @@ export class SyTooltip {
       this.parentObserver.observe(grandparent, { childList: true, subtree: true });
     }
   }
-  
+
   private disconnectParentObserver() {
     if (this.parentObserver) {
       this.parentObserver.disconnect();
@@ -229,70 +299,9 @@ export class SyTooltip {
     }
   }
 
-  private updateTooltipPosition() {
-    if (!this.addedToBody || !this.parentDom || this.parentDom === document.body) {
-      return;
-    }
-
-    const parentRect = this.parentDom.getBoundingClientRect();
-    
-    if (!parentRect || (parentRect.width === 0 && parentRect.height === 0)) {
-      console.warn('Tooltip parent not found or has zero size');
-      this.open = false;
-      this.removeTooltip();
-      return;
-    }
-
-    this.el.style.display = 'block';
-    this.el.style.visibility = 'hidden';
-    this.el.style.position = 'absolute';
-    this.el.style.left = '0';
-    this.el.style.top = '0';
-
-    requestAnimationFrame(() => {
-      const tooltipRect = this.el.getBoundingClientRect();
-      const positions = this.calculateAllPositions(parentRect, tooltipRect);
-      
-      // 디버깅 - 현재 스크롤 위치 출력
-      // console.debug(`현재 스크롤 위치: X=${window.scrollX || window.pageXOffset}, Y=${window.scrollY || window.pageYOffset}`);
-      
-      const { position: bestPosition, coords } = this.findBestPosition(
-        positions, 
-        this.position,
-        parentRect,
-        tooltipRect
-      );
-            
-      this.el.style.top = `${coords.top}px`;
-      this.el.style.left = `${coords.left}px`;
-      
-      const adjusted = this.adjustForScreenBounds(tooltipRect);
-      
-      // LightDOM에서는 shadowRoot 대신 el을 사용
-      if (this.el.contains(this.arrowElement)) {
-        this.el.removeChild(this.arrowElement);
-      }
-      
-      if (!this.hideArrow) {
-        this.arrowElement = this.createArrow(
-          bestPosition, 
-          parentRect,
-          adjusted ? { top: parseFloat(this.el.style.top), left: parseFloat(this.el.style.left) } : coords,
-          tooltipRect,
-          adjusted
-        );
-        this.el.appendChild(this.arrowElement);
-      }
-      
-      this.openTimer = setTimeout(() => {
-        this.el.style.visibility = 'visible';
-      }, this.opendelay);
-    });
-  }
-
   private calculateAllPositions(parentRect: DOMRect, tooltipRect: DOMRect) {
     const arrowOffset = !this.hideArrow ? this.ARROW_HEIGHT : 0;
-    
+
     return {
       'top': {
         top: window.scrollY + parentRect.top - tooltipRect.height - arrowOffset,
@@ -355,59 +364,32 @@ export class SyTooltip {
     const viewportHeight = window.innerHeight;
     const scrollX = window.scrollX || window.pageXOffset || 0;
     const scrollY = window.scrollY || window.pageYOffset || 0;
-    
-    // 직접적인 반대 위치 맵
+
     const oppositePositions: Record<string, string> = {
-      'top': 'bottom',
-      'bottom': 'top',
-      'left': 'right',
-      'right': 'left',
-      'topLeft': 'bottomLeft',
-      'topRight': 'bottomRight',
-      'bottomLeft': 'topLeft',
-      'bottomRight': 'topRight',
-      'leftTop': 'rightTop',
-      'leftBottom': 'rightBottom',
-      'rightTop': 'leftTop',
-      'rightBottom': 'leftBottom'
+      'top': 'bottom', 'bottom': 'top', 'left': 'right', 'right': 'left',
+      'topLeft': 'bottomLeft', 'topRight': 'bottomRight', 'bottomLeft': 'topLeft', 'bottomRight': 'topRight',
+      'leftTop': 'rightTop', 'leftBottom': 'rightBottom', 'rightTop': 'leftTop', 'rightBottom': 'leftBottom'
     };
-    
-    // 선호 위치 및 좌표 초기화
+
     let position = preferredPosition;
     let coords = positions[preferredPosition];
-    
-    // 위치별로 관련된 방향만 확인
-    const checkDirection = (pos: string, coords: {top: number, left: number}) => {
-      if (pos.startsWith('top')) {
-        // top 계열 위치는 위쪽 공간만 확인
-        return coords.top < scrollY;
-      } 
-      else if (pos.startsWith('bottom')) {
-        // bottom 계열 위치는 아래쪽 공간만 확인
-        return coords.top + tooltipRect.height > scrollY + viewportHeight;
-      }
-      else if (pos.startsWith('left')) {
-        // left 계열 위치는 왼쪽 공간만 확인
-        return coords.left < scrollX;
-      }
-      else if (pos.startsWith('right')) {
-        // right 계열 위치는 오른쪽 공간만 확인
-        return coords.left + tooltipRect.width > scrollX + viewportWidth;
-      }
+
+    const checkDirection = (pos: string, crds: {top: number, left: number}) => {
+      if (pos.startsWith('top')) return crds.top < scrollY;
+      if (pos.startsWith('bottom')) return crds.top + tooltipRect.height > scrollY + viewportHeight;
+      if (pos.startsWith('left')) return crds.left < scrollX;
+      if (pos.startsWith('right')) return crds.left + tooltipRect.width > scrollX + viewportWidth;
       return false;
     };
-    
-    // 선호 위치가 해당 방향에서 벗어났는지 확인
+
     if (checkDirection(preferredPosition, coords)) {
-      
-      // 반대 위치 시도
       const oppositePosition = oppositePositions[preferredPosition];
       if (oppositePosition) {
         position = oppositePosition;
         coords = positions[oppositePosition];
       }
     }
-    
+
     return { position, coords };
   }
 
@@ -415,10 +397,10 @@ export class SyTooltip {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     let adjusted = false;
-    
+
     const currentLeft = parseFloat(this.el.style.left);
     const currentTop = parseFloat(this.el.style.top);
-    
+
     if (currentLeft < window.scrollX) {
       this.el.style.left = `${window.scrollX}px`;
       adjusted = true;
@@ -427,7 +409,7 @@ export class SyTooltip {
       this.el.style.left = `${window.scrollX + viewportWidth - tooltipRect.width}px`;
       adjusted = true;
     }
-    
+
     if (currentTop < window.scrollY) {
       this.el.style.top = `${window.scrollY}px`;
       adjusted = true;
@@ -436,7 +418,7 @@ export class SyTooltip {
       this.el.style.top = `${window.scrollY + viewportHeight - tooltipRect.height}px`;
       adjusted = true;
     }
-    
+
     return adjusted;
   }
 
@@ -453,7 +435,6 @@ export class SyTooltip {
     arrowElement.style.width = '8px';
     arrowElement.style.height = '8px';
     arrowElement.style.background = 'black';
-  
 
     if (positionAdjusted) {
       this.positionArrowRelativeToParent(arrowElement, position, parentRect, tooltipPos, tooltipRect);
@@ -472,69 +453,30 @@ export class SyTooltip {
     tooltipRect: DOMRect
   ) {
     let targetX, targetY;
-    
+
     switch(position) {
-      case 'top':
-        targetX = parentRect.left + parentRect.width / 2;
-        targetY = parentRect.top;
-        break;
-      case 'topLeft':
-        targetX = parentRect.left + 4;
-        targetY = parentRect.top;
-        break;
-      case 'topRight':
-        targetX = parentRect.right - 4;
-        targetY = parentRect.top;
-        break;
-      case 'bottom':
-        targetX = parentRect.left + parentRect.width / 2;
-        targetY = parentRect.bottom;
-        break;
-      case 'bottomLeft':
-        targetX = parentRect.left + 4;
-        targetY = parentRect.bottom;
-        break;
-      case 'bottomRight':
-        targetX = parentRect.right - 4;
-        targetY = parentRect.bottom;
-        break;
-      case 'left':
-        targetX = parentRect.left;
-        targetY = parentRect.top + parentRect.height / 2;
-        break;
-      case 'leftTop':
-        targetX = parentRect.left;
-        targetY = parentRect.top;
-        break;
-      case 'leftBottom':
-        targetX = parentRect.left;
-        targetY = parentRect.bottom;
-        break;
-      case 'right':
-        targetX = parentRect.right;
-        targetY = parentRect.top + parentRect.height / 2;
-        break;
-      case 'rightTop':
-        targetX = parentRect.right;
-        targetY = parentRect.top;
-        break;
-      case 'rightBottom':
-        targetX = parentRect.right;
-        targetY = parentRect.bottom;
-        break;
-      default:
-        targetX = parentRect.left + parentRect.width / 2;
-        targetY = parentRect.top + parentRect.height / 2;
+      case 'top': targetX = parentRect.left + parentRect.width / 2; targetY = parentRect.top; break;
+      case 'topLeft': targetX = parentRect.left + 4; targetY = parentRect.top; break;
+      case 'topRight': targetX = parentRect.right - 4; targetY = parentRect.top; break;
+      case 'bottom': targetX = parentRect.left + parentRect.width / 2; targetY = parentRect.bottom; break;
+      case 'bottomLeft': targetX = parentRect.left + 4; targetY = parentRect.bottom; break;
+      case 'bottomRight': targetX = parentRect.right - 4; targetY = parentRect.bottom; break;
+      case 'left': targetX = parentRect.left; targetY = parentRect.top + parentRect.height / 2; break;
+      case 'leftTop': targetX = parentRect.left; targetY = parentRect.top; break;
+      case 'leftBottom': targetX = parentRect.left; targetY = parentRect.bottom; break;
+      case 'right': targetX = parentRect.right; targetY = parentRect.top + parentRect.height / 2; break;
+      case 'rightTop': targetX = parentRect.right; targetY = parentRect.top; break;
+      case 'rightBottom': targetX = parentRect.right; targetY = parentRect.bottom; break;
+      default: targetX = parentRect.left + parentRect.width / 2; targetY = parentRect.top + parentRect.height / 2;
     }
-    
+
     targetX += window.scrollX;
     targetY += window.scrollY;
-    
+
     if (position.startsWith('top')) {
       arrowElement.style.bottom = '-4px';
       arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)';
       arrowElement.style.transform = 'rotate(-45deg)';
-      
       const arrowX = Math.max(8, Math.min(tooltipRect.width - 8, targetX - tooltipPos.left));
       arrowElement.style.left = `${arrowX - 4}px`;
     }
@@ -542,7 +484,6 @@ export class SyTooltip {
       arrowElement.style.top = '-4px';
       arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)';
       arrowElement.style.transform = 'rotate(45deg)';
-      
       const arrowX = Math.max(8, Math.min(tooltipRect.width - 8, targetX - tooltipPos.left));
       arrowElement.style.left = `${arrowX - 4}px`;
     }
@@ -550,7 +491,6 @@ export class SyTooltip {
       arrowElement.style.right = '-4px';
       arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
       arrowElement.style.transform = 'rotate(45deg)';
-      
       const arrowY = Math.max(8, Math.min(tooltipRect.height - 8, targetY - tooltipPos.top));
       arrowElement.style.top = `${arrowY - 4}px`;
     }
@@ -558,7 +498,6 @@ export class SyTooltip {
       arrowElement.style.left = '-4px';
       arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
       arrowElement.style.transform = 'rotate(-135deg)';
-      
       const arrowY = Math.max(8, Math.min(tooltipRect.height - 8, targetY - tooltipPos.top));
       arrowElement.style.top = `${arrowY - 4}px`;
     }
@@ -567,125 +506,55 @@ export class SyTooltip {
   private positionArrowStandard(arrowElement: HTMLDivElement, position: string) {
     switch(position) {
       case 'top':
-        arrowElement.style.bottom = '-4px';
-        arrowElement.style.left = 'calc(50% - 4px)';
-        arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)';
-        arrowElement.style.transform = 'rotate(-45deg)';
+        arrowElement.style.bottom = '-4px'; arrowElement.style.left = 'calc(50% - 4px)';
+        arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)'; arrowElement.style.transform = 'rotate(-45deg)';
         break;
       case 'left':
-        arrowElement.style.left = 'calc(100% - 4px)';
-        arrowElement.style.top = 'calc(50% - 4px)';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
-        arrowElement.style.transform = 'rotate(45deg)';
+        arrowElement.style.left = 'calc(100% - 4px)'; arrowElement.style.top = 'calc(50% - 4px)';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)'; arrowElement.style.transform = 'rotate(45deg)';
         break;
       case 'right':
-        arrowElement.style.right = 'calc(100% - 4px)';
-        arrowElement.style.top = 'calc(50% - 4px)';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
-        arrowElement.style.background = 'black';
-        arrowElement.style.transform = 'rotate(-135deg)';
+        arrowElement.style.right = 'calc(100% - 4px)'; arrowElement.style.top = 'calc(50% - 4px)';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)'; arrowElement.style.transform = 'rotate(-135deg)';
         break;
       case 'bottom':
-        arrowElement.style.bottom = '100%';
-        arrowElement.style.top = '-4px';
-        arrowElement.style.left = 'calc(50% - 4px)';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)';
-        arrowElement.style.transform = 'rotate(45deg)';
+        arrowElement.style.top = '-4px'; arrowElement.style.left = 'calc(50% - 4px)';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)'; arrowElement.style.transform = 'rotate(45deg)';
         break;
       case 'topLeft':
-        arrowElement.style.bottom = '-4px';
-        arrowElement.style.left = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)';
-        arrowElement.style.transform = 'rotate(-45deg)';
+        arrowElement.style.bottom = '-4px'; arrowElement.style.left = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)'; arrowElement.style.transform = 'rotate(-45deg)';
         break;
       case 'topRight':
-        arrowElement.style.bottom = '-4px';
-        arrowElement.style.right = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)';
-        arrowElement.style.transform = 'rotate(-45deg)';
+        arrowElement.style.bottom = '-4px'; arrowElement.style.right = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 0 100%, 100% 100%)'; arrowElement.style.transform = 'rotate(-45deg)';
         break;
       case 'bottomLeft':
-        arrowElement.style.bottom = '100%';
-        arrowElement.style.top = '-4px';
-        arrowElement.style.left = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)';
-        arrowElement.style.transform = 'rotate(45deg)';
+        arrowElement.style.top = '-4px'; arrowElement.style.left = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)'; arrowElement.style.transform = 'rotate(45deg)';
         break;
       case 'bottomRight':
-        arrowElement.style.bottom = '100%';
-        arrowElement.style.top = '-4px';
-        arrowElement.style.right = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)';
-        arrowElement.style.transform = 'rotate(45deg)';
+        arrowElement.style.top = '-4px'; arrowElement.style.right = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)'; arrowElement.style.transform = 'rotate(45deg)';
         break;
       case 'leftTop':
-        arrowElement.style.left = 'calc(100% - 4px)';
-        arrowElement.style.top = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
-        arrowElement.style.transform = 'rotate(45deg)';
+        arrowElement.style.left = 'calc(100% - 4px)'; arrowElement.style.top = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)'; arrowElement.style.transform = 'rotate(45deg)';
         break;
       case 'leftBottom':
-        arrowElement.style.left = 'calc(100% - 4px)';
-        arrowElement.style.bottom = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
-        arrowElement.style.transform = 'rotate(45deg)';
+        arrowElement.style.left = 'calc(100% - 4px)'; arrowElement.style.bottom = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)'; arrowElement.style.transform = 'rotate(45deg)';
         break;
       case 'rightTop':
-        arrowElement.style.right = 'calc(100% - 4px)';
-        arrowElement.style.top = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
-        arrowElement.style.transform = 'rotate(-135deg)';
+        arrowElement.style.right = 'calc(100% - 4px)'; arrowElement.style.top = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)'; arrowElement.style.transform = 'rotate(-135deg)';
         break;
       case 'rightBottom':
-        arrowElement.style.right = 'calc(100% - 4px)';
-        arrowElement.style.bottom = '8px';
-        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)';
-        arrowElement.style.transform = 'rotate(-135deg)';
+        arrowElement.style.right = 'calc(100% - 4px)'; arrowElement.style.bottom = '8px';
+        arrowElement.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%)'; arrowElement.style.transform = 'rotate(-135deg)';
         break;
     }
   }
-
-  private onScroll = () => {
-    if (!this.open || !this.addedToBody) return;
-    
-    this.el.style.visibility = 'hidden';
-    
-    if (this.openTimer) {
-      clearTimeout(this.openTimer);
-    }
-    
-    this.openTimer = setTimeout(() => {
-      this.updateTooltipPosition();
-    }, 100);
-  }
-
-  // private replacePositionToLeft(position: string): 'left' | 'leftTop' | 'leftBottom' {
-  //   if (position === 'right') return 'left';
-  //   if (position === 'rightTop') return 'leftTop';
-  //   if (position === 'rightBottom') return 'leftBottom';
-  //   return position as 'left' | 'leftTop' | 'leftBottom';
-  // }
-
-  // private replacePositionToRight(position: string): 'right' | 'rightTop' | 'rightBottom' {
-  //   if (position === 'left') return 'right';
-  //   if (position === 'leftTop') return 'rightTop';
-  //   if (position === 'leftBottom') return 'rightBottom';
-  //   return position as 'right' | 'rightTop' | 'rightBottom';
-  // }
-
-  // private replacePositionToTop(position: string): 'top' | 'topLeft' | 'topRight' {
-  //   if (position === 'bottom') return 'top';
-  //   if (position === 'bottomLeft') return 'topLeft';
-  //   if (position === 'bottomRight') return 'topRight';
-  //   return position as 'top' | 'topLeft' | 'topRight';
-  // }
-
-  // private replacePositionToBottom(position: string): 'bottom' | 'bottomLeft' | 'bottomRight' {
-  //   if (position === 'top') return 'bottom';
-  //   if (position === 'topLeft') return 'bottomLeft';
-  //   if (position === 'topRight') return 'bottomRight';
-  //   return position as 'bottom' | 'bottomLeft' | 'bottomRight';
-  // }
 
   private parentMouseEnter = () => {
     if(this.openTimer) clearTimeout(this.openTimer);
@@ -701,13 +570,13 @@ export class SyTooltip {
     }
   }
 
-  private setFocus = (_event: any) => {
+  private setFocus = () => {
     if(!this.open) {
       this.open = true;
     }
   }
 
-  private setBlur = (_event: any) => {
+  private setBlur = () => {
     if(this.open) {
       this.open = false;
     }
@@ -723,47 +592,38 @@ export class SyTooltip {
 
   private removeTooltip() {
     try {
-      document.body.removeChild(this.el);
+      if (this.el.parentNode === document.body) {
+        document.body.removeChild(this.el);
+      }
       this.addedToBody = false;
     } catch (err: any) {
-      // 에러 처리
-    } 
+      // 에러 무시
+    }
   }
 
-  private parentClick = (event: any) => {
+  private parentClick = (event: MouseEvent) => {
     event.preventDefault();
     this.open = !this.open;
   }
 
-  private handleOutsideClick = (event: any) => {
-    // hover나 focus 트리거는 외부 클릭으로 닫지 않음
-    if (this.trigger !== 'click') {
-      return;
-    }
-
-    // 툴팁이 열려있지 않으면 처리하지 않음
-    if (!this.open || !this.addedToBody) {
+  private handleOutsideClick = (event: MouseEvent) => {
+    if (this.trigger !== 'click' || !this.open || !this.addedToBody) {
       return;
     }
 
     const target = event.target as HTMLElement;
+    const isInTooltip = this.el?.contains(target);
+    const isParent = this.parentDom?.contains(target);
 
-    // 툴팁 또는 부모 요소인지 확인
-    const isInTooltip = this.el && this.el.contains && this.el.contains(target);
-    const isParent = this.parentDom && this.parentDom.contains && this.parentDom.contains(target);
-
-    // 외부 영역 클릭인 경우에만 닫기
     if (!isInTooltip && !isParent) {
       this.open = false;
-    } else {
-      console.log('[TOOLTIP] Click inside tooltip or parent, not closing');
     }
   };
-    
+
   private setOpendelay() {
     this.opendelay = this.opendelay < this.DefaultOpendelay ? this.DefaultOpendelay : this.opendelay;
   }
-  
+
   private setClosedelay() {
     this.closedelay = this.closedelay < this.DefaultClosedelay ? this.DefaultClosedelay : this.closedelay;
   }
@@ -775,17 +635,16 @@ export class SyTooltip {
     return tempDiv.innerText.trim();
   }
 
-
   render() {
     const maxWidthStyle = this.maxWidth && this.maxWidth > 0 ? `${this.maxWidth}px` : null;
-    
+
     return (
       <div class="tooltip-content" style={{ '--tooltip-maxWidth': maxWidthStyle }}>
         <span innerHTML={this.replaceContent}></span>
       </div>
     );
   }
-  // replaceAll 폴리필 함수
+
   private replaceAll(str: string, search: string | RegExp, replacement: string): string {
     if (typeof search === 'string') {
       return str.split(search).join(replacement);
@@ -801,10 +660,9 @@ export class SyTooltip {
     result = this.replaceAll(result, '>', '&gt;');
     result = this.replaceAll(result, '"', '&quot;');
     result = this.replaceAll(result, "'", '&apos;');
-    // result = this.replaceAll(result, '/', '&frasl;');
     result = this.replaceAll(result, '-', '&ndash;');
-    result = result.replace(/\\n/g, '<br>'); // 문자열로서 \n
-    result = result.replace(/\n/g, '<br>');   // 실제 줄바꿈
+    result = result.replace(/\\n/g, '<br>');
+    result = result.replace(/\n/g, '<br>');
     result = result.replace(/\r/g, '');
     return result;
   }
@@ -815,12 +673,9 @@ export class SyTooltip {
     let result = content;
     result = this.replaceAll(result, '\t', '    ');
     result = this.replaceAll(result, ' ', ' ');
-    result = result.replace(/\\n/g, '<br>'); // 문자열로서 \n
-    result = result.replace(/\n/g, '<br>');   // 실제 줄바꿈
+    result = result.replace(/\\n/g, '<br>');
+    result = result.replace(/\n/g, '<br>');
     result = result.replace(/\r/g, '');
     return result;
   }
 }
-
-
-

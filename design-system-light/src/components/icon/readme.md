@@ -25,21 +25,25 @@
 
 ### Used by
 
+ - [sy-avatar](../avatar)
  - [sy-banner-messsage](../banner)
  - [sy-breadcrumb-item](../breadcrumb)
  - [sy-checkbox](../checkbox)
  - [sy-drawer](../drawer)
  - [sy-empty](../empty)
+ - [sy-input](../input)
  - [sy-tag](../tag)
 
 ### Graph
 ```mermaid
 graph TD;
+  sy-avatar --> sy-icon
   sy-banner-messsage --> sy-icon
   sy-breadcrumb-item --> sy-icon
   sy-checkbox --> sy-icon
   sy-drawer --> sy-icon
   sy-empty --> sy-icon
+  sy-input --> sy-icon
   sy-tag --> sy-icon
   style sy-icon fill:#f9f,stroke:#333,stroke-width:4px
 ```

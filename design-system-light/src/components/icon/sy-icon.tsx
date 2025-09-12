@@ -25,7 +25,7 @@ export class SyIcon {
   @Event() selected: EventEmitter<{ value: string }>;
 
   private containerEl: HTMLSpanElement;
-  
+
 
   componentWillLoad() {
     // Load external SVG if path is provided
@@ -62,14 +62,28 @@ export class SyIcon {
     }
   }
 
-  private handleClick = () => {
-    if (this.selectable) {
-      const slotContent = Array.from(this.containerEl.childNodes).map(node => node.textContent).join('');
-      const value = this.path || slotContent;
-      if (value) {
-        this.selected.emit({ value });
-      }
+private handleClick = () => {
+    // selectable이 false이면 아무 작업도 하지 않음
+    if (!this.selectable) {
+      return;
     }
+
+    // 1. path prop이 있으면 최우선으로 path 값을 사용
+    if (this.path) {
+      this.selected.emit({ value: this.path });
+      return;
+    }
+
+    // 2. path가 없을 경우, slot에 있는 첫 번째 자식 요소를 찾음
+    // containerEl은 slot을 감싸는 span이며, firstElementChild는 slot에 실제로 들어온 첫 번째 HTML 요소를 가리킴
+    const slottedElement = this.containerEl.firstElementChild;
+
+    if (slottedElement) {
+      // 텍스트가 아닌 요소의 전체 HTML(예: <svg>...</svg>)을 값으로 사용
+      const value = slottedElement.outerHTML;
+      this.selected.emit({ value });
+    }
+    // path도 없고 slot에 요소도 없으면 아무것도 emit하지 않음
   };
 
   render() {

@@ -264,6 +264,73 @@ export namespace Components {
          */
         "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
     }
+    interface SyInput {
+        /**
+          * @default false
+         */
+        "autofocus": boolean;
+        /**
+          * @default false
+         */
+        "borderless": boolean;
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "clearable": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "getStatus": () => Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">;
+        /**
+          * @default ""
+         */
+        "label": string;
+        "max"?: number;
+        "min"?: number;
+        /**
+          * @default ""
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default ""
+         */
+        "placeholder": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setBlur": () => Promise<void>;
+        "setCustomError": () => Promise<void>;
+        "setFocus": () => Promise<void>;
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium" | "large";
+        /**
+          * @default 'default'
+         */
+        "status": 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default ""
+         */
+        "value": string;
+        /**
+          * @default "text"
+         */
+        "variant": "password" | "search" | "text";
+    }
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -297,6 +364,10 @@ export namespace Components {
           * 팝업을 열기 위한 공개 메서드
          */
         "setOpen": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "sticky": boolean;
         /**
           * @default 'hover'
          */
@@ -430,6 +501,10 @@ export interface SyDrawerCustomEvent<T> extends CustomEvent<T> {
 export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
+}
+export interface SyInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyInputElement;
 }
 export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -576,6 +651,25 @@ declare global {
         prototype: HTMLSyIconElement;
         new (): HTMLSyIconElement;
     };
+    interface HTMLSyInputElementEventMap {
+        "changed": { value: string; isValid: boolean; status: string };
+        "blured": { value: string; isValid: boolean; status: string };
+        "focused": { value: string; isValid: boolean; status: string };
+    }
+    interface HTMLSyInputElement extends Components.SyInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyInputElementEventMap>(type: K, listener: (this: HTMLSyInputElement, ev: SyInputCustomEvent<HTMLSyInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyInputElementEventMap>(type: K, listener: (this: HTMLSyInputElement, ev: SyInputCustomEvent<HTMLSyInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyInputElement: {
+        prototype: HTMLSyInputElement;
+        new (): HTMLSyInputElement;
+    };
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -653,6 +747,7 @@ declare global {
         "sy-drawer": HTMLSyDrawerElement;
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
+        "sy-input": HTMLSyInputElement;
         "sy-popover": HTMLSyPopoverElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
@@ -918,6 +1013,69 @@ declare namespace LocalJSX {
          */
         "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
     }
+    interface SyInput {
+        /**
+          * @default false
+         */
+        "autofocus"?: boolean;
+        /**
+          * @default false
+         */
+        "borderless"?: boolean;
+        /**
+          * @default false
+         */
+        "clearable"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ""
+         */
+        "label"?: string;
+        "max"?: number;
+        "min"?: number;
+        /**
+          * @default ""
+         */
+        "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        "onBlured"?: (event: SyInputCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        "onChanged"?: (event: SyInputCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        "onFocused"?: (event: SyInputCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        /**
+          * @default ""
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium" | "large";
+        /**
+          * @default 'default'
+         */
+        "status"?: 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default ""
+         */
+        "value"?: string;
+        /**
+          * @default "text"
+         */
+        "variant"?: "password" | "search" | "text";
+    }
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -943,6 +1101,10 @@ declare namespace LocalJSX {
           * @default 'bottom'
          */
         "position"?: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+        /**
+          * @default false
+         */
+        "sticky"?: boolean;
         /**
           * @default 'hover'
          */
@@ -1079,6 +1241,7 @@ declare namespace LocalJSX {
         "sy-drawer": SyDrawer;
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
+        "sy-input": SyInput;
         "sy-popover": SyPopover;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
@@ -1102,6 +1265,7 @@ declare module "@stencil/core" {
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
+            "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
             /**
              * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
              * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
