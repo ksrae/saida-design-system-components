@@ -19,6 +19,7 @@
 | `open`       | `open`       |             | `boolean`                                                                                                                                                        | `false`    |
 | `opendelay`  | `opendelay`  |             | `number`                                                                                                                                                         | `0`        |
 | `position`   | `position`   |             | `"bottom" \| "bottomLeft" \| "bottomRight" \| "left" \| "leftBottom" \| "leftTop" \| "right" \| "rightBottom" \| "rightTop" \| "top" \| "topLeft" \| "topRight"` | `'bottom'` |
+| `sticky`     | `sticky`     |             | `boolean`                                                                                                                                                        | `false`    |
 | `trigger`    | `trigger`    |             | `"click" \| "focus" \| "hover" \| "null"`                                                                                                                        | `'hover'`  |
 
 

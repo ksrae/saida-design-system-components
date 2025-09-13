@@ -331,6 +331,76 @@ export namespace Components {
          */
         "variant": "password" | "search" | "text";
     }
+    interface SyInputNumber {
+        /**
+          * @default false
+         */
+        "autofocus": boolean;
+        /**
+          * @default false
+         */
+        "borderless": boolean;
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
+        "decimalPlaces"?: number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "getStatus": () => Promise<"" | "custom" | "valueMissing" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">;
+        /**
+          * @default ""
+         */
+        "label": string;
+        /**
+          * @default Number.MAX_SAFE_INTEGER
+         */
+        "max": number;
+        /**
+          * @default Number.MIN_SAFE_INTEGER
+         */
+        "min": number;
+        /**
+          * @default ""
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "rounding"?: 'round' | 'ceil' | 'floor';
+        "setBlur": () => Promise<void>;
+        "setClear": () => Promise<void>;
+        "setCustomError": () => Promise<void>;
+        "setFocus": () => Promise<void>;
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium" | "large";
+        /**
+          * @default 'default'
+         */
+        "status": 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default 1
+         */
+        "step": number;
+        "stepDown": (n?: number) => Promise<void>;
+        "stepUp": (n?: number) => Promise<void>;
+        /**
+          * @default ''
+         */
+        "value": string | number;
+    }
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -506,6 +576,10 @@ export interface SyInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyInputElement;
 }
+export interface SyInputNumberCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyInputNumberElement;
+}
 export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSySplitPanelElement;
@@ -670,6 +744,25 @@ declare global {
         prototype: HTMLSyInputElement;
         new (): HTMLSyInputElement;
     };
+    interface HTMLSyInputNumberElementEventMap {
+        "changed": { value: number | null; isValid: boolean; status: string };
+        "blured": { value: number | null; isValid: boolean; status: string };
+        "focused": { value: number | null; isValid: boolean; status: string };
+    }
+    interface HTMLSyInputNumberElement extends Components.SyInputNumber, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyInputNumberElementEventMap>(type: K, listener: (this: HTMLSyInputNumberElement, ev: SyInputNumberCustomEvent<HTMLSyInputNumberElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyInputNumberElementEventMap>(type: K, listener: (this: HTMLSyInputNumberElement, ev: SyInputNumberCustomEvent<HTMLSyInputNumberElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyInputNumberElement: {
+        prototype: HTMLSyInputNumberElement;
+        new (): HTMLSyInputNumberElement;
+    };
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -748,6 +841,7 @@ declare global {
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
         "sy-input": HTMLSyInputElement;
+        "sy-input-number": HTMLSyInputNumberElement;
         "sy-popover": HTMLSyPopoverElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
@@ -1076,6 +1170,69 @@ declare namespace LocalJSX {
          */
         "variant"?: "password" | "search" | "text";
     }
+    interface SyInputNumber {
+        /**
+          * @default false
+         */
+        "autofocus"?: boolean;
+        /**
+          * @default false
+         */
+        "borderless"?: boolean;
+        "decimalPlaces"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ""
+         */
+        "label"?: string;
+        /**
+          * @default Number.MAX_SAFE_INTEGER
+         */
+        "max"?: number;
+        /**
+          * @default Number.MIN_SAFE_INTEGER
+         */
+        "min"?: number;
+        /**
+          * @default ""
+         */
+        "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        "onBlured"?: (event: SyInputNumberCustomEvent<{ value: number | null; isValid: boolean; status: string }>) => void;
+        "onChanged"?: (event: SyInputNumberCustomEvent<{ value: number | null; isValid: boolean; status: string }>) => void;
+        "onFocused"?: (event: SyInputNumberCustomEvent<{ value: number | null; isValid: boolean; status: string }>) => void;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        "rounding"?: 'round' | 'ceil' | 'floor';
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium" | "large";
+        /**
+          * @default 'default'
+         */
+        "status"?: 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default 1
+         */
+        "step"?: number;
+        /**
+          * @default ''
+         */
+        "value"?: string | number;
+    }
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -1242,6 +1399,7 @@ declare namespace LocalJSX {
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
         "sy-input": SyInput;
+        "sy-input-number": SyInputNumber;
         "sy-popover": SyPopover;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
@@ -1266,6 +1424,7 @@ declare module "@stencil/core" {
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
+            "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
             /**
              * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
              * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.

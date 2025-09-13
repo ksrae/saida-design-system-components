@@ -10,9 +10,177 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+    <h1>input-number</h1>
+
+    <div class="test-case">
+      <h3>Default</h3>
+      <sy-input-number label="Default Input"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Autofocus</h3>
+      <p>페이지 로드 시 이 입력 필드에 자동으로 포커스됩니다.</p>
+      <sy-input-number autofocus label="Autofocus" value="0"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Borderless</h3>
+      <sy-input-number borderless value="0"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Decimal Places & Rounding</h3>
+      <div class="row">
+        <p>decimalPlaces=2, rounding="round". 값 10.556은 blur 시 10.56이 됩니다.</p>
+        <sy-input-number decimalPlaces="2" rounding="round" value="10.556" label="Round to 2 decimal places"></sy-input-number>
+        <p>decimalPlaces=0, rounding="ceil". 값 10.5는 blur 시 11이 됩니다.</p>
+        <sy-input-number decimalPlaces="0" rounding="ceil" value="10.5" label="Ceil"></sy-input-number>
+        <p>decimalPlaces=0, rounding="floor". 값 10.5는 blur 시 10이 됩니다.</p>
+        <sy-input-number decimalPlaces="0" rounding="floor" value="10.5" label="Floor"></sy-input-number>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <h3>Disabled</h3>
+      <sy-input-number disabled label="Disabled Input" value="123"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Label</h3>
+      <sy-input-number label="Your Age"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Min / Max</h3>
+      <p>값은 0과 10 사이로 제한됩니다.</p>
+      <sy-input-number min="0" max="10" value="5" label="Min: 0, Max: 10"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Prefix / Suffix (Slots)</h3>
+      <div class="row">
+        <sy-input-number label="Prefix">
+            <span slot="prefix">$</span>
+        </sy-input-number>
+        <sy-input-number label="Suffix">
+            <span slot="suffix">Kg</span>
+        </sy-input-number>
+        <sy-input-number label="Both Prefix and Suffix" value="100">
+            <span slot="prefix">$</span>
+            <span slot="suffix">/ unit</span>
+        </sy-input-number>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <h3>Readonly</h3>
+      <sy-input-number readonly label="Readonly Input" value="You can't change this"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Required</h3>
+      <p>이 입력 필드는 폼 안에 있으며 필수 항목입니다. 비워두고 제출해보세요.</p>
+      <form onsubmit="event.preventDefault(); alert('Form is valid and submitted!'); this.querySelector('sy-input-number').reportValidity();">
+        <sy-input-number required label="Required Field"></sy-input-number>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div class="test-case">
+      <h3>Status</h3>
+      <div class="row">
+        <sy-input-number status="default" label="Default Status"></sy-input-number>
+        <sy-input-number status="warning" label="Warning Status"></sy-input-number>
+        <sy-input-number status="error" label="Error Status" value="abc"></sy-input-number>
+        <sy-input-number status="success" label="Success Status"></sy-input-number>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <h3>Size</h3>
+      <div class="row">
+        <sy-input-number size="small" label="Small"></sy-input-number>
+        <sy-input-number size="medium" label="Medium (Default)"></sy-input-number>
+        <sy-input-number size="large" label="Large"></sy-input-number>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <h3>Step</h3>
+      <p>값이 10 단위로 증감합니다.</p>
+      <sy-input-number step="10" label="Step by 10" value="50"></sy-input-number>
+      <p>값이 0.1 단위로 증감합니다.</p>
+      <sy-input-number step="0.1" label="Step by 0.1" value="0"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Initial Value</h3>
+      <sy-input-number value="99" label="Initial Value"></sy-input-number>
+    </div>
+
+    <div class="test-case">
+      <h3>Methods: setFocus() / setBlur()</h3>
+      <p>1초 후 포커스, 4초 후 블러 처리됩니다.</p>
+      <sy-input-number id="inputnumberFocusElem"></sy-input-number>
+      <p id="inputnumberFocusResult"></p>
+      <script>
+        (() => {
+          const elem = document.querySelector('#inputnumberFocusElem');
+          const result = document.querySelector('#inputnumberFocusResult');
+
+          if (elem && result) {
+            setTimeout(() => {
+              elem.setFocus();
+            }, 1000);
+
+            setTimeout(() => {
+              elem.setBlur();
+            }, 4000);
+
+            const handleFocus = () => { result.textContent = 'Status: Focused'; };
+            const handleBlur = () => { result.textContent = 'Status: Blurred'; };
+
+            elem.addEventListener('focused', handleFocus);
+            elem.addEventListener('blured', handleBlur);
+
+            window.addEventListener('beforeunload', () => {
+              elem.removeEventListener('focused', handleFocus);
+              elem.removeEventListener('blured',handleBlur);
+            });
+          }
+        })();
+      </script>
+    </div>
+
+    <div class="test-case">
+      <h3>Event: changed</h3>
+      <p>값이 변경될 때마다 아래에 detail 객체가 출력됩니다.</p>
+      <sy-input-number id="inputnumberChanged" label="Change me"></sy-input-number>
+      <p id="inputnumberChangedResult"></p>
+       <script>
+        (() => {
+          const elem = document.querySelector("#inputnumberChanged");
+          const result = document.querySelector("#inputnumberChangedResult");
+
+          if (elem && result) {
+            const handleChanged = (e) => {
+              console.log(e.detail);
+              result.textContent = `e.detail = ${JSON.stringify(e.detail)}`;
+            };
+
+            elem.addEventListener("changed", handleChanged);
+
+            window.addEventListener("beforeunload", () => {
+              elem.removeEventListener("changed", handleChanged);
+            });
+          }
+        })();
+      </script>
+    </div>
+
     <h2>Input</h2>
   <div class="test-case flex-col">
-        <h2>Variants</h2>
+        <h3>Variants</h3>
         <sy-input variant="text" placeholder="variant: text (default)"></sy-input>
         <sy-input variant="password" placeholder="variant: password"></sy-input>
         <sy-input variant="search" placeholder="variant: search"></sy-input>
@@ -20,7 +188,7 @@
 
       <!-- Sizes -->
       <div class="test-case flex-col">
-        <h2>Sizes</h2>
+        <h3>Sizes</h3>
         <sy-input size="small" placeholder="size: small"></sy-input>
         <sy-input size="medium" placeholder="size: medium (default)"></sy-input>
         <sy-input size="large" placeholder="size: large"></sy-input>
@@ -28,7 +196,7 @@
 
       <!-- Statuses -->
       <div class="test-case flex-col">
-        <h2>Statuses</h2>
+        <h3>Statuses</h3>
         <sy-input status="default" value="Status: Default"></sy-input>
         <sy-input status="warning" value="Status: Warning"></sy-input>
         <sy-input status="error" value="Status: Error"></sy-input>
@@ -37,7 +205,7 @@
 
       <!-- Boolean Attributes -->
       <div class="test-case flex-col">
-        <h2>Boolean Attributes</h2>
+        <h3>Boolean Attributes</h3>
         <sy-input placeholder="Default"></sy-input>
         <sy-input borderless placeholder="borderless"></sy-input>
         <sy-input clearable value="clearable (focus me)"></sy-input>
@@ -49,7 +217,7 @@
 
       <!-- Other Attributes -->
       <div class="test-case flex-col">
-        <h2>Other Attributes</h2>
+        <h3>Other Attributes</h3>
         <sy-input label="With a Label"></sy-input>
         <sy-input placeholder="With a placeholder"></sy-input>
         <sy-input value="With a default value"></sy-input>
@@ -59,7 +227,7 @@
 
       <!-- Slots -->
       <div class="test-case flex-col">
-        <h2>Slots (Prefix & Suffix)</h2>
+        <h3>Slots (Prefix & Suffix)</h3>
         <sy-input label="With Prefix Icon">
           <sy-icon slot="prefix"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M240 192C240 147.8 275.8 112 320 112C364.2 112 400 147.8 400 192C400 236.2 364.2 272 320 272C275.8 272 240 236.2 240 192zM448 192C448 121.3 390.7 64 320 64C249.3 64 192 121.3 192 192C192 262.7 249.3 320 320 320C390.7 320 448 262.7 448 192zM144 544C144 473.3 201.3 416 272 416L368 416C438.7 416 496 473.3 496 544L496 552C496 565.3 506.7 576 520 576C533.3 576 544 565.3 544 552L544 544C544 446.8 465.2 368 368 368L272 368C174.8 368 96 446.8 96 544L96 552C96 565.3 106.7 576 120 576C133.3 576 144 565.3 144 552L144 544z"/></svg></sy-icon>
         </sy-input>
@@ -70,7 +238,7 @@
 
       <!-- Interactive: Events -->
       <div class="test-case">
-        <h2>Interactive: Events</h2>
+        <h3>Interactive: Events</h3>
         <p>Listen for <strong>changed</strong>, <strong>focused</strong>, and <strong>blured</strong> events.</p>
         <sy-input id="inputEvents" clearable placeholder="Type here..."></sy-input>
         <p>Last event: <span id="eventResult"></span></p>
@@ -78,7 +246,7 @@
 
       <!-- Interactive: Methods -->
       <div class="test-case">
-        <h2>Interactive: Methods</h2>
+        <h3>Interactive: Methods</h3>
         <p>Call public methods like <strong>setFocus()</strong> and <strong>setBlur()</strong>.</p>
         <sy-input id="inputMethods" placeholder="Click buttons below"></sy-input>
         <div class="flex-row">
@@ -89,7 +257,7 @@
 
       <!-- Interactive: Form Validation -->
       <div class="test-case">
-        <h2>Interactive: Form Validation</h2>
+        <h3>Interactive: Form Validation</h3>
         <form id="testForm">
           <sy-input id="validationInput" label="Required Field" required min="3">
             <div slot="error">This is a custom error message from a slot.</div>

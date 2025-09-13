@@ -32,6 +32,7 @@
  - [sy-drawer](../drawer)
  - [sy-empty](../empty)
  - [sy-input](../input)
+ - [sy-input-number](../input-number)
  - [sy-tag](../tag)
 
 ### Graph
@@ -44,6 +45,7 @@ graph TD;
   sy-drawer --> sy-icon
   sy-empty --> sy-icon
   sy-input --> sy-icon
+  sy-input-number --> sy-icon
   sy-tag --> sy-icon
   style sy-icon fill:#f9f,stroke:#333,stroke-width:4px
 ```
