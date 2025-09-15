@@ -179,6 +179,220 @@
       }); // End of DOMContentLoaded listener
     </script>
 
+        <h2>Textarea</h2>
+        <div class="test-case flex-col">
+          <h2>Variants & Sizes</h2>
+          <sy-textarea size="small" placeholder="small"></sy-textarea>
+          <sy-textarea size="medium" placeholder="medium"></sy-textarea>
+          <sy-textarea size="large" placeholder="large"></sy-textarea>
+        </div>
+
+        <div class="test-case flex-col">
+          <h2>Boolean Attributes</h2>
+          <sy-textarea borderless placeholder="borderless"></sy-textarea>
+          <sy-textarea clearable value="clear me" placeholder="clearable"></sy-textarea>
+          <sy-textarea disabled placeholder="disabled"></sy-textarea>
+          <sy-textarea readonly value="readonly text"></sy-textarea>
+          <sy-textarea required label="required"></sy-textarea>
+          <sy-textarea autofocus placeholder="autofocus"></sy-textarea>
+        </div>
+
+        <div class="test-case flex-col">
+          <h2>Other Attributes</h2>
+          <sy-textarea label="With a Label"></sy-textarea>
+          <sy-textarea placeholder="With a placeholder"></sy-textarea>
+          <sy-textarea value="With a default value"></sy-textarea>
+          <sy-textarea min="3" label="min length: 3"></sy-textarea>
+          <sy-textarea max="20" label="max length: 20"></sy-textarea>
+          <sy-textarea counter max="100" label="With Counter" value="hello"></sy-textarea>
+        </div>
+
+
+        <div class="test-case">
+          <h2>Interactive: Events</h2>
+          <p>Listen for <strong>changed</strong>, <strong>focused</strong>, and <strong>blured</strong> events.</p>
+          <sy-textarea id="textareaEvents" clearable placeholder="Type here..."></sy-textarea>
+          <p>Last event: <span id="textareaEventResult"></span></p>
+        </div>
+
+        <div class="test-case">
+          <h2>Interactive: Methods</h2>
+          <p>Call public methods like <strong>setFocus()</strong> and <strong>setBlur()</strong>.</p>
+          <sy-textarea id="textareaMethods" placeholder="Click buttons below"></sy-textarea>
+          <div class="flex-row">
+            <button id="textareaFocusBtn">setFocus()</button>
+            <button id="textareaBlurBtn">setBlur()</button>
+          </div>
+        </div>
+
+        <div class="test-case">
+          <h2>Interactive: Form Validation</h2>
+          
+          <!-- Test 1: Required Field Validation -->
+          <h3>1. Required Field Validation</h3>
+          <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+            <form id="formTextarea">
+              <sy-textarea label="name" id="formTextareaId" name="formTextareaName" required placeholder="Required input" style="width:100%">
+                <div slot="error">
+                  <p class="textareaErrorMessage">This field sets a custom error message.</p>
+                </div>
+              </sy-textarea>
+              <div style="margin-top: 10px;">
+                <button type="submit">Submit Form</button>
+                <button type="reset">Reset Form</button>
+              </div>
+            </form>
+            <p id="formTextareaResult"></p>
+          </div>
+
+          <!-- Test 2: Custom Error -->
+          <h3>2. Custom Error Test</h3>
+          <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+            <form id="formCustomTextarea">
+              <sy-textarea label="customError" id="formCustomTextareaId" name="formCustomTextareaName" placeholder="Custom error input" style="width:100%">
+                <div slot="error">
+                  <p class="customTextareaErrorMessage">This field sets a custom error message.</p>
+                </div>
+              </sy-textarea>
+              <div style="margin-top: 10px;">
+                <button type="submit">Set Custom Error and Submit Form</button>
+                <button type="reset">Clear Custom Error and Reset Form</button>
+              </div>
+            </form>
+            <p id="formCustomTextareaResult"></p>
+          </div>
+
+          <!-- Test 3: Original Validation Test -->
+          <h3>3. Original Validation Methods</h3>
+          <form id="textareaTestForm">
+            <sy-textarea id="validationTextarea" label="Required Field" required>
+              <div slot="error">This is a textarea error message from a slot.</div>
+            </sy-textarea>
+            <p>Status: <span id="validationTextareaResult"></span></p>
+            <div class="flex-row">
+              <button type="button" id="textareaCheckBtn">checkValidity()</button>
+              <button type="button" id="textareaReportBtn">reportValidity()</button>
+              <button type="button" id="textareaSetErrorBtn">setCustomError()</button>
+              <button type="button" id="textareaClearErrorBtn">clearCustomError()</button>
+              <button type="reset">Reset Form</button>
+            </div>
+          </form>
+        </div>
+
+        
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            // Textarea Events Test
+            const taEvent = document.querySelector('#textareaEvents');
+            const taEventResult = document.querySelector('#textareaEventResult');
+            taEvent.addEventListener('changed', (e) => {
+              taEventResult.textContent = `changed: { value: "${e.detail.value}", isValid: ${e.detail.isValid} }`;
+            });
+            taEvent.addEventListener('focused', () => taEventResult.textContent = 'focused');
+            taEvent.addEventListener('blured', () => taEventResult.textContent = 'blured');
+
+            // Textarea Methods Test
+            const taMethods = document.querySelector('#textareaMethods');
+            document.querySelector('#textareaFocusBtn').addEventListener('click', () => taMethods.setFocus());
+            document.querySelector('#textareaBlurBtn').addEventListener('click', () => taMethods.setBlur());
+
+            // Test 1: Required Field Validation
+            (() => {
+                const form = document.getElementById('formTextarea');
+                const syTextarea1Element = document.getElementById('formTextareaId');
+                const resultElement = document.getElementById('formTextareaResult');
+
+                form.addEventListener('submit', (event) => {
+                  event.preventDefault();
+                  formValidity('formTextareaId', resultElement, form);
+                });
+
+                form.addEventListener('reset', (event) => {
+                  resultElement.innerHTML = '';
+                });
+            })();
+
+            // Test 2: Custom Error
+            (() => {
+                const form = document.getElementById('formCustomTextarea');
+                const syTextareaElement = document.getElementById('formCustomTextareaId');
+                const resultElement = document.getElementById('formCustomTextareaResult');
+
+                form.addEventListener('reset', (event) => {
+                    event.preventDefault();
+                    syTextareaElement.clearCustomError();
+                    syTextareaElement.formResetCallback();
+                    resultElement.innerHTML = '';
+                });
+
+                form.addEventListener('submit', (event) => {
+                  event.preventDefault();
+                  syTextareaElement.setCustomError();
+                  formValidity('formCustomTextareaId', resultElement, form);
+                });
+            })();
+
+            // Common validation function
+            function formValidity(id, resultElement, form) {
+              resultElement.innerHTML = '';
+
+              const syCheckElementValidity = form.elements[id].checkValidity();
+              resultElement.innerHTML += 'Check Validity: ' + syCheckElementValidity + '<br/>';
+
+              if (syCheckElementValidity) {
+                resultElement.innerHTML += '<h4>Form Submitted Successfully!</h4>';
+
+                const formData = new FormData(form);
+                const formDataObj = Object.fromEntries(formData);
+                
+                for(let obj in formDataObj) {
+                    resultElement.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+                }
+              } else {
+                  console.log('error exists');
+              }
+            }
+
+            // Test 3: Original Validation Test
+            const validationTextarea = document.querySelector('#validationTextarea');
+            const validationTextareaResult = document.querySelector('#validationTextareaResult');
+
+            const updateTextareaValidation = async () => {
+              const isValid = await validationTextarea.checkValidity();
+              const message = validationTextarea.validationMessage;
+              const status = await validationTextarea.getStatus();
+              validationTextareaResult.textContent = `isValid: ${isValid}, Status: ${status || 'valid'}, Message: "${message}"`;
+            };
+
+            validationTextarea.addEventListener('changed', updateTextareaValidation);
+            document.querySelector('#textareaTestForm').addEventListener('reset', () => setTimeout(updateTextareaValidation, 0));
+
+            document.querySelector('#textareaCheckBtn').addEventListener('click', async () => {
+              const isValid = await validationTextarea.checkValidity();
+              alert('checkValidity() returned: ' + isValid);
+              updateTextareaValidation();
+            });
+
+            document.querySelector('#textareaReportBtn').addEventListener('click', async () => {
+              const isValid = await validationTextarea.reportValidity();
+              alert('reportValidity() returned: ' + isValid);
+              updateTextareaValidation();
+            });
+
+            document.querySelector('#textareaSetErrorBtn').addEventListener('click', () => {
+              validationTextarea.setCustomError();
+              updateTextareaValidation();
+            });
+
+            document.querySelector('#textareaClearErrorBtn').addEventListener('click', () => {
+              validationTextarea.clearCustomError();
+              updateTextareaValidation();
+            });
+
+            // Initial status check removed to avoid showing validation messages on load
+          });
+        </script>
+
 
     <h2>Popover</h2>
     <style>

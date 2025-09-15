@@ -447,6 +447,87 @@ export namespace Components {
          */
         "variant": 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
+    interface SyTextarea {
+        /**
+          * @default false
+         */
+        "autofocus": boolean;
+        /**
+          * @default false
+         */
+        "borderless": boolean;
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "clearable": boolean;
+        /**
+          * @default false
+         */
+        "counter": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "getStatus": () => Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">;
+        /**
+          * @default ""
+         */
+        "label": string;
+        /**
+          * @default Number.MAX_SAFE_INTEGER
+         */
+        "max": number;
+        /**
+          * @default 0
+         */
+        "min": number;
+        /**
+          * @default ""
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default ""
+         */
+        "placeholder": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default "none"
+         */
+        "resize": "none" | "horizontal" | "vertical" | "both";
+        /**
+          * @default 4
+         */
+        "rows": number;
+        "setBlur": () => Promise<void>;
+        "setCustomError": () => Promise<void>;
+        "setFocus": () => Promise<void>;
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium" | "large";
+        /**
+          * @default 'default'
+         */
+        "status": 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default ""
+         */
+        "value": string;
+    }
     interface SyTooltip {
         /**
           * @default 0
@@ -513,6 +594,10 @@ export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
 export interface SyTagCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyTagElement;
+}
+export interface SyTextareaCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTextareaElement;
 }
 declare global {
     interface HTMLSyAvatarElementEventMap {
@@ -728,6 +813,25 @@ declare global {
         prototype: HTMLSyTagElement;
         new (): HTMLSyTagElement;
     };
+    interface HTMLSyTextareaElementEventMap {
+        "changed": { value: string; length: number; isValid: boolean; status: string };
+        "blured": { value: string; isValid: boolean; status: string };
+        "focused": { value: string; isValid: boolean; status: string };
+    }
+    interface HTMLSyTextareaElement extends Components.SyTextarea, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTextareaElementEventMap>(type: K, listener: (this: HTMLSyTextareaElement, ev: SyTextareaCustomEvent<HTMLSyTextareaElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTextareaElementEventMap>(type: K, listener: (this: HTMLSyTextareaElement, ev: SyTextareaCustomEvent<HTMLSyTextareaElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTextareaElement: {
+        prototype: HTMLSyTextareaElement;
+        new (): HTMLSyTextareaElement;
+    };
     interface HTMLSyTooltipElement extends Components.SyTooltip, HTMLStencilElement {
     }
     var HTMLSyTooltipElement: {
@@ -752,6 +856,7 @@ declare global {
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
         "sy-tag": HTMLSyTagElement;
+        "sy-textarea": HTMLSyTextareaElement;
         "sy-tooltip": HTMLSyTooltipElement;
     }
 }
@@ -1194,6 +1299,83 @@ declare namespace LocalJSX {
          */
         "variant"?: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
+    interface SyTextarea {
+        /**
+          * @default false
+         */
+        "autofocus"?: boolean;
+        /**
+          * @default false
+         */
+        "borderless"?: boolean;
+        /**
+          * @default false
+         */
+        "clearable"?: boolean;
+        /**
+          * @default false
+         */
+        "counter"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ""
+         */
+        "label"?: string;
+        /**
+          * @default Number.MAX_SAFE_INTEGER
+         */
+        "max"?: number;
+        /**
+          * @default 0
+         */
+        "min"?: number;
+        /**
+          * @default ""
+         */
+        "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        "onBlured"?: (event: SyTextareaCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        "onChanged"?: (event: SyTextareaCustomEvent<{ value: string; length: number; isValid: boolean; status: string }>) => void;
+        "onFocused"?: (event: SyTextareaCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        /**
+          * @default ""
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default "none"
+         */
+        "resize"?: "none" | "horizontal" | "vertical" | "both";
+        /**
+          * @default 4
+         */
+        "rows"?: number;
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium" | "large";
+        /**
+          * @default 'default'
+         */
+        "status"?: 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default ""
+         */
+        "value"?: string;
+    }
     interface SyTooltip {
         /**
           * @default 0
@@ -1246,6 +1428,7 @@ declare namespace LocalJSX {
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
         "sy-tag": SyTag;
+        "sy-textarea": SyTextarea;
         "sy-tooltip": SyTooltip;
     }
 }
@@ -1274,6 +1457,7 @@ declare module "@stencil/core" {
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
+            "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
             "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;
         }
     }
