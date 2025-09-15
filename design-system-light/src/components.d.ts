@@ -417,6 +417,33 @@ export namespace Components {
          */
         "type": 'horizontal' | 'vertical';
     }
+    interface SySwitch {
+        /**
+          * @default false
+         */
+        "checked": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "label": string;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default ''
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium';
+    }
     interface SyTag {
         /**
           * @default false
@@ -590,6 +617,10 @@ export interface SyInputCustomEvent<T> extends CustomEvent<T> {
 export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSySplitPanelElement;
+}
+export interface SySwitchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSySwitchElement;
 }
 export interface SyTagCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -795,6 +826,23 @@ declare global {
         prototype: HTMLSySplitPanelElement;
         new (): HTMLSySplitPanelElement;
     };
+    interface HTMLSySwitchElementEventMap {
+        "changed": boolean;
+    }
+    interface HTMLSySwitchElement extends Components.SySwitch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSySwitchElementEventMap>(type: K, listener: (this: HTMLSySwitchElement, ev: SySwitchCustomEvent<HTMLSySwitchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSySwitchElementEventMap>(type: K, listener: (this: HTMLSySwitchElement, ev: SySwitchCustomEvent<HTMLSySwitchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSySwitchElement: {
+        prototype: HTMLSySwitchElement;
+        new (): HTMLSySwitchElement;
+    };
     interface HTMLSyTagElementEventMap {
         "selected": { tag: HTMLElement };
         "removed": { tag: HTMLElement };
@@ -855,6 +903,7 @@ declare global {
         "sy-popover": HTMLSyPopoverElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
+        "sy-switch": HTMLSySwitchElement;
         "sy-tag": HTMLSyTagElement;
         "sy-textarea": HTMLSyTextareaElement;
         "sy-tooltip": HTMLSyTooltipElement;
@@ -1267,6 +1316,34 @@ declare namespace LocalJSX {
          */
         "type"?: 'horizontal' | 'vertical';
     }
+    interface SySwitch {
+        /**
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "label"?: string;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default ''
+         */
+        "name"?: string;
+        "onChanged"?: (event: SySwitchCustomEvent<boolean>) => void;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium';
+    }
     interface SyTag {
         /**
           * @default false
@@ -1427,6 +1504,7 @@ declare namespace LocalJSX {
         "sy-popover": SyPopover;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
+        "sy-switch": SySwitch;
         "sy-tag": SyTag;
         "sy-textarea": SyTextarea;
         "sy-tooltip": SyTooltip;
@@ -1456,6 +1534,7 @@ declare module "@stencil/core" {
             "sy-popover": LocalJSX.SyPopover & JSXBase.HTMLAttributes<HTMLSyPopoverElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
+            "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
             "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;
