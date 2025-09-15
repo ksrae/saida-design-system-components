@@ -91,7 +91,7 @@
       <div class="test-case">
         <h2>Interactive: Form Validation</h2>
         <form id="testForm">
-          <sy-input id="validationInput" label="Required Field" required min="3">
+          <sy-input id="validationInput" label="Required Field" required>
             <div slot="error">This is a custom error message from a slot.</div>
           </sy-input>
           <p>Status: <span id="validationResult"></span></p>
@@ -177,6 +177,102 @@
         updateValidationStatus();
 
       }); // End of DOMContentLoaded listener
+    </script>
+
+    <!-- Input Form Validation Tests -->
+    <h2>Input Form Validation Tests</h2>
+    
+    <!-- Test 1: Required Field Validation -->
+    <h3>1. Required Field Validation</h3>
+    <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+      <form id="formInput">
+        <sy-input label="name" id="formInputId" name="formInputName" required placeholder="Required input" style="width:100%">
+          <div slot="error">
+            <p class="inputErrorMessage">This field sets a custom error message.</p>
+          </div>
+        </sy-input>
+        <div style="margin-top: 10px;">
+          <button type="submit">Submit Form</button>
+          <button type="reset">Reset Form</button>
+        </div>
+      </form>
+      <p id="formInputResult"></p>
+    </div>
+
+    <!-- Test 2: Custom Error -->
+    <h3>2. Custom Error Test</h3>
+    <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+      <form id="formCustomInput">
+        <sy-input label="customError" id="formCustomInputId" name="formCustomInputName" placeholder="Custom error input" style="width:100%">
+          <div slot="error">
+            <p class="customInputErrorMessage">This field sets a custom error message.</p>
+          </div>
+        </sy-input>
+        <div style="margin-top: 10px;">
+          <button type="submit">Set Custom Error and Submit Form</button>
+          <button type="reset">Clear Custom Error and Reset Form</button>
+        </div>
+      </form>
+      <p id="formCustomInputResult"></p>
+    </div>
+
+    <script>
+      // Test 1: Required Field Validation
+      (() => {
+          const form = document.getElementById('formInput');
+          const syInput1Element = document.getElementById('formInputId');
+          const resultElement = document.getElementById('formInputResult');
+
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            formValidityInput('formInputId', resultElement, form);
+          });
+
+          form.addEventListener('reset', (event) => {
+            resultElement.innerHTML = '';
+          });
+      })();
+
+      // Test 2: Custom Error
+      (() => {
+          const form = document.getElementById('formCustomInput');
+          const syInputElement = document.getElementById('formCustomInputId');
+          const resultElement = document.getElementById('formCustomInputResult');
+
+          form.addEventListener('reset', (event) => {
+              event.preventDefault();
+              syInputElement.clearCustomError();
+              syInputElement.formResetCallback();
+              resultElement.innerHTML = '';
+          });
+
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            syInputElement.setCustomError();
+            formValidityInput('formCustomInputId', resultElement, form);
+          });
+      })();
+
+      // Common validation function for input
+      async function formValidityInput(id, resultElement, form) {
+        resultElement.innerHTML = '';
+
+        const syCheckElementValidity = await form.elements[id].checkValidity();
+        resultElement.innerHTML += 'Check Validity: ' + syCheckElementValidity + '<br/>';
+
+        if (syCheckElementValidity) {
+          resultElement.innerHTML += '<h4>Form Submitted Successfully!</h4>';
+
+          const formData = new FormData(form);
+          const formDataObj = Object.fromEntries(formData);
+          
+          for(let obj in formDataObj) {
+              resultElement.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+          }
+        } else {
+            console.log('error exists');
+        }
+      }
     </script>
 
         <h2>Textarea</h2>
@@ -333,10 +429,10 @@
             })();
 
             // Common validation function
-            function formValidity(id, resultElement, form) {
+            async function formValidity(id, resultElement, form) {
               resultElement.innerHTML = '';
 
-              const syCheckElementValidity = form.elements[id].checkValidity();
+              const syCheckElementValidity = await form.elements[id].checkValidity();
               resultElement.innerHTML += 'Check Validity: ' + syCheckElementValidity + '<br/>';
 
               if (syCheckElementValidity) {

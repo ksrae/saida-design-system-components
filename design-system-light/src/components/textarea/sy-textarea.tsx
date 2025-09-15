@@ -63,6 +63,14 @@ export class SyTextarea {
     this.updateValidityState();
   }
 
+  componentWillLoad() {
+    this.initialValue = this.value || '';
+    this.charCount = this.initialValue.length;
+    this.formSubmitListener();
+    this.handleSlotChange();
+    this.updateValidityState();
+  }
+
   componentDidLoad() {
     this.textarea = this.hostElement.querySelector('textarea') as HTMLTextAreaElement;
 
