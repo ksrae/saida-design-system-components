@@ -34,6 +34,7 @@
  - [sy-input](../input)
  - [sy-input-number](../input-number)
  - [sy-tag](../tag)
+ - [sy-textarea](../textarea)
 
 ### Graph
 ```mermaid
@@ -47,6 +48,7 @@ graph TD;
   sy-input --> sy-icon
   sy-input-number --> sy-icon
   sy-tag --> sy-icon
+  sy-textarea --> sy-icon
   style sy-icon fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

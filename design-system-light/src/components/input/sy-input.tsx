@@ -127,11 +127,7 @@ export class SyInput {
 
   componentWillLoad() {
     this.initialValue = this.value;
-    // ========================================================================
-    // ★★★★★ 수정된 부분 ★★★★★
-    // 슬롯 상태 확인을 첫 렌더링 전에 수행하여 경고를 방지합니다.
     this.handleSlotChange();
-    // ========================================================================
     this.updateValidityState();
   }
 
@@ -199,9 +195,26 @@ export class SyInput {
 
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
-    if (this.noNativeValidity || this.hasSlotErrorMessage) {
-      e.preventDefault();
+    const hasErrorSlot = !!this.hostElement.querySelector('[slot="error"]');
+    if (this.noNativeValidity || hasErrorSlot) {
+      const errorSlotElement = this.hostElement.querySelector('[slot="error"]');
+      const hasContent = errorSlotElement?.textContent?.trim();
+      if (hasContent) {
+        this.hasSlotErrorMessage = true;
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.input) this.input.setCustomValidity('');
+        this.internals?.setValidity({ customError: true }, ' ');
+      } else {
+        this.hasSlotErrorMessage = false;
+      }
+    } else {
+      this.hasSlotErrorMessage = false;
+      setTimeout(() => {
+        if (!this.isValid) this.input?.reportValidity();
+      }, 0);
     }
+    this.isValid = false;
   }
 
   // --- Event Handlers ---
@@ -243,10 +256,8 @@ export class SyInput {
     this.passwordvisible = !this.passwordvisible;
   };
 
-  private handleFormSubmit = (e: Event) => {
-    e.preventDefault();
+  private handleFormSubmit = (_e: Event) => {
     this.formSubmitted = true;
-    this.touched = true;
     this.updateValidityState();
   };
 
