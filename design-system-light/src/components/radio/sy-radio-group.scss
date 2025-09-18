@@ -1,0 +1,48 @@
+/* sy-radio-group.scss */
+
+:host(sy-radio-group) {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .radio-group-container {
+      display: contents;
+    }
+
+    fieldset {
+        width: 100%;
+        padding: 0px;
+        border: var(--border-small) none;
+        margin: 0px;
+        display: flex;
+
+        &.radio-group-position-horizontal {
+            flex-direction: row;
+            gap: var(--spacing-xsmall);
+
+            /* 버튼 그룹일 경우 gap을 0으로 설정하여 버튼을 붙임 */
+            &.is-button-group {
+                gap: 0;
+            }
+        }
+
+        &.radio-group-position-vertical {
+            flex-direction: column;
+            gap: var(--spacing-3xsmall);
+
+            /* [추가] vertical일 때도 버튼 그룹이면 gap을 0으로 설정 */
+            &.is-button-group {
+                gap: 0;
+            }
+        }
+    }
+      .error-container {
+        color: var(--required);
+        display: none;
+        padding-top: var(--spacing-3xsmall);
+
+        &.visible-error {
+          display: flex;
+        }
+      }
+}

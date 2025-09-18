@@ -10,7 +10,691 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
-    <h1>input-number</h1>
+    <div class="test-container" style="margin-top:0px;width: 200px;height:100px; margin-left:300px;border:1px solid #000">test
+        <sy-popconfirm
+          id="testPopconfirm"
+          position="bottom"
+          arrow
+          confirm-text="확인"
+          cancel-text="취소"
+        >
+          정말로 이 작업을 수행하시겠습니까?
+        </sy-popconfirm>
+    </div>
+    <div class="controls">
+      <label for="positionSelect">Position:</label>
+      <select id="positionSelect" class="position-select">
+        <option value="top">top</option>
+        <option value="bottom" selected>bottom</option>
+        <option value="left">left</option>
+        <option value="right">right</option>
+        <option value="topLeft">topLeft</option>
+        <option value="topRight">topRight</option>
+        <option value="bottomLeft">bottomLeft</option>
+        <option value="bottomRight">bottomRight</option>
+        <option value="leftTop">leftTop</option>
+        <option value="leftBottom">leftBottom</option>
+        <option value="rightTop">rightTop</option>
+        <option value="rightBottom">rightBottom</option>
+      </select>
+    </div>
+
+    <div class="test-button-container">
+      <sy-button id="testButton" variant="primary">
+        클릭하여 Popconfirm 표시
+      </sy-button>
+    </div>
+
+  </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const positionSelect = document.getElementById('positionSelect');
+    const popconfirm = document.getElementById('testPopconfirm');
+    const testButton = document.getElementById('testButton');
+
+    // Position 변경 이벤트
+    positionSelect.addEventListener('change', (e) => {
+      const newPosition = e.target.value;
+      popconfirm.setAttribute('position', newPosition);
+      console.log('Position 변경:', newPosition);
+    });
+
+    // 버튼 클릭 시 popconfirm 열기
+    testButton.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // popconfirm의 trigger를 'none'으로 설정하고 수동으로 열기
+      popconfirm.setAttribute('trigger', 'none');
+
+      // setOpen 메서드 호출
+      await popconfirm.setOpen();
+      console.log('Popconfirm 열림');
+    });
+
+    popconfirm.addEventListener('visibleChanged', (e) => {
+      console.log('Popconfirm 가시성 변경:', e.detail);
+    });
+  });
+</script>
+
+  <section>
+    <h2>1. 위치 (Position) 테스트</h2>
+    <p>12방향 `position` 속성과 `arrow` 속성을 테스트합니다. 버튼을 클릭하여 확인하세요.</p>
+    <div class="grid-container">
+      <sy-button>
+        topLeft
+        <sy-popconfirm position="topLeft" arrow>
+          <span slot="title">topLeft 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        top
+        <sy-popconfirm position="top" arrow>
+          <span slot="title">top 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        topRight
+        <sy-popconfirm position="topRight" arrow>
+          <span slot="title">topRight 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+       <sy-button>
+        rightTop
+        <sy-popconfirm position="rightTop" arrow>
+          <span slot="title">rightTop 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        leftTop
+        <sy-popconfirm position="leftTop" arrow>
+          <span slot="title">leftTop 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <div></div>
+      <div></div>
+      <sy-button>
+        right
+        <sy-popconfirm position="right" arrow>
+          <span slot="title">right 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        left
+        <sy-popconfirm position="left" arrow>
+          <span slot="title">left 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <div></div>
+      <div></div>
+      <sy-button>
+        rightBottom
+        <sy-popconfirm position="rightBottom" arrow>
+          <span slot="title">rightBottom 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        leftBottom
+        <sy-popconfirm position="leftBottom" arrow>
+          <span slot="title">leftBottom 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        bottomLeft
+        <sy-popconfirm position="bottomLeft" arrow>
+          <span slot="title">bottomLeft 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        bottom
+        <sy-popconfirm position="bottom" arrow>
+          <span slot="title">bottom 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+      <sy-button>
+        bottomRight
+        <sy-popconfirm position="bottomRight" arrow>
+          <span slot="title">bottomRight 위치</span>
+          컨텐츠가 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 주요 속성 (Props) 및 슬롯 (Slots) 테스트</h2>
+
+    <div class="test-case">
+      <p>화살표 없음 (arrow="false")</p>
+      <sy-button>
+        No Arrow
+        <sy-popconfirm position="top" id="test-no-arrow">
+          <span slot="title">화살표가 없습니다.</span>
+          이 Popconfirm은 arrow 속성이 없습니다.
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+
+    <div class="test-case">
+      <p>버튼 텍스트 커스텀 (confirm-text, cancel-text)</p>
+      <sy-button>
+        Custom Text
+        <sy-popconfirm position="top" arrow confirm-text="동의" cancel-text="거절" id="test-custom-text">
+          <span slot="title">버튼 텍스트 변경</span>
+          버튼이 '동의'와 '거절'로 표시됩니다.
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+
+    <div class="test-case">
+      <p>바깥 클릭으로 닫기 비활성화 (closable="false")</p>
+      <sy-button>
+        Not Closable
+        <sy-popconfirm position="top" arrow closable="false" id="test-not-closable">
+          <span slot="title">닫기 비활성화</span>
+          이 Popconfirm은 바깥 영역을 클릭해도 닫히지 않습니다.
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+
+    <div class="test-case">
+      <p>모든 슬롯 사용 (icon, title, default)</p>
+      <sy-button>
+        All Slots
+        <sy-popconfirm position="top" arrow id="test-all-slots">
+          <!-- sy-icon이 없다면 다른 태그로 대체 가능 -->
+          <sy-icon name="warning-solid" slot="icon"></sy-icon>
+          <span slot="title">정말로 삭제하시겠습니까?</span>
+          이 작업은 되돌릴 수 없습니다. 신중하게 결정해주세요.
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. 프로그래밍 방식 제어 (Methods) 테스트</h2>
+    <p><code>trigger="none"</code>으로 설정하고, 외부 버튼으로 <code>show()</code>, <code>hide()</code> 메서드를 호출합니다.</p>
+    <div class="test-case">
+        <div>
+            <!-- 이 버튼은 popconfirm의 부모가 아니므로 trigger 역할을 하지 않음 -->
+            <sy-button id="show-btn">Show Popconfirm</sy-button>
+            <sy-button id="hide-btn">Hide Popconfirm</sy-button>
+        </div>
+
+        <!-- Popconfirm은 body 어딘가에 위치 -->
+        <sy-popconfirm position="bottom" arrow trigger="none" id="programmatic-popconfirm">
+            <span slot="title">프로그래밍 제어</span>
+            외부 버튼으로 제어됩니다.
+        </sy-popconfirm>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. 비활성화 (Disabled) 상태 테스트</h2>
+
+    <div class="test-case">
+      <p>Popconfirm 자체 비활성화 (disabled="true")</p>
+      <sy-button>
+        Component Disabled
+        <sy-popconfirm position="top" disabled id="test-comp-disabled">
+          <span slot="title">열리지 않아야 합니다.</span>
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+
+    <div class="test-case">
+      <p>부모 요소(버튼) 비활성화</p>
+      <sy-button disabled>
+        Parent Disabled
+        <sy-popconfirm position="top" id="test-parent-disabled">
+          <span slot="title">열리지 않아야 합니다.</span>
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. 스크롤 테스트</h2>
+    <p>아래 버튼을 클릭하여 Popconfirm을 연 다음, 페이지를 위아래로 스크롤하여 위치가 올바르게 따라오는지 확인하세요.</p>
+    <div class="scroll-spacer">
+      <sy-button>
+        Scroll Test Trigger
+        <sy-popconfirm position="bottom" arrow id="test-scroll">
+          <span slot="title">스크롤 테스트</span>
+          스크롤해도 저를 따라와야 합니다!
+        </sy-popconfirm>
+      </sy-button>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const logContainer = document.getElementById('event-log');
+
+      // 이벤트 로그 함수
+      function logEvent(e) {
+        console.log(e);
+        const logEntry = document.createElement('div');
+        logEntry.classList.add('log-entry');
+
+        const targetId = e.target.id ? `#${e.target.id}` : `[${e.target.tagName.toLowerCase()}]`;
+        let detail = '';
+        if(e.type === 'syVisibilityChanged') {
+            detail = ` | detail: ${e.detail}`;
+        }
+
+        logEntry.textContent = `> ${e.type} @ ${targetId}${detail}`;
+        logContainer.appendChild(logEntry);
+
+        // 자동 스크롤
+        logContainer.scrollTop = logContainer.scrollHeight;
+      }
+
+      // 이벤트 리스너 (이벤트 버블링 활용)
+      document.body.addEventListener('syConfirm', logEvent);
+      document.body.addEventListener('syCancel', logEvent);
+      document.body.addEventListener('syVisibilityChanged', logEvent);
+
+      // --- 프로그래밍 방식 제어 테스트 ---
+      const programmaticPopconfirm = document.getElementById('programmatic-popconfirm');
+      const showBtn = document.getElementById('show-btn');
+      const hideBtn = document.getElementById('hide-btn');
+
+      showBtn.addEventListener('click', () => {
+        // Popconfirm을 body에 붙이고 위치를 showBtn 기준으로 설정
+        document.body.appendChild(programmaticPopconfirm);
+        programmaticPopconfirm.parentDom = showBtn; // 부모를 동적으로 설정
+        programmaticPopconfirm.show();
+      });
+
+      hideBtn.addEventListener('click', () => {
+        programmaticPopconfirm.hide();
+      });
+    });
+  </script>
+
+
+    <h2>sy-radio & sy-radio-group Test Cases</h2>
+    <!-- Test Case: Position -->
+    <div class="test-case">
+        <h3>Positioning</h3>
+        <div class="row">
+            <div>
+                <p>Horizontal (default): <code>position="horizontal"</code></p>
+                <sy-radio-group name="position-h-group" position="horizontal">
+                    <sy-radio value="h1">Option A</sy-radio>
+                    <sy-radio value="h2">Option B</sy-radio>
+                </sy-radio-group>
+            </div>
+            <div>
+                <p>Vertical: <code>position="vertical"</code></p>
+                <sy-radio-group name="position-v-group" position="vertical">
+                    <sy-radio value="v1">Option X</sy-radio>
+                    <sy-radio value="v2">Option Y</sy-radio>
+                </sy-radio-group>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case: Default -->
+    <div class="test-case">
+        <h3>Selected Usage</h3>
+        <p>A default selected radio with three options.</p>
+        <sy-radio-group name="default-group" defaultValue="2">
+            <sy-radio value="1">Option 1</sy-radio>
+            <sy-radio value="2">Option 2</sy-radio>
+            <sy-radio value="3">Option 3</sy-radio>
+        </sy-radio-group>
+    </div>
+
+    <!-- Test Case: States (Disabled & Readonly) -->
+    <div class="test-case">
+        <h3>States</h3>
+        <div class="row">
+            <div>
+                <p>Disabled Group: <code>disabled</code></p>
+                <sy-radio-group name="disabled-group" value="d2" disabled>
+                    <sy-radio value="d1">Cannot select</sy-radio>
+                    <sy-radio value="d2">Cannot change</sy-radio>
+                </sy-radio-group>
+            </div>
+            <div>
+                <p>Readonly Group: <code>readonly</code></p>
+                <sy-radio-group name="readonly-group" value="r2" readonly>
+                    <sy-radio value="r1">Cannot select</sy-radio>
+                    <sy-radio value="r2">Cannot change</sy-radio>
+                </sy-radio-group>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case: Event 'changed' -->
+    <div class="test-case">
+      <h3>Event: <code>changed</code></h3>
+      <p>Select an option to see the event detail object below.</p>
+      <sy-radio-group id="event-group" name="event-group">
+        <sy-radio value="event1">Trigger Event 1</sy-radio>
+        <sy-radio value="event2">Trigger Event 2</sy-radio>
+      </sy-radio-group>
+      <p><strong>Result:</strong> <code id="event-result"></code></p>
+    </div>
+
+    <hr>
+
+<!-- Radio Form Validation Tests -->
+<h2>Radio Form Validation Tests</h2>
+
+  <!-- Test 1: Required Field Validation -->
+  <h3>1. Required Field Validation</h3>
+  <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+    <form id="formRadio">
+      <sy-radio-group id="formRadioId" name="formRadioName" required>
+        <sy-radio value="1">Option 1</sy-radio>
+        <sy-radio value="2">Option 2</sy-radio>
+        <sy-radio value="3">Option 3</sy-radio>
+        <div slot="error">
+          <p class="radioErrorMessage">Please select an option.</p>
+        </div>
+      </sy-radio-group>
+      <div style="margin-top: 10px;">
+        <button type="submit">Submit Form</button>
+        <button type="reset">Reset Form</button>
+      </div>
+    </form>
+    <p id="formRadioResult"></p>
+  </div>
+
+  <!-- Test 2: Custom Error -->
+  <h3>2. Custom Error Test</h3>
+  <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+    <form id="formCustomRadio">
+      <sy-radio-group id="formCustomRadioId" name="formCustomRadioName">
+        <sy-radio value="1">Option 1</sy-radio>
+        <sy-radio value="2">Option 2</sy-radio>
+        <sy-radio value="3">Option 3</sy-radio>
+        <div slot="error">
+          <p class="customRadioErrorMessage">This field sets a custom error message.</p>
+        </div>
+      </sy-radio-group>
+      <div style="margin-top: 10px;">
+        <button type="submit">Set Custom Error and Submit Form</button>
+        <button type="reset">Clear Custom Error and Reset Form</button>
+      </div>
+    </form>
+    <p id="formCustomRadioResult"></p>
+  </div>
+
+  <script>
+    // Test 1: Required Field Validation
+    (() => {
+        const eventGroup = document.getElementById('event-group');
+        const eventResult = document.getElementById('event-result');
+
+        eventGroup.addEventListener('changed', (event) => {
+          eventResult.textContent = JSON.stringify(event.detail);
+        });
+
+        const form = document.getElementById('formRadio');
+        const syRadioGroupElement = document.getElementById('formRadioId');
+        const resultElement = document.getElementById('formRadioResult');
+
+        form.addEventListener('submit', (event) => {
+          console.log(1);
+          event.preventDefault();
+          formValidityRadio('formRadioId', resultElement, form);
+        });
+
+        form.addEventListener('reset', (event) => {
+          resultElement.innerHTML = '';
+        });
+    })();
+
+    // Test 2: Custom Error
+    (() => {
+        const form = document.getElementById('formCustomRadio');
+        const syRadioGroupElement = document.getElementById('formCustomRadioId');
+        const resultElement = document.getElementById('formCustomRadioResult');
+
+        form.addEventListener('reset', (event) => {
+            event.preventDefault();
+            syRadioGroupElement.clearCustomError();
+            syRadioGroupElement.formResetCallback();
+            resultElement.innerHTML = '';
+        });
+
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          syRadioGroupElement.setCustomError();
+          formValidityRadio('formCustomRadioId', resultElement, form);
+        });
+    })();
+
+    // Common validation function for radio
+    async function formValidityRadio(id, resultElement, form) {
+      resultElement.innerHTML = '';
+
+      const syRadioElementValidity = await form.elements[id].checkValidity();
+      resultElement.innerHTML += 'Check Validity: ' + syRadioElementValidity + '<br/>';
+
+      if (syRadioElementValidity) {
+        resultElement.innerHTML += '<h4>Form Submitted Successfully!</h4>';
+
+        const formData = new FormData(form);
+        const formDataObj = Object.fromEntries(formData);
+
+        for(let obj in formDataObj) {
+            resultElement.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+        }
+      } else {
+          console.log('error exists');
+      }
+    }
+  </script>
+    <!-- ===== END: sy-radio & sy-radio-group Test Cases ===== -->
+  <!-- Radio Button Tests -->
+<h2>Radio Button Tests</h2>
+
+  <!-- Test 1: Radio Button Group (Outlined) -->
+  <h3>1. Radio Button Group - Outlined</h3>
+  <div class="test-case">
+    <p>Radio buttons with outlined variant:</p>
+    <sy-radio-group id="radio-button-group-outlined" name="radio-button-outlined" variant="outlined" size="medium">
+      <sy-radio-button value="btn1">Option 1</sy-radio-button>
+      <sy-radio-button value="btn2">Option 2</sy-radio-button>
+      <sy-radio-button value="btn3">Option 3</sy-radio-button>
+    </sy-radio-group>
+    <p><strong>Selected:</strong> <code id="radio-button-outlined-result"></code></p>
+  </div>
+
+  <!-- Test 2: Radio Button Group (Solid) -->
+  <h3>2. Radio Button Group - Solid</h3>
+  <div class="test-case">
+    <p>Radio buttons with solid variant:</p>
+    <sy-radio-group id="radio-button-group-solid" name="radio-button-solid" variant="solid" size="medium">
+      <sy-radio-button value="solid1">Solid 1</sy-radio-button>
+      <sy-radio-button value="solid2">Solid 2</sy-radio-button>
+      <sy-radio-button value="solid3">Solid 3</sy-radio-button>
+    </sy-radio-group>
+    <p><strong>Selected:</strong> <code id="radio-button-solid-result"></code></p>
+  </div>
+
+  <!-- Test 3: Radio Button Sizes -->
+  <h3>3. Radio Button Sizes</h3>
+  <div class="test-case">
+    <p>Small size:</p>
+    <sy-radio-group name="radio-button-small" size="small">
+      <sy-radio-button value="small1">Small</sy-radio-button>
+      <sy-radio-button value="small2">Small</sy-radio-button>
+    </sy-radio-group>
+
+    <p>Medium size:</p>
+    <sy-radio-group name="radio-button-medium" size="medium">
+      <sy-radio-button value="medium1">Medium</sy-radio-button>
+      <sy-radio-button value="medium2">Medium</sy-radio-button>
+    </sy-radio-group>
+
+    <p>Large size:</p>
+    <sy-radio-group name="radio-button-large" size="large">
+      <sy-radio-button value="large1">Large</sy-radio-button>
+      <sy-radio-button value="large2">Large</sy-radio-button>
+    </sy-radio-group>
+  </div>
+
+  <!-- Test 4: Disabled Radio Buttons -->
+  <h3>4. Disabled Radio Buttons</h3>
+  <div class="test-case">
+    <sy-radio-group name="radio-button-disabled" disabled>
+      <sy-radio-button value="dis1">Disabled 1</sy-radio-button>
+      <sy-radio-button value="dis2">Disabled 2</sy-radio-button>
+      <sy-radio-button value="dis3">Disabled 3</sy-radio-button>
+    </sy-radio-group>
+  </div>
+
+  <!-- Test 5: Radio Button with Default Value -->
+  <h3>5. Radio Button with Default Value</h3>
+  <div class="test-case">
+    <sy-radio-group name="radio-button-default" defaultValue="default2" size="medium">
+      <sy-radio-button value="default1">Default 1</sy-radio-button>
+      <sy-radio-button value="default2">Default 2 (Selected)</sy-radio-button>
+      <sy-radio-button value="default3">Default 3</sy-radio-button>
+    </sy-radio-group>
+  </div>
+
+  <!-- Test 6: Vertical Radio Buttons -->
+  <h3>6. Vertical Radio Buttons</h3>
+  <div class="test-case">
+    <sy-radio-group name="radio-button-vertical" position="vertical">
+      <sy-radio-button value="vert1">Vertical Option 1</sy-radio-button>
+      <sy-radio-button value="vert2">Vertical Option 2</sy-radio-button>
+      <sy-radio-button value="vert3">Vertical Option 3</sy-radio-button>
+    </sy-radio-group>
+  </div>
+
+  <!--
+    [추가] Form Validation 테스트
+  -->
+  <h3>7. Required Field Validation</h3>
+  <div class="test-case" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+    <form id="formRadioButtonValidation">
+      <sy-radio-group id="formRadioButtonId" name="formRadioButtonName" required>
+        <sy-radio-button value="btn-req-1">Button 1</sy-radio-button>
+        <sy-radio-button value="btn-req-2">Button 2</sy-radio-button>
+        <sy-radio-button value="btn-req-3">Button 3</sy-radio-button>
+        <div slot="error">
+          <p style="color:red; margin: 4px 0 0 0;">Please select a button option.</p>
+        </div>
+      </sy-radio-group>
+      <div style="margin-top: 10px;">
+        <button type="submit">Submit Form</button>
+        <button type="reset">Reset Form</button>
+      </div>
+    </form>
+    <p id="formRadioButtonResult"></p>
+  </div>
+
+  <h3>8. Custom Error Test</h3>
+  <div class="test-case" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+    <form id="formCustomRadioButton">
+      <sy-radio-group id="formCustomRadioButtonId" name="formCustomRadioButtonName">
+        <sy-radio-button value="btn-cust-1">Button 1</sy-radio-button>
+        <sy-radio-button value="btn-cust-2">Button 2</sy-radio-button>
+        <sy-radio-button value="btn-cust-3">Button 3</sy-radio-button>
+        <div slot="error">
+          <p style="color:red; margin: 4px 0 0 0;">This is a custom error message.</p>
+        </div>
+      </sy-radio-group>
+      <div style="margin-top: 10px;">
+        <button type="submit">Set Custom Error & Submit</button>
+        <button type="reset">Clear Custom Error & Reset</button>
+      </div>
+    </form>
+    <p id="formCustomRadioButtonResult"></p>
+  </div>
+
+
+  <script>
+    // 원래 제공해주신 스크립트 (수정하지 않음)
+    (() => {
+      // Outlined variant
+      const outlinedGroup = document.getElementById('radio-button-group-outlined');
+      const outlinedResult = document.getElementById('radio-button-outlined-result');
+
+      outlinedGroup.addEventListener('changed', (event) => {
+        outlinedResult.textContent = event.detail.value;
+      });
+
+      // Solid variant
+      const solidGroup = document.getElementById('radio-button-group-solid');
+      const solidResult = document.getElementById('radio-button-solid-result');
+
+      solidGroup.addEventListener('changed', (event) => {
+        solidResult.textContent = event.detail.value;
+      });
+    })();
+
+    // [추가] Form Validation을 위한 스크립트
+    (() => {
+      async function formValidity(id, resultElement, form) {
+        resultElement.innerHTML = '';
+        const syElement = form.elements[id];
+        const isValid = await syElement.checkValidity();
+
+        if (isValid) {
+          resultElement.innerHTML = '<h4>Form Submitted Successfully!</h4>';
+          const formData = new FormData(form);
+          for (const [name, value] of formData.entries()) {
+            resultElement.innerHTML += `<div><strong>${name}:</strong> ${value}</div>`;
+          }
+        } else {
+          // [수정] 유효성 검사 결과를 보여줄 대상은 resultElement가 아닌,
+          // 실제 유효성 검사를 수행한 syElement입니다.
+          syElement.reportValidity();
+        }
+      }
+
+      // Required Field Validation
+      const formValidation = document.getElementById('formRadioButtonValidation');
+      if (formValidation) {
+        const resultEl = document.getElementById('formRadioButtonResult');
+        formValidation.addEventListener('submit', (event) => {
+          event.preventDefault();
+          formValidity('formRadioButtonId', resultEl, formValidation);
+        });
+        formValidation.addEventListener('reset', () => { resultEl.innerHTML = ''; });
+      }
+
+      // Custom Error
+      const formCustom = document.getElementById('formCustomRadioButton');
+      if (formCustom) {
+        const syElement = document.getElementById('formCustomRadioButtonId');
+        const resultEl = document.getElementById('formCustomRadioButtonResult');
+        formCustom.addEventListener('submit', (event) => {
+          event.preventDefault();
+          syElement.setCustomError();
+          formValidity('formCustomRadioButtonId', resultEl, formCustom);
+        });
+        formCustom.addEventListener('reset', () => {
+          syElement.clearCustomError();
+          resultEl.innerHTML = '';
+        });
+      }
+    })();
+  </script>
+
+    <h2>input-number</h2>
 
     <div class="test-case">
       <h3>Default</h3>
@@ -118,39 +802,58 @@
       <sy-input-number value="99" label="Initial Value"></sy-input-number>
     </div>
 
-    <div class="test-case">
-      <h3>Methods: setFocus() / setBlur()</h3>
-      <p>1초 후 포커스, 4초 후 블러 처리됩니다.</p>
-      <sy-input-number id="inputnumberFocusElem"></sy-input-number>
-      <p id="inputnumberFocusResult"></p>
-      <script>
-        (() => {
-          const elem = document.querySelector('#inputnumberFocusElem');
-          const result = document.querySelector('#inputnumberFocusResult');
+  <div class="test-case">
+    <h3>Methods: setFocus() / setBlur()</h3>
+    <p>아래 버튼을 눌러 포커스와 블러를 제어하세요.</p>
 
-          if (elem && result) {
-            setTimeout(() => {
-              elem.setFocus();
-            }, 1000);
+    <sy-input-number id="inputnumberFocusElem"></sy-input-number>
 
-            setTimeout(() => {
-              elem.setBlur();
-            }, 4000);
-
-            const handleFocus = () => { result.textContent = 'Status: Focused'; };
-            const handleBlur = () => { result.textContent = 'Status: Blurred'; };
-
-            elem.addEventListener('focused', handleFocus);
-            elem.addEventListener('blured', handleBlur);
-
-            window.addEventListener('beforeunload', () => {
-              elem.removeEventListener('focused', handleFocus);
-              elem.removeEventListener('blured',handleBlur);
-            });
-          }
-        })();
-      </script>
+    <div style="margin-top: 8px;">
+      <button id="focusBtn">Focus</button>
+      <button id="blurBtn">Blur</button>
     </div>
+
+    <p id="inputnumberFocusResult"></p>
+
+    <script>
+      (() => {
+        // 필요한 요소들을 선택합니다.
+        const elem = document.querySelector('#inputnumberFocusElem');
+        const result = document.querySelector('#inputnumberFocusResult');
+        const focusButton = document.querySelector('#focusBtn');
+        const blurButton = document.querySelector('#blurBtn');
+
+        // 모든 요소가 존재하는지 확인합니다.
+        if (elem && result && focusButton && blurButton) {
+
+          // --- 버튼 클릭 이벤트 리스너 ---
+          // 'Focus' 버튼을 누르면 setFocus() 메서드를 호출합니다.
+          focusButton.addEventListener('click', () => {
+            elem.setFocus();
+          });
+
+          // 'Blur' 버튼을 누르면 setBlur() 메서드를 호출합니다.
+          blurButton.addEventListener('click', () => {
+            elem.setBlur();
+          });
+
+          // --- 상태 표시를 위한 이벤트 핸들러 (기존과 동일) ---
+          const handleFocus = () => { result.textContent = 'Status: Focused'; };
+          const handleBlur = () => { result.textContent = 'Status: Blurred'; };
+
+          // 컴포넌트의 'focused', 'blured' 이벤트를 감지하여 상태를 업데이트합니다.
+          elem.addEventListener('focused', handleFocus);
+          elem.addEventListener('blured', handleBlur);
+
+          // 페이지를 떠날 때 이벤트 리스너를 정리합니다.
+          window.addEventListener('beforeunload', () => {
+            elem.removeEventListener('focused', handleFocus);
+            elem.removeEventListener('blured', handleBlur);
+          });
+        }
+      })();
+    </script>
+  </div>
 
     <div class="test-case">
       <h3>Event: changed</h3>

@@ -1,0 +1,119 @@
+/* sy-radio-button.scss */
+@use '../button/sy-button.scss';
+
+// 기본 및 수평 레이아웃 스타일
+:host {
+    position: relative;
+    display: flex; // inline-block보다 정렬에 유리
+    margin: 0;
+
+    button {
+        margin: 0;
+        border-left: 0;
+        border-radius: 0;
+
+        &:hover {
+            border-left: 0;
+            &::before {
+                border-left-color: var(--button-primary-border-hover);
+            }
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -1px; // 1px border width
+            display: inline-block;
+            width: 1px;
+            height: 100%;
+            box-sizing: content-box;
+            border-left: var(--border-small) var(--button-default-border-enabled);
+        }
+
+        &:focus-visible {
+            box-shadow: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        &:disabled {
+            border-left: none;
+            &::before {
+                border-left-color: var(--button-default-border-disabled) !important;
+            }
+        }
+    }
+
+    .button--primary {
+        &::before {
+            border-left-color: var(--button-primary-border-active);
+        }
+    }
+}
+
+// 첫 번째 버튼 (수평)
+:host(:first-of-type) button {
+    border-left: var(--border-small) var(--button-default-border-enabled);
+    border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+    &.button--small {
+        border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+    }
+    &::before {
+        display: none; // 첫 번째 버튼은 가상 경계선이 필요 없음
+    }
+}
+
+// 마지막 버튼 (수평)
+:host(:last-of-type) button {
+    border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+    &.button--small {
+        border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+    }
+}
+
+/*
+ * [추가] 수직 라디오 버튼 그룹 스타일
+ * 부모 sy-radio-group의 position 속성을 감지하여 적용
+ */
+:host-context(sy-radio-group[position="vertical"]) {
+    width: 100%; // 부모 너비에 맞춤
+
+    // 수직일 때, 다음 형제 요소에 음수 마진을 적용하여 경계선을 겹침
+    & + :host-context(sy-radio-group[position="vertical"]) {
+        margin-top: -1px; // This is the key for collapsing borders
+    }
+
+    button {
+        // 수평 스타일 초기화
+        border-left: var(--border-small) var(--button-default-border-enabled);
+        border-radius: 0;
+
+        // 수평 스타일을 위한 가상 요소 숨기기
+        &::before {
+            display: none;
+        }
+
+        // 포커스 시 z-index를 높여 다른 버튼 위로 올라오게 함
+        &:focus-visible {
+            z-index: 1;
+            position: relative;
+        }
+    }
+
+    // 수직 그룹의 첫 번째 버튼
+    &:first-of-type button {
+        border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
+        &.button--small {
+            border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+        }
+    }
+
+    // 수직 그룹의 마지막 버튼
+    &:last-of-type button {
+        border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+        &.button--small {
+            border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+        }
+    }
+}

@@ -32,7 +32,7 @@ export class SyTextarea {
   @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
   @Prop({ mutable: true, reflect: true }) value: string = "";
   @Prop() name: string = "";
-  @Prop() noNativeValidity = false;
+  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
 
   // State
   @State() private hasScroll = false;
@@ -154,7 +154,7 @@ export class SyTextarea {
   async setCustomError() {
     this.isValid = false;
     this.validStatus = 'custom';
-    
+
     // 슬롯 에러가 있으면 has-custom-error 속성 추가
     if (this.hasSlotErrorMessage) {
       this.hostElement.setAttribute('has-custom-error', '');
@@ -303,7 +303,7 @@ export class SyTextarea {
     this.hasPopupErrorComponent = containsPopup || isPopupItself;
     const textContent = errorSlotElement.textContent?.trim();
     this.hasSlotErrorMessage = !!(textContent && textContent.length) || errorSlotElement.children.length > 0;
-    
+
     // Re-evaluate validity state after slot content changes
     this.updateValidityState();
   }

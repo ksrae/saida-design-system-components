@@ -401,6 +401,46 @@ export namespace Components {
          */
         "value": string | number;
     }
+    interface SyPopconfirm {
+        /**
+          * @default false
+         */
+        "arrow": boolean;
+        /**
+          * @default 'Cancel'
+         */
+        "cancelText": string;
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        /**
+          * @default 0
+         */
+        "closedelay": number;
+        /**
+          * @default 'OK'
+         */
+        "confirmText": string;
+        /**
+          * @default 0
+         */
+        "opendelay": number;
+        /**
+          * @default 'top'
+         */
+        "position": 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+        "setClose": () => Promise<void>;
+        "setOpen": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "sticky": boolean;
+        /**
+          * @default 'click'
+         */
+        "trigger": 'click' | 'none';
+    }
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -442,6 +482,86 @@ export namespace Components {
           * @default 'hover'
          */
         "trigger": 'hover' | 'click' | 'focus' | 'null';
+    }
+    interface SyRadio {
+        /**
+          * @default false
+         */
+        "checked": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface SyRadioButton {
+        /**
+          * @default false
+         */
+        "checked": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        "value": string;
+        /**
+          * @default 'outlined'
+         */
+        "variant": 'outlined' | 'solid';
+    }
+    interface SyRadioGroup {
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
+        /**
+          * @default ''
+         */
+        "defaultValue": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "getStatus": () => Promise<"" | "custom" | "valueMissing">;
+        /**
+          * @default ''
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default 'horizontal'
+         */
+        "position": 'horizontal' | 'vertical';
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setCustomError": () => Promise<void>;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        /**
+          * @default 'outlined'
+         */
+        "variant": 'outlined' | 'solid';
     }
     interface SySpinner {
         /**
@@ -688,6 +808,22 @@ export interface SyInputNumberCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyInputNumberElement;
 }
+export interface SyPopconfirmCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyPopconfirmElement;
+}
+export interface SyRadioCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyRadioElement;
+}
+export interface SyRadioButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyRadioButtonElement;
+}
+export interface SyRadioGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyRadioGroupElement;
+}
 export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSySplitPanelElement;
@@ -879,6 +1015,24 @@ declare global {
         prototype: HTMLSyInputNumberElement;
         new (): HTMLSyInputNumberElement;
     };
+    interface HTMLSyPopconfirmElementEventMap {
+        "visibleChanged": boolean;
+        "selected": 'ok' | 'cancel';
+    }
+    interface HTMLSyPopconfirmElement extends Components.SyPopconfirm, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyPopconfirmElementEventMap>(type: K, listener: (this: HTMLSyPopconfirmElement, ev: SyPopconfirmCustomEvent<HTMLSyPopconfirmElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyPopconfirmElementEventMap>(type: K, listener: (this: HTMLSyPopconfirmElement, ev: SyPopconfirmCustomEvent<HTMLSyPopconfirmElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyPopconfirmElement: {
+        prototype: HTMLSyPopconfirmElement;
+        new (): HTMLSyPopconfirmElement;
+    };
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -888,6 +1042,57 @@ declare global {
     var HTMLSyPopoverElement: {
         prototype: HTMLSyPopoverElement;
         new (): HTMLSyPopoverElement;
+    };
+    interface HTMLSyRadioElementEventMap {
+        "selected": string;
+    }
+    interface HTMLSyRadioElement extends Components.SyRadio, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyRadioElementEventMap>(type: K, listener: (this: HTMLSyRadioElement, ev: SyRadioCustomEvent<HTMLSyRadioElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyRadioElementEventMap>(type: K, listener: (this: HTMLSyRadioElement, ev: SyRadioCustomEvent<HTMLSyRadioElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyRadioElement: {
+        prototype: HTMLSyRadioElement;
+        new (): HTMLSyRadioElement;
+    };
+    interface HTMLSyRadioButtonElementEventMap {
+        "selected": string;
+    }
+    interface HTMLSyRadioButtonElement extends Components.SyRadioButton, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyRadioButtonElementEventMap>(type: K, listener: (this: HTMLSyRadioButtonElement, ev: SyRadioButtonCustomEvent<HTMLSyRadioButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyRadioButtonElementEventMap>(type: K, listener: (this: HTMLSyRadioButtonElement, ev: SyRadioButtonCustomEvent<HTMLSyRadioButtonElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyRadioButtonElement: {
+        prototype: HTMLSyRadioButtonElement;
+        new (): HTMLSyRadioButtonElement;
+    };
+    interface HTMLSyRadioGroupElementEventMap {
+        "changed": { value: string; isValid: boolean; status: string };
+    }
+    interface HTMLSyRadioGroupElement extends Components.SyRadioGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyRadioGroupElementEventMap>(type: K, listener: (this: HTMLSyRadioGroupElement, ev: SyRadioGroupCustomEvent<HTMLSyRadioGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyRadioGroupElementEventMap>(type: K, listener: (this: HTMLSyRadioGroupElement, ev: SyRadioGroupCustomEvent<HTMLSyRadioGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyRadioGroupElement: {
+        prototype: HTMLSyRadioGroupElement;
+        new (): HTMLSyRadioGroupElement;
     };
     interface HTMLSySpinnerElement extends Components.SySpinner, HTMLStencilElement {
     }
@@ -994,7 +1199,11 @@ declare global {
         "sy-icon": HTMLSyIconElement;
         "sy-input": HTMLSyInputElement;
         "sy-input-number": HTMLSyInputNumberElement;
+        "sy-popconfirm": HTMLSyPopconfirmElement;
         "sy-popover": HTMLSyPopoverElement;
+        "sy-radio": HTMLSyRadioElement;
+        "sy-radio-button": HTMLSyRadioButtonElement;
+        "sy-radio-group": HTMLSyRadioGroupElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
         "sy-switch": HTMLSySwitchElement;
@@ -1387,6 +1596,46 @@ declare namespace LocalJSX {
          */
         "value"?: string | number;
     }
+    interface SyPopconfirm {
+        /**
+          * @default false
+         */
+        "arrow"?: boolean;
+        /**
+          * @default 'Cancel'
+         */
+        "cancelText"?: string;
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        /**
+          * @default 0
+         */
+        "closedelay"?: number;
+        /**
+          * @default 'OK'
+         */
+        "confirmText"?: string;
+        "onSelected"?: (event: SyPopconfirmCustomEvent<'ok' | 'cancel'>) => void;
+        "onVisibleChanged"?: (event: SyPopconfirmCustomEvent<boolean>) => void;
+        /**
+          * @default 0
+         */
+        "opendelay"?: number;
+        /**
+          * @default 'top'
+         */
+        "position"?: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+        /**
+          * @default false
+         */
+        "sticky"?: boolean;
+        /**
+          * @default 'click'
+         */
+        "trigger"?: 'click' | 'none';
+    }
     /**
      * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
      * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -1420,6 +1669,84 @@ declare namespace LocalJSX {
           * @default 'hover'
          */
         "trigger"?: 'hover' | 'click' | 'focus' | 'null';
+    }
+    interface SyRadio {
+        /**
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "onSelected"?: (event: SyRadioCustomEvent<string>) => void;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface SyRadioButton {
+        /**
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "onSelected"?: (event: SyRadioButtonCustomEvent<string>) => void;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        "value": string;
+        /**
+          * @default 'outlined'
+         */
+        "variant"?: 'outlined' | 'solid';
+    }
+    interface SyRadioGroup {
+        /**
+          * @default ''
+         */
+        "defaultValue"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        "onChanged"?: (event: SyRadioGroupCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        /**
+          * @default 'horizontal'
+         */
+        "position"?: 'horizontal' | 'vertical';
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        /**
+          * @default 'outlined'
+         */
+        "variant"?: 'outlined' | 'solid';
     }
     interface SySpinner {
         /**
@@ -1659,7 +1986,11 @@ declare namespace LocalJSX {
         "sy-icon": SyIcon;
         "sy-input": SyInput;
         "sy-input-number": SyInputNumber;
+        "sy-popconfirm": SyPopconfirm;
         "sy-popover": SyPopover;
+        "sy-radio": SyRadio;
+        "sy-radio-button": SyRadioButton;
+        "sy-radio-group": SyRadioGroup;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
         "sy-switch": SySwitch;
@@ -1686,11 +2017,15 @@ declare module "@stencil/core" {
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
+            "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;
             /**
              * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
              * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
              */
             "sy-popover": LocalJSX.SyPopover & JSXBase.HTMLAttributes<HTMLSyPopoverElement>;
+            "sy-radio": LocalJSX.SyRadio & JSXBase.HTMLAttributes<HTMLSyRadioElement>;
+            "sy-radio-button": LocalJSX.SyRadioButton & JSXBase.HTMLAttributes<HTMLSyRadioButtonElement>;
+            "sy-radio-group": LocalJSX.SyRadioGroup & JSXBase.HTMLAttributes<HTMLSyRadioGroupElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;

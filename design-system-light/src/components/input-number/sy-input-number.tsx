@@ -52,53 +52,22 @@ export class SyInputNumber {
   private readonly stepInterval = 150;
 
   // --- Props ---
-  @Prop()
-  autofocus = false;
-
-  @Prop({ reflect: true })
-  borderless = false;
-
-  @Prop({ attribute: 'decimal-places' })
-  decimalPlaces?: number;
-
-  @Prop({ reflect: true, mutable: true })
-  disabled = false;
-
-  @Prop()
-  label: string = "";
-
-  @Prop()
-  max: number = Number.MAX_SAFE_INTEGER;
-
-  @Prop()
-  min: number = Number.MIN_SAFE_INTEGER;
-
-  @Prop()
-  name: string = "";
-
-  @Prop({ reflect: true })
-  readonly = false;
-
-  @Prop({ reflect: true })
-  required = false;
-
-  @Prop()
-  rounding?: 'round' | 'ceil' | 'floor';
-
-  @Prop({ reflect: true })
-  size: "small" | "medium" | "large" = "medium";
-
-  @Prop()
-  status: 'default' | 'warning' | 'error' | 'success' = 'default';
-
-  @Prop()
-  step: number = 1;
-
-  @Prop({ mutable: true, reflect: true })
-  value: string | number = '';
-
-  @Prop({ attribute: 'no-native-validity' })
-  noNativeValidity = false;
+  @Prop() autofocus = false;
+  @Prop({ reflect: true }) borderless = false;
+  @Prop({ attribute: 'decimalPlaces' }) decimalPlaces?: number;
+  @Prop({ reflect: true, mutable: true }) disabled = false;
+  @Prop() label: string = "";
+  @Prop() max: number = Number.MAX_SAFE_INTEGER;
+  @Prop() min: number = Number.MIN_SAFE_INTEGER;
+  @Prop() name: string = "";
+  @Prop({ reflect: true }) readonly = false;
+  @Prop({ reflect: true }) required = false;
+  @Prop() rounding?: 'round' | 'ceil' | 'floor';
+  @Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";
+  @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
+  @Prop() step: number = 1;
+  @Prop({ mutable: true, reflect: true }) value: string | number = '';
+  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
 
   // --- State ---
   @State()
@@ -189,13 +158,15 @@ export class SyInputNumber {
   componentWillLoad() {
     this.initialValue = this.value;
     this.handleSlotChange();
+    // [수정] 초기 유효성 검사를 componentWillLoad에서 수행합니다.
+    this.updateValidityState();
   }
 
   componentDidLoad() {
     if (this.autofocus) {
       requestAnimationFrame(() => this.input?.focus());
     }
-    this.updateValidityState();
+    // [수정] 불필요한 리렌더링을 유발하는 updateValidityState() 호출을 제거합니다.
   }
 
   // --- Form Associated Callbacks ---
@@ -207,10 +178,12 @@ export class SyInputNumber {
     this.value = this.initialValue;
     this.touched = false;
     this.formSubmitted = false;
+    this.updateValidityState();
   }
 
   formStateRestoreCallback(state: string) {
     this.value = state;
+    this.updateValidityState();
   }
 
   // --- Watchers ---
@@ -233,11 +206,13 @@ export class SyInputNumber {
   // --- Public Methods ---
   @Method()
   async setFocus() {
+    console.log('setFocus')
     this.input?.focus();
   }
 
   @Method()
   async setBlur() {
+    console.log('setBlur')
     this.input?.blur();
   }
 

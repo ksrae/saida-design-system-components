@@ -66,7 +66,7 @@ export class SyInput {
   @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
   @Prop({ mutable: true, reflect: true }) value: string = "";
   @Prop({ reflect: true }) variant: "password" | "search" | "text" = "text";
-  @Prop() noNativeValidity = false;
+  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
 
   // --- State ---
   @State() private hasFocus = false;
