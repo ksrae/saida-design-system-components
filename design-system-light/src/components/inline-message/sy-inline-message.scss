@@ -1,0 +1,95 @@
+:host {
+    display: block;
+    visibility: hidden;
+    position: absolute;
+    box-shadow: var(--box-shadow);
+    padding: var(--spacing-xsmall) var(--spacing-small);
+    max-width: 300px;
+    background-color: var(--inlinemessage-informational-background-enabled);
+    border-radius: var(--border-radius-small);
+    z-index: var(--z-index-inline-message);
+    .inline-group{
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xsmall);
+    }
+}
+
+:host {
+    .inline-massage-container {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--spacing-2xsmall);
+      align-items: unset;
+      sy-icon{
+        display: flex;
+        align-items: baseline;
+      }
+      .inline-message-button-area{
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+
+    .info {
+      sy-icon{
+        color:var(--inlinemessage-informational-icon-enabled);
+      }
+    }
+    .success {
+      sy-icon{
+        color:var(--inlinemessage-success-icon-enabled);
+      }
+    }
+    .warning {
+      sy-icon{
+        color:var(--inlinemessage-warning-icon-enabled);
+      }
+    }
+    .error {
+      sy-icon{
+        color:var(--inlinemessage-error-icon-enabled);
+      }
+    }
+}
+
+:host(sy-inline-message){
+  z-index: var(--z-index-inline-message);
+  margin-top:var(--spacing-3xsmall);
+}
+
+
+
+:host(sy-inline-message[variant="info"]){
+  border: var(--border-small) var(--inlinemessage-informational-border-enabled);
+  background-color: var(--inlinemessage-informational-background-enabled);
+  color: var(--inlinemessage-informational-text-enabled);
+  .inline-massage-container{
+  background-color: transparent;
+  }
+}
+:host(sy-inline-message[variant="warning"]){
+  border: var(--border-small) var(--inlinemessage-warning-border-enabled);
+  background-color: var(--inlinemessage-warning-background-enabled);
+  color: var(--inlinemessage-warning-text-enabled);
+  .inline-massage-container{
+  background-color: transparent;
+  }
+}
+:host(sy-inline-message[variant="error"]){
+  border: var(--border-small) var(--inlinemessage-error-border-enabled);
+  background-color: var(--inlinemessage-error-background-enabled);
+  color: var(--inlinemessage-error-text-enabled);
+  .inline-massage-container{
+  background-color: transparent;
+  }
+}
+:host(sy-inline-message[variant="success"]){
+  border: var(--border-small) var(--inlinemessage-success-border-enabled);
+  background-color: var(--inlinemessage-success-background-enabled);
+  color: var(--inlinemessage-success-text-enabled);
+  .inline-massage-container{
+  background-color: transparent;
+  }
+}

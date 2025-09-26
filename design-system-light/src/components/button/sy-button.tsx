@@ -3,6 +3,12 @@ import { fnFindClosestParentByTagName, fnGetAssignedNodesContent } from '../../u
 import { ButtonGroupState } from '../button-group';
 
 export interface HTMLSyButtonElement extends HTMLElement {
+  disabled: boolean;
+  justified: boolean;
+  loading: boolean;
+  size: 'small' | 'medium' | 'large';
+  variant: 'default' | 'primary' | 'secondary' | 'borderless';
+  type: 'button' | 'submit' | 'reset';
   setButtonGroupState: (state: ButtonGroupState) => Promise<void>;
   setClick: () => Promise<void>;
   setFocus: () => Promise<void>;

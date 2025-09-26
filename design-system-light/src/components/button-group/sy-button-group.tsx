@@ -1,4 +1,4 @@
-import { Component, h, Prop, Element, Watch } from '@stencil/core';
+import { Component, h, Prop, Element } from '@stencil/core';
 import { fnGetChildrenByTagName } from '../../utils/utils';
 
 export interface HTMLSyButtonGroupElement extends HTMLElement {
@@ -45,12 +45,6 @@ export class ButtonGroup {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
     }
-  }
-
-  @Watch('vertical')
-  handleVerticalChange() {
-    // Prop이 변경되면 Stencil이 자동으로 리렌더링을 트리거하고,
-    // 그 후에 componentDidRender가 호출되므로 이 메서드는 비워둬도 괜찮습니다.
   }
 
   private updateButtons() {

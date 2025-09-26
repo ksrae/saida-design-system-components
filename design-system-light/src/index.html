@@ -10,6 +10,483 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+  <h2>SY-TOAST Component Samples</h2>
+
+  <section>
+    <h3>Variants & Positions</h3>
+
+    <!-- 이 섹션에서 사용할 토스트 매니저 선언 -->
+    <sy-toast id="managerForVariants"></sy-toast>
+
+    <button id="btnSuccess">Success (Bottom Right)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForVariants');
+        const btn = document.querySelector('#btnSuccess');
+        btn.addEventListener('click', () => {
+          manager.createSuccessToast({ headerSlot: 'Success!', bodySlot: 'Your action was successful.' });
+        });
+      })();
+    </script>
+
+    <button id="btnError">Error (Top Left)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForVariants');
+        const btn = document.querySelector('#btnError');
+        btn.addEventListener('click', () => {
+          manager.createErrorToast({ position: 'topLeft', headerSlot: 'Error!', bodySlot: 'An error occurred.' });
+        });
+      })();
+    </script>
+
+    <button id="btnInfo">Info (Top Right)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForVariants');
+        const btn = document.querySelector('#btnInfo');
+        btn.addEventListener('click', () => {
+          manager.createInfoToast({ position: 'topRight', headerSlot: 'Information', bodySlot: 'Here is some useful info.' });
+        });
+      })();
+    </script>
+
+    <button id="btnWarning">Warning (Bottom Left)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForVariants');
+        const btn = document.querySelector('#btnWarning');
+        btn.addEventListener('click', () => {
+          manager.createWarningToast({ position: 'bottomLeft', headerSlot: 'Warning', bodySlot: 'Please check your input.' });
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Options</h3>
+
+    <!-- 이 섹션에서 사용할 토스트 매니저들 선언 -->
+    <sy-toast id="managerForOptions"></sy-toast>
+    <sy-toast id="managerForDefaults">
+        <div slot="header"><strong>Default Header</strong></div>
+        <div slot="body">This is a default body provided via slot.</div>
+    </sy-toast>
+
+    <button id="btnClosable">Closable Toast</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForOptions');
+        const btn = document.querySelector('#btnClosable');
+        btn.addEventListener('click', () => {
+          manager.createInfoToast({
+            closable: true,
+            duration: 0,
+            headerSlot: 'Closable Toast',
+            bodySlot: 'This toast will stay until manually closed.'
+          });
+        });
+      })();
+    </script>
+
+    <button id="btnDuration">Long Duration (10s)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForOptions');
+        const btn = document.querySelector('#btnDuration');
+        btn.addEventListener('click', () => {
+          manager.createWarningToast({
+            duration: 10000,
+            headerSlot: 'Long Duration',
+            bodySlot: 'This will disappear in 10 seconds.'
+          });
+        });
+      })();
+    </script>
+
+    <button id="btnCustomHTML">Neutral with Custom HTML</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForOptions');
+        const btn = document.querySelector('#btnCustomHTML');
+        btn.addEventListener('click', () => {
+          const customBody = document.createElement('p');
+          customBody.innerHTML = 'This is a <strong>custom HTML</strong> element.';
+          manager.createNeutralToast({ headerSlot: 'Neutral Toast', bodySlot: customBody });
+        });
+      })();
+    </script>
+
+    <button id="btnDefaultContent">Use Default Slot Content</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        const manager = document.querySelector('#managerForDefaults');
+        const btn = document.querySelector('#btnDefaultContent');
+        btn.addEventListener('click', () => {
+          manager.createSuccessToast({ position: 'bottomLeft' });
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Stacking Order (Open multiple toasts to see the difference)</h3>
+
+    <sy-toast id="managerDefaultStack"></sy-toast>
+    <button id="btnDefaultOrder">Default Order (New toasts at the bottom)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        let index = 0;
+        const manager = document.querySelector('#managerDefaultStack');
+        const btn = document.querySelector('#btnDefaultOrder');
+        btn.addEventListener('click', () => {
+          manager.createInfoToast({
+            position: 'topRight',
+            headerSlot: 'Default Order',
+            bodySlot: `Toast No: ${++index}`
+          });
+        });
+      })();
+    </script>
+
+    <sy-toast id="managerLatestTopStack" latest-top></sy-toast>
+    <button id="btnLatestTop">Latest On Top (New toasts at the top)</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-toast');
+        let index = 0;
+        const manager = document.querySelector('#managerLatestTopStack');
+        const btn = document.querySelector('#btnLatestTop');
+        btn.addEventListener('click', () => {
+          manager.createSuccessToast({
+            position: 'topRight',
+            headerSlot: 'Latest On Top',
+            bodySlot: `Toast No: ${++index}`
+          });
+        });
+      })();
+    </script>
+  </section>
+
+  <h2>SY-SKELETON Component Examples</h2>
+
+  <div class="grid-container">
+
+    <section>
+      <h3>Text Skeleton</h3>
+      <sy-skeleton type="text" rows="4"></sy-skeleton>
+    </section>
+
+    <section>
+        <h3>Avatar Skeleton</h3>
+        <p><code>type="avatar" rows="0"</code> (single avatar)</p>
+        <sy-skeleton type="avatar"></sy-skeleton>
+
+        <p style="margin-top: 20px;"><code>type="avatar" rows="1"</code> (with one line of text)</p>
+        <sy-skeleton type="avatar" rows="1"></sy-skeleton>
+
+        <p style="margin-top: 20px;"><code>type="avatar" rows="3"</code> (with multiple lines of text)</p>
+        <sy-skeleton type="avatar" rows="3"></sy-skeleton>
+    </section>
+
+    <section>
+        <h3>Image Skeleton</h3>
+        <p><code>type="image" rows="0"</code> (single large image)</p>
+        <sy-skeleton type="image"></sy-skeleton>
+
+        <p style="margin-top: 20px;"><code>type="image" rows="3"</code> (with text content)</p>
+        <sy-skeleton type="image" rows="3"></sy-skeleton>
+    </section>
+
+    <section>
+        <h3>Button Skeleton</h3>
+        <sy-skeleton type="button" rows="2"></sy-skeleton>
+    </section>
+
+    <section>
+        <h3>Gallary Skeleton</h3>
+        <sy-skeleton type="gallary" rows="2"></sy-skeleton>
+    </section>
+
+    <section>
+        <h3>Disabled Skeleton</h3>
+        <sy-skeleton type="text" rows="3" disabled="true"></sy-skeleton>
+    </section>
+  </div>
+
+  <section>
+      <h3>Table Skeleton</h3>
+      <sy-skeleton type="table" rows="5"></sy-skeleton>
+  </section>
+
+  <section>
+      <h3>Tree Skeleton</h3>
+      <sy-skeleton type="tree" rows="12"></sy-skeleton>
+  </section>
+
+  <section>
+      <h3>Custom Width Skeleton</h3>
+      <sy-skeleton type="text" rows="3" width="300px"></sy-skeleton>
+      <br>
+      <sy-skeleton type="text" rows="3" width="50%"></sy-skeleton>
+  </section>
+
+ <!-- 1. Variant 테스트 섹션 -->
+  <section class="test-section">
+    <h2>1. Variant 테스트</h2>
+    <p class="test-description">다양한 variant(info, success, warning, error)와 아이콘 표시 여부를 테스트합니다.</p>
+
+    <div class="grid-container">
+      <div class="test-item">
+        <sy-button>
+          Info (기본값)
+          <sy-inline-message
+            variant="info"
+            message="정보 메시지입니다."
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <sy-button>
+          Success
+          <sy-inline-message
+            variant="success"
+            message="성공 메시지입니다."
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <sy-button>
+          Warning
+          <sy-inline-message
+            variant="warning"
+            message="경고 메시지입니다."
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <sy-button>
+          Error
+          <sy-inline-message
+            variant="error"
+            message="오류 메시지입니다."
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+    </div>
+
+    <h3>아이콘 포함</h3>
+    <div class="grid-container">
+      <div class="test-item">
+        <sy-button>
+          Info with Icon
+          <sy-inline-message
+            variant="info"
+            message="아이콘이 포함된 정보 메시지"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <sy-button>
+          Success with Icon
+          <sy-inline-message
+            variant="success"
+            message="아이콘이 포함된 성공 메시지"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <sy-button>
+          Warning with Icon
+          <sy-inline-message
+            variant="warning"
+            message="아이콘이 포함된 경고 메시지"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <sy-button>
+          Error with Icon
+          <sy-inline-message
+            variant="error"
+            message="아이콘이 포함된 오류 메시지"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Position 테스트 섹션 -->
+  <section class="test-section">
+    <h2>2. Position 테스트</h2>
+    <p class="test-description">4방향 position 속성을 테스트합니다.</p>
+
+    <div class="center-test">
+      <div class="grid-container" style="margin-left:100px;">
+        <sy-button>
+          Top
+          <sy-inline-message
+            position="top"
+            variant="info"
+            message="위쪽에 표시됩니다"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+
+        <sy-button>
+          Bottom
+          <sy-inline-message
+            position="bottom"
+            variant="success"
+            message="아래쪽에 표시됩니다"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+
+        <sy-button>
+          Left
+          <sy-inline-message
+            position="left"
+            variant="warning"
+            message="왼쪽에 표시됩니다"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+
+        <sy-button>
+          Right
+          <sy-inline-message
+            position="right"
+            variant="error"
+            message="오른쪽에 표시됩니다"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Trigger 테스트 섹션 -->
+  <section class="test-section">
+    <h2>3. Trigger 테스트</h2>
+    <p class="test-description">click과 focusout 트리거를 테스트합니다.</p>
+
+    <div class="grid-container">
+      <div class="test-item">
+        <label>Click 트리거 (버튼 클릭)</label>
+        <sy-button>
+          클릭하세요
+          <sy-inline-message
+            trigger="click"
+            variant="info"
+            message="클릭으로 열렸습니다"
+            showIcon>
+          </sy-inline-message>
+        </sy-button>
+      </div>
+
+      <div class="test-item">
+        <label>Focusout 트리거 (포커스 아웃시 표시)</label>
+        <sy-input placeholder="포커스 후 다른 곳 클릭">
+          <sy-inline-message
+            trigger="focusout"
+            variant="warning"
+            message="필수 입력 항목입니다"
+            showIcon>
+          </sy-inline-message>
+        </sy-input>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 긴 메시지 테스트 섹션 -->
+  <section class="test-section">
+    <h2>5. 긴 메시지 테스트</h2>
+      <div class="test-item">
+        <sy-button>
+          긴 메시지 + 버튼
+          <sy-inline-message
+            variant="warning"
+            message="이것은 매우 긴 메시지입니다. 여러 줄에 걸쳐 표시될 수 있으며, 레이아웃이 올바르게 조정되는지 확인합니다. 사용자의 주의가 필요합니다."
+            btnLabel="확인했습니다"
+            showIcon
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 7. 이벤트 핸들링 테스트 -->
+  <section class="test-section">
+    <h2>7. 이벤트 핸들링</h2>
+    <p class="test-description">btnClick 이벤트를 테스트합니다.</p>
+
+    <div class="input-group">
+      <sy-button>
+        이벤트 테스트
+        <sy-inline-message
+          id="event-test-message"
+          variant="info"
+          message="버튼을 클릭하면 이벤트가 발생합니다."
+          btnLabel="이벤트 발생"
+          showIcon
+          trigger="click">
+        </sy-inline-message>
+      </sy-button>
+
+      <div id="event-log" style="margin-top: 16px; padding: 8px; background: #f0f0f0; border-radius: 4px; min-height: 40px;">
+        이벤트 로그가 여기 표시됩니다
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // 프로그래매틱 컨트롤
+    function toggleMessage() {
+      const msg = document.getElementById('controlled-message');
+      msg.open = !msg.open;
+    }
+
+    // 이벤트 핸들링
+    document.getElementById('event-test-message').addEventListener('btnClick', (e) => {
+      const log = document.getElementById('event-log');
+      log.textContent = `이벤트 발생! 시간: ${new Date().toLocaleTimeString()}`;
+    });
+  </script>
+
     <div class="test-container" style="margin-top:0px;width: 200px;height:100px; margin-left:300px;border:1px solid #000">test
         <sy-popconfirm
           id="testPopconfirm"

@@ -7,8 +7,12 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 import { ButtonGroupState } from "./components/button-group";
+import { ToastOptions } from "./components/toast/sy-toast";
+import { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 export { ButtonGroupState } from "./components/button-group";
+export { ToastOptions } from "./components/toast/sy-toast";
+export { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export namespace Components {
     interface SyAvatar {
         /**
@@ -263,6 +267,36 @@ export namespace Components {
           * @default 'medium'
          */
         "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+    }
+    interface SyInlineMessage {
+        /**
+          * @default ''
+         */
+        "btnLabel": string;
+        /**
+          * @default ''
+         */
+        "message": string;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 'bottom'
+         */
+        "position": 'top' | 'bottom' | 'left' | 'right';
+        /**
+          * @default false
+         */
+        "showIcon": boolean;
+        /**
+          * @default 'click'
+         */
+        "trigger": 'click' | 'focusout';
+        /**
+          * @default 'info'
+         */
+        "variant": 'info' | 'success' | 'warning' | 'error';
     }
     interface SyInput {
         /**
@@ -563,6 +597,26 @@ export namespace Components {
          */
         "variant": 'outlined' | 'solid';
     }
+    interface SySkeleton {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "resetAnimation": () => Promise<void>;
+        /**
+          * @default 0
+         */
+        "rows": number;
+        "stopAnimation": () => Promise<void>;
+        /**
+          * @default 'text'
+         */
+        "type": 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
+        /**
+          * @default '100%'
+         */
+        "width": string;
+    }
     interface SySpinner {
         /**
           * @default 0
@@ -745,6 +799,48 @@ export namespace Components {
          */
         "value": string;
     }
+    interface SyToast {
+        "closeToast": (toastItemElement: HTMLSyToastItemElement) => Promise<void>;
+        "createErrorToast": (option?: ToastOptions) => Promise<void>;
+        "createInfoToast": (option?: ToastOptions) => Promise<void>;
+        "createNeutralToast": (option?: ToastOptions) => Promise<void>;
+        "createSuccessToast": (option?: ToastOptions) => Promise<void>;
+        "createToast": (variant: "neutral" | "success" | "error" | "info" | "warning", option?: ToastOptions) => Promise<void>;
+        "createWarningToast": (option?: ToastOptions) => Promise<void>;
+        /**
+          * @default 3000
+         */
+        "defaultDuration": number;
+        /**
+          * @default false
+         */
+        "latestTop": boolean;
+    }
+    interface SyToastItem {
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        "close": () => Promise<void>;
+        "duration": number;
+        /**
+          * @default false
+         */
+        "latestTop": boolean;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 'bottomRight'
+         */
+        "position": 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        "show": () => Promise<void>;
+        /**
+          * @default 'neutral'
+         */
+        "variant": 'neutral' | 'success' | 'error' | 'info' | 'warning';
+    }
     interface SyTooltip {
         /**
           * @default 0
@@ -799,6 +895,10 @@ export interface SyDrawerCustomEvent<T> extends CustomEvent<T> {
 export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
+}
+export interface SyInlineMessageCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyInlineMessageElement;
 }
 export interface SyInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -977,6 +1077,23 @@ declare global {
         prototype: HTMLSyIconElement;
         new (): HTMLSyIconElement;
     };
+    interface HTMLSyInlineMessageElementEventMap {
+        "btnClick": MouseEvent;
+    }
+    interface HTMLSyInlineMessageElement extends Components.SyInlineMessage, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyInlineMessageElementEventMap>(type: K, listener: (this: HTMLSyInlineMessageElement, ev: SyInlineMessageCustomEvent<HTMLSyInlineMessageElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyInlineMessageElementEventMap>(type: K, listener: (this: HTMLSyInlineMessageElement, ev: SyInlineMessageCustomEvent<HTMLSyInlineMessageElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyInlineMessageElement: {
+        prototype: HTMLSyInlineMessageElement;
+        new (): HTMLSyInlineMessageElement;
+    };
     interface HTMLSyInputElementEventMap {
         "changed": { value: string; isValid: boolean; status: string };
         "blured": { value: string; isValid: boolean; status: string };
@@ -1094,6 +1211,12 @@ declare global {
         prototype: HTMLSyRadioGroupElement;
         new (): HTMLSyRadioGroupElement;
     };
+    interface HTMLSySkeletonElement extends Components.SySkeleton, HTMLStencilElement {
+    }
+    var HTMLSySkeletonElement: {
+        prototype: HTMLSySkeletonElement;
+        new (): HTMLSySkeletonElement;
+    };
     interface HTMLSySpinnerElement extends Components.SySpinner, HTMLStencilElement {
     }
     var HTMLSySpinnerElement: {
@@ -1178,6 +1301,18 @@ declare global {
         prototype: HTMLSyTextareaElement;
         new (): HTMLSyTextareaElement;
     };
+    interface HTMLSyToastElement extends Components.SyToast, HTMLStencilElement {
+    }
+    var HTMLSyToastElement: {
+        prototype: HTMLSyToastElement;
+        new (): HTMLSyToastElement;
+    };
+    interface HTMLSyToastItemElement extends Components.SyToastItem, HTMLStencilElement {
+    }
+    var HTMLSyToastItemElement: {
+        prototype: HTMLSyToastItemElement;
+        new (): HTMLSyToastItemElement;
+    };
     interface HTMLSyTooltipElement extends Components.SyTooltip, HTMLStencilElement {
     }
     var HTMLSyTooltipElement: {
@@ -1197,6 +1332,7 @@ declare global {
         "sy-drawer": HTMLSyDrawerElement;
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
+        "sy-inline-message": HTMLSyInlineMessageElement;
         "sy-input": HTMLSyInputElement;
         "sy-input-number": HTMLSyInputNumberElement;
         "sy-popconfirm": HTMLSyPopconfirmElement;
@@ -1204,11 +1340,14 @@ declare global {
         "sy-radio": HTMLSyRadioElement;
         "sy-radio-button": HTMLSyRadioButtonElement;
         "sy-radio-group": HTMLSyRadioGroupElement;
+        "sy-skeleton": HTMLSySkeletonElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
         "sy-switch": HTMLSySwitchElement;
         "sy-tag": HTMLSyTagElement;
         "sy-textarea": HTMLSyTextareaElement;
+        "sy-toast": HTMLSyToastElement;
+        "sy-toast-item": HTMLSyToastItemElement;
         "sy-tooltip": HTMLSyTooltipElement;
     }
 }
@@ -1469,6 +1608,37 @@ declare namespace LocalJSX {
           * @default 'medium'
          */
         "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+    }
+    interface SyInlineMessage {
+        /**
+          * @default ''
+         */
+        "btnLabel"?: string;
+        /**
+          * @default ''
+         */
+        "message"?: string;
+        "onBtnClick"?: (event: SyInlineMessageCustomEvent<MouseEvent>) => void;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 'bottom'
+         */
+        "position"?: 'top' | 'bottom' | 'left' | 'right';
+        /**
+          * @default false
+         */
+        "showIcon"?: boolean;
+        /**
+          * @default 'click'
+         */
+        "trigger"?: 'click' | 'focusout';
+        /**
+          * @default 'info'
+         */
+        "variant"?: 'info' | 'success' | 'warning' | 'error';
     }
     interface SyInput {
         /**
@@ -1748,6 +1918,24 @@ declare namespace LocalJSX {
          */
         "variant"?: 'outlined' | 'solid';
     }
+    interface SySkeleton {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 0
+         */
+        "rows"?: number;
+        /**
+          * @default 'text'
+         */
+        "type"?: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
+        /**
+          * @default '100%'
+         */
+        "width"?: string;
+    }
     interface SySpinner {
         /**
           * @default 0
@@ -1937,6 +2125,39 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    interface SyToast {
+        /**
+          * @default 3000
+         */
+        "defaultDuration"?: number;
+        /**
+          * @default false
+         */
+        "latestTop"?: boolean;
+    }
+    interface SyToastItem {
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        "duration"?: number;
+        /**
+          * @default false
+         */
+        "latestTop"?: boolean;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 'bottomRight'
+         */
+        "position"?: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'neutral'
+         */
+        "variant"?: 'neutral' | 'success' | 'error' | 'info' | 'warning';
+    }
     interface SyTooltip {
         /**
           * @default 0
@@ -1984,6 +2205,7 @@ declare namespace LocalJSX {
         "sy-drawer": SyDrawer;
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
+        "sy-inline-message": SyInlineMessage;
         "sy-input": SyInput;
         "sy-input-number": SyInputNumber;
         "sy-popconfirm": SyPopconfirm;
@@ -1991,11 +2213,14 @@ declare namespace LocalJSX {
         "sy-radio": SyRadio;
         "sy-radio-button": SyRadioButton;
         "sy-radio-group": SyRadioGroup;
+        "sy-skeleton": SySkeleton;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
         "sy-switch": SySwitch;
         "sy-tag": SyTag;
         "sy-textarea": SyTextarea;
+        "sy-toast": SyToast;
+        "sy-toast-item": SyToastItem;
         "sy-tooltip": SyTooltip;
     }
 }
@@ -2015,6 +2240,7 @@ declare module "@stencil/core" {
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
+            "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
             "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;
@@ -2026,11 +2252,14 @@ declare module "@stencil/core" {
             "sy-radio": LocalJSX.SyRadio & JSXBase.HTMLAttributes<HTMLSyRadioElement>;
             "sy-radio-button": LocalJSX.SyRadioButton & JSXBase.HTMLAttributes<HTMLSyRadioButtonElement>;
             "sy-radio-group": LocalJSX.SyRadioGroup & JSXBase.HTMLAttributes<HTMLSyRadioGroupElement>;
+            "sy-skeleton": LocalJSX.SySkeleton & JSXBase.HTMLAttributes<HTMLSySkeletonElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
+            "sy-toast": LocalJSX.SyToast & JSXBase.HTMLAttributes<HTMLSyToastElement>;
+            "sy-toast-item": LocalJSX.SyToastItem & JSXBase.HTMLAttributes<HTMLSyToastItemElement>;
             "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;
         }
     }
