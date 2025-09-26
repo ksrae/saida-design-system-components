@@ -1,4 +1,5 @@
-import { Component, Prop, State, Event, EventEmitter, Watch, h } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, Watch, h, Element } from '@stencil/core';
+import { fnResolvePropAlias } from '../../utils/utils';
 
 export interface HTMLSyAvatarElement extends HTMLElement {
   clickable: boolean;
@@ -21,6 +22,7 @@ export interface HTMLSyAvatarElement extends HTMLElement {
   scoped: true,
 })
 export class SyAvatar {
+  @Element() host: HTMLSyAvatarElement;
   @Prop({ reflect: true }) clickable: boolean = false;
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop() image: string = '';
@@ -48,7 +50,8 @@ export class SyAvatar {
   componentWillLoad() {
     // tooltipContent가 이미 설정되어 있으면 HTML 태그 제거 후 사용자가 설정한 것으로 간주
     if (this.tooltipContent?.trim()?.length) {
-      this.tooltipContent = this.sanitizeHtml(this.tooltipContent);
+      const tooltipContent = fnResolvePropAlias(this.host, 'tooltip-content') ?? this.tooltipContent;
+      this.tooltipContent = this.sanitizeHtml(tooltipContent);
       this.isTooltipContentUserSet = true;
     }
     

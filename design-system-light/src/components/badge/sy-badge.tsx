@@ -1,4 +1,5 @@
 import { Component, Element, Prop, State, Watch, h } from "@stencil/core";
+import { fnAssignPropFromAlias } from "../../utils/utils";
 
 export interface HTMLSyBadgeElement extends HTMLElement {
   dot: boolean;
@@ -23,7 +24,7 @@ export class Sybadge {
   @Prop({ reflect: true }) dot = false;
   @Prop({ reflect: true }) hidden = false;
   @Prop({ reflect: true }) standalone: boolean = false;
-  @Prop({ reflect: true, attribute: 'overflowCount' }) overflowCount: number = Infinity;
+  @Prop({ reflect: true, attribute: 'overflowCount', mutable: true }) overflowCount: number = Infinity;
   @Prop({ reflect: true }) value: number = 0;
   @Prop() position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'topRight';
   @Prop() size: 'small' | 'medium' = 'medium';
@@ -32,6 +33,7 @@ export class Sybadge {
   @State() private displayValue!: string;
 
   componentWillLoad() {
+    this.overflowCount = fnAssignPropFromAlias<number>(this.host, 'overflow-count') ?? this.overflowCount;
     this.setValue();
   }
   // updated

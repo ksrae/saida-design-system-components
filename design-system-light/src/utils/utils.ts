@@ -51,3 +51,87 @@ export function fnHasSlotContentByName(host: HTMLElement, slotName: string): boo
 	if (!host.isConnected) return false;
 	return !!host.querySelector(`[slot="${slotName}"]`);
 }
+
+/**
+ * Resolve a prop value from element attributes supporting a canonical attribute
+ * name and one or more legacy alias attribute names.
+ *
+ * Usage example:
+ *   this.confirmText = fnResolvePropAlias(this.el, 'confirmText', 'confirm-text', this.confirmText);
+ *
+ * Priority rules:
+ * - If the canonical attribute is present on the element, its presence (or value) wins.
+ * - Otherwise, if any alias attribute (string or array) is present, the first non-null
+ *   alias value is returned.
+ * - If neither is present, the provided currentValue is returned.
+ *
+ * This function is defensive and returns currentValue on any error.
+ */
+/**
+	* camelCase 속성과 snake-case 별칭 속성을 지원하는 함수.
+	* Prop({ attribute: ... })에서는 하나의 alias만 지정할 수 있는데 개발자의 성향이나 js 버전 간의 문제를 해결하기 위해,
+	* 유틸리티 함수로 다른 하나를 지원하거나 두 가지 모두를 지원하는 방식을 권장합니다.
+	* 이 함수는 각 component의 componentWillLoad()에서 호출하여 사용합니다.
+	* 단, 반드시 mutable: true 옵션이 있어야 합니다.
+	* 예: 
+	* @Element() el: HTMLElement;
+	* 
+	* case 1: 두 가지 alias를 모두 지원
+	* @Prop() isConfirm: boolean = false;
+	* this.isConfirm = fnAssignPropFromAlias(this.el, 'isConfirm', 'is-confirm') ?? this.isConfirm;
+	* 
+	* case 2: 하나는 Prop에서 지정하고 다른 하나는 이 함수에서 지원
+	* @Prop({ attribute: 'isConfirm' }) isConfirm: boolean = false;
+	* this.isConfirm = fnAssignPropFromAlias(this.el, 'is-confirm') ?? this.isConfirm;
+ *
+ * This makes simple calls like:
+ *   this.overflowCount = fnAssignPropFromAlias<number>(this.host, 'overflow-count') ?? this.overflowCount;
+ */
+export function fnAssignPropFromAlias<T = string>(host: HTMLElement, ...aliases: string[]): T | null {
+	try {
+		const v = fnResolvePropAlias(host, ...aliases);
+		if (v == null) return null;
+
+		const trimmed = v.trim();
+		// boolean
+		if (trimmed === 'true' || trimmed === 'false' || trimmed === '1' || trimmed === '0') {
+			const b = trimmed === 'true' || trimmed === '1';
+			return (b as unknown) as T;
+		}
+
+		// number: accept plain numeric strings (including decimals)
+		const n = Number(trimmed);
+		if (!Number.isNaN(n) && trimmed !== '') {
+			return (n as unknown) as T;
+		}
+
+		// fallback to string
+		return (v as unknown) as T;
+	} catch (e) {
+		return null;
+	}
+}
+
+export function fnResolvePropAlias(host: HTMLElement, ...aliasAttr: string[]): string | null {
+	try {
+		if (!host) return null;
+		const aliases = aliasAttr && aliasAttr.length ? aliasAttr : [];
+		const seen = new Set<string>();
+		const toKebab = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+		const toCamel = (s: string) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+
+		for (const a of aliases) {
+			if (!a) continue;
+			const variants = [a, toKebab(a), toCamel(a)];
+			for (const vName of variants) {
+				if (seen.has(vName)) continue;
+				seen.add(vName);
+				const v = host.getAttribute(vName);
+				if (v !== null) return v;
+			}
+		}
+		return null;
+	} catch (e) {
+		return null;
+	}
+}

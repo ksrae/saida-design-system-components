@@ -1,4 +1,6 @@
 import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch } from '@stencil/core';
+import { fnAssignPropFromAlias, fnResolvePropAlias } from '../../utils/utils';
+
 
 @Component({
   tag: 'sy-popconfirm',
@@ -7,7 +9,7 @@ import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch } from 
   scoped: true,
 })
 export class SyPopconfirm {
-  @Element() el: HTMLElement;
+  @Element() host: HTMLElement;
 
   private parentDom: HTMLElement;
   private addedToBody = false;
@@ -25,8 +27,8 @@ export class SyPopconfirm {
   @Prop({ reflect: true }) trigger: 'click' | 'none' = 'click';
   @Prop({ reflect: true, mutable: true }) opendelay: number = 0;
   @Prop({ reflect: true, mutable: true }) closedelay: number = 0;
-  @Prop({ attribute: 'confirmText' }) confirmText: string = 'OK';
-  @Prop({ attribute: 'cancelText' }) cancelText: string = 'Cancel';
+  @Prop({ attribute: 'confirmText', mutable: true }) confirmText: string = 'OK';
+  @Prop({ attribute: 'cancelText', mutable: true }) cancelText: string = 'Cancel';
   @Prop() sticky: boolean = false;
 
   @Event() visibleChanged: EventEmitter<boolean>;
@@ -43,8 +45,13 @@ export class SyPopconfirm {
 
   // 라이프사이클 메서드
   componentWillLoad() {
-    this.parentDom = this.el.parentElement as HTMLElement;
+    this.parentDom = this.host.parentElement as HTMLElement;
     document.addEventListener("click", this.handleOutsideClick, true);
+    // Use utility to read legacy alias attributes and only assign when present.
+    // 두개의 alias를 모두 여기서 지원할 수도 있고, 둘 중 하나는 Prop({ attribute: ... })로 지정하고 여기에서는 다른 하나만 지원하는 방식을 취해도 됩니다.
+    // 명시적으로는 Prop에서 attribute를 camelCase를 사용하고, alias로 snake-case를 지원하는 방식을 권장합니다.
+    this.confirmText = fnAssignPropFromAlias(this.host, 'confirm-text') ?? this.confirmText;
+    this.cancelText = fnResolvePropAlias(this.host, 'cancel-text') ?? this.cancelText;
   }
 
   componentDidLoad() {
@@ -95,7 +102,7 @@ export class SyPopconfirm {
     if (this.trigger === 'click' || force) {
       if (this.addedToBody) return;
 
-      document.body.appendChild(this.el);
+      document.body.appendChild(this.host);
       this.addedToBody = true;
 
       window.addEventListener("scroll", this.updatePopconfirmPosition, true);
@@ -121,8 +128,8 @@ export class SyPopconfirm {
     if (this.closeTimer) clearTimeout(this.closeTimer);
 
     // 3. 마지막으로 DOM에서 컴포넌트를 제거합니다.
-    if (this.el.parentElement === document.body) {
-      document.body.removeChild(this.el);
+    if (this.host.parentElement === document.body) {
+      document.body.removeChild(this.host);
     }
 
     this.addedToBody = false;
@@ -157,7 +164,7 @@ export class SyPopconfirm {
   private handleOutsideClick = (event: MouseEvent) => {
     if (!this.addedToBody || !this.closable) return;
     const target = event.target as Node;
-    const isInPopConfirm = this.el.contains(target);
+    const isInPopConfirm = this.host.contains(target);
     const isParent = this.parentDom?.contains(target);
     if (!isInPopConfirm && !isParent) {
       this.eventEmit("cancel");
@@ -178,21 +185,21 @@ export class SyPopconfirm {
     // ===== 여기부터 추가 =====
     // sticky가 false이고(기본값) 부모가 화면 밖에 있으면, Popconfirm을 숨기고 함수를 종료합니다.
     if (!this.sticky && !this.isParentInView()) {
-      this.el.style.visibility = 'hidden';
+      this.host.style.visibility = 'hidden';
       this.setVisibility(false); // visibility 상태와 이벤트도 동기화
       return;
     }
     // ===== 여기까지 추가 =====
 
-    this.el.style.display = "block";
-    this.el.style.visibility = "hidden";
+    this.host.style.display = "block";
+    this.host.style.visibility = "hidden";
     this.setVisibility(false);
 
     requestAnimationFrame(() => {
       this.setPopconfirmPosition();
       if (this.openTimer) clearTimeout(this.openTimer);
       this.openTimer = setTimeout(() => {
-        this.el.style.visibility = "visible";
+        this.host.style.visibility = "visible";
         this.setVisibility(true);
       }, this.opendelay);
     });
@@ -201,21 +208,21 @@ export class SyPopconfirm {
   private setPopconfirmPosition = () => {
     if (this.addedToBody && this.parentDom) {
       const parentRect = this.parentDom.getBoundingClientRect();
-      const popconfirmRect = this.el.getBoundingClientRect();
+      const popconfirmRect = this.host.getBoundingClientRect();
 
       const positions = this.calculateAllPositions(parentRect, popconfirmRect);
       const { position: bestPosition, coords } = this.findBestPosition(
         positions, this.position, parentRect, popconfirmRect
       );
 
-      this.el.style.position = "absolute";
-      this.el.style.top = `${coords.top}px`;
-      this.el.style.left = `${coords.left}px`;
+      this.host.style.position = "absolute";
+      this.host.style.top = `${coords.top}px`;
+      this.host.style.left = `${coords.left}px`;
 
       const adjusted = this.adjustForScreenBounds(popconfirmRect);
 
       if (this.arrow && this.arrowElement) {
-        const popconfirmPos = { top: parseFloat(this.el.style.top), left: parseFloat(this.el.style.left) };
+        const popconfirmPos = { top: parseFloat(this.host.style.top), left: parseFloat(this.host.style.left) };
 
         this.arrowElement.style.position = 'absolute';
         this.arrowElement.style.width = '8px';
@@ -301,22 +308,22 @@ export class SyPopconfirm {
     const viewportHeight = window.innerHeight;
     let adjusted = false;
 
-    const currentLeft = parseFloat(this.el.style.left);
-    const currentTop = parseFloat(this.el.style.top);
+    const currentLeft = parseFloat(this.host.style.left);
+    const currentTop = parseFloat(this.host.style.top);
 
     if (currentLeft < window.scrollX) {
-      this.el.style.left = `${window.scrollX}px`;
+      this.host.style.left = `${window.scrollX}px`;
       adjusted = true;
     } else if (currentLeft + popconfirmRect.width > window.scrollX + viewportWidth) {
-      this.el.style.left = `${window.scrollX + viewportWidth - popconfirmRect.width}px`;
+      this.host.style.left = `${window.scrollX + viewportWidth - popconfirmRect.width}px`;
       adjusted = true;
     }
 
     if (currentTop < window.scrollY) {
-      this.el.style.top = `${window.scrollY}px`;
+      this.host.style.top = `${window.scrollY}px`;
       adjusted = true;
     } else if (currentTop + popconfirmRect.height > window.scrollY + viewportHeight) {
-      this.el.style.top = `${window.scrollY + viewportHeight - popconfirmRect.height}px`;
+      this.host.style.top = `${window.scrollY + viewportHeight - popconfirmRect.height}px`;
       adjusted = true;
     }
 
