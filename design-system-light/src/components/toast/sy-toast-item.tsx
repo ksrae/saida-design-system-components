@@ -26,7 +26,7 @@ export class ToastItem {
   @Prop({ reflect: true }) variant: 'neutral' | 'success' | 'error' | 'info' | 'warning' = 'neutral';
   @Prop() closable = false;
   @Prop() duration: number;
-  @Prop({ attribute: 'latestTop' }) latestTop = false;
+  @Prop({ attribute: 'latestTop', mutable: true }) latestTop = false;
 
   @State() private iconName = '';
   @State() private hasIconSlotContent: boolean = false;

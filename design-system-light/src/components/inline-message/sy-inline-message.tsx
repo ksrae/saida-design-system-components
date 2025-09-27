@@ -30,10 +30,10 @@ export class InlineMessage {
   // --- Props (Lit의 @property와 동일) ---
   @Prop() variant: 'info' | 'success' | 'warning' | 'error' = 'info';
   @Prop() message: string = '';
-  @Prop({ attribute: 'showIcon'}) showIcon: boolean = false;
+  @Prop({ attribute: 'showIcon', mutable: true}) showIcon: boolean = false;
   @Prop({ reflect: true, mutable: true }) open: boolean = false;
   @Prop() trigger: 'click' | 'focusout' = 'click';
-  @Prop({ attribute: 'btnLabel' }) btnLabel: string = '';
+  @Prop({ attribute: 'btnLabel', mutable: true }) btnLabel: string = '';
   @Prop() position: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
 
   // --- State (Lit의 @state와 동일) ---
@@ -50,6 +50,7 @@ export class InlineMessage {
   // --- Lifecycle Hooks ---
 
   componentWillLoad() {
+    this.showIcon = fnAssignPropFromAlias(this.host, 'show-icon') ?? this.showIcon;
     this.btnLabel = fnAssignPropFromAlias(this.host, 'btn-label') ?? this.btnLabel;
     // 첫 렌더링이 일어나기 전에 iconType을 설정합니다.
     this.handleVariantChange(this.variant);

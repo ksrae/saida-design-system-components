@@ -7,10 +7,14 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 import { ButtonGroupState } from "./components/button-group";
+import { ModelessPositionModel } from "./components/modeless/sy-modeless";
+import { VNode } from "@stencil/core";
 import { ToastOptions } from "./components/toast/sy-toast";
 import { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 export { ButtonGroupState } from "./components/button-group";
+export { ModelessPositionModel } from "./components/modeless/sy-modeless";
+export { VNode } from "@stencil/core";
 export { ToastOptions } from "./components/toast/sy-toast";
 export { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export namespace Components {
@@ -434,6 +438,132 @@ export namespace Components {
           * @default ''
          */
         "value": string | number;
+    }
+    interface SyModal {
+        /**
+          * @default ''
+         */
+        "cancelText": string;
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        /**
+          * @default false
+         */
+        "enableModalMaximize": boolean;
+        /**
+          * @default false
+         */
+        "hideFooter": boolean;
+        /**
+          * @default '-1'
+         */
+        "left": string;
+        /**
+          * @default false
+         */
+        "maskClosable": boolean;
+        /**
+          * @default ''
+         */
+        "okText": string;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        "setCancel": (value?: any) => Promise<void>;
+        "setClose": (value?: any) => Promise<void>;
+        "setMaximum": () => Promise<void>;
+        "setOk": (value?: any) => Promise<void>;
+        "setOpen": () => Promise<void>;
+        /**
+          * @default '-1'
+         */
+        "top": string;
+        /**
+          * @default 'dialog'
+         */
+        "variant": 'modal' | 'dialog';
+        /**
+          * @default 0
+         */
+        "width": number;
+    }
+    interface SyModeless {
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        /**
+          * @default false
+         */
+        "draggable": boolean;
+        /**
+          * @default false
+         */
+        "edge": boolean;
+        /**
+          * @default 150
+         */
+        "height": number;
+        /**
+          * @default undefined
+         */
+        "left": number | undefined;
+        /**
+          * @default false
+         */
+        "maximizable": boolean;
+        /**
+          * @default false
+         */
+        "maximum": boolean;
+        /**
+          * @default DEFAULT_MIN_HEIGHT
+         */
+        "minHeight": number;
+        /**
+          * @default DEFAULT_MIN_WIDTH
+         */
+        "minWidth": number;
+        /**
+          * @default false
+         */
+        "minimizable": boolean;
+        /**
+          * @default false
+         */
+        "minimum": boolean;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default false
+         */
+        "resizable": boolean;
+        "setClose": () => Promise<void>;
+        "setMaximum": () => Promise<void>;
+        "setMinimum": () => Promise<void>;
+        "setOpen": () => Promise<void>;
+        "setRestore": () => Promise<void>;
+        /**
+          * @default undefined
+         */
+        "top": number | undefined;
+        /**
+          * @default 200
+         */
+        "width": number;
+    }
+    interface SyModelessGroup {
+        "close": (id: string) => Promise<void>;
+        "closeAll": () => Promise<void>;
+        "create": (id: string, title?: string | HTMLElement | VNode, content?: string | HTMLElement | VNode, option?: Partial<Pick<HTMLSyModelessElement, "draggable" | "resizable" | "edge" | "closable" | "maximizable" | "minimizable" | "top" | "left" | "width" | "height">>) => Promise<void>;
+        "updateContent": (id: string, content: string | HTMLElement | VNode) => Promise<void>;
+        "updateOption": (id: string, option: Partial<Pick<HTMLSyModelessElement, "draggable" | "resizable" | "edge" | "closable" | "maximizable" | "minimizable" | "top" | "left" | "width" | "height">>) => Promise<void>;
+        "updateTitle": (id: string, title: string | HTMLElement | VNode) => Promise<void>;
     }
     interface SyPopconfirm {
         /**
@@ -908,6 +1038,10 @@ export interface SyInputNumberCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyInputNumberElement;
 }
+export interface SyModelessCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyModelessElement;
+}
 export interface SyPopconfirmCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyPopconfirmElement;
@@ -1132,6 +1266,37 @@ declare global {
         prototype: HTMLSyInputNumberElement;
         new (): HTMLSyInputNumberElement;
     };
+    interface HTMLSyModalElement extends Components.SyModal, HTMLStencilElement {
+    }
+    var HTMLSyModalElement: {
+        prototype: HTMLSyModalElement;
+        new (): HTMLSyModalElement;
+    };
+    interface HTMLSyModelessElementEventMap {
+        "closed": { id: string };
+        "statusChanged": { id: string; status: string };
+        "positionChanged": { id: string; position: ModelessPositionModel };
+    }
+    interface HTMLSyModelessElement extends Components.SyModeless, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyModelessElementEventMap>(type: K, listener: (this: HTMLSyModelessElement, ev: SyModelessCustomEvent<HTMLSyModelessElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyModelessElementEventMap>(type: K, listener: (this: HTMLSyModelessElement, ev: SyModelessCustomEvent<HTMLSyModelessElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyModelessElement: {
+        prototype: HTMLSyModelessElement;
+        new (): HTMLSyModelessElement;
+    };
+    interface HTMLSyModelessGroupElement extends Components.SyModelessGroup, HTMLStencilElement {
+    }
+    var HTMLSyModelessGroupElement: {
+        prototype: HTMLSyModelessGroupElement;
+        new (): HTMLSyModelessGroupElement;
+    };
     interface HTMLSyPopconfirmElementEventMap {
         "visibleChanged": boolean;
         "selected": 'ok' | 'cancel';
@@ -1335,6 +1500,9 @@ declare global {
         "sy-inline-message": HTMLSyInlineMessageElement;
         "sy-input": HTMLSyInputElement;
         "sy-input-number": HTMLSyInputNumberElement;
+        "sy-modal": HTMLSyModalElement;
+        "sy-modeless": HTMLSyModelessElement;
+        "sy-modeless-group": HTMLSyModelessGroupElement;
         "sy-popconfirm": HTMLSyPopconfirmElement;
         "sy-popover": HTMLSyPopoverElement;
         "sy-radio": HTMLSyRadioElement;
@@ -1765,6 +1933,119 @@ declare namespace LocalJSX {
           * @default ''
          */
         "value"?: string | number;
+    }
+    interface SyModal {
+        /**
+          * @default ''
+         */
+        "cancelText"?: string;
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        /**
+          * @default false
+         */
+        "enableModalMaximize"?: boolean;
+        /**
+          * @default false
+         */
+        "hideFooter"?: boolean;
+        /**
+          * @default '-1'
+         */
+        "left"?: string;
+        /**
+          * @default false
+         */
+        "maskClosable"?: boolean;
+        /**
+          * @default ''
+         */
+        "okText"?: string;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default '-1'
+         */
+        "top"?: string;
+        /**
+          * @default 'dialog'
+         */
+        "variant"?: 'modal' | 'dialog';
+        /**
+          * @default 0
+         */
+        "width"?: number;
+    }
+    interface SyModeless {
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        /**
+          * @default false
+         */
+        "draggable"?: boolean;
+        /**
+          * @default false
+         */
+        "edge"?: boolean;
+        /**
+          * @default 150
+         */
+        "height"?: number;
+        /**
+          * @default undefined
+         */
+        "left"?: number | undefined;
+        /**
+          * @default false
+         */
+        "maximizable"?: boolean;
+        /**
+          * @default false
+         */
+        "maximum"?: boolean;
+        /**
+          * @default DEFAULT_MIN_HEIGHT
+         */
+        "minHeight"?: number;
+        /**
+          * @default DEFAULT_MIN_WIDTH
+         */
+        "minWidth"?: number;
+        /**
+          * @default false
+         */
+        "minimizable"?: boolean;
+        /**
+          * @default false
+         */
+        "minimum"?: boolean;
+        "onClosed"?: (event: SyModelessCustomEvent<{ id: string }>) => void;
+        "onPositionChanged"?: (event: SyModelessCustomEvent<{ id: string; position: ModelessPositionModel }>) => void;
+        "onStatusChanged"?: (event: SyModelessCustomEvent<{ id: string; status: string }>) => void;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default false
+         */
+        "resizable"?: boolean;
+        /**
+          * @default undefined
+         */
+        "top"?: number | undefined;
+        /**
+          * @default 200
+         */
+        "width"?: number;
+    }
+    interface SyModelessGroup {
     }
     interface SyPopconfirm {
         /**
@@ -2208,6 +2489,9 @@ declare namespace LocalJSX {
         "sy-inline-message": SyInlineMessage;
         "sy-input": SyInput;
         "sy-input-number": SyInputNumber;
+        "sy-modal": SyModal;
+        "sy-modeless": SyModeless;
+        "sy-modeless-group": SyModelessGroup;
         "sy-popconfirm": SyPopconfirm;
         "sy-popover": SyPopover;
         "sy-radio": SyRadio;
@@ -2243,6 +2527,9 @@ declare module "@stencil/core" {
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
+            "sy-modal": LocalJSX.SyModal & JSXBase.HTMLAttributes<HTMLSyModalElement>;
+            "sy-modeless": LocalJSX.SyModeless & JSXBase.HTMLAttributes<HTMLSyModelessElement>;
+            "sy-modeless-group": LocalJSX.SyModelessGroup & JSXBase.HTMLAttributes<HTMLSyModelessGroupElement>;
             "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;
             /**
              * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소

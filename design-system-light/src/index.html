@@ -10,6 +10,463 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    section {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border: 1px solid #ccc;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .controls > * {
+      margin: 5px;
+    }
+    fieldset {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  </style>
+
+  <sy-modeless-group></sy-modeless-group>
+
+  <section>
+    <h2>SY-MODELESS & SY-MODELESS-GROUP Test Suite</h2>
+
+    <div class="controls">
+      <button id="create-btn">Create Modeless</button>
+      <button id="create-draggable-btn">Create Draggable</button>
+      <button id="create-resizable-btn">Create Resizable</button>
+      <button id="create-all-options-btn">Create with All Options</button>
+      <button id="close-last-btn">Close Last</button>
+      <button id="close-all-btn">Close All</button>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="modeless-id-input" placeholder="Enter Modeless ID">
+      <button id="maximize-btn">Maximize</button>
+      <button id="minimize-btn">Minimize</button>
+      <button id="restore-btn">Restore</button>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="update-title-input" placeholder="New Title">
+      <button id="update-title-btn">Update Title</button>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="update-content-input" placeholder="New Content">
+      <button id="update-content-btn">Update Content</button>
+    </div>
+
+    <div class="controls">
+      <fieldset>
+        <legend>Update Options</legend>
+        <label><input type="checkbox" id="option-draggable"> Draggable</label>
+        <label><input type="checkbox" id="option-resizable"> Resizable</label>
+        <label><input type="checkbox" id="option-minimizable"> Minimizable</label>
+        <label><input type="checkbox" id="option-maximizable"> Maximizable</label>
+        <button id="update-options-btn">Update Options</button>
+      </fieldset>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modelessGroup = document.querySelector('sy-modeless-group');
+      let modelessCounter = 0;
+      let lastModelessId = '';
+
+      const createBtn = document.getElementById('create-btn');
+      const createDraggableBtn = document.getElementById('create-draggable-btn');
+      const createResizableBtn = document.getElementById('create-resizable-btn');
+      const createAllOptionsBtn = document.getElementById('create-all-options-btn');
+      const closeLastBtn = document.getElementById('close-last-btn');
+      const closeAllBtn = document.getElementById('close-all-btn');
+
+      const modelessIdInput = document.getElementById('modeless-id-input');
+      const maximizeBtn = document.getElementById('maximize-btn');
+      const minimizeBtn = document.getElementById('minimize-btn');
+      const restoreBtn = document.getElementById('restore-btn');
+
+      const updateTitleInput = document.getElementById('update-title-input');
+      const updateTitleBtn = document.getElementById('update-title-btn');
+
+      const updateContentInput = document.getElementById('update-content-input');
+      const updateContentBtn = document.getElementById('update-content-btn');
+
+      const optionDraggable = document.getElementById('option-draggable');
+      const optionResizable = document.getElementById('option-resizable');
+      const optionMinimizable = document.getElementById('option-minimizable');
+      const optionMaximizable = document.getElementById('option-maximizable');
+      const updateOptionsBtn = document.getElementById('update-options-btn');
+
+      const createModeless = (options = {}) => {
+        modelessCounter++;
+        const id = `modeless-${modelessCounter}`;
+        lastModelessId = id;
+        modelessIdInput.value = id;
+
+        const defaultOptions = {
+          closable: true,
+          width: 300,
+          height: 200,
+        };
+
+        modelessGroup.create(
+          id,
+          `Title for ${id}`,
+          `This is the content for ${id}`,
+          { ...defaultOptions, ...options }
+        );
+
+        // Attach event listeners to the new modeless
+        setTimeout(() => {
+          const modelessInstance = document.getElementById(id);
+          if (modelessInstance) {
+            modelessInstance.addEventListener('closed', (e) => console.log('Event: closed', e.detail));
+            modelessInstance.addEventListener('statusChanged', (e) => console.log('Event: statusChanged', e.detail));
+            modelessInstance.addEventListener('positionChanged', (e) => console.log('Event: positionChanged', e.detail));
+          }
+        }, 0);
+      };
+
+      createBtn.addEventListener('click', () => createModeless());
+      createDraggableBtn.addEventListener('click', () => createModeless({ draggable: true }));
+      createResizableBtn.addEventListener('click', () => createModeless({ resizable: true }));
+      createAllOptionsBtn.addEventListener('click', () => createModeless({
+        draggable: true,
+        resizable: true,
+        minimizable: true,
+        maximizable: true,
+        top: 100,
+        left: 100,
+      }));
+
+      closeLastBtn.addEventListener('click', () => {
+        if (lastModelessId) {
+          modelessGroup.close(lastModelessId);
+        }
+      });
+
+      closeAllBtn.addEventListener('click', () => modelessGroup.closeAll());
+
+      const getTargetModeless = async () => {
+        const id = modelessIdInput.value;
+        if (!id) {
+          alert('Please enter a modeless ID');
+          return null;
+        }
+        await customElements.whenDefined('sy-modeless');
+        const modeless = document.getElementById(id);
+        if (!modeless) {
+          alert(`Modeless with ID ${id} not found`);
+          return null;
+        }
+        return modeless;
+      };
+
+      maximizeBtn.addEventListener('click', async () => {
+        const modeless = await getTargetModeless();
+        if (modeless) modeless.setMaximum();
+      });
+
+      minimizeBtn.addEventListener('click', async () => {
+        const modeless = await getTargetModeless();
+        if (modeless) modeless.setMinimum();
+      });
+
+      restoreBtn.addEventListener('click', async () => {
+        const modeless = await getTargetModeless();
+        if (modeless) modeless.setRestore();
+      });
+
+      updateTitleBtn.addEventListener('click', () => {
+        const id = modelessIdInput.value;
+        const newTitle = updateTitleInput.value;
+        if (id && newTitle) {
+          modelessGroup.updateTitle(id, newTitle);
+        }
+      });
+
+      updateContentBtn.addEventListener('click', () => {
+        const id = modelessIdInput.value;
+        const newContent = updateContentInput.value;
+        if (id && newContent) {
+          modelessGroup.updateContent(id, newContent);
+        }
+      });
+
+      updateOptionsBtn.addEventListener('click', () => {
+        const id = modelessIdInput.value;
+        if (id) {
+          modelessGroup.updateOption(id, {
+            draggable: optionDraggable.checked,
+            resizable: optionResizable.checked,
+            minimizable: optionMinimizable.checked,
+            maximizable: optionMaximizable.checked,
+          });
+        }
+      });
+    });
+  </script>
+  <h2>SY-MODAL Component Samples</h2>
+
+  <section>
+    <h3>Basic Modal</h3>
+
+    <!-- Basic Modal Manager -->
+    <sy-modal id="basicModal" closable="true" cancel-text="취소" ok-text="확인">
+      <div slot="header">기본 모달</div>
+      <div slot="body">
+        <p>이것은 기본 모달입니다.</p>
+        <p>ESC 키를 누르거나 X 버튼을 클릭하거나 확인/취소 버튼을 클릭하여 닫을 수 있습니다.</p>
+      </div>
+    </sy-modal>
+
+    <button id="btnBasicModal">기본 모달 열기</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-modal');
+        const modal = document.querySelector('#basicModal');
+        const btn = document.querySelector('#btnBasicModal');
+        btn.addEventListener('click', () => {
+          modal.open = true;
+        });
+
+        // Modal 이벤트 리스너
+        modal.addEventListener('closed', (e) => {
+          console.log('Modal closed:', e.detail);
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Draggable Modal</h3>
+
+    <!-- Draggable Modal Manager -->
+    <sy-modal
+      id="draggableModal"
+      variant="modal"
+      closable="true"
+      enable-modal-maximize="true"
+      mask-closable="true"
+      width="600"
+      top="100"
+      left="200"
+      cancel-text="닫기"
+      ok-text="확대"
+    >
+      <div slot="header">드래그 가능한 모달</div>
+      <div slot="body">
+        <p>이 모달은 드래그할 수 있고 리사이징도 가능합니다.</p>
+        <p>헤더를 드래그해서 위치를 이동할 수 있습니다.</p>
+        <p>코너를 드래그해서 크기를 조절할 수 있습니다.</p>
+        <p>최대화 버튼을 클릭해서 전체 화면으로 만들 수도 있습니다.</p>
+        <p>ESC 키를 누르거나 배경을 클릭해서 닫을 수 있습니다.</p>
+      </div>
+    </sy-modal>
+
+    <button id="btnDraggableModal">드래그 모달 열기</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-modal');
+        const modal = document.querySelector('#draggableModal');
+        const btn = document.querySelector('#btnDraggableModal');
+        btn.addEventListener('click', () => {
+          modal.open = true;
+        });
+
+        modal.addEventListener('closed', (e) => {
+          console.log('Draggable Modal closed:', e.detail);
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Modal with Custom Footer</h3>
+
+    <!-- Custom Footer Modal Manager -->
+    <sy-modal id="customFooterModal" closable="true" hide-footer="false">
+      <div slot="header">사용자 정의 푸터 모달</div>
+      <div slot="body">
+        <p>이 모달은 사용자 정의 푸터를 가지고 있습니다.</p>
+        <p>기본 확인/취소 버튼 대신 커스텀 버튼들이 표시됩니다.</p>
+      </div>
+      <div slot="footer">
+        <sy-button variant="secondary" size="medium">사용자 정의 버튼</sy-button>
+        <sy-button variant="primary" size="medium" id="btnCustomConfirm">확인</sy-button>
+      </div>
+    </sy-modal>
+
+    <button id="btnCustomFooterModal">사용자 정의 푸터 모달 열기</button>
+
+<script>
+      (async () => {
+        await window.customElements.whenDefined('sy-modal');
+        const modal = document.querySelector('#customFooterModal');
+        const btn = document.querySelector('#btnCustomFooterModal');
+        const btnConfirm = document.querySelector('#btnCustomConfirm');
+        btnConfirm.addEventListener('click', () => {
+          modal.open = false;
+        });
+        btn.addEventListener('click', () => {
+          modal.open = true;
+        });
+
+        modal.addEventListener('closed', (e) => {
+          console.log('Custom Footer Modal closed:', e.detail);
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Programmatic Control</h3>
+
+    <!-- Programmatic Modal Manager -->
+    <sy-modal id="programmaticModal" closable="true">
+      <div slot="header">프로그래밍 제어 모달</div>
+      <div slot="body">
+        <p>이 모달은 JavaScript로 프로그래밍 방식으로 제어됩니다.</p>
+        <p>아래 버튼들을 클릭해서 다양한 메서드들을 테스트해보세요.</p>
+      </div>
+    </sy-modal>
+
+    <button id="btnProgrammaticOpen">열기</button>
+    <button id="btnProgrammaticClose">닫기</button>
+    <button id="btnProgrammaticMaximize">최대화 토글</button>
+    <button id="btnProgrammaticCancel">취소 (값과 함께)</button>
+    <button id="btnProgrammaticOk">확인 (값과 함께)</button>
+
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-modal');
+        const modal = document.querySelector('#programmaticModal');
+
+        // 버튼 이벤트 리스너들
+        document.querySelector('#btnProgrammaticOpen').addEventListener('click', async () => {
+          await modal.setOpen();
+        });
+
+        document.querySelector('#btnProgrammaticClose').addEventListener('click', async () => {
+          await modal.setClose('사용자가 직접 닫음');
+        });
+
+        document.querySelector('#btnProgrammaticMaximize').addEventListener('click', async () => {
+          await modal.setMaximum();
+        });
+
+        document.querySelector('#btnProgrammaticCancel').addEventListener('click', async () => {
+          await modal.setCancel('취소됨');
+        });
+
+        document.querySelector('#btnProgrammaticOk').addEventListener('click', async () => {
+          await modal.setOk('확인됨');
+        });
+
+        modal.addEventListener('closed', (e) => {
+          console.log('Programmatic Modal closed:', e.detail);
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Event Handling</h3>
+
+    <!-- Event Modal Manager -->
+    <sy-modal id="eventModal" closable="true" mask-closable="true">
+      <div slot="header">이벤트 처리 모달</div>
+      <div slot="body">
+        <p>이 모달은 다양한 이벤트를 처리합니다.</p>
+        <p>모든 이벤트와 반환값이 콘솔에 기록됩니다.</p>
+        <p>ESC 키, 배경 클릭, 버튼 클릭 등 모든 닫기 방법을 테스트해보세요.</p>
+      </div>
+    </sy-modal>
+
+    <button id="btnEventModal">이벤트 모달 열기</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-modal');
+        const modal = document.querySelector('#eventModal');
+        const btn = document.querySelector('#btnEventModal');
+        btn.addEventListener('click', () => {
+          modal.open = true;
+        });
+
+        modal.addEventListener('closed', (e) => {
+          console.log('=== Modal Event Details ===');
+          console.log('Event Type:', e.detail.event);
+          console.log('Return Value:', e.detail.value);
+          console.log('Position:', e.detail.position);
+          console.log('Maximized:', e.detail.maximized);
+          console.log('========================');
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h3>Advanced Options</h3>
+
+    <!-- Advanced Options Modal Manager -->
+    <sy-modal
+      id="advancedModal"
+      variant="modal"
+      closable="true"
+      enable-modal-maximize="true"
+      mask-closable="false"
+      width="500"
+      cancel-text="아니오"
+      ok-text="예"
+    >
+      <div slot="header">고급 옵션 모달</div>
+      <div slot="body">
+        <p>이 모달은 다양한 고급 옵션들을 보여줍니다:</p>
+        <ul>
+          <li><strong>Variant:</strong> modal (드래그/리사이징 가능)</li>
+          <li><strong>Closable:</strong> true (X 버튼 표시)</li>
+          <li><strong>Enable Modal Maximize:</strong> true (최대화 버튼 표시)</li>
+          <li><strong>Mask Closable:</strong> false (배경 클릭으로 닫기 불가)</li>
+          <li><strong>Custom Width:</strong> 500px</li>
+          <li><strong>Custom Button Text:</strong> 예/아니오</li>
+        </ul>
+        <p>이 모달은 배경을 클릭해도 닫히지 않습니다.</p>
+        <p>ESC 키나 X 버튼, 확인/취소 버튼으로만 닫을 수 있습니다.</p>
+      </div>
+    </sy-modal>
+
+    <button id="btnAdvancedModal">고급 옵션 모달 열기</button>
+    <script>
+      (async () => {
+        await window.customElements.whenDefined('sy-modal');
+        const modal = document.querySelector('#advancedModal');
+        const btn = document.querySelector('#btnAdvancedModal');
+        btn.addEventListener('click', () => {
+          modal.open = true;
+        });
+
+        modal.addEventListener('closed', (e) => {
+          console.log('Advanced Modal closed:', e.detail);
+        });
+      })();
+    </script>
+  </section>
+
   <h2>SY-TOAST Component Samples</h2>
 
   <section>

@@ -33,7 +33,7 @@ export interface HTMLSyToastElement extends HTMLElement {
 export class Toast {
   @Element() host: HTMLElement;
 
-  @Prop({ attribute: 'latestTop' }) latestTop: boolean = false;
+  @Prop({ attribute: 'latestTop', mutable: true }) latestTop: boolean = false;
   @Prop() duration: number = 3000;
 
   componentWillLoad() {
