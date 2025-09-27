@@ -1,5 +1,42 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
 
+// HTMLSyTextareaElement interface
+export interface HTMLSyTextareaElement extends HTMLElement {
+  // Props
+  autofocus: boolean;
+  borderless: boolean;
+  clearable: boolean;
+  counter: boolean;
+  disabled: boolean;
+  label: string;
+  max: number;
+  min: number;
+  placeholder: string;
+  readonly: boolean;
+  required: boolean;
+  resize: "none" | "horizontal" | "vertical" | "both";
+  rows: number;
+  size: "small" | "medium" | "large";
+  status: 'default' | 'warning' | 'error' | 'success';
+  value: string;
+  name: string;
+  noNativeValidity: boolean;
+
+  // Events
+  changed: EventEmitter<{ value: string; length: number; isValid: boolean; status: string }>;
+  blured: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+  focused: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+
+  // Methods
+  setFocus(): Promise<void>;
+  setBlur(): Promise<void>;
+  checkValidity(): Promise<boolean>;
+  reportValidity(): Promise<boolean>;
+  setCustomError(): Promise<void>;
+  clearCustomError(): Promise<void>;
+  getStatus(): Promise<string>;
+}
+
 @Component({
   tag: 'sy-textarea',
   styleUrl: 'sy-textarea.scss',

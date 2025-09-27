@@ -1,4 +1,20 @@
 import { Component, h, Prop, State, Element, Watch, Listen, Event, EventEmitter } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
+
+// HTMLSyInlineMessageElement interface
+export interface HTMLSyInlineMessageElement extends HTMLElement {
+  // Props
+  variant: 'info' | 'success' | 'warning' | 'error';
+  message: string;
+  showIcon: boolean;
+  open: boolean;
+  trigger: 'click' | 'focusout';
+  btnLabel: string;
+  position: 'top' | 'bottom' | 'left' | 'right';
+
+  // Events
+  btnClick: EventEmitter<MouseEvent>;
+}
 
 const DEBOUNCE_TIME = 50;
 
@@ -34,6 +50,7 @@ export class InlineMessage {
   // --- Lifecycle Hooks ---
 
   componentWillLoad() {
+    this.btnLabel = fnAssignPropFromAlias(this.host, 'btn-label') ?? this.btnLabel;
     // 첫 렌더링이 일어나기 전에 iconType을 설정합니다.
     this.handleVariantChange(this.variant);
   }

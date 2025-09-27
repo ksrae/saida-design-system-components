@@ -1,5 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, Watch, h, Element } from '@stencil/core';
-import { fnResolvePropAlias } from '../../utils/utils';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyAvatarElement extends HTMLElement {
   clickable: boolean;
@@ -44,27 +44,27 @@ export class SyAvatar {
     icon: string;
     image: string;
   }>;
-  
+
   @Event() disableStatus: EventEmitter<{ disabled: boolean }>;
 
   componentWillLoad() {
     // tooltipContent가 이미 설정되어 있으면 HTML 태그 제거 후 사용자가 설정한 것으로 간주
     if (this.tooltipContent?.trim()?.length) {
-      const tooltipContent = fnResolvePropAlias(this.host, 'tooltip-content') ?? this.tooltipContent;
+      const tooltipContent = fnAssignPropFromAlias(this.host, 'tooltip-content') ?? this.tooltipContent;
       this.tooltipContent = this.sanitizeHtml(tooltipContent);
       this.isTooltipContentUserSet = true;
     }
-    
+
     // image 처리
     if (this.image?.trim()?.length) {
       this.imgPreload();
     }
-    
+
     // text 처리
     if (this.text?.trim()?.length) {
       this.setText();
     }
-    
+
     // letter 처리
     if (this.letter?.trim()?.length) {
       if (this.letter.length > 2) {
@@ -155,7 +155,7 @@ export class SyAvatar {
     if (this.isTooltipContentUserSet && this.tooltipContent?.trim()?.length) {
       return this.sanitizeHtml(this.tooltipContent);
     }
-        
+
     if (this.image?.trim()?.length) {
       return this.sanitizeHtml(this.image);
     } else if (this.icon?.trim()?.length) {
@@ -165,7 +165,7 @@ export class SyAvatar {
     } else if (this.letter?.trim()?.length) {
       return this.sanitizeHtml(this.letter);
     }
-    
+
     return '';
   }
 

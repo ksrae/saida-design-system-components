@@ -810,7 +810,7 @@ export namespace Components {
         /**
           * @default 3000
          */
-        "defaultDuration": number;
+        "duration": number;
         /**
           * @default false
          */
@@ -2129,7 +2129,7 @@ declare namespace LocalJSX {
         /**
           * @default 3000
          */
-        "defaultDuration"?: number;
+        "duration"?: number;
         /**
           * @default false
          */

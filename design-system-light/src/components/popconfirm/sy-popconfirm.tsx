@@ -1,6 +1,27 @@
 import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch } from '@stencil/core';
-import { fnAssignPropFromAlias, fnResolvePropAlias } from '../../utils/utils';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
+// HTMLSyPopconfirmElement interface
+export interface HTMLSyPopconfirmElement extends HTMLElement {
+  // Props
+  arrow: boolean;
+  closable: boolean;
+  position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+  trigger: 'click' | 'none';
+  opendelay: number;
+  closedelay: number;
+  confirmText: string;
+  cancelText: string;
+  sticky: boolean;
+
+  // Events
+  visibleChanged: EventEmitter<boolean>;
+  selected: EventEmitter<'ok' | 'cancel'>;
+
+  // Methods
+  setOpen(): Promise<void>;
+  setClose(): Promise<void>;
+}
 
 @Component({
   tag: 'sy-popconfirm',
@@ -51,7 +72,7 @@ export class SyPopconfirm {
     // 두개의 alias를 모두 여기서 지원할 수도 있고, 둘 중 하나는 Prop({ attribute: ... })로 지정하고 여기에서는 다른 하나만 지원하는 방식을 취해도 됩니다.
     // 명시적으로는 Prop에서 attribute를 camelCase를 사용하고, alias로 snake-case를 지원하는 방식을 권장합니다.
     this.confirmText = fnAssignPropFromAlias(this.host, 'confirm-text') ?? this.confirmText;
-    this.cancelText = fnResolvePropAlias(this.host, 'cancel-text') ?? this.cancelText;
+    this.cancelText = fnAssignPropFromAlias(this.host, 'cancel-text') ?? this.cancelText;
   }
 
   componentDidLoad() {

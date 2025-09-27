@@ -73,13 +73,13 @@ export function fnHasSlotContentByName(host: HTMLElement, slotName: string): boo
 	* 유틸리티 함수로 다른 하나를 지원하거나 두 가지 모두를 지원하는 방식을 권장합니다.
 	* 이 함수는 각 component의 componentWillLoad()에서 호출하여 사용합니다.
 	* 단, 반드시 mutable: true 옵션이 있어야 합니다.
-	* 예: 
+	* 예:
 	* @Element() el: HTMLElement;
-	* 
+	*
 	* case 1: 두 가지 alias를 모두 지원
 	* @Prop() isConfirm: boolean = false;
 	* this.isConfirm = fnAssignPropFromAlias(this.el, 'isConfirm', 'is-confirm') ?? this.isConfirm;
-	* 
+	*
 	* case 2: 하나는 Prop에서 지정하고 다른 하나는 이 함수에서 지원
 	* @Prop({ attribute: 'isConfirm' }) isConfirm: boolean = false;
 	* this.isConfirm = fnAssignPropFromAlias(this.el, 'is-confirm') ?? this.isConfirm;
@@ -112,7 +112,7 @@ export function fnAssignPropFromAlias<T = string>(host: HTMLElement, ...aliases:
 	}
 }
 
-export function fnResolvePropAlias(host: HTMLElement, ...aliasAttr: string[]): string | null {
+function fnResolvePropAlias(host: HTMLElement, ...aliasAttr: string[]): string | null {
 	try {
 		if (!host) return null;
 		const aliases = aliasAttr && aliasAttr.length ? aliasAttr : [];

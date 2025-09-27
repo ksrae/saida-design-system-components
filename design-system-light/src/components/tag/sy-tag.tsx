@@ -2,6 +2,22 @@
 
 import { Component, h, Prop, State, Watch, Event, EventEmitter, Element } from '@stencil/core';
 
+// HTMLSyTagElement interface
+export interface HTMLSyTagElement extends HTMLElement {
+  // Props
+  disabled: boolean;
+  readonly: boolean;
+  removable: boolean;
+  rounded: boolean;
+  selectable: boolean;
+  size: 'small' | 'medium' | 'large';
+  variant: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
+
+  // Events
+  selected: EventEmitter<{ tag: HTMLElement }>;
+  removed: EventEmitter<{ tag: HTMLElement }>;
+}
+
 @Component({
   tag: 'sy-tag',
   styleUrl: 'sy-tag.scss',

@@ -1,4 +1,5 @@
 import { Component, h, Prop, State, Element, Method } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyToastItemElement extends HTMLElement {
   open: boolean;
@@ -25,7 +26,7 @@ export class ToastItem {
   @Prop({ reflect: true }) variant: 'neutral' | 'success' | 'error' | 'info' | 'warning' = 'neutral';
   @Prop() closable = false;
   @Prop() duration: number;
-  @Prop() latestTop = false;
+  @Prop({ attribute: 'latestTop' }) latestTop = false;
 
   @State() private iconName = '';
   @State() private hasIconSlotContent: boolean = false;
@@ -34,20 +35,8 @@ export class ToastItem {
   private readonly ANIMATION_DURATION = 300;
   private readonly MOUSE_LEAVE_DURATION = 1500;
 
-  // [핵심 수정] private static -> public static 으로 변경하여 접근성을 보장합니다.
-  public static updateToastPositions(position: string, latestTop: boolean) {
-    const toasts = Array.from(document.querySelectorAll(`sy-toast-item[open][position="${position}"]:not(.exit-active)`));
-    let offset = 0;
-    const sortedToasts = latestTop ? [...toasts].reverse() : toasts;
-    sortedToasts.forEach(toast => {
-        const toastEl = toast as HTMLElement;
-        const toastHeight = toastEl.offsetHeight + 16;
-        toastEl.style.transform = position.includes('top') ? `translateY(${offset}px)` : `translateY(${-offset}px)`;
-        offset += toastHeight;
-    });
-  }
-
   componentWillLoad() {
+    this.latestTop = fnAssignPropFromAlias(this.host, 'latest-top') ?? this.latestTop;
     this.updateIconName(this.variant);
   }
 
@@ -67,16 +56,7 @@ export class ToastItem {
     this.open = true;
     this.startCloseTimer(this.duration);
     // [핵심 수정] 클래스 이름 대신 this.constructor를 사용하여 static 메소드를 안전하게 호출합니다.
-    requestAnimationFrame(() => (this.constructor as typeof ToastItem).updateToastPositions(this.position, this.latestTop));
-  }
-
-  private startCloseTimer(duration: number) {
-    clearTimeout(this.closeTimer);
-    if (duration > 0) {
-      this.closeTimer = window.setTimeout(() => {
-        this.close();
-      }, duration);
-    }
+    requestAnimationFrame(() => this.updateToastPositions(this.position, this.latestTop));
   }
 
   @Method()
@@ -89,8 +69,29 @@ export class ToastItem {
     setTimeout(() => {
       this.host.remove();
       // [핵심 수정] 여기에서도 동일하게 this.constructor를 사용합니다.
-      requestAnimationFrame(() => (this.constructor as typeof ToastItem).updateToastPositions(this.position, this.latestTop));
+      requestAnimationFrame(() => this.updateToastPositions(this.position, this.latestTop));
     }, this.ANIMATION_DURATION);
+  }
+
+  private updateToastPositions(position: string, latestTop: boolean) {
+    const toasts = Array.from(document.querySelectorAll(`sy-toast-item[open][position="${position}"]:not(.exit-active)`));
+    let offset = 0;
+    const sortedToasts = latestTop ? [...toasts].reverse() : toasts;
+    sortedToasts.forEach(toast => {
+        const toastEl = toast as HTMLElement;
+        const toastHeight = toastEl.offsetHeight + 16;
+        toastEl.style.transform = position.includes('top') ? `translateY(${offset}px)` : `translateY(${-offset}px)`;
+        offset += toastHeight;
+    });
+  }
+
+  private startCloseTimer(duration: number) {
+    clearTimeout(this.closeTimer);
+    if (duration > 0) {
+      this.closeTimer = window.setTimeout(() => {
+        this.close();
+      }, duration);
+    }
   }
 
   private handleMouseEnter = () => {

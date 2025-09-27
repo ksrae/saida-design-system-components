@@ -1,5 +1,17 @@
 import { Component, h, Prop, State, Element, Watch, Method } from '@stencil/core';
 
+export interface HTMLSySkeletonElement extends HTMLElement {
+  // Props
+  type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
+  rows: number;
+  width: string;
+  disabled: boolean;
+
+  // Methods
+  stopAnimation(): Promise<void>;
+  resetAnimation(): Promise<void>;
+}
+
 @Component({
   tag: 'sy-skeleton',
   styleUrl: 'sy-skeleton.scss',

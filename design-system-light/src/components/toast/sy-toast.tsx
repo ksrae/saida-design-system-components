@@ -1,5 +1,6 @@
 import { Component, Prop, Method, Element, h } from '@stencil/core';
 import { HTMLSyToastItemElement } from './sy-toast-item'; // sy-toast-item의 인터페이스를 직접 임포트합니다.
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface ToastOptions {
   position?: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
@@ -13,7 +14,7 @@ export interface ToastOptions {
 
 export interface HTMLSyToastElement extends HTMLElement {
   latestTop: boolean;
-  defaultDuration: number;
+  duration: number;
   createToast: (variant: 'neutral' | 'success' | 'error' | 'info' | 'warning', option?: ToastOptions) => Promise<void>;
   createNeutralToast: (option?: ToastOptions) => Promise<void>;
   createSuccessToast: (option?: ToastOptions) => Promise<void>;
@@ -32,8 +33,12 @@ export interface HTMLSyToastElement extends HTMLElement {
 export class Toast {
   @Element() host: HTMLElement;
 
-  @Prop() latestTop: boolean = false;
-  @Prop() defaultDuration: number = 3000;
+  @Prop({ attribute: 'latestTop' }) latestTop: boolean = false;
+  @Prop() duration: number = 3000;
+
+  componentWillLoad() {
+    this.latestTop = fnAssignPropFromAlias(this.host, 'latest-top') ?? this.latestTop;
+  }
 
   private createSlotElement(content: string | HTMLElement, slotName: string): HTMLElement {
     const slotElement = document.createElement('div');
@@ -56,7 +61,7 @@ export class Toast {
     toastItem.variant = variant ?? 'neutral';
     toastItem.position = option?.position ?? 'bottomRight';
     // sy-toast-item의 duration prop에 값을 명시적으로 전달합니다.
-    toastItem.duration = option?.duration ?? this.defaultDuration;
+    toastItem.duration = option?.duration ?? this.duration;
     toastItem.closable = option?.closable ?? false;
     toastItem.latestTop = this.latestTop;
 

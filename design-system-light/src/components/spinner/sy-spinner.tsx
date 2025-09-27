@@ -2,6 +2,16 @@
 
 import { Component, h, Prop, State, Watch, Element, Host } from '@stencil/core';
 
+// HTMLSySpinnerElement interface
+export interface HTMLSySpinnerElement extends HTMLElement {
+  // Props
+  delay: number;
+  description: string;
+  hidden: boolean;
+  inline: boolean;
+  size: 'small' | 'medium' | 'large' | 'xlarge';
+}
+
 @Component({
   tag: 'sy-spinner',
   styleUrl: 'sy-spinner.scss',
