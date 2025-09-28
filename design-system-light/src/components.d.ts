@@ -294,6 +294,10 @@ export namespace Components {
          */
         "showIcon": boolean;
         /**
+          * @default false
+         */
+        "sticky": boolean;
+        /**
           * @default 'click'
          */
         "trigger": 'click' | 'focusout';
@@ -565,6 +569,32 @@ export namespace Components {
         "updateOption": (id: string, option: Partial<Pick<HTMLSyModelessElement, "draggable" | "resizable" | "edge" | "closable" | "maximizable" | "minimizable" | "top" | "left" | "width" | "height">>) => Promise<void>;
         "updateTitle": (id: string, title: string | HTMLElement | VNode) => Promise<void>;
     }
+    interface SyOption {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default false
+         */
+        "selected": boolean;
+        /**
+          * @default false
+         */
+        "showTooltip": boolean;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
     interface SyPopconfirm {
         /**
           * @default false
@@ -726,6 +756,74 @@ export namespace Components {
           * @default 'outlined'
          */
         "variant": 'outlined' | 'solid';
+    }
+    interface SySelect {
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
+        "clearValue": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "clearable": boolean;
+        /**
+          * @default ''
+         */
+        "defaultValue": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "empty": boolean;
+        /**
+          * @default false
+         */
+        "error": boolean;
+        /**
+          * @default false
+         */
+        "hide": boolean;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default 0
+         */
+        "maxTagCount": number;
+        /**
+          * @default 'default'
+         */
+        "mode": 'default' | 'searchable' | 'multiple' | 'tag';
+        /**
+          * @default ''
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default ''
+         */
+        "placeholder": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setCustomError": () => Promise<void>;
+        "setValue": (values: string[] | string) => Promise<void>;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
     }
     interface SySkeleton {
         /**
@@ -1042,6 +1140,10 @@ export interface SyModelessCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyModelessElement;
 }
+export interface SyOptionCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyOptionElement;
+}
 export interface SyPopconfirmCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyPopconfirmElement;
@@ -1057,6 +1159,10 @@ export interface SyRadioButtonCustomEvent<T> extends CustomEvent<T> {
 export interface SyRadioGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyRadioGroupElement;
+}
+export interface SySelectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSySelectElement;
 }
 export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1297,6 +1403,23 @@ declare global {
         prototype: HTMLSyModelessGroupElement;
         new (): HTMLSyModelessGroupElement;
     };
+    interface HTMLSyOptionElementEventMap {
+        "selected": { value: string; label: string };
+    }
+    interface HTMLSyOptionElement extends Components.SyOption, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyOptionElementEventMap>(type: K, listener: (this: HTMLSyOptionElement, ev: SyOptionCustomEvent<HTMLSyOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyOptionElementEventMap>(type: K, listener: (this: HTMLSyOptionElement, ev: SyOptionCustomEvent<HTMLSyOptionElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyOptionElement: {
+        prototype: HTMLSyOptionElement;
+        new (): HTMLSyOptionElement;
+    };
     interface HTMLSyPopconfirmElementEventMap {
         "visibleChanged": boolean;
         "selected": 'ok' | 'cancel';
@@ -1375,6 +1498,29 @@ declare global {
     var HTMLSyRadioGroupElement: {
         prototype: HTMLSyRadioGroupElement;
         new (): HTMLSyRadioGroupElement;
+    };
+    interface HTMLSySelectElementEventMap {
+        "opened": void;
+        "removed": any;
+        "selected": any;
+        "focused": void;
+        "blured": void;
+        "inputChanged": string;
+        "cleared": void;
+    }
+    interface HTMLSySelectElement extends Components.SySelect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSySelectElementEventMap>(type: K, listener: (this: HTMLSySelectElement, ev: SySelectCustomEvent<HTMLSySelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSySelectElementEventMap>(type: K, listener: (this: HTMLSySelectElement, ev: SySelectCustomEvent<HTMLSySelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSySelectElement: {
+        prototype: HTMLSySelectElement;
+        new (): HTMLSySelectElement;
     };
     interface HTMLSySkeletonElement extends Components.SySkeleton, HTMLStencilElement {
     }
@@ -1503,11 +1649,13 @@ declare global {
         "sy-modal": HTMLSyModalElement;
         "sy-modeless": HTMLSyModelessElement;
         "sy-modeless-group": HTMLSyModelessGroupElement;
+        "sy-option": HTMLSyOptionElement;
         "sy-popconfirm": HTMLSyPopconfirmElement;
         "sy-popover": HTMLSyPopoverElement;
         "sy-radio": HTMLSyRadioElement;
         "sy-radio-button": HTMLSyRadioButtonElement;
         "sy-radio-group": HTMLSyRadioGroupElement;
+        "sy-select": HTMLSySelectElement;
         "sy-skeleton": HTMLSySkeletonElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
@@ -1800,6 +1948,10 @@ declare namespace LocalJSX {
          */
         "showIcon"?: boolean;
         /**
+          * @default false
+         */
+        "sticky"?: boolean;
+        /**
           * @default 'click'
          */
         "trigger"?: 'click' | 'focusout';
@@ -2047,6 +2199,33 @@ declare namespace LocalJSX {
     }
     interface SyModelessGroup {
     }
+    interface SyOption {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        "onSelected"?: (event: SyOptionCustomEvent<{ value: string; label: string }>) => void;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "selected"?: boolean;
+        /**
+          * @default false
+         */
+        "showTooltip"?: boolean;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
     interface SyPopconfirm {
         /**
           * @default false
@@ -2198,6 +2377,75 @@ declare namespace LocalJSX {
           * @default 'outlined'
          */
         "variant"?: 'outlined' | 'solid';
+    }
+    interface SySelect {
+        /**
+          * @default false
+         */
+        "clearable"?: boolean;
+        /**
+          * @default ''
+         */
+        "defaultValue"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "empty"?: boolean;
+        /**
+          * @default false
+         */
+        "error"?: boolean;
+        /**
+          * @default false
+         */
+        "hide"?: boolean;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default 0
+         */
+        "maxTagCount"?: number;
+        /**
+          * @default 'default'
+         */
+        "mode"?: 'default' | 'searchable' | 'multiple' | 'tag';
+        /**
+          * @default ''
+         */
+        "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        "onBlured"?: (event: SySelectCustomEvent<void>) => void;
+        "onCleared"?: (event: SySelectCustomEvent<void>) => void;
+        "onFocused"?: (event: SySelectCustomEvent<void>) => void;
+        "onInputChanged"?: (event: SySelectCustomEvent<string>) => void;
+        "onOpened"?: (event: SySelectCustomEvent<void>) => void;
+        "onRemoved"?: (event: SySelectCustomEvent<any>) => void;
+        "onSelected"?: (event: SySelectCustomEvent<any>) => void;
+        /**
+          * @default ''
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
     }
     interface SySkeleton {
         /**
@@ -2492,11 +2740,13 @@ declare namespace LocalJSX {
         "sy-modal": SyModal;
         "sy-modeless": SyModeless;
         "sy-modeless-group": SyModelessGroup;
+        "sy-option": SyOption;
         "sy-popconfirm": SyPopconfirm;
         "sy-popover": SyPopover;
         "sy-radio": SyRadio;
         "sy-radio-button": SyRadioButton;
         "sy-radio-group": SyRadioGroup;
+        "sy-select": SySelect;
         "sy-skeleton": SySkeleton;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
@@ -2530,6 +2780,7 @@ declare module "@stencil/core" {
             "sy-modal": LocalJSX.SyModal & JSXBase.HTMLAttributes<HTMLSyModalElement>;
             "sy-modeless": LocalJSX.SyModeless & JSXBase.HTMLAttributes<HTMLSyModelessElement>;
             "sy-modeless-group": LocalJSX.SyModelessGroup & JSXBase.HTMLAttributes<HTMLSyModelessGroupElement>;
+            "sy-option": LocalJSX.SyOption & JSXBase.HTMLAttributes<HTMLSyOptionElement>;
             "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;
             /**
              * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
@@ -2539,6 +2790,7 @@ declare module "@stencil/core" {
             "sy-radio": LocalJSX.SyRadio & JSXBase.HTMLAttributes<HTMLSyRadioElement>;
             "sy-radio-button": LocalJSX.SyRadioButton & JSXBase.HTMLAttributes<HTMLSyRadioButtonElement>;
             "sy-radio-group": LocalJSX.SyRadioGroup & JSXBase.HTMLAttributes<HTMLSyRadioGroupElement>;
+            "sy-select": LocalJSX.SySelect & JSXBase.HTMLAttributes<HTMLSySelectElement>;
             "sy-skeleton": LocalJSX.SySkeleton & JSXBase.HTMLAttributes<HTMLSySkeletonElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;

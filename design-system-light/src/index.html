@@ -10,7 +10,162 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+    <h1>SySelect Component Examples</h1>
 
+    <!-- 기본 셀렉트 예제 -->
+    <div class="example-section">
+      <h3>기본 셀렉트 (Default Mode)</h3>
+      <div class="form-group">
+        <label>단일 선택:</label>
+        <sy-select placeholder="옵션을 선택하세요">
+          <sy-option value="option1" label="옵션 1"></sy-option>
+          <sy-option value="option2" label="옵션 2"></sy-option>
+          <sy-option value="option3" label="옵션 3"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <!-- 검색 가능한 셀렉트 예제 -->
+    <div class="example-section">
+      <h3>검색 가능한 셀렉트 (Searchable Mode)</h3>
+      <div class="form-group">
+        <label>검색하여 선택:</label>
+        <sy-select mode="searchable" placeholder="검색하여 선택하세요">
+          <sy-option value="apple" label="사과"></sy-option>
+          <sy-option value="banana" label="바나나"></sy-option>
+          <sy-option value="cherry" label="체리"></sy-option>
+          <sy-option value="durian" label="두리안"></sy-option>
+          <sy-option value="elderberry" label="엘더베리"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <!-- 다중 선택 셀렉트 예제 -->
+    <div class="example-section">
+      <h3>다중 선택 셀렉트 (Multiple Mode)</h3>
+      <div class="form-group">
+        <label>다중 선택:</label>
+        <sy-select mode="multiple" placeholder="여러 옵션을 선택하세요">
+          <sy-option value="red" label="빨강"></sy-option>
+          <sy-option value="green" label="초록"></sy-option>
+          <sy-option value="blue" label="파랑"></sy-option>
+          <sy-option value="yellow" label="노랑"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <!-- 태그 모드 셀렉트 예제 -->
+    <div class="example-section">
+      <h3>태그 모드 셀렉트 (Tag Mode)</h3>
+      <div class="form-group">
+        <label>태그 입력 (커스텀 태그 가능):</label>
+        <sy-select mode="tag" placeholder="태그를 입력하세요">
+          <sy-option value="javascript" label="JavaScript"></sy-option>
+          <sy-option value="typescript" label="TypeScript"></sy-option>
+          <sy-option value="react" label="React"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <!-- 다양한 크기 예제 -->
+    <div class="example-section">
+      <h3>다양한 크기</h3>
+      <div class="form-group">
+        <label>작은 크기:</label>
+        <sy-select size="small" placeholder="작은 셀렉트">
+          <sy-option value="small1" label="작은 옵션 1"></sy-option>
+          <sy-option value="small2" label="작은 옵션 2"></sy-option>
+        </sy-select>
+      </div>
+
+      <div class="form-group">
+        <label>중간 크기:</label>
+        <sy-select size="medium" placeholder="중간 셀렉트">
+          <sy-option value="medium1" label="중간 옵션 1"></sy-option>
+          <sy-option value="medium2" label="중간 옵션 2"></sy-option>
+        </sy-select>
+      </div>
+
+      <div class="form-group">
+        <label>큰 크기:</label>
+        <sy-select size="large" placeholder="큰 셀렉트">
+          <sy-option value="large1" label="큰 옵션 1"></sy-option>
+          <sy-option value="large2" label="큰 옵션 2"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <!-- 비활성화 상태 예제 -->
+    <div class="example-section">
+      <h3>비활성화 및 읽기 전용</h3>
+      <div class="form-group">
+        <label>비활성화:</label>
+        <sy-select disabled placeholder="비활성화된 셀렉트">
+          <sy-option value="disabled1" label="옵션 1"></sy-option>
+          <sy-option value="disabled2" label="옵션 2"></sy-option>
+        </sy-select>
+      </div>
+
+      <div class="form-group">
+        <label>읽기 전용:</label>
+        <sy-select readonly placeholder="읽기 전용 셀렉트">
+          <sy-option value="readonly1" label="읽기 전용 옵션"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <!-- 필수 입력 예제 -->
+    <div class="example-section">
+      <h3>필수 입력 및 유효성 검사</h3>
+      <div class="form-group">
+        <label>필수 선택:</label>
+        <sy-select required placeholder="필수 선택 항목">
+          <sy-option value="required1" label="필수 옵션 1"></sy-option>
+          <sy-option value="required2" label="필수 옵션 2"></sy-option>
+        </sy-select>
+      </div>
+    </div>
+
+    <div class="example-section">
+      <h3>선택 결과</h3>
+      <div class="result" id="result">
+        선택된 값이 여기에 표시됩니다...
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // 모든 sy-select 요소에 이벤트 리스너 추가
+    document.addEventListener('DOMContentLoaded', () => {
+      const selects = document.querySelectorAll('sy-select');
+      const result = document.getElementById('result');
+
+      selects.forEach(select => {
+        select.addEventListener('selected', (e) => {
+          const { selectedOptions, isValid, status } = e.detail;
+          result.innerHTML = `
+            <strong>선택된 값:</strong> ${JSON.stringify(selectedOptions, null, 2)}<br>
+            <strong>유효성:</strong> ${isValid}<br>
+            <strong>상태:</strong> ${status}
+          `;
+        });
+
+        select.addEventListener('removed', (e) => {
+          const { selectedOptions, isValid, status } = e.detail;
+          result.innerHTML = `
+            <strong>제거된 후 선택된 값:</strong> ${JSON.stringify(selectedOptions, null, 2)}<br>
+            <strong>유효성:</strong> ${isValid}<br>
+            <strong>상태:</strong> ${status}
+          `;
+        });
+
+        select.addEventListener('cleared', () => {
+          result.innerHTML = '모든 선택이 초기화되었습니다.';
+        });
+      });
+    });
+  </script>
+  
   <style>
     body {
       font-family: sans-serif;
@@ -905,6 +1060,24 @@
     </div>
   </section>
 
+  <!-- 6. sticky 테스트 섹션 -->
+  <section class="test-section">
+    <h2>6. sticky 테스트</h2>
+      <div class="test-item">
+        <sy-button>
+          버튼
+          <sy-inline-message
+            variant="warning"
+            message="이것은 메시지입니다."
+            btnLabel="확인했습니다"
+            showIcon
+            sticky
+            trigger="click">
+          </sy-inline-message>
+        </sy-button>
+      </div>
+    </div>
+  </section>
 
   <!-- 7. 이벤트 핸들링 테스트 -->
   <section class="test-section">

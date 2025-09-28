@@ -1,0 +1,64 @@
+@use "../../assets/style/global/font"as font;
+
+:host {
+    display: block;
+    cursor: pointer;
+}
+
+:host(sy-option) {
+    .select-item {
+        display: flex;
+        align-items: center;
+        visibility: visible;
+        gap:var(--spacing-3xsmall);
+        justify-content: start;
+        width: 100%;
+        box-sizing: border-box;
+        padding: var(--spacing-3xsmall) var(--spacing-xsmall);
+        @include font.text-style-base-regular();
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color: var(--select-form-background-enabled);
+        *{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-break: break-all;            
+        }
+
+        &[disabled] {
+            cursor: auto;
+            color: var(--select-form-text-disabled);
+
+            &:hover {
+                background-color: transparent;
+            }
+        }
+
+        &[readonly] {
+            cursor: auto;
+        }
+
+        &.option-selected {
+            background-color: var(--background-extended-purple-default);
+            color: var(--select-form-text-selected);
+            border: var(--select-form-border-selected);
+            @include font.text-style-base-medium;
+        }
+
+        &.option-active {
+            background-color: var(--background-bold);
+        }
+
+        &.option-selected.option-active {
+            background-color: var(--background-extended-purple-default);
+            color: var(--select-form-text-selected);
+            border: var(--select-form-border-selected); 
+        }
+    }
+
+    [selected] {
+        background-color: var(--select-form-background-selected);
+    }
+
+}

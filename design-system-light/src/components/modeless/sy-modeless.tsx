@@ -49,7 +49,7 @@ export class SyModeless {
 
   // --- Public Properties ---
   @Prop({ reflect: true, mutable: true }) open = false;
-  @Prop() draggable = false;
+  @Prop({ reflect: false }) draggable = false;
   @Prop() resizable = false;
   @Prop() closable = false;
   @Prop() minimizable = false;

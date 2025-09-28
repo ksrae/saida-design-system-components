@@ -11,6 +11,7 @@ export interface HTMLSyInlineMessageElement extends HTMLElement {
   trigger: 'click' | 'focusout';
   btnLabel: string;
   position: 'top' | 'bottom' | 'left' | 'right';
+  sticky: boolean;
 
   // Events
   btnClick: EventEmitter<MouseEvent>;
@@ -35,6 +36,7 @@ export class InlineMessage {
   @Prop() trigger: 'click' | 'focusout' = 'click';
   @Prop({ attribute: 'btnLabel', mutable: true }) btnLabel: string = '';
   @Prop() position: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
+  @Prop() sticky: boolean = false;
 
   // --- State (Lit의 @state와 동일) ---
   @State() private iconType: string = '';
@@ -184,6 +186,12 @@ export class InlineMessage {
 
   private updateInlineMsg = () => {
     if (this.addedToBody && this.parentDom !== document.body && this.parentDom) {
+      // Check if parent is in view and sticky behavior
+      if (!this.sticky && !this.isParentInView()) {
+        this.host.style.visibility = 'hidden';
+        return;
+      }
+
       const parentRect = this.parentDom.getBoundingClientRect();
       // Lit의 this.style을 this.host.style로 변경
       this.host.style.display = 'block';
@@ -304,6 +312,23 @@ export class InlineMessage {
         left: window.scrollX + parentRect.right,
       },
     }
+  }
+
+  /**
+   * Checks if the parent element is visible in the viewport.
+   * @returns true if the parent element is in view, false otherwise.
+   */
+  private isParentInView(): boolean {
+    if (!this.parentDom) {
+      return false;
+    }
+    const rect = this.parentDom.getBoundingClientRect();
+    return (
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0
+    );
   }
 
   private clickAction = (e: MouseEvent) => {
