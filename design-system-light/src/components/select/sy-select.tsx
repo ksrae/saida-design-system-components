@@ -609,16 +609,28 @@ export class SySelect {
     if (!this.disabled && !this.readonly) {
       e.stopPropagation();
       
+      // sy-tag가 DOM에서 자동으로 제거되는 것을 방지
+      // 태그를 찾아서 제거 방지
+      const tagElement = e.target?.closest?.('sy-tag');
+      if (tagElement && tagElement.remove) {
+        // 원래 remove 함수를 임시로 무력화
+        const originalRemove = tagElement.remove;
+        tagElement.remove = () => {}; // 빈 함수로 교체
+        
+        // 다음 tick에서 원래 함수 복원
+        setTimeout(() => {
+          tagElement.remove = originalRemove;
+        }, 0);
+      }
+      
       // 정확히 해당 아이템만 제거하도록 식별자 조건 강화
       this.selectedOptions = this.selectedOptions.filter(opt => {
-        console.log({opt}, {item});
         return !(opt.value.toString() === item.value.toString() && opt.label?.toString() === item.label?.toString())
       });
 
       if (this.mode === 'tag') {
         const optionsToUpdate = Array.from(this.optionsContainer?.querySelectorAll('sy-option') || []) as unknown as HTMLSyOptionElement[];
         optionsToUpdate.forEach((option) => {
-          console.log('tag: ', {option})
           // 해당하는 태그만 처리
           if (option.value.toString() === item.value.toString() && option.label?.toString() === item.label?.toString()) {
             if (option.isCustomTag) {
@@ -1496,7 +1508,10 @@ export class SySelect {
                     size={this.size}
                     disabled={this.disabled}
                     readonly={this.readonly}
-                    onRemoved={(e: any) => this.removeItem(e, option)}
+                    onRemoved={(e: any) => {
+                      e.preventDefault(); // sy-tag의 자동 DOM 제거를 막음
+                      this.removeItem(e, option);
+                    }}
                   >
                     {option.value}-{option.label}
                   </sy-tag>
