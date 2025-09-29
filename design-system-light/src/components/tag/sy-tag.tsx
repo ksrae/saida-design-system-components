@@ -70,8 +70,7 @@ export class SyTag {
       // 'removed' 이벤트를 발송
       this.removed.emit({ tag: this.host });
 
-      // 컴포넌트 자신을 DOM에서 제거
-      this.host.remove();
+      this.host.remove(); // 이 줄을 제거하여 부모가 렌더링을 담당하도록 함
     }
   };
 

@@ -67,8 +67,8 @@ export class SySelect {
   @State() private hasPopupErrorComponent: boolean = false;
 
   @Watch('inputValue')
-  watchInputValue(newValue: string, oldValue: string) {
-    console.log(`%c[WATCH] inputValue changed:`, 'color: orange', `'${oldValue}' -> '${newValue}'`);
+  watchInputValue(_newValue: string, _oldValue: string) {
+    // inputValue 변경 감지
   }
 
   private handleOutsideClick = this.handleOutsideClickEvent.bind(this);
@@ -359,7 +359,8 @@ export class SySelect {
       option.value = value;
       option.label = value;
       option.isCustomTag = true;
-      option.addEventListener('selected', () => {
+      option.addEventListener('selected', (e: any) => {
+        e.stopPropagation();
         this.handleTemporaryOptionSelection(option);
       });
       this.tempOption = option;
@@ -382,13 +383,27 @@ export class SySelect {
       option.isCustomTag = true; // 커스텀 태그 플래그 설정
       // 기존 커스텀 태그는 보존하면서 새로운 태그 추가
       this.options = [...this.options.filter(opt => opt.isCustomTag), option];
+      
+      // 임시 옵션을 정식 옵션으로 변환
+      this.tempOption = null;
     } else {
-      // 이미 있는 태그 제거
+      // 이미 있는 태그 제거 - 하지만 커스텀 태그는 DOM에서 유지
       this.selectedOptions = this.selectedOptions.filter(o => o.value.toString() !== selectedTempOption.value.toString());
-      option.remove();
+      
+      // 임시 옵션만 제거하고 기존 커스텀 태그가 있다면 유지
+      const existingCustomTag = this.options.find(opt => 
+        opt.isCustomTag && 
+        opt.value.toString() === option.value.toString() && 
+        opt.label?.toString() === option.label?.toString() &&
+        opt !== option
+      );
+      
+      if (!existingCustomTag) {
+        option.remove();
+      }
+      this.tempOption = null;
     }
 
-    this.tempOption = null;
     this.inputValue = '';
     this.updateOptions();
     this.updatePlaceholder();
@@ -398,7 +413,18 @@ export class SySelect {
     customTagOption.value = value;
     customTagOption.label = value;
     customTagOption.dataset.preset = value;
-    customTagOption.hide = !!(existOption && customTagOption.label?.toString() === existOption.label?.toString() && customTagOption.value.toString() === existOption.value.toString());
+    
+    // 커스텀 태그가 선택되어 있는지 확인
+    const isCustomTagSelected = this.selectedOptions.some(opt => 
+      opt.value.toString() === customTagOption.value.toString() && 
+      opt.label?.toString() === customTagOption.label?.toString()
+    );
+    
+    // 동일한 값의 기존 옵션이 있고, 커스텀 태그가 선택되지 않았을 때만 숨김
+    customTagOption.hide = !!(existOption && 
+      customTagOption.label?.toString() === existOption.label?.toString() && 
+      customTagOption.value.toString() === existOption.value.toString() &&
+      !isCustomTagSelected);
   }
 
   private appendLoadingOption() {
@@ -488,19 +514,32 @@ export class SySelect {
         const customTags = normalOptions.filter(opt => opt.isCustomTag);
         const originOptions = normalOptions.filter(opt => !opt.isCustomTag);
 
-        // 커스텀 태그 유지 및 상태 관리
+        // 커스텀 태그 상태 관리
         customTags.forEach(tag => {
-          const matchingSelected = this.selectedOptions.find(opt =>
+          const isSelected = this.selectedOptions.some(opt =>
             opt.value.toString() === tag.value.toString() &&
             opt.label?.toString() === tag.label?.toString()
           );
-          if (matchingSelected) {
-            tag.selected = true;
-            tag.hide = this.hide;
+          
+          tag.selected = isSelected;
+          
+          // 검색 필터링 - 검색어가 있을 때만 필터링 적용
+          let shouldHide = false;
+          
+          if (isSearch && value && value.trim()) {
+            // 검색 중일 때: 검색어와 매치되는지 확인
+            const isMatch = tag.value.toLowerCase().includes(value.toLowerCase()) || 
+                           tag.label.toLowerCase().includes(value.toLowerCase());
+            shouldHide = !isMatch;
           } else {
-            tag.selected = false;
-            tag.hide = false;
+            // 검색 중이 아닐 때: 선택된 태그만 hide 설정에 따라 숨김
+            // 선택되지 않은 커스텀 태그는 항상 표시
+            shouldHide = isSelected && this.hide;
           }
+          
+          tag.hide = shouldHide;
+          
+          if (!tag.hide) hasVisibleOptions = true;
         });
 
         // 기본 옵션 상태 관리
@@ -509,8 +548,25 @@ export class SySelect {
             opt.value.toString() === option.value.toString() &&
             opt.label?.toString() === option.label?.toString()
           );
+          
           option.selected = isSelected;
-          option.hide = this.hide && isSelected;
+          
+          // 검색 필터링 - 검색어가 있을 때만 필터링 적용
+          let shouldHide = false;
+          
+          if (isSearch && value && value.trim()) {
+            // 검색 중일 때: 검색어와 매치되는지 확인
+            const isMatch = option.value.toLowerCase().includes(value.toLowerCase()) || 
+                           option.label.toLowerCase().includes(value.toLowerCase());
+            shouldHide = !isMatch;
+          } else {
+            // 검색 중이 아닐 때: 선택된 옵션은 hide 설정에 따라
+            shouldHide = isSelected && this.hide;
+          }
+          
+          option.hide = shouldHide;
+          
+          if (!option.hide) hasVisibleOptions = true;
         });
 
         if (this.hide) {
@@ -521,20 +577,6 @@ export class SySelect {
             this.removeOption('empty');
           }
         }
-
-        // 커스텀 태그 검색 및 표시
-        customTags.forEach(opt => {
-          const isMatch = !value || opt.value.toLowerCase().includes((value || '').toLowerCase());
-          opt.hide = this.hide ? opt.selected : !isMatch;
-          if (!opt.hide) hasVisibleOptions = true;
-        });
-
-        // 기본 옵션 처리
-        originOptions.forEach(opt => {
-          const isMatch = !value || opt.value.toLowerCase().includes((value || '').toLowerCase());
-          opt.hide = this.hide ? opt.selected : !isMatch;
-          if (!opt.hide) hasVisibleOptions = true;
-        });
       } else {
         if (!hasVisibleOptions) {
           if (!emptyOption) this.appendOption('empty');
@@ -566,14 +608,17 @@ export class SySelect {
   private removeItem(e: any, item: { value: string; label?: string }) {
     if (!this.disabled && !this.readonly) {
       e.stopPropagation();
+      
       // 정확히 해당 아이템만 제거하도록 식별자 조건 강화
-      this.selectedOptions = this.selectedOptions.filter(opt =>
-        !(opt.value.toString() === item.value.toString() && opt.label?.toString() === item.label?.toString())
-      );
+      this.selectedOptions = this.selectedOptions.filter(opt => {
+        console.log({opt}, {item});
+        return !(opt.value.toString() === item.value.toString() && opt.label?.toString() === item.label?.toString())
+      });
 
       if (this.mode === 'tag') {
         const optionsToUpdate = Array.from(this.optionsContainer?.querySelectorAll('sy-option') || []) as unknown as HTMLSyOptionElement[];
         optionsToUpdate.forEach((option) => {
+          console.log('tag: ', {option})
           // 해당하는 태그만 처리
           if (option.value.toString() === item.value.toString() && option.label?.toString() === item.label?.toString()) {
             if (option.isCustomTag) {
@@ -595,6 +640,7 @@ export class SySelect {
       }
 
       this.updateValidityState();
+      
       if (this.mode !== 'default' && this.mode !== 'searchable') {
         this.inputPlaceholder = !this.selectedOptions?.length ? this.placeholder ?? '' : '';
         this.removed.emit({ item, selectedOptions: this.selectedOptions, isValid: this.isValid, status: this.validStatus });
@@ -681,94 +727,68 @@ export class SySelect {
   };
 
   private handleEnterKey(allSlotOptions: HTMLSyOptionElement[], visibleOptions: HTMLSyOptionElement[]) {
-    if (this.isTreeSelect) return;
-
-    // 태그 모드에서 입력값이 있을 때의 처리
-    if (this.mode === 'tag' && this.inputValue?.trim()) {
-      const trimmedInput = this.inputValue.trim();
-      const existingOption = allSlotOptions.find(opt =>
-        opt.label === trimmedInput || opt.value === trimmedInput
-      );
-
-      if (existingOption && !existingOption.disabled) {
-        // 기존 옵션이 있으면 그 옵션을 선택/해제
-        this.optionSelection(existingOption);
-      } else {
-        // 새로운 태그 생성
-        this.appendOption('option', trimmedInput);
-        if (this.tempOption) {
-          this.handleTemporaryOptionSelection(this.tempOption);
-        }
-      }
+    // If there's exactly one visible option, select it regardless of active state
+    if (this.isTreeSelect) {
       return;
     }
 
-    // 입력값과 정확히 일치하는 옵션 찾기
-    if (this.inputValue && (this.mode === 'searchable' || this.mode === 'multiple')) {
-      const exactMatch = this.options.find(opt =>
-        opt.label === this.inputValue &&
-        !opt.disabled && !opt.readonly
-      );
-      if (exactMatch) {
-        this.optionSelection(exactMatch);
-        return;
-      } else {
-        // 잘못된 값이면 무조건 이전 선택값으로 복원
-        if (this.selectedOptions?.length > 0) {
-          this.inputValue = this.selectedOptions[0].label ?? '';
-          if (this.inputEl) {
-            this.inputEl.value = this.inputValue;
-          }
-        } else {
-          // 이전 선택값이 없으면 입력창을 비움
-          this.inputValue = '';
-          if (this.inputEl) {
-            this.inputEl.value = '';
-          }
-        }
-        return;
-      }
-    }
-
-    // 정확히 일치하는 옵션이 없을 경우 기존 로직
     if (visibleOptions.length === 1) {
       if (this.mode === 'searchable' || this.mode === 'multiple') {
         const visibleOption = visibleOptions[0];
         if (!visibleOption.disabled && !visibleOption.readonly) {
           this.optionSelection(visibleOption);
         } else {
+          // If the only visible option is disabled/readonly, show all options
           allSlotOptions.forEach(opt => {
-            opt.hide = !!(this.hide && opt.selected);
+            opt.hide = this.hide && opt.selected ? true : false;
           });
         }
       }
-    } else if (visibleOptions.length > 1 && this.activeOptionIndex >= 0) {
+    } 
+    // If there are multiple visible options and one is active, select the active option
+    else if (visibleOptions.length > 1 && this.activeOptionIndex >= 0) {
       const activeOption = visibleOptions[this.activeOptionIndex];
       if (activeOption && !activeOption.disabled && !activeOption.readonly) {
         this.optionSelection(activeOption);
       }
-    } else if (visibleOptions.length === 0 || visibleOptions.every(opt => opt.disabled || opt.readonly)) {
+    } 
+    // If there are no visible options or only disabled/readonly options are visible
+    else if (visibleOptions.length === 0 || visibleOptions.every(opt => opt.disabled || opt.readonly)) {
       this.removeOption('empty');
+      // Show all options again with their original hide state
       allSlotOptions.forEach(opt => {
-        opt.hide = !!(this.hide && opt.selected);
+        opt.hide = this.hide && opt.selected ? true : false;
       });
       this.clearValue();
     }
+  
+    // Handle tag mode specific logic
     if (this.inputValue?.length && this.mode === 'tag') {
       const existSelectedOption = this.selectedOptions.find(opt => opt.label === this.inputValue);
-      const options = Array.from(this.optionsContainer.querySelectorAll('sy-option')) as unknown as HTMLSyOptionElement[];
-      const existOriginOption = options.filter(opt => !opt.isCustomTag).find(opt => opt.label === this.inputValue);
+
+      const options = this.optionsContainer?.querySelectorAll('sy-option') as unknown as NodeListOf<HTMLSyOptionElement>;
+      if (!options || !this.optionsContainer) {
+        return;
+      }
+  
+      const allOptionsInDOM = Array.from(options);
+      const existOriginOption = allOptionsInDOM.filter(opt => !opt.isCustomTag).find(opt => opt.label === this.inputValue);
+  
       if (existOriginOption) {
-        options.forEach(option => {
-          if (option.label === this.inputValue) {
+        allOptionsInDOM.forEach(option => {
+          let isSameContent = false;
+
+          isSameContent = option.label === this.inputValue;
+
+          if (isSameContent) {
             option.selected = !option.selected;
             if (option.selected) {
-              this.selectedOptions = [...this.selectedOptions, { value: option.value, label: option.label }];
+              this.selectedOptions.push({value: option.value, label: option.label});
             } else {
               this.selectedOptions = this.selectedOptions.filter(opt => opt.value.toString() !== option.value.toString());
             }
           }
-          option.hide = !!(this.hide && option.selected);
+          option.hide = this.hide && option.selected ? true : false;
         });
       } else if (!existSelectedOption) {
         this.appendCustomTagOption(this.inputValue);
@@ -776,15 +796,25 @@ export class SySelect {
           this.handleTemporaryOptionSelection(this.tempOption);
         }
       } else {
-        const exist = options.find(opt => opt.value.toString() === existSelectedOption.value.toString());
+        const exist = allOptionsInDOM.find(opt => opt.value.toString() === existSelectedOption.value.toString());
         if (exist) {
           exist.remove();
         }
+  
         this.selectedOptions = this.selectedOptions.filter(opt => opt.value.toString() !== existSelectedOption.value.toString());
-        this.options = this.options.filter(opt => opt.value.toString() !== existSelectedOption.value.toString());
+        let filteredAllOptions = allOptionsInDOM.filter(opt => opt.value.toString() !== existSelectedOption.value.toString());
+        
+        filteredAllOptions = filteredAllOptions.map(opt => {
+          opt.hide = this.hide && opt.selected ? true : false;
+          return opt;
+        });
+        
+        this.options = filteredAllOptions;
       }
     }
+  
     this.tempOption = null;
+  
     if (this.mode !== 'searchable') {
       this.clearValue();
     }
@@ -888,7 +918,12 @@ export class SySelect {
     const target = e.target as HTMLElement;
     const selectContainer = this.el.querySelector('.select-container');
     const isInsideSelect = selectContainer?.contains(target) || this.el.contains(target);
-    const isInsideContainer = this.optionsContainer?.contains(target) || target === this.optionsContainer || target.tagName === 'SY-OPTION';
+    // sy-option 엘리먼트 또는 그 내부 엘리먼트인지 확인
+    const closestSyOption = target.closest('sy-option');
+    const isInsideContainer = this.optionsContainer?.contains(target) || 
+                              target === this.optionsContainer || 
+                              target.tagName === 'SY-OPTION' ||
+                              closestSyOption !== null;
     if (!isInsideSelect && !isInsideContainer) {
       if (this.optionsContainer?.dataset?.mode === 'tag') {
         this.tempOption = null;
@@ -918,15 +953,39 @@ export class SySelect {
         if (exist) {
           // value로만 비관하여 선택 해제
           this.selectedOptions = this.selectedOptions.filter(opt => opt.value.toString() !== value?.toString());
-          if (this.optionsContainer) {
-            const allOptions = Array.from(this.optionsContainer.querySelectorAll('sy-option')) as unknown as HTMLSyOptionElement[];
-            allOptions.forEach(opt => {
-              if (opt.value.toString() === value?.toString()) {
-                opt.selected = false;
-                opt.hide = false;
-                opt.removeAttribute('selected');
-              }
-            });
+          
+          // 커스텀 태그 선택 해제 시 DOM과 options 배열에서 제거
+          if (this.mode === 'tag' && option.isCustomTag) {
+            // options 배열에서 커스텀 태그 제거
+            this.options = this.options.filter(opt => 
+              !(opt.isCustomTag && 
+                opt.value.toString() === value?.toString() && 
+                opt.label?.toString() === label?.toString())
+            );
+            
+            // DOM에서 커스텀 태그 제거
+            if (this.optionsContainer) {
+              const customTagsInDOM = Array.from(this.optionsContainer.querySelectorAll('sy-option')) as unknown as HTMLSyOptionElement[];
+              customTagsInDOM.forEach(opt => {
+                if (opt.isCustomTag && 
+                    opt.value.toString() === value?.toString() && 
+                    opt.label?.toString() === label?.toString()) {
+                  opt.remove();
+                }
+              });
+            }
+          } else {
+            // 일반 옵션의 경우 선택 해제만
+            if (this.optionsContainer) {
+              const allOptions = Array.from(this.optionsContainer.querySelectorAll('sy-option')) as unknown as HTMLSyOptionElement[];
+              allOptions.forEach(opt => {
+                if (opt.value.toString() === value?.toString()) {
+                  opt.selected = false;
+                  opt.hide = false;
+                  opt.removeAttribute('selected');
+                }
+              });
+            }
           }
         } else {
           // 태그 모드에서 사용자 정의 태그 처리
@@ -965,7 +1024,7 @@ export class SySelect {
         option.setAttribute('selected', '');
         option.hide = !!this.hide;
         this.touched = true;
-        if (this.mode !== 'searchable') {
+        if (this.mode === 'default') {
           this.isOpen = false;
         }
         this.updateValidityState();
@@ -996,7 +1055,7 @@ export class SySelect {
           const slotOptions = Array.from(this.el.querySelectorAll(OPTION)) as HTMLSyOptionElement[];
 
           // 커스텀 태그 처리
-          // 기존 커스텀 태그 유지
+          // 선택된 커스텀 태그만 유지 (선택 해제된 커스텀 태그는 제거)
           const existingCustomTags = this.mode === 'tag' ?
             this.options.filter(opt =>
               opt.isCustomTag &&
@@ -1006,6 +1065,17 @@ export class SySelect {
               )
             )
             : [];
+          
+          // options 배열에서 선택되지 않은 커스텀 태그 제거
+          if (this.mode === 'tag') {
+            this.options = this.options.filter(opt => 
+              !opt.isCustomTag || 
+              this.selectedOptions.some(selected =>
+                selected.value.toString() === opt.value.toString() &&
+                selected.label?.toString() === opt.label?.toString()
+              )
+            );
+          }
 
           // 새로운 커스텀 태그 생성
           const newCustomTags = this.mode === 'tag' ?
@@ -1077,10 +1147,8 @@ export class SySelect {
               if ((this.mode === 'default' || this.mode === 'searchable') && !optionClone.readonly && !optionClone.disabled) {
                 this.isOpen = false;
               }
-              if (this.mode === 'tag' && this.tempOption) {
-                this.tempOption.remove();
-                this.tempOption = null;
-              }
+              // 태그 모드에서는 tempOption을 자동으로 제거하지 않음
+              // tempOption의 제거는 handleTemporaryOptionSelection에서 처리
             });
             this.optionsContainer?.appendChild(optionClone);
           });
@@ -1430,7 +1498,7 @@ export class SySelect {
                     readonly={this.readonly}
                     onRemoved={(e: any) => this.removeItem(e, option)}
                   >
-                    {option.label}
+                    {option.value}-{option.label}
                   </sy-tag>
                 ))
               : null}
