@@ -1,4 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyInputElement extends HTMLElement {
   // Public Props
@@ -43,7 +44,7 @@ export interface HTMLSyInputElement extends HTMLElement {
 })
 export class SyInput {
   // --- Element References ---
-  @Element() hostElement: HTMLSyInputElement;
+  @Element() host: HTMLSyInputElement;
   private internals: ElementInternals;
   private input!: HTMLInputElement;
 
@@ -66,7 +67,7 @@ export class SyInput {
   @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
   @Prop({ mutable: true, reflect: true }) value: string = "";
   @Prop({ reflect: true }) variant: "password" | "search" | "text" = "text";
-  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
+  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
 
   // --- State ---
   @State() private hasFocus = false;
@@ -111,8 +112,8 @@ export class SyInput {
 
   // --- Lifecycle Methods ---
   connectedCallback() {
-    if (this.hostElement.attachInternals) {
-      this.internals = this.hostElement.attachInternals();
+    if (this.host.attachInternals) {
+      this.internals = this.host.attachInternals();
     }
     if (this.internals?.form) {
       this.internals.form.addEventListener('submit', this.handleFormSubmit);
@@ -126,6 +127,8 @@ export class SyInput {
   }
 
   componentWillLoad() {
+    this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
+
     this.initialValue = this.value;
     this.handleSlotChange();
     this.updateValidityState();
@@ -195,9 +198,9 @@ export class SyInput {
 
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
-    const hasErrorSlot = !!this.hostElement.querySelector('[slot="error"]');
+    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
     if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.hostElement.querySelector('[slot="error"]');
+      const errorSlotElement = this.host.querySelector('[slot="error"]');
       const hasContent = errorSlotElement?.textContent?.trim();
       if (hasContent) {
         this.hasSlotErrorMessage = true;
@@ -262,10 +265,10 @@ export class SyInput {
   };
 
   private handleSlotChange = () => {
-    this.hasPrefix = this.hostElement.querySelector('[slot="prefix"]') !== null;
-    this.hasSuffix = this.hostElement.querySelector('[slot="suffix"]') !== null;
+    this.hasPrefix = this.host.querySelector('[slot="prefix"]') !== null;
+    this.hasSuffix = this.host.querySelector('[slot="suffix"]') !== null;
 
-    const errorSlot = this.hostElement.querySelector('[slot="error"]');
+    const errorSlot = this.host.querySelector('[slot="error"]');
     if (!errorSlot) {
       this.hasSlotErrorMessage = false;
       this.hasPopupErrorComponent = false;

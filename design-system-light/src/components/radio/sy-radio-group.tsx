@@ -1,6 +1,7 @@
 // sy-radio-group.tsx
 
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyRadioGroupElement extends HTMLElement {
   // Public Props
@@ -36,7 +37,7 @@ export interface HTMLSyRadioGroupElement extends HTMLElement {
 })
 export class SyRadioGroup {
   // --- Element References ---
-  @Element() hostElement: HTMLSyRadioGroupElement;
+  @Element() host: HTMLSyRadioGroupElement;
   private internals: ElementInternals;
   private slot!: HTMLSlotElement;
   private radioList: HTMLSyRadioElement[] = [];
@@ -52,7 +53,7 @@ export class SyRadioGroup {
   @Prop() position: 'horizontal' | 'vertical' = 'horizontal';
   @Prop() variant: 'outlined' | 'solid' = 'outlined';
   @Prop() name: string = '';
-  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
+  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
 
   // --- State ---
   @State() private selectedValue: string = '';
@@ -100,8 +101,8 @@ export class SyRadioGroup {
 
   // --- Lifecycle Methods ---
   connectedCallback() {
-    if (this.hostElement.attachInternals) {
-      this.internals = this.hostElement.attachInternals();
+    if (this.host.attachInternals) {
+      this.internals = this.host.attachInternals();
     }
     if (this.internals?.form) {
       this.internals.form.addEventListener('submit', this.handleFormSubmit);
@@ -115,12 +116,15 @@ export class SyRadioGroup {
   }
 
   componentWillLoad() {
+    this.defaultValue = fnAssignPropFromAlias(this.host, 'default-value') ?? this.defaultValue;
+    this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
+
     this.initialValue = this.defaultValue;
     this.selectedValue = this.defaultValue;
 
     // [수정] 첫 렌더링 이전에 isButtonGroup 상태를 설정합니다.
     // hostElement를 직접 쿼리하여 light DOM에 sy-radio-button이 있는지 확인합니다.
-    this.isButtonGroup = !!this.hostElement.querySelector('sy-radio-button');
+    this.isButtonGroup = !!this.host.querySelector('sy-radio-button');
 
     this.handleSlotChange();
     this.updateValidityState();
@@ -248,7 +252,7 @@ export class SyRadioGroup {
   @Listen('selected', { target: 'body' })
   handleRadioSelected(e: CustomEvent<string>) {
     const target = e.target as HTMLElement;
-    if (!this.hostElement.contains(target) || (target.tagName !== 'SY-RADIO' && target.tagName !== 'SY-RADIO-BUTTON')) return;
+    if (!this.host.contains(target) || (target.tagName !== 'SY-RADIO' && target.tagName !== 'SY-RADIO-BUTTON')) return;
 
     e.stopPropagation();
 
@@ -272,9 +276,9 @@ export class SyRadioGroup {
   handleInvalidEvent(e: Event) {
     this.formSubmitted = true;
 
-    const hasErrorSlot = !!this.hostElement.querySelector('[slot="error"]');
+    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
     if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.hostElement.querySelector('[slot="error"]');
+      const errorSlotElement = this.host.querySelector('[slot="error"]');
       const hasContent = errorSlotElement?.textContent?.trim() || errorSlotElement?.children.length > 0;
 
       if (hasContent) {
@@ -311,7 +315,7 @@ export class SyRadioGroup {
   };
 
   private handleCustomErrorSlot = () => {
-    const errorSlot = this.hostElement.querySelector('[slot="error"]');
+    const errorSlot = this.host.querySelector('[slot="error"]');
     if (!errorSlot) {
       this.hasSlotErrorMessage = false;
       this.hasPopupErrorComponent = false;

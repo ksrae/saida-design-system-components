@@ -2,6 +2,7 @@
 
 import { Component, Prop, State, h, Element, Watch, Event, EventEmitter, Host, AttachInternals, Method } from '@stencil/core';
 import { HTMLSyOptionElement } from './sy-select-option'; // 정의된 인터페이스를 import 합니다.
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 const OPTION = 'SY-OPTION';
 
@@ -13,7 +14,7 @@ const OPTION = 'SY-OPTION';
   formAssociated: true,
 })
 export class SySelect {
-  @Element() private el: HTMLElement;
+  @Element() private host: HTMLElement;
   @AttachInternals() internals: ElementInternals;
 
   private initialSelectedOptions: { value: string; label?: string }[] = [];
@@ -74,7 +75,7 @@ export class SySelect {
   private handleOutsideClick = this.handleOutsideClickEvent.bind(this);
 
   constructor() {
-    this.el?.addEventListener('invalid', this.handleInvalid);
+    this.host?.addEventListener('invalid', this.handleInvalid);
   }
 
   connectedCallback() {
@@ -89,7 +90,7 @@ export class SySelect {
     document.removeEventListener('keydown', this.handleDocumentKeydown.bind(this));
     window.removeEventListener('resize', this.updatePopupPosition.bind(this));
     window.removeEventListener('scroll', this.updatePopupPosition.bind(this), true);
-    this.el?.removeEventListener('invalid', this.handleInvalid);
+    this.host?.removeEventListener('invalid', this.handleInvalid);
     this.formSubmitListenerRemover();
 
     if (this.resizeObserver) {
@@ -102,6 +103,10 @@ export class SySelect {
   }
 
   componentWillLoad() {
+    this.maxTagCount = fnAssignPropFromAlias(this.host, 'max-tag-count') ?? this.maxTagCount;
+    this.defaultValue = fnAssignPropFromAlias(this.host, 'default-value') ?? this.defaultValue;
+    this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
+
     this.optionsReady = true;
     this.inputPlaceholder = this.placeholder;
     this.isValid = true;
@@ -121,7 +126,7 @@ export class SySelect {
     window.addEventListener('resize', this.updatePopupPosition.bind(this));
     window.addEventListener('scroll', this.updatePopupPosition.bind(this), true);
 
-    const selectContainer = this.el.querySelector('.select-container');
+    const selectContainer = this.host.querySelector('.select-container');
     if (selectContainer) {
       this.resizeObserver = new ResizeObserver(() => {
         if (this.isOpen) {
@@ -284,7 +289,7 @@ export class SySelect {
         this.selectedOptions = [];
       }
     } else {
-      const options = Array.from(this.el.children).filter(el => el.tagName === OPTION) as HTMLSyOptionElement[];
+      const options = Array.from(this.host.children).filter(host => host.tagName === OPTION) as HTMLSyOptionElement[];
       if (options?.length) {
         const filterOptions = options.filter(opt => this.models?.some(m => opt.value.toString() && m === opt.value.toString() && !opt.disabled));
         if (filterOptions?.length) {
@@ -467,7 +472,7 @@ export class SySelect {
   private allSelectClose() {
     const allSelects = Array.from(document.querySelectorAll('sy-select'));
     allSelects.forEach(select => {
-      if (select !== this.el) {
+      if (select !== this.host) {
         (select as any).isOpen = false;
       }
     });
@@ -899,8 +904,8 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
   private handleOutsideClickEvent(e: MouseEvent) {
     if (!this.isOpen) return;
     const target = e.target as HTMLElement;
-    const selectContainer = this.el.querySelector('.select-container');
-    const isInsideSelect = selectContainer?.contains(target) || this.el.contains(target);
+    const selectContainer = this.host.querySelector('.select-container');
+    const isInsideSelect = selectContainer?.contains(target) || this.host.contains(target);
     // sy-option 엘리먼트 또는 그 내부 엘리먼트인지 확인
     const closestSyOption = target.closest('sy-option');
     const isInsideContainer = this.optionsContainer?.contains(target) ||
@@ -1035,7 +1040,7 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
         this.appendOption('empty');
       } else {
         if (!this.isTreeSelect) {
-          const slotOptions = Array.from(this.el.querySelectorAll(OPTION)) as HTMLSyOptionElement[];
+          const slotOptions = Array.from(this.host.querySelectorAll(OPTION)) as HTMLSyOptionElement[];
 
           // 커스텀 태그 처리
           // 선택된 커스텀 태그만 유지 (선택 해제된 커스텀 태그는 제거)
@@ -1172,7 +1177,7 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
 
   private updatePopupPosition() {
     if (this.isOpen && this.optionsContainer) {
-      const selectContainer = this.el.querySelector('.select-container');
+      const selectContainer = this.host.querySelector('.select-container');
       if (selectContainer) {
         requestAnimationFrame(() => {
           if (!this.optionsContainer) return;
@@ -1385,29 +1390,29 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
   }
 
   private handleInvalid = (e: Event) => {
-    const hasErrorSlot = !!this.el.querySelector('[slot="error"]');
+    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
     if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.el.querySelector('[slot="error"]');
+      const errorSlotElement = this.host.querySelector('[slot="error"]');
       const hasContent = errorSlotElement?.textContent?.trim();
       if (hasContent) {
         this.hasSlotErrorMessage = true;
-        this.el.setAttribute('has-custom-error', '');
+        this.host.setAttribute('has-custom-error', '');
         e.preventDefault();
         e.stopPropagation();
         this.internals.setValidity({ customError: true }, ' ');
       } else {
         this.hasSlotErrorMessage = false;
-        this.el.removeAttribute('has-custom-error');
+        this.host.removeAttribute('has-custom-error');
       }
     } else {
       this.hasSlotErrorMessage = false;
-      this.el.removeAttribute('has-custom-error');
+      this.host.removeAttribute('has-custom-error');
     }
     this.isValid = false;
   };
 
   private handleCustomErrorSlot = () => {
-    const errorSlot = this.el.querySelector('slot[name="error"]') as HTMLSlotElement;
+    const errorSlot = this.host.querySelector('slot[name="error"]') as HTMLSlotElement;
     if (!errorSlot) return;
     const errorNodes = errorSlot.assignedNodes();
     this.hasPopupErrorComponent = errorNodes.some(node => {

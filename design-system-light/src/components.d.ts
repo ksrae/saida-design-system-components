@@ -595,6 +595,37 @@ export namespace Components {
          */
         "value": string;
     }
+    interface SyPagination {
+        /**
+          * @default 1
+         */
+        "activePage": number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "hideonSingle": boolean;
+        /**
+          * @default false
+         */
+        "jumper": boolean;
+        /**
+          * @default 10
+         */
+        "pageSize": number;
+        "pageSizeOptions": string;
+        /**
+          * @default false
+         */
+        "total": boolean;
+        /**
+          * @default 0
+         */
+        "totalItems": number;
+    }
     interface SyPopconfirm {
         /**
           * @default false
@@ -1144,6 +1175,10 @@ export interface SyOptionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyOptionElement;
 }
+export interface SyPaginationCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyPaginationElement;
+}
 export interface SyPopconfirmCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyPopconfirmElement;
@@ -1420,6 +1455,24 @@ declare global {
         prototype: HTMLSyOptionElement;
         new (): HTMLSyOptionElement;
     };
+    interface HTMLSyPaginationElementEventMap {
+        "pageChanged": number;
+        "pageSizeChanged": number;
+    }
+    interface HTMLSyPaginationElement extends Components.SyPagination, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyPaginationElementEventMap>(type: K, listener: (this: HTMLSyPaginationElement, ev: SyPaginationCustomEvent<HTMLSyPaginationElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyPaginationElementEventMap>(type: K, listener: (this: HTMLSyPaginationElement, ev: SyPaginationCustomEvent<HTMLSyPaginationElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyPaginationElement: {
+        prototype: HTMLSyPaginationElement;
+        new (): HTMLSyPaginationElement;
+    };
     interface HTMLSyPopconfirmElementEventMap {
         "visibleChanged": boolean;
         "selected": 'ok' | 'cancel';
@@ -1650,6 +1703,7 @@ declare global {
         "sy-modeless": HTMLSyModelessElement;
         "sy-modeless-group": HTMLSyModelessGroupElement;
         "sy-option": HTMLSyOptionElement;
+        "sy-pagination": HTMLSyPaginationElement;
         "sy-popconfirm": HTMLSyPopconfirmElement;
         "sy-popover": HTMLSyPopoverElement;
         "sy-radio": HTMLSyRadioElement;
@@ -2226,6 +2280,39 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    interface SyPagination {
+        /**
+          * @default 1
+         */
+        "activePage"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "hideonSingle"?: boolean;
+        /**
+          * @default false
+         */
+        "jumper"?: boolean;
+        "onPageChanged"?: (event: SyPaginationCustomEvent<number>) => void;
+        "onPageSizeChanged"?: (event: SyPaginationCustomEvent<number>) => void;
+        /**
+          * @default 10
+         */
+        "pageSize"?: number;
+        "pageSizeOptions"?: string;
+        /**
+          * @default false
+         */
+        "total"?: boolean;
+        /**
+          * @default 0
+         */
+        "totalItems"?: number;
+    }
     interface SyPopconfirm {
         /**
           * @default false
@@ -2741,6 +2828,7 @@ declare namespace LocalJSX {
         "sy-modeless": SyModeless;
         "sy-modeless-group": SyModelessGroup;
         "sy-option": SyOption;
+        "sy-pagination": SyPagination;
         "sy-popconfirm": SyPopconfirm;
         "sy-popover": SyPopover;
         "sy-radio": SyRadio;
@@ -2781,6 +2869,7 @@ declare module "@stencil/core" {
             "sy-modeless": LocalJSX.SyModeless & JSXBase.HTMLAttributes<HTMLSyModelessElement>;
             "sy-modeless-group": LocalJSX.SyModelessGroup & JSXBase.HTMLAttributes<HTMLSyModelessGroupElement>;
             "sy-option": LocalJSX.SyOption & JSXBase.HTMLAttributes<HTMLSyOptionElement>;
+            "sy-pagination": LocalJSX.SyPagination & JSXBase.HTMLAttributes<HTMLSyPaginationElement>;
             "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;
             /**
              * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소

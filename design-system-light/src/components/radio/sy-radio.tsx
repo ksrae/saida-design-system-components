@@ -20,7 +20,7 @@ export interface HTMLSyRadioElement extends HTMLElement {
 })
 export class SyRadio {
   // --- Element References ---
-  @Element() hostElement: HTMLSyRadioElement;
+  @Element() host: HTMLSyRadioElement;
   private input!: HTMLInputElement;
 
   // --- Props ---

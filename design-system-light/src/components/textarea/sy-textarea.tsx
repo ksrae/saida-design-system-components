@@ -1,4 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 // HTMLSyTextareaElement interface
 export interface HTMLSyTextareaElement extends HTMLElement {
@@ -45,7 +46,7 @@ export interface HTMLSyTextareaElement extends HTMLElement {
   formAssociated: true,
 })
 export class SyTextarea {
-  @Element() hostElement: HTMLElement;
+  @Element() host: HTMLSyTextareaElement;
   private internals: ElementInternals;
   private textarea!: HTMLTextAreaElement;
 
@@ -69,7 +70,7 @@ export class SyTextarea {
   @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
   @Prop({ mutable: true, reflect: true }) value: string = "";
   @Prop() name: string = "";
-  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
+  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
 
   // State
   @State() private hasScroll = false;
@@ -91,8 +92,8 @@ export class SyTextarea {
 
   // Lifecycle
   connectedCallback() {
-    if ((this.hostElement as any).attachInternals) {
-      this.internals = (this.hostElement as any).attachInternals();
+    if (this.host.attachInternals) {
+      this.internals = this.host.attachInternals();
     }
     this.initialValue = this.value || '';
     this.formSubmitListener();
@@ -101,6 +102,8 @@ export class SyTextarea {
   }
 
   componentWillLoad() {
+    this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
+
     this.initialValue = this.value || '';
     this.charCount = this.initialValue.length;
     this.formSubmitListener();
@@ -109,7 +112,7 @@ export class SyTextarea {
   }
 
   componentDidLoad() {
-    this.textarea = this.hostElement.querySelector('textarea') as HTMLTextAreaElement;
+    this.textarea = this.host.querySelector('textarea') as HTMLTextAreaElement;
 
     if (this.textarea) {
       this.charCount = this.textarea.value?.length ?? 0;
@@ -194,7 +197,7 @@ export class SyTextarea {
 
     // 슬롯 에러가 있으면 has-custom-error 속성 추가
     if (this.hasSlotErrorMessage) {
-      this.hostElement.setAttribute('has-custom-error', '');
+      this.host.setAttribute('has-custom-error', '');
     }
     this.textarea?.setCustomValidity('');
     this.internals?.setValidity({ customError: true }, ' ');
@@ -204,7 +207,7 @@ export class SyTextarea {
   async clearCustomError() {
     if (!this.isValid && this.validStatus === 'custom') this.validStatus = '';
     // has-custom-error 속성 제거
-    this.hostElement.removeAttribute('has-custom-error');
+    this.host.removeAttribute('has-custom-error');
     this.updateValidityState();
   }
 
@@ -235,24 +238,24 @@ export class SyTextarea {
     // Mark that a submission/validation attempt occurred so errors become visible
     this.formSubmitted = true;
 
-    const hasErrorSlot = !!this.hostElement.querySelector('[slot="error"]');
+    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
     if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.hostElement.querySelector('[slot="error"]');
+      const errorSlotElement = this.host.querySelector('[slot="error"]');
       const hasContent = errorSlotElement?.textContent?.trim();
       if (hasContent) {
         this.hasSlotErrorMessage = true;
-        this.hostElement.setAttribute('has-custom-error', '');
+        this.host.setAttribute('has-custom-error', '');
         e.preventDefault();
         e.stopPropagation();
         if (this.textarea) this.textarea.setCustomValidity('');
         this.internals?.setValidity({ customError: true }, ' ');
       } else {
         this.hasSlotErrorMessage = false;
-        this.hostElement.removeAttribute('has-custom-error');
+        this.host.removeAttribute('has-custom-error');
       }
     } else {
       this.hasSlotErrorMessage = false;
-      this.hostElement.removeAttribute('has-custom-error');
+      this.host.removeAttribute('has-custom-error');
       setTimeout(() => {
         if (!this.isValid) this.textarea?.reportValidity();
       }, 0);
@@ -326,7 +329,7 @@ export class SyTextarea {
   };
 
   private handleSlotChange() {
-    const host = this.hostElement as HTMLElement;
+    const host = this.host as HTMLElement;
     this.hasSlotErrorMessage = false;
     this.hasPopupErrorComponent = false;
 
@@ -376,17 +379,17 @@ export class SyTextarea {
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
         // 슬롯 에러가 있으면 has-custom-error 속성 추가
-        this.hostElement.setAttribute('has-custom-error', '');
+        this.host.setAttribute('has-custom-error', '');
         this.textarea?.setCustomValidity('');
         this.internals?.setValidity({ customError: true }, ' ');
       } else {
         // 슬롯 에러가 없으면 has-custom-error 속성 제거
-        this.hostElement.removeAttribute('has-custom-error');
+        this.host.removeAttribute('has-custom-error');
         if (this.textarea) this.internals?.setValidity({ [this.validStatus]: true } as any, validityMessage, this.textarea);
       }
     } else {
       // 유효한 상태일 때는 has-custom-error 속성 제거
-      this.hostElement.removeAttribute('has-custom-error');
+      this.host.removeAttribute('has-custom-error');
       this.internals?.setValidity({});
     }
   }

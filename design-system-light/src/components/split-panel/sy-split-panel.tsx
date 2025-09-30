@@ -1,4 +1,5 @@
 import { Component, Prop, State, Element, Event, EventEmitter, Watch, h } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSySplitPanelElement extends HTMLElement {
   disabled: boolean;
@@ -17,11 +18,11 @@ export interface HTMLSySplitPanelElement extends HTMLElement {
   scoped: true,
 })
 export class SySplitPanel {
-  @Element() el: HTMLElement;
+  @Element() host: HTMLElement;
 
   @Prop({ reflect: true }) disabled: boolean = false;
-  @Prop({ reflect: true, attribute: 'hideDivider' }) hideDivider: boolean = false;
-  @Prop({ reflect: true, attribute: 'minRatio' }) minRatio: number = 0; // Ensure default value
+  @Prop({ reflect: true, attribute: 'hideDivider', mutable: true }) hideDivider: boolean = false;
+  @Prop({ reflect: true, attribute: 'minRatio', mutable: true }) minRatio: number = 0; // Ensure default value
   @Prop({ reflect: true }) ratio: number = 50;
   @Prop({ reflect: true }) type: 'horizontal' | 'vertical' = 'horizontal';
 
@@ -61,6 +62,9 @@ export class SySplitPanel {
   }
 
   componentWillLoad() {
+    this.hideDivider = fnAssignPropFromAlias(this.host, 'hide-divider') ?? this.hideDivider;
+    this.minRatio = fnAssignPropFromAlias(this.host, 'min-ratio') ?? this.minRatio;
+
     // Validate minRatio to ensure it is not null or undefined
     if (this.minRatio == null) {
       this.minRatio = 0;
@@ -110,10 +114,10 @@ export class SySplitPanel {
     if (!this.disabled && this.isDragging) {
       if (this.type === 'vertical') {
         const movementY = event.clientY - this.initialY;
-        this.leftRatio = Math.max(this.minRatio, Math.min(100 - this.minRatio, this.startLeftWidth + (movementY / this.el.offsetHeight) * 100));
+        this.leftRatio = Math.max(this.minRatio, Math.min(100 - this.minRatio, this.startLeftWidth + (movementY / this.host.offsetHeight) * 100));
       } else {
         const movementX = event.clientX - this.initialX;
-        this.leftRatio = Math.max(this.minRatio, Math.min(100 - this.minRatio, this.startLeftWidth + (movementX / this.el.offsetWidth) * 100));
+        this.leftRatio = Math.max(this.minRatio, Math.min(100 - this.minRatio, this.startLeftWidth + (movementX / this.host.offsetWidth) * 100));
       }
       this.rightRatio = 100 - this.leftRatio;
     }
@@ -145,7 +149,7 @@ export class SySplitPanel {
 
   private updateSlotElements() {
     const slotNames = ['left', 'right'];
-    const slots = slotNames.map(name => this.el.querySelector(`slot[name='${name}']`)) as HTMLSlotElement[];
+    const slots = slotNames.map(name => this.host.querySelector(`slot[name='${name}']`)) as HTMLSlotElement[];
 
     slots.forEach(slot => {
       if (slot) {

@@ -1,6 +1,7 @@
 // src/components/breadcrumb-item/sy-breadcrumb-item.tsx
 
 import { Component, h, Prop, State, Event, EventEmitter, Method, forceUpdate, Element } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyBreadcrumbItemElement extends HTMLElement {
   active: boolean;
@@ -20,12 +21,12 @@ export interface HTMLSyBreadcrumbItemElement extends HTMLElement {
 })
 export class BreadcrumbItemElement {
 
-  @Element() hostElement: HTMLSyBreadcrumbItemElement;
+  @Element() host: HTMLSyBreadcrumbItemElement;
 
   @Prop({ reflect: true }) active: boolean = false;
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop() separator?: 'slash' | 'arrow';
-  @Prop({ mutable: true }) parentSeparator: 'slash' | 'arrow' = 'slash';
+  @Prop({ attribute: 'parentSeparator', mutable: true }) parentSeparator: 'slash' | 'arrow' = 'slash';
   @Prop({ mutable: true }) isLast: boolean = false;
 
   @State() hasFocus: boolean = false;
@@ -41,12 +42,16 @@ export class BreadcrumbItemElement {
     forceUpdate(this);
   }
 
+  componentWillLoad() {
+    this.parentSeparator = fnAssignPropFromAlias(this.host, 'parent-separator') ?? this.parentSeparator;
+  }
+
   private handleFocus = () => { if (!this.disabled) this.hasFocus = true; }
   private handleBlur = () => { if (!this.disabled) this.hasFocus = false; }
 
   private handleClick = () => {
     if (!this.disabled) {
-      this.selected.emit(this.hostElement);
+      this.selected.emit(this.host);
     }
   }
 

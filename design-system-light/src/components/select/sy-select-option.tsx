@@ -2,6 +2,7 @@
 
 import { Component, Prop, State, h, Element, Watch, Event, EventEmitter } from '@stencil/core';
 import { Fragment } from '@stencil/core/internal';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyOptionElement extends HTMLElement {
     disabled: boolean;
@@ -26,7 +27,7 @@ export interface HTMLSyOptionElement extends HTMLElement {
   shadow: false,
 })
 export class SyOption {
-  @Element() private el: HTMLElement;
+  @Element() private host: HTMLElement;
 
   @Prop() disabled: boolean = false;
   @Prop({ reflect: true, mutable: true }) label: string = '';
@@ -53,12 +54,16 @@ export class SyOption {
   @Watch('value')
   handleLabelOrValueChange() {
     if (!this.label) {
-      const textFromSlot = Array.from(this.el.childNodes)
+      const textFromSlot = Array.from(this.host.childNodes)
         .filter(node => node.nodeType === Node.TEXT_NODE)
         .map(node => node.textContent?.trim())
         .join('');
       this.label = textFromSlot?.length ? textFromSlot : this.value;
     }
+  }
+
+  componentWillLoad() {
+    this.showTooltip = fnAssignPropFromAlias(this.host, 'show-tooltip') ?? this.showTooltip;
   }
 
   componentDidLoad() {
@@ -75,7 +80,7 @@ export class SyOption {
   }
 
   private checkSlotContents() {
-    this.hasSlotContents = Array.from(this.el.children).some(
+    this.hasSlotContents = Array.from(this.host.children).some(
       child => child.tagName.toLowerCase() !== 'div'
     );
   }
@@ -104,7 +109,7 @@ export class SyOption {
       >
         {!this.empty && !this.loading && !this.hasSlotContents ? (
           <Fragment>
-            {this.showTooltip ? <sy-tooltip maxWidth={this.el.clientWidth} content={this.label}></sy-tooltip> : null}
+            {this.showTooltip ? <sy-tooltip maxWidth={this.host.clientWidth} content={this.label}></sy-tooltip> : null}
             <span>{this.label}</span>
           </Fragment>
         ) : this.empty ? (

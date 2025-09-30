@@ -1,7 +1,7 @@
 // src/components/drawer/drawer.tsx
 
 import { Component, h, Prop, Element, Watch, Event, EventEmitter } from '@stencil/core';
-import { fnHasSlotContentByName } from '../../utils/utils';
+import { fnAssignPropFromAlias, fnHasSlotContentByName } from '../../utils/utils';
 
 export interface HTMLSyDrawerElement extends HTMLElement {
   maskless: boolean;
@@ -25,10 +25,10 @@ export class Drawer {
   @Element() host: HTMLSyDrawerElement;
 
   @Prop({ reflect: true }) maskless: boolean = false;
-  @Prop({ reflect: true }) preventClose: boolean = false;
+  @Prop({ attribute: 'preventClose', mutable: true, reflect: true }) preventClose: boolean = false;
   @Prop({ reflect: true }) closable: boolean = false;
   @Prop({ mutable: true, reflect: true }) open: boolean = false;
-  @Prop({ reflect: true }) customSize: number = 100;
+  @Prop({ attribute: 'customSize', mutable: true, reflect: true }) customSize: number = 100;
   @Prop() position: 'top' | 'left' | 'right' | 'bottom' = 'right';
   @Prop() size: 'small' | 'medium' | 'large' | 'custom' = 'medium';
 
@@ -50,6 +50,11 @@ export class Drawer {
     if (this.hasBeenAppendedToBody && document.body.contains(this.host)) {
         document.body.removeChild(this.host);
     }
+  }
+
+  componentWillLoad() {
+    this.preventClose = fnAssignPropFromAlias(this.host, 'prevent-close') ?? this.preventClose;
+    this.customSize = fnAssignPropFromAlias(this.host, 'custom-size') ?? this.customSize;
   }
 
   @Watch('open')

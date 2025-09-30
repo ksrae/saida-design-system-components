@@ -1,4 +1,5 @@
 import { Component, Prop, State, Element, Watch, h } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyTooltipElement extends HTMLElement {
   hideArrow: boolean;
@@ -18,13 +19,13 @@ export interface HTMLSyTooltipElement extends HTMLElement {
   scoped: true,
 })
 export class SyTooltip {
-  @Element() el: HTMLElement;
+  @Element() host: HTMLElement;
 
-  @Prop({ reflect: true, attribute: 'hideArrow' }) hideArrow: boolean = false;
+  @Prop({ reflect: true, attribute: 'hideArrow', mutable: true }) hideArrow: boolean = false;
   @Prop({ reflect: true, mutable: true }) open: boolean = false;
 
   @Prop({ reflect: true }) closedelay: number = 0;
-  @Prop({ reflect: true, attribute: 'maxWidth' }) maxWidth: number | null = null;
+  @Prop({ reflect: true, attribute: 'maxWidth', mutable: true }) maxWidth: number | null = null;
   @Prop({ reflect: true }) opendelay: number = 0;
 
   @Prop() content: string = '';
@@ -72,14 +73,17 @@ export class SyTooltip {
   }
 
   componentWillLoad() {
-    if (!this.el.id) {
-      this.el.id = `tooltip-${Date.now()}`;
+    this.hideArrow = fnAssignPropFromAlias(this.host, 'hide-arrow') ?? this.hideArrow;
+    this.maxWidth = fnAssignPropFromAlias(this.host, 'max-width') ?? this.maxWidth;
+
+    if (!this.host.id) {
+      this.host.id = `tooltip-${Date.now()}`;
     }
 
     const sanitized = this.sanitizeHtml(this.content);
     this.replaceContent = this.replaceSpecialChars(sanitized);
 
-    this.parentDom = this.el.parentElement;
+    this.parentDom = this.host.parentElement;
     this.observeParentRemoval();
   }
 
@@ -87,9 +91,9 @@ export class SyTooltip {
     this.setupGlobalClickListener();
 
     if (!this.hideArrow) {
-      this.el.setAttribute('arrow', 'true');
+      this.host.setAttribute('arrow', 'true');
     } else {
-      this.el.removeAttribute('arrow');
+      this.host.removeAttribute('arrow');
     }
 
     this.addEvent();
@@ -141,7 +145,7 @@ export class SyTooltip {
     }
 
     if (!this.isParentInView()) {
-      this.el.style.visibility = 'hidden';
+      this.host.style.visibility = 'hidden';
       return;
     }
 
@@ -153,16 +157,16 @@ export class SyTooltip {
       return;
     }
 
-    this.el.style.display = 'block';
-    this.el.style.visibility = 'hidden';
-    this.el.style.position = 'absolute';
-    this.el.style.left = '0';
-    this.el.style.top = '0';
+    this.host.style.display = 'block';
+    this.host.style.visibility = 'hidden';
+    this.host.style.position = 'absolute';
+    this.host.style.left = '0';
+    this.host.style.top = '0';
 
     requestAnimationFrame(() => {
       if (!this.open) return;
 
-      const tooltipRect = this.el.getBoundingClientRect();
+      const tooltipRect = this.host.getBoundingClientRect();
       const positions = this.calculateAllPositions(parentRect, tooltipRect);
 
       const { position: bestPosition, coords } = this.findBestPosition(
@@ -172,29 +176,29 @@ export class SyTooltip {
         tooltipRect
       );
 
-      this.el.style.top = `${coords.top}px`;
-      this.el.style.left = `${coords.left}px`;
+      this.host.style.top = `${coords.top}px`;
+      this.host.style.left = `${coords.left}px`;
 
       const adjusted = this.adjustForScreenBounds(tooltipRect);
 
-      if (this.el.contains(this.arrowElement)) {
-        this.el.removeChild(this.arrowElement);
+      if (this.host.contains(this.arrowElement)) {
+        this.host.removeChild(this.arrowElement);
       }
 
       if (!this.hideArrow) {
         this.arrowElement = this.createArrow(
           bestPosition,
           parentRect,
-          adjusted ? { top: parseFloat(this.el.style.top), left: parseFloat(this.el.style.left) } : coords,
+          adjusted ? { top: parseFloat(this.host.style.top), left: parseFloat(this.host.style.left) } : coords,
           tooltipRect,
           adjusted
         );
-        this.el.appendChild(this.arrowElement);
+        this.host.appendChild(this.arrowElement);
       }
 
       this.openTimer = setTimeout(() => {
         if (this.open) {
-          this.el.style.visibility = 'visible';
+          this.host.style.visibility = 'visible';
         }
       }, this.opendelay);
     });
@@ -203,7 +207,7 @@ export class SyTooltip {
   private onScroll = () => {
     if (!this.open || !this.addedToBody) return;
 
-    this.el.style.visibility = 'hidden';
+    this.host.style.visibility = 'hidden';
 
     if (this.openTimer) {
       clearTimeout(this.openTimer);
@@ -216,7 +220,7 @@ export class SyTooltip {
 
   private appendToRoot = () => {
     if (this.parentDom !== document.body) {
-      document.body.appendChild(this.el);
+      document.body.appendChild(this.host);
       this.addedToBody = true;
       this.updateTooltipPosition();
     }
@@ -398,24 +402,24 @@ export class SyTooltip {
     const viewportHeight = window.innerHeight;
     let adjusted = false;
 
-    const currentLeft = parseFloat(this.el.style.left);
-    const currentTop = parseFloat(this.el.style.top);
+    const currentLeft = parseFloat(this.host.style.left);
+    const currentTop = parseFloat(this.host.style.top);
 
     if (currentLeft < window.scrollX) {
-      this.el.style.left = `${window.scrollX}px`;
+      this.host.style.left = `${window.scrollX}px`;
       adjusted = true;
     }
     else if (currentLeft + tooltipRect.width > window.scrollX + viewportWidth) {
-      this.el.style.left = `${window.scrollX + viewportWidth - tooltipRect.width}px`;
+      this.host.style.left = `${window.scrollX + viewportWidth - tooltipRect.width}px`;
       adjusted = true;
     }
 
     if (currentTop < window.scrollY) {
-      this.el.style.top = `${window.scrollY}px`;
+      this.host.style.top = `${window.scrollY}px`;
       adjusted = true;
     }
     else if (currentTop + tooltipRect.height > window.scrollY + viewportHeight) {
-      this.el.style.top = `${window.scrollY + viewportHeight - tooltipRect.height}px`;
+      this.host.style.top = `${window.scrollY + viewportHeight - tooltipRect.height}px`;
       adjusted = true;
     }
 
@@ -592,8 +596,8 @@ export class SyTooltip {
 
   private removeTooltip() {
     try {
-      if (this.el.parentNode === document.body) {
-        document.body.removeChild(this.el);
+      if (this.host.parentNode === document.body) {
+        document.body.removeChild(this.host);
       }
       this.addedToBody = false;
     } catch (err: any) {
@@ -612,7 +616,7 @@ export class SyTooltip {
     }
 
     const target = event.target as HTMLElement;
-    const isInTooltip = this.el?.contains(target);
+    const isInTooltip = this.host?.contains(target);
     const isParent = this.parentDom?.contains(target);
 
     if (!isInTooltip && !isParent) {

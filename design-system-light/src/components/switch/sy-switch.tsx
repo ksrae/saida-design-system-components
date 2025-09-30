@@ -30,7 +30,7 @@ export class SySwitch {
   @Prop() label: string;
   @Prop({ reflect: true }) loading: boolean = false;
   @Prop({ reflect: true }) readonly: boolean = false;
-    @Prop({ reflect: true }) size: 'small' | 'medium' = 'medium';
+  @Prop({ reflect: true }) size: 'small' | 'medium' = 'medium';
   @Prop() name: string = '';
 
   // State

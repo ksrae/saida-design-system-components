@@ -10,6 +10,306 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+    <h2>SY-PAGINATION Component Examples</h2>
+
+    <!-- Basic Pagination -->
+    <section>
+      <h2>1. Basic Pagination</h2>
+      <div class="example-section">
+        <h3>Default Pagination</h3>
+        <sy-pagination 
+          id="basic-pagination"
+          active-page="1" 
+          total-items="100" 
+          page-size="10">
+        </sy-pagination>
+        <p><strong>Current Page:</strong> <span id="basic-result">1</span></p>
+      </div>
+    </section>
+
+    <!-- Pagination with Total Info -->
+    <section>
+      <h2>2. Pagination with Total Information</h2>
+      <div class="example-section">
+        <sy-pagination 
+          id="total-pagination"
+          active-page="1" 
+          total-items="250" 
+          page-size="20"
+          total>
+        </sy-pagination>
+        <p><strong>Current Page:</strong> <span id="total-result">1</span></p>
+      </div>
+    </section>
+
+    <!-- Pagination with Page Size Options -->
+    <section>
+      <h2>3. Pagination with Page Size Options</h2>
+      <div class="example-section">
+        <sy-pagination 
+          id="size-options-pagination"
+          active-page="1" 
+          total-items="500" 
+          page-size="10"
+          page-size-options="10,20,50,100"
+          total>
+        </sy-pagination>
+        <p><strong>Current Page:</strong> <span id="size-options-page">1</span></p>
+        <p><strong>Page Size:</strong> <span id="size-options-size">10</span></p>
+      </div>
+    </section>
+
+    <!-- Pagination with Jumper -->
+    <section>
+      <h2>4. Pagination with Jumper (Go to Page)</h2>
+      <div class="example-section">
+        <sy-pagination 
+          id="jumper-pagination"
+          active-page="5" 
+          total-items="1000" 
+          page-size="25"
+          page-size-options="25,50,100"
+          jumper
+          total>
+        </sy-pagination>
+        <p><strong>Current Page:</strong> <span id="jumper-result">5</span></p>
+      </div>
+    </section>
+
+    <!-- Hide on Single Page -->
+    <section>
+      <h2>5. Hide on Single Page</h2>
+      <div class="example-section">
+        <h3>With hideonSingle (only 5 items, page size 10 - should be hidden)</h3>
+        <sy-pagination 
+          id="hide-single-pagination"
+          active-page="1" 
+          total-items="5" 
+          page-size="10"
+          hideon-single>
+        </sy-pagination>
+        <p>Above pagination should be hidden because total pages = 1</p>
+        
+        <h3>Without hideonSingle (same data - should be visible)</h3>
+        <sy-pagination 
+          active-page="1" 
+          total-items="5" 
+          page-size="10">
+        </sy-pagination>
+      </div>
+    </section>
+
+    <!-- Disabled State -->
+    <section>
+      <h2>6. Disabled Pagination</h2>
+      <div class="example-section">
+        <sy-pagination 
+          active-page="3" 
+          total-items="100" 
+          page-size="10"
+          page-size-options="10,20,50"
+          jumper
+          total
+          disabled>
+        </sy-pagination>
+        <p>All interactions should be disabled</p>
+      </div>
+    </section>
+
+    <!-- Large Dataset -->
+    <section>
+      <h2>7. Large Dataset with Ellipsis</h2>
+      <div class="example-section">
+        <sy-pagination 
+          id="large-pagination"
+          active-page="50" 
+          total-items="10000" 
+          page-size="100"
+          page-size-options="50,100,200,500"
+          jumper
+          total>
+        </sy-pagination>
+        <p><strong>Current Page:</strong> <span id="large-result">50</span></p>
+        <p>This should show ellipsis (...) for navigation</p>
+      </div>
+    </section>
+
+    <!-- Programmatic Control -->
+    <section>
+      <h2>8. Programmatic Control</h2>
+      <div class="example-section">
+        <sy-pagination 
+          id="programmatic-pagination"
+          active-page="1" 
+          total-items="200" 
+          page-size="15"
+          total>
+        </sy-pagination>
+        <div style="margin-top: 10px;">
+          <button id="goto-first">Go to First</button>
+          <button id="goto-last">Go to Last</button>
+          <button id="goto-random">Go to Random</button>
+          <button id="change-total">Change Total Items</button>
+          <button id="change-page-size">Change Page Size</button>
+        </div>
+        <p><strong>Current Page:</strong> <span id="programmatic-result">1</span></p>
+        <p><strong>Total Pages:</strong> <span id="programmatic-total">14</span></p>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Basic Pagination
+        const basicPagination = document.getElementById('basic-pagination');
+        const basicResult = document.getElementById('basic-result');
+        
+        basicPagination.addEventListener('pageChanged', (e) => {
+          basicResult.textContent = e.detail;
+          console.log('Basic pagination page changed:', e.detail);
+        });
+
+        // Total Pagination
+        const totalPagination = document.getElementById('total-pagination');
+        const totalResult = document.getElementById('total-result');
+        
+        totalPagination.addEventListener('pageChanged', (e) => {
+          totalResult.textContent = e.detail;
+          console.log('Total pagination page changed:', e.detail);
+        });
+
+        // Size Options Pagination
+        const sizeOptionsPagination = document.getElementById('size-options-pagination');
+        const sizeOptionsPage = document.getElementById('size-options-page');
+        const sizeOptionsSize = document.getElementById('size-options-size');
+        
+        sizeOptionsPagination.addEventListener('pageChanged', (e) => {
+          sizeOptionsPage.textContent = e.detail;
+          console.log('Size options page changed:', e.detail);
+        });
+        
+        sizeOptionsPagination.addEventListener('pageSizeChanged', (e) => {
+          sizeOptionsSize.textContent = e.detail;
+          console.log('Page size changed:', e.detail);
+        });
+
+        // Jumper Pagination
+        const jumperPagination = document.getElementById('jumper-pagination');
+        const jumperResult = document.getElementById('jumper-result');
+        
+        jumperPagination.addEventListener('pageChanged', (e) => {
+          jumperResult.textContent = e.detail;
+          console.log('Jumper pagination page changed:', e.detail);
+        });
+
+        // Large Dataset Pagination
+        const largePagination = document.getElementById('large-pagination');
+        const largeResult = document.getElementById('large-result');
+        
+        largePagination.addEventListener('pageChanged', (e) => {
+          largeResult.textContent = e.detail;
+          console.log('Large pagination page changed:', e.detail);
+        });
+
+        // Programmatic Control
+        const programmaticPagination = document.getElementById('programmatic-pagination');
+        const programmaticResult = document.getElementById('programmatic-result');
+        const programmaticTotal = document.getElementById('programmatic-total');
+        
+        programmaticPagination.addEventListener('pageChanged', (e) => {
+          programmaticResult.textContent = e.detail;
+          const totalPages = Math.ceil(programmaticPagination.totalItems / programmaticPagination.pageSize);
+          programmaticTotal.textContent = totalPages;
+          console.log('Programmatic pagination page changed:', e.detail);
+        });
+
+        // Programmatic Control Buttons
+        document.getElementById('goto-first').addEventListener('click', () => {
+          programmaticPagination.activePage = 1;
+        });
+
+        document.getElementById('goto-last').addEventListener('click', () => {
+          const totalPages = Math.ceil(programmaticPagination.totalItems / programmaticPagination.pageSize);
+          programmaticPagination.activePage = totalPages;
+        });
+
+        document.getElementById('goto-random').addEventListener('click', () => {
+          const totalPages = Math.ceil(programmaticPagination.totalItems / programmaticPagination.pageSize);
+          const randomPage = Math.floor(Math.random() * totalPages) + 1;
+          programmaticPagination.activePage = randomPage;
+        });
+
+        document.getElementById('change-total').addEventListener('click', () => {
+          const newTotal = Math.floor(Math.random() * 500) + 100;
+          programmaticPagination.totalItems = newTotal;
+          programmaticPagination.activePage = 1;
+          console.log('Total items changed to:', newTotal);
+        });
+
+        document.getElementById('change-page-size').addEventListener('click', () => {
+          const pageSizes = [10, 15, 20, 25, 30];
+          const newPageSize = pageSizes[Math.floor(Math.random() * pageSizes.length)];
+          programmaticPagination.pageSize = newPageSize;
+          programmaticPagination.activePage = 1;
+          console.log('Page size changed to:', newPageSize);
+        });
+      });
+    </script>
+
+    <style>
+      .example-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+      
+      .example-section h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      
+      .example-section p {
+        margin: 10px 0;
+        font-family: monospace;
+        background: #fff;
+        padding: 5px 10px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+      }
+      
+      section {
+        margin: 30px 0;
+      }
+      
+      section h2 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      
+      button {
+        margin: 5px;
+        padding: 8px 15px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      button:hover {
+        background: #2980b9;
+      }
+      
+      button:disabled {
+        background: #bdc3c7;
+        cursor: not-allowed;
+      }
+    </style>
+
+    <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
+
     <h1>SySelect Component Examples</h1>
 
     <!-- 기본 셀렉트 예제 -->

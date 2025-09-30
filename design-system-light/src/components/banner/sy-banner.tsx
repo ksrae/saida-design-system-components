@@ -1,6 +1,7 @@
 // src/components/banner/banner.element.tsx
 
 import { Component, h, Prop, State, Watch, Element, JSX } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyBannerElement extends HTMLElement {
   closable: boolean;
@@ -41,6 +42,7 @@ export class BannerElement {
   }
 
   componentWillLoad() {
+    this.showIcon = fnAssignPropFromAlias(this.host, 'show-icon') ?? this.showIcon;
     this.updateIconVariant();
   }
 

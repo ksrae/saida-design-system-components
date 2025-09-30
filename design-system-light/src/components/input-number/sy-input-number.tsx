@@ -1,4 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyInputNumberElement extends HTMLElement {
   autofocus: boolean;
@@ -41,8 +42,7 @@ export interface HTMLSyInputNumberElement extends HTMLElement {
 })
 export class SyInputNumber {
   // --- Element References ---
-  @Element()
-  hostElement: HTMLSyInputNumberElement;
+  @Element() host: HTMLSyInputNumberElement;
 
   private internals: ElementInternals;
   private input!: HTMLInputElement;
@@ -54,7 +54,7 @@ export class SyInputNumber {
   // --- Props ---
   @Prop() autofocus = false;
   @Prop({ reflect: true }) borderless = false;
-  @Prop({ attribute: 'decimalPlaces' }) decimalPlaces?: number;
+  @Prop({ attribute: 'decimalPlaces', mutable: true }) decimalPlaces?: number;
   @Prop({ reflect: true, mutable: true }) disabled = false;
   @Prop() label: string = "";
   @Prop() max: number = Number.MAX_SAFE_INTEGER;
@@ -67,45 +67,23 @@ export class SyInputNumber {
   @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
   @Prop() step: number = 1;
   @Prop({ mutable: true, reflect: true }) value: string | number = '';
-  @Prop({ attribute: 'noNativeValidity' }) noNativeValidity = false;
+  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
 
   // --- State ---
-  @State()
-  private hasFocus = false;
-
-  @State()
-  private hasPrefix: boolean = false;
-
-  @State()
-  private hasSuffix: boolean = false;
-
-  @State()
-  private isValid: boolean = true;
-
-  @State()
-  private validStatus: 'valueMissing' | 'rangeUnderflow' | 'rangeOverflow' | 'stepMismatch' | 'typeMismatch' | 'custom' | '' = "";
-
-  @State()
-  private hasSlotErrorMessage: boolean = false;
-
-  @State()
-  private hasPopupErrorComponent: boolean = false;
-
-  @State()
-  private touched: boolean = false;
-
-  @State()
-  private formSubmitted: boolean = false;
+  @State() private hasFocus = false;
+  @State() private hasPrefix: boolean = false;
+  @State() private hasSuffix: boolean = false;
+  @State() private isValid: boolean = true;
+  @State() private validStatus: 'valueMissing' | 'rangeUnderflow' | 'rangeOverflow' | 'stepMismatch' | 'typeMismatch' | 'custom' | '' = "";
+  @State() private hasSlotErrorMessage: boolean = false;
+  @State() private hasPopupErrorComponent: boolean = false;
+  @State() private touched: boolean = false;
+  @State() private formSubmitted: boolean = false;
 
   // --- Events ---
-  @Event()
-  changed: EventEmitter<{ value: number | null; isValid: boolean; status: string }>;
-
-  @Event()
-  blured: EventEmitter<{ value: number | null; isValid: boolean; status: string }>;
-
-  @Event()
-  focused: EventEmitter<{ value: number | null; isValid: boolean; status: string }>;
+  @Event() changed: EventEmitter<{ value: number | null; isValid: boolean; status: string }>;
+  @Event() blured: EventEmitter<{ value: number | null; isValid: boolean; status: string }>;
+  @Event() focused: EventEmitter<{ value: number | null; isValid: boolean; status: string }>;
 
   // --- Custom Validity Getters ---
   get validity(): ValidityState {
@@ -140,8 +118,8 @@ export class SyInputNumber {
 
   // --- Lifecycle Methods ---
   connectedCallback() {
-    if (this.hostElement.attachInternals) {
-      this.internals = this.hostElement.attachInternals();
+    if (this.host.attachInternals) {
+      this.internals = this.host.attachInternals();
     }
     if (this.internals?.form) {
       this.internals.form.addEventListener('submit', this.handleFormSubmit);
@@ -156,6 +134,9 @@ export class SyInputNumber {
   }
 
   componentWillLoad() {
+    this.decimalPlaces = fnAssignPropFromAlias(this.host, 'decimal-places') ?? this.decimalPlaces;
+    this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
+
     this.initialValue = this.value;
     this.handleSlotChange();
     // [수정] 초기 유효성 검사를 componentWillLoad에서 수행합니다.
@@ -355,10 +336,10 @@ export class SyInputNumber {
   };
 
   private handleSlotChange = () => {
-    this.hasPrefix = this.hostElement.querySelector('[slot="prefix"]') !== null;
-    this.hasSuffix = this.hostElement.querySelector('[slot="suffix"]') !== null;
+    this.hasPrefix = this.host.querySelector('[slot="prefix"]') !== null;
+    this.hasSuffix = this.host.querySelector('[slot="suffix"]') !== null;
 
-    const errorSlot = this.hostElement.querySelector('[slot="error"]');
+    const errorSlot = this.host.querySelector('[slot="error"]');
 
     if (!errorSlot) {
       this.hasSlotErrorMessage = false;
