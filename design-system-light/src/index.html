@@ -11,6 +11,368 @@
   </head>
   <body class="sy-theme sy-theme-light">
 
+    <!-- SLIDER COMPONENT EXAMPLES -->
+    <section id="slider-examples">
+      <h1>Slider Component Examples (Storybook-style)</h1>
+
+      <div class="example-section">
+        <h3>Basic Slider</h3>
+        <sy-slider min="0" max="100" step="1" value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Slider with Label</h3>
+        <sy-slider label="Volume" value="30"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Disabled Slider</h3>
+        <sy-slider disabled value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Readonly Slider</h3>
+        <sy-slider readonly value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Hide Track Fill</h3>
+        <sy-slider hideTrackFill value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Slider with Marks</h3>
+        <sy-slider id="sliderMarks" value="50"></sy-slider>
+        <script>
+          (() => {
+            const markValue = {
+              0: '0',
+              25: '25',
+              50: '50',
+              75: '75',
+              100: '100'
+            };
+            const slider = document.querySelector('#sliderMarks');
+            if(slider) slider.marks = markValue;
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Hide Marks</h3>
+        <sy-slider id="sliderHideMarks" hideMarks value="50"></sy-slider>
+        <script>
+          (() => {
+            const markValue = {
+              0: '0',
+              25: '25',
+              50: '50',
+              75: '75',
+              100: '100'
+            };
+            const slider = document.querySelector('#sliderHideMarks');
+            if(slider) slider.marks = markValue;
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Min/Max Values</h3>
+        <sy-slider min="20" max="80" value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Step Value</h3>
+        <sy-slider step="10" min="0" max="100" value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Range Slider</h3>
+        <sy-slider id="sliderRange" range></sy-slider>
+        <script>
+          (() => {
+            const rangeValue = [10, 50];
+            const slider = document.querySelector('#sliderRange');
+            if(slider) slider.rangeValue = rangeValue;
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Range with Custom Values</h3>
+        <sy-slider id="sliderRangeCustom" range></sy-slider>
+        <script>
+          (() => {
+            const rangeValue = [30, 60];
+            const slider = document.querySelector('#sliderRangeCustom');
+            if(slider) slider.rangeValue = rangeValue;
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Reverse Slider</h3>
+        <sy-slider reverse value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Tooltip Always Visible</h3>
+        <sy-slider showTooltip="always" value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Tooltip Never</h3>
+        <sy-slider showTooltip="never" value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Tooltip Placement Bottom</h3>
+        <sy-slider tooltipPlacement="bottom" value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Snap to Marks</h3>
+        <sy-slider id="snapToMarks" snapToMarks value="50"></sy-slider>
+        <script>
+          (() => {
+            const marks = {0: '0', 25: '25', 50: '50', 75: '75', 100: '100'};
+            const slider = document.querySelector('#snapToMarks');
+            if(slider) slider.marks = marks;
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Range Snap to Marks</h3>
+        <sy-slider id="snapToMarksRange" snapToMarks range></sy-slider>
+        <script>
+          (() => {
+            const marks = {0: '0', 25: '25', 50: '50', 75: '75', 100: '100'};
+            const slider = document.querySelector('#snapToMarksRange');
+            if(slider) {
+              slider.marks = marks;
+              slider.rangeValue = [25, 75];
+            }
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Vertical Slider</h3>
+        <sy-slider style="height: 300px;" vertical value="50"></sy-slider>
+      </div>
+
+      <div class="example-section">
+        <h3>Slider Change Event</h3>
+        <sy-slider id="sliderChangeEvent" value="50"></sy-slider>
+        <p id="sliderChangeResult">Value: 50</p>
+        <script>
+          (() => {
+            const marks = {0: '0', 25: '25', 50: '50', 75: '75', 100: '100'};
+            const slider = document.querySelector('#sliderChangeEvent');
+            const result = document.querySelector('#sliderChangeResult');
+            if(slider) {
+              slider.marks = marks;
+              slider.addEventListener('changed', (e) => {
+                if(result) result.textContent = 'Value: ' + e.detail.value;
+              });
+            }
+          })();
+        </script>
+      </div>
+
+      <div class="example-section">
+        <h3>Range Slider Change Event (Vertical)</h3>
+        <sy-slider id="sliderRangeChangeEvent" style="height: 300px;" range vertical></sy-slider>
+        <p id="sliderMinChangeResult">Min: 25</p>
+        <p id="sliderMaxChangeResult">Max: 75</p>
+        <script>
+          (() => {
+            const marks = {0: '0', 25: '25', 50: '50', 75: '75', 100: '100'};
+            const slider = document.querySelector('#sliderRangeChangeEvent');
+            const result1 = document.querySelector('#sliderMinChangeResult');
+            const result2 = document.querySelector('#sliderMaxChangeResult');
+            if(slider) {
+              slider.marks = marks;
+              slider.rangeValue = [25, 75];
+              slider.addEventListener('changed', (e) => {
+                if(result1) result1.textContent = 'Min: ' + e.detail.min;
+                if(result2) result2.textContent = 'Max: ' + e.detail.max;
+              });
+            }
+          })();
+        </script>
+      </div>
+
+    </section>
+
+    <!-- PROGRESS BAR COMPONENT EXAMPLES -->
+    <section id="progress-examples">
+      <h1>Progress Bar Component Examples (storybook-style)</h1>
+
+      <div class="example-section">
+        <h3>Basic Percent</h3>
+        <sy-progress-bar id="progressBasic" percent="25"></sy-progress-bar>
+        <p>Value: <span id="progressBasicValue">25</span>%</p>
+        <input id="progressBasicSlider" type="range" min="0" max="100" value="25" />
+      </div>
+
+      <div class="example-section">
+        <h3>Indeterminate</h3>
+        <sy-progress-bar id="progressIndeterminate" indeterminate></sy-progress-bar>
+        <button id="toggleIndeterminatePause">Toggle Pause</button>
+      </div>
+
+      <div class="example-section">
+        <h3>Status Examples</h3>
+        <sy-progress-bar id="progressComplete" percent="100" status="complete"></sy-progress-bar>
+        <sy-progress-bar id="progressError" percent="40" status="error"></sy-progress-bar>
+      </div>
+
+      <div class="example-section">
+        <h3>Value Positioning</h3>
+        <sy-progress-bar id="progressPosCenter" percent="45" valuePosition="center"></sy-progress-bar>
+        <sy-progress-bar id="progressPosLeft" percent="20" valuePosition="progress-left"></sy-progress-bar>
+        <sy-progress-bar id="progressPosRight" percent="80" valuePosition="progress-right"></sy-progress-bar>
+      </div>
+
+      <div class="example-section">
+        <h3>Hidden Percent</h3>
+        <sy-progress-bar id="progressHidden" percent="55" hidePercent></sy-progress-bar>
+      </div>
+
+      <div class="example-section">
+        <h3>Segmented Progress</h3>
+        <sy-progress-bar id="progressSegments" percent="50" segment='[{"percent":30,"status":"complete"},{"percent":70,"status":"default"}]'></sy-progress-bar>
+  <p>Segments: <code id="progressSegmentsCode">[{"percent":30,"status":"complete"},{"percent":70,"status":"default"}]</code></p>
+        <button id="setSegmentsHalf">Set segments to half/half</button>
+      </div>
+
+      <script>
+        (function(){
+          const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = String(value); };
+
+          // Basic percent slider
+          const basic = document.getElementById('progressBasic');
+          const basicSlider = document.getElementById('progressBasicSlider');
+          if (basic && basicSlider) {
+            basicSlider.addEventListener('input', (e) => {
+              const v = Number(e.target.value);
+              basic.percent = v;
+              setText('progressBasicValue', v);
+            });
+          }
+
+          // Indeterminate pause toggle (manipulates inner indicator animation)
+          const indeterminate = document.getElementById('progressIndeterminate');
+          const togglePauseBtn = document.getElementById('toggleIndeterminatePause');
+          let paused = false;
+          if (indeterminate && togglePauseBtn) {
+            togglePauseBtn.addEventListener('click', () => {
+              const indicator = indeterminate.querySelector('.progress-bar--indicator');
+              if(!indicator) return;
+              if (!paused) {
+                indicator.style.animation = 'none';
+                togglePauseBtn.textContent = 'Resume';
+              } else {
+                indicator.style.animation = '';
+                togglePauseBtn.textContent = 'Toggle Pause';
+              }
+              paused = !paused;
+            });
+          }
+
+          // Segments setter
+          const progressSegments = document.getElementById('progressSegments');
+          const setSegmentsHalf = document.getElementById('setSegmentsHalf');
+          if (progressSegments && setSegmentsHalf) {
+            setSegmentsHalf.addEventListener('click', () => {
+              const segObj = [{percent:50,status:'complete'},{percent:50,status:'default'}];
+              const seg = JSON.stringify(segObj);
+              // set as attribute so component picks up parsing
+              progressSegments.setAttribute('segment', seg);
+              // keep percent consistent
+              progressSegments.percent = 100;
+              // update displayed code sample
+              const codeEl = document.getElementById('progressSegmentsCode');
+              if (codeEl) codeEl.textContent = JSON.stringify(segObj);
+            });
+          }
+        })();
+      </script>
+    </section>
+
+    <!-- PROGRESS CIRCULAR COMPONENT EXAMPLES -->
+    <section id="progress-circular-examples">
+      <h1>Progress Circular Component Examples</h1>
+
+      <div class="example-section">
+        <h3>Basic Circular Percent</h3>
+        <sy-progress-circular id="pcBasic" percent="30" size="medium"></sy-progress-circular>
+        <p>Value: <span id="pcBasicValue">30</span>%</p>
+        <input id="pcBasicSlider" type="range" min="0" max="100" value="30" />
+      </div>
+
+      <div class="example-section">
+        <h3>Indeterminate Circular</h3>
+        <sy-progress-circular id="pcIndeterminate" indeterminate size="large"></sy-progress-circular>
+        <button id="pcToggleIndeterminate">Toggle Indeterminate</button>
+      </div>
+
+      <div class="example-section">
+        <h3>Segmented Circular</h3>
+        <sy-progress-circular id="pcSegments" percent="60" segment='[{"percent":30,"status":"complete"},{"percent":60,"status":"default"},{"percent":100,"status":"error"}]'></sy-progress-circular>
+  <p>Segments: <code id="pcSegmentsCode">[{"percent":30,"status":"complete"},{"percent":60,"status":"default"},{"percent":100,"status":"error"}]</code></p>
+        <button id="pcSetSegmentsAlt">Set alternative segments</button>
+      </div>
+
+      <div class="example-section">
+        <h3>Sizes & Status</h3>
+        <sy-progress-circular id="pcSmall" percent="15" size="small"></sy-progress-circular>
+        <sy-progress-circular id="pcMedium" percent="45" size="medium"></sy-progress-circular>
+        <sy-progress-circular id="pcLarge" percent="85" size="large"></sy-progress-circular>
+        <sy-progress-circular id="pcError" percent="20" status="error"></sy-progress-circular>
+        <sy-progress-circular id="pcComplete" percent="100" status="complete"></sy-progress-circular>
+      </div>
+
+      <script>
+        (function(){
+          const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = String(value); };
+
+          const basic = document.getElementById('pcBasic');
+          const basicSlider = document.getElementById('pcBasicSlider');
+          if (basic && basicSlider) {
+            basicSlider.addEventListener('input', (e) => {
+              const v = Number(e.target.value);
+              basic.percent = v;
+              setText('pcBasicValue', v);
+            });
+          }
+
+          const pcInd = document.getElementById('pcIndeterminate');
+          const pcToggleIndeterminate = document.getElementById('pcToggleIndeterminate');
+          if (pcInd && pcToggleIndeterminate) {
+            pcToggleIndeterminate.addEventListener('click', () => {
+              pcInd.indeterminate = !pcInd.indeterminate;
+            });
+          }
+
+          const pcSegments = document.getElementById('pcSegments');
+          const pcSetSegmentsAlt = document.getElementById('pcSetSegmentsAlt');
+          if (pcSegments && pcSetSegmentsAlt) {
+            pcSetSegmentsAlt.addEventListener('click', () => {
+              const segObj = [{percent:10,status:'default'},{percent:90,status:'error'},{percent:100,status:'complete'}];
+              const seg = JSON.stringify(segObj);
+              pcSegments.setAttribute('segment', seg);
+              pcSegments.percent = 100;
+              const codeEl = document.getElementById('pcSegmentsCode');
+              if (codeEl) codeEl.textContent = JSON.stringify(segObj);
+            });
+          }
+        })();
+      </script>
+    </section>
+
     <!-- NAV COMPONENT EXAMPLES -->
     <section id="nav-examples">
       <h1>Nav Component Examples (storybook-style)</h1>

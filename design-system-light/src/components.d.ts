@@ -869,6 +869,70 @@ export namespace Components {
          */
         "trigger": 'hover' | 'click' | 'focus' | 'null';
     }
+    interface SyProgressBar {
+        /**
+          * @default false
+         */
+        "hidePercent": boolean;
+        /**
+          * When true, percentage is ignored, the label is hidden, and the progress bar is drawn in an indeterminate state.
+          * @default false
+         */
+        "indeterminate": boolean;
+        /**
+          * The current progress as a percentage, 0 to 100.
+          * @default 0
+         */
+        "percent": number;
+        /**
+          * @default ''
+         */
+        "segment": string;
+        /**
+          * The error state of the progress bar
+          * @default 'default'
+         */
+        "status": 'default' | 'error' | 'complete';
+        /**
+          * @default ''
+         */
+        "tooltipTitle": string;
+        /**
+          * The value position type of the progress bar.
+          * @default 'center'
+         */
+        "valuePosition": 'progress-left' | 'progress-center' | 'progress-right' | 'center' | 'left' | 'right';
+    }
+    interface SyProgressCircular {
+        /**
+          * @default false
+         */
+        "hideText": boolean;
+        /**
+          * @default false
+         */
+        "indeterminate": boolean;
+        /**
+          * @default 0
+         */
+        "percent": number;
+        /**
+          * @default ''
+         */
+        "segment": string;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        /**
+          * @default 'default'
+         */
+        "status": 'default' | 'error' | 'complete';
+        /**
+          * @default ''
+         */
+        "tooltipTitle": string;
+    }
     interface SyRadio {
         /**
           * @default false
@@ -1036,6 +1100,76 @@ export namespace Components {
           * @default '100%'
          */
         "width": string;
+    }
+    interface SySlider {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "hideMarks": boolean;
+        /**
+          * @default false
+         */
+        "hideTrackFill": boolean;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default {}
+         */
+        "marks": { [key: number]: string };
+        /**
+          * @default 100
+         */
+        "max": number;
+        /**
+          * @default 0
+         */
+        "min": number;
+        /**
+          * @default false
+         */
+        "range": boolean;
+        /**
+          * @default []
+         */
+        "rangeValue": number[];
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default false
+         */
+        "reverse": boolean;
+        /**
+          * @default 'default'
+         */
+        "showTooltip": 'default' | 'always' | 'never';
+        /**
+          * @default false
+         */
+        "snapToMarks": boolean;
+        /**
+          * @default 1
+         */
+        "step": number;
+        /**
+          * @default 'top'
+         */
+        "tooltipPlacement": 'top' | 'bottom' | 'right' | 'left';
+        /**
+          * @default 0
+         */
+        "value": number;
+        /**
+          * @default false
+         */
+        "vertical": boolean;
     }
     interface SySpinner {
         /**
@@ -1749,6 +1883,18 @@ declare global {
         prototype: HTMLSyPopoverElement;
         new (): HTMLSyPopoverElement;
     };
+    interface HTMLSyProgressBarElement extends Components.SyProgressBar, HTMLStencilElement {
+    }
+    var HTMLSyProgressBarElement: {
+        prototype: HTMLSyProgressBarElement;
+        new (): HTMLSyProgressBarElement;
+    };
+    interface HTMLSyProgressCircularElement extends Components.SyProgressCircular, HTMLStencilElement {
+    }
+    var HTMLSyProgressCircularElement: {
+        prototype: HTMLSyProgressCircularElement;
+        new (): HTMLSyProgressCircularElement;
+    };
     interface HTMLSyRadioElementEventMap {
         "selected": string;
     }
@@ -1828,6 +1974,12 @@ declare global {
     var HTMLSySkeletonElement: {
         prototype: HTMLSySkeletonElement;
         new (): HTMLSySkeletonElement;
+    };
+    interface HTMLSySliderElement extends Components.SySlider, HTMLStencilElement {
+    }
+    var HTMLSySliderElement: {
+        prototype: HTMLSySliderElement;
+        new (): HTMLSySliderElement;
     };
     interface HTMLSySpinnerElement extends Components.SySpinner, HTMLStencilElement {
     }
@@ -1963,11 +2115,14 @@ declare global {
         "sy-pagination": HTMLSyPaginationElement;
         "sy-popconfirm": HTMLSyPopconfirmElement;
         "sy-popover": HTMLSyPopoverElement;
+        "sy-progress-bar": HTMLSyProgressBarElement;
+        "sy-progress-circular": HTMLSyProgressCircularElement;
         "sy-radio": HTMLSyRadioElement;
         "sy-radio-button": HTMLSyRadioButtonElement;
         "sy-radio-group": HTMLSyRadioGroupElement;
         "sy-select": HTMLSySelectElement;
         "sy-skeleton": HTMLSySkeletonElement;
+        "sy-slider": HTMLSySliderElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
         "sy-switch": HTMLSySwitchElement;
@@ -2803,6 +2958,70 @@ declare namespace LocalJSX {
          */
         "trigger"?: 'hover' | 'click' | 'focus' | 'null';
     }
+    interface SyProgressBar {
+        /**
+          * @default false
+         */
+        "hidePercent"?: boolean;
+        /**
+          * When true, percentage is ignored, the label is hidden, and the progress bar is drawn in an indeterminate state.
+          * @default false
+         */
+        "indeterminate"?: boolean;
+        /**
+          * The current progress as a percentage, 0 to 100.
+          * @default 0
+         */
+        "percent"?: number;
+        /**
+          * @default ''
+         */
+        "segment"?: string;
+        /**
+          * The error state of the progress bar
+          * @default 'default'
+         */
+        "status"?: 'default' | 'error' | 'complete';
+        /**
+          * @default ''
+         */
+        "tooltipTitle"?: string;
+        /**
+          * The value position type of the progress bar.
+          * @default 'center'
+         */
+        "valuePosition"?: 'progress-left' | 'progress-center' | 'progress-right' | 'center' | 'left' | 'right';
+    }
+    interface SyProgressCircular {
+        /**
+          * @default false
+         */
+        "hideText"?: boolean;
+        /**
+          * @default false
+         */
+        "indeterminate"?: boolean;
+        /**
+          * @default 0
+         */
+        "percent"?: number;
+        /**
+          * @default ''
+         */
+        "segment"?: string;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        /**
+          * @default 'default'
+         */
+        "status"?: 'default' | 'error' | 'complete';
+        /**
+          * @default ''
+         */
+        "tooltipTitle"?: string;
+    }
     interface SyRadio {
         /**
           * @default false
@@ -2967,6 +3186,76 @@ declare namespace LocalJSX {
           * @default '100%'
          */
         "width"?: string;
+    }
+    interface SySlider {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "hideMarks"?: boolean;
+        /**
+          * @default false
+         */
+        "hideTrackFill"?: boolean;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        /**
+          * @default {}
+         */
+        "marks"?: { [key: number]: string };
+        /**
+          * @default 100
+         */
+        "max"?: number;
+        /**
+          * @default 0
+         */
+        "min"?: number;
+        /**
+          * @default false
+         */
+        "range"?: boolean;
+        /**
+          * @default []
+         */
+        "rangeValue"?: number[];
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "reverse"?: boolean;
+        /**
+          * @default 'default'
+         */
+        "showTooltip"?: 'default' | 'always' | 'never';
+        /**
+          * @default false
+         */
+        "snapToMarks"?: boolean;
+        /**
+          * @default 1
+         */
+        "step"?: number;
+        /**
+          * @default 'top'
+         */
+        "tooltipPlacement"?: 'top' | 'bottom' | 'right' | 'left';
+        /**
+          * @default 0
+         */
+        "value"?: number;
+        /**
+          * @default false
+         */
+        "vertical"?: boolean;
     }
     interface SySpinner {
         /**
@@ -3264,11 +3553,14 @@ declare namespace LocalJSX {
         "sy-pagination": SyPagination;
         "sy-popconfirm": SyPopconfirm;
         "sy-popover": SyPopover;
+        "sy-progress-bar": SyProgressBar;
+        "sy-progress-circular": SyProgressCircular;
         "sy-radio": SyRadio;
         "sy-radio-button": SyRadioButton;
         "sy-radio-group": SyRadioGroup;
         "sy-select": SySelect;
         "sy-skeleton": SySkeleton;
+        "sy-slider": SySlider;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
         "sy-switch": SySwitch;
@@ -3343,11 +3635,14 @@ declare module "@stencil/core" {
              * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
              */
             "sy-popover": LocalJSX.SyPopover & JSXBase.HTMLAttributes<HTMLSyPopoverElement>;
+            "sy-progress-bar": LocalJSX.SyProgressBar & JSXBase.HTMLAttributes<HTMLSyProgressBarElement>;
+            "sy-progress-circular": LocalJSX.SyProgressCircular & JSXBase.HTMLAttributes<HTMLSyProgressCircularElement>;
             "sy-radio": LocalJSX.SyRadio & JSXBase.HTMLAttributes<HTMLSyRadioElement>;
             "sy-radio-button": LocalJSX.SyRadioButton & JSXBase.HTMLAttributes<HTMLSyRadioButtonElement>;
             "sy-radio-group": LocalJSX.SyRadioGroup & JSXBase.HTMLAttributes<HTMLSyRadioGroupElement>;
             "sy-select": LocalJSX.SySelect & JSXBase.HTMLAttributes<HTMLSySelectElement>;
             "sy-skeleton": LocalJSX.SySkeleton & JSXBase.HTMLAttributes<HTMLSySkeletonElement>;
+            "sy-slider": LocalJSX.SySlider & JSXBase.HTMLAttributes<HTMLSySliderElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;

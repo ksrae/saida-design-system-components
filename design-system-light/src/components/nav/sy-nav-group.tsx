@@ -29,7 +29,7 @@ export class SyNavGroup {
   @Element() host!: HTMLElement;
 
   @Prop() title: string = '';
-  @Prop({ reflect: true }) depth: number = 0;
+  @Prop({ reflect: true, mutable: true }) depth: number = 0;
 
   connectedCallback() {
     this.calculateDepth();
