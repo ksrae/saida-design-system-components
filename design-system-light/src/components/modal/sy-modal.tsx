@@ -493,7 +493,7 @@ export class SyModal {
     const slottedElements = this.host.querySelectorAll(`[slot="${slot}"]`);
 
     if (slottedElements.length === 0) {
-      console.log(`Slot "${slot}" is empty`);
+      // console.log(`Slot "${slot}" is empty`);
       return false;
     }
 

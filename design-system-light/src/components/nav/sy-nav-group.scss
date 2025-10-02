@@ -1,0 +1,44 @@
+
+:root,
+:host {
+  display: block;
+  background-color: var(--nav-submenu-background-active);
+}
+.group-title {
+  color: var(--nav-submenu-text-enabled);
+  padding: var( --spacing-xsmall) var(--spacing-xlarge);
+  background-color: var(--nav-submenu-background-enabled);
+  height:var(--component-large);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap:var(--spacing-3xsmall);
+  
+}
+
+:host(sy-nav-group[depth="0"]){
+  .group-title{
+    padding: var(--spacing-xsmall) var(--spacing-xlarge);
+  }
+}
+
+:host(sy-nav-group[depth="0"]){
+  .group-title{
+    padding-left:20px;
+  }
+}
+
+// :host(sy-nav-group[depth="1"]){
+//   .group-title{
+//     padding-left:40px;
+//   }
+// }
+
+/* Nav Depth */
+@for $i from 1 through 100 { 
+  :host(sy-nav-group[depth="#{$i}"]){
+    .group-title{
+      padding-left: 20px*$i + 10px;   
+    }   
+  }    
+}

@@ -1,16 +1,19 @@
 import { Component, Prop, State, Element, Watch, h } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+// Export a minimal interface for other components to reference
 export interface HTMLSyTooltipElement extends HTMLElement {
   hideArrow: boolean;
   open: boolean;
   closedelay: number;
-  maxWidth: number;
+  maxWidth: number | null;
   opendelay: number;
   content: string;
   position: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
   trigger: 'hover' | 'click' | 'focus' | 'none';
+  remove(): void;
 }
+
 
 @Component({
   tag: 'sy-tooltip',
@@ -21,15 +24,55 @@ export interface HTMLSyTooltipElement extends HTMLElement {
 export class SyTooltip {
   @Element() host: HTMLElement;
 
+  /**
+   * Controls whether the tooltip arrow is hidden
+   * @default false
+   */
   @Prop({ reflect: true, attribute: 'hideArrow', mutable: true }) hideArrow: boolean = false;
+
+  /**
+   * Controls whether the tooltip is currently open/visible
+   * @default false
+   */
   @Prop({ reflect: true, mutable: true }) open: boolean = false;
 
+  /**
+   * Delay in milliseconds before closing the tooltip after trigger event ends
+   * @default 0
+   */
   @Prop({ reflect: true }) closedelay: number = 0;
+
+  /**
+   * Maximum width of the tooltip in pixels
+   * @default null
+   */
   @Prop({ reflect: true, attribute: 'maxWidth', mutable: true }) maxWidth: number | null = null;
+
+  /**
+   * Delay in milliseconds before opening the tooltip after trigger event starts
+   * @default 0
+   */
   @Prop({ reflect: true }) opendelay: number = 0;
 
+  /**
+   * The content text to display inside the tooltip
+   * @default ''
+   */
   @Prop() content: string = '';
+
+  /**
+   * Position of the tooltip relative to the trigger element
+   * Options: 'top', 'topLeft', 'topRight', 'right', 'rightTop', 'rightBottom',
+   * 'bottom', 'bottomLeft', 'bottomRight', 'left', 'leftTop', 'leftBottom'
+   * @default 'top'
+   */
   @Prop() position: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom' = 'top';
+
+  /**
+   * Event that triggers the tooltip to show
+   * Options: 'hover', 'click', 'focus', 'none'
+   * @default 'hover'
+   */
   @Prop() trigger: 'hover' | 'click' | 'focus' | 'none' = 'hover';
 
   @State() private arrowElement: any;

@@ -1,0 +1,50 @@
+@use "../../assets/style/global/font"as font;
+
+:root,
+:host {
+    display: none;
+    position: absolute;
+    /* 위치 조정을 위해 추가 */
+    left: -9999px;
+    top: -9999px;
+    z-index: var(--z-index-menu);
+    margin: 0px;
+    padding: 0px;
+    background-color: var(--menu-dropdownmenu-background-enabled);
+    box-shadow: var(--box-shadow);
+    @include font.text-style-base-regular;
+    border-radius: var(--border-radius-medium);
+}
+
+:host([open]) {
+    /* hide 속성이 true일 때 숨김 처리 */
+    display: block;
+}
+
+a ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+// ul[mode="inline"] {
+//     width: 100%;
+//     margin: 0px;
+//     list-style: none;
+//     padding: var(--spacing-3xsmall) 0;
+// }
+
+// ul[mode="vertical"] {
+//     width: auto;
+//     padding: var(--spacing-3xsmall) 0;
+//     margin: 0px;
+//     list-style: none;
+// }
+
+ul {
+    width: auto;
+    padding: var(--spacing-3xsmall) 0;
+    margin: 0px;
+    list-style: none;
+}

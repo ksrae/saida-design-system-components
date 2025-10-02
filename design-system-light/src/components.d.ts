@@ -56,6 +56,29 @@ export namespace Components {
          */
         "variant": "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
     }
+    /**
+     * sy-avatar-group (Stencil port, light DOM, scoped)
+     * - Renders slotted <sy-avatar> children
+     * - If children count > maxCount, shows +N and a dropdown list appended to body
+     */
+    interface SyAvatarGroup {
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default Infinity as any
+         */
+        "maxCount": number;
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        /**
+          * @default 'stack'
+         */
+        "variant": 'stack' | 'grid';
+    }
     interface SyBadge {
         /**
           * @default false
@@ -443,6 +466,70 @@ export namespace Components {
          */
         "value": string | number;
     }
+    interface SyMenu {
+        /**
+          * @default false
+         */
+        "checkable": boolean;
+        /**
+          * @default 'right'
+         */
+        "direction": 'left' | 'right';
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 'bottomLeft'
+         */
+        "position": 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'hover'
+         */
+        "trigger": 'click' | 'hover' | 'contextmenu';
+    }
+    interface SyMenuGroup {
+        /**
+          * @default ''
+         */
+        "title": string;
+    }
+    interface SyMenuItem {
+        /**
+          * @default false
+         */
+        "checkable": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "select": boolean;
+        /**
+          * @default false
+         */
+        "selectable": boolean;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface SyMenuSub {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default ''
+         */
+        "title": string;
+    }
     interface SyModal {
         /**
           * @default ''
@@ -568,6 +655,80 @@ export namespace Components {
         "updateContent": (id: string, content: string | HTMLElement | VNode) => Promise<void>;
         "updateOption": (id: string, option: Partial<Pick<HTMLSyModelessElement, "draggable" | "resizable" | "edge" | "closable" | "maximizable" | "minimizable" | "top" | "left" | "width" | "height">>) => Promise<void>;
         "updateTitle": (id: string, title: string | HTMLElement | VNode) => Promise<void>;
+    }
+    /**
+     * sy-nav (Stencil port, light DOM, scoped)
+     * - Renders slotted navigation items
+     * - Manages active states and disabled propagation
+     */
+    interface SyNav {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+    }
+    /**
+     * sy-nav-group (Stencil port, light DOM, scoped)
+     * - Navigation group component that organizes nav items and sub-navs
+     * - Automatically sets groupItem flag on child nav components
+     */
+    interface SyNavGroup {
+        /**
+          * @default 0
+         */
+        "depth": number;
+        /**
+          * @default ''
+         */
+        "title": string;
+    }
+    /**
+     * sy-nav-item (Stencil port, light DOM, scoped)
+     * - Navigation item component
+     * - Manages active state and depth calculation
+     */
+    interface SyNavItem {
+        /**
+          * @default 0
+         */
+        "depth": number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "setActive": (active: boolean) => Promise<void>;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    /**
+     * sy-nav-sub (Stencil port, light DOM, scoped)
+     * - Navigation submenu component with collapsible functionality
+     * - Supports click and hover triggers
+     */
+    interface SyNavSub {
+        /**
+          * @default 0
+         */
+        "depth": number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "open": boolean;
+        "setActive": (active: boolean) => Promise<void>;
+        /**
+          * @default ''
+         */
+        "title": string;
+        /**
+          * @default ''
+         */
+        "value": string;
     }
     interface SyOption {
         /**
@@ -1102,34 +1263,42 @@ export namespace Components {
     }
     interface SyTooltip {
         /**
+          * Delay in milliseconds before closing the tooltip after trigger event ends
           * @default 0
          */
         "closedelay": number;
         /**
+          * The content text to display inside the tooltip
           * @default ''
          */
         "content": string;
         /**
+          * Controls whether the tooltip arrow is hidden
           * @default false
          */
         "hideArrow": boolean;
         /**
+          * Maximum width of the tooltip in pixels
           * @default null
          */
         "maxWidth": number | null;
         /**
+          * Controls whether the tooltip is currently open/visible
           * @default false
          */
         "open": boolean;
         /**
+          * Delay in milliseconds before opening the tooltip after trigger event starts
           * @default 0
          */
         "opendelay": number;
         /**
+          * Position of the tooltip relative to the trigger element Options: 'top', 'topLeft', 'topRight', 'right', 'rightTop', 'rightBottom', 'bottom', 'bottomLeft', 'bottomRight', 'left', 'leftTop', 'leftBottom'
           * @default 'top'
          */
         "position": 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
         /**
+          * Event that triggers the tooltip to show Options: 'hover', 'click', 'focus', 'none'
           * @default 'hover'
          */
         "trigger": 'hover' | 'click' | 'focus' | 'none';
@@ -1238,6 +1407,17 @@ declare global {
     var HTMLSyAvatarElement: {
         prototype: HTMLSyAvatarElement;
         new (): HTMLSyAvatarElement;
+    };
+    /**
+     * sy-avatar-group (Stencil port, light DOM, scoped)
+     * - Renders slotted <sy-avatar> children
+     * - If children count > maxCount, shows +N and a dropdown list appended to body
+     */
+    interface HTMLSyAvatarGroupElement extends Components.SyAvatarGroup, HTMLStencilElement {
+    }
+    var HTMLSyAvatarGroupElement: {
+        prototype: HTMLSyAvatarGroupElement;
+        new (): HTMLSyAvatarGroupElement;
     };
     interface HTMLSyBadgeElement extends Components.SyBadge, HTMLStencilElement {
     }
@@ -1407,6 +1587,30 @@ declare global {
         prototype: HTMLSyInputNumberElement;
         new (): HTMLSyInputNumberElement;
     };
+    interface HTMLSyMenuElement extends Components.SyMenu, HTMLStencilElement {
+    }
+    var HTMLSyMenuElement: {
+        prototype: HTMLSyMenuElement;
+        new (): HTMLSyMenuElement;
+    };
+    interface HTMLSyMenuGroupElement extends Components.SyMenuGroup, HTMLStencilElement {
+    }
+    var HTMLSyMenuGroupElement: {
+        prototype: HTMLSyMenuGroupElement;
+        new (): HTMLSyMenuGroupElement;
+    };
+    interface HTMLSyMenuItemElement extends Components.SyMenuItem, HTMLStencilElement {
+    }
+    var HTMLSyMenuItemElement: {
+        prototype: HTMLSyMenuItemElement;
+        new (): HTMLSyMenuItemElement;
+    };
+    interface HTMLSyMenuSubElement extends Components.SyMenuSub, HTMLStencilElement {
+    }
+    var HTMLSyMenuSubElement: {
+        prototype: HTMLSyMenuSubElement;
+        new (): HTMLSyMenuSubElement;
+    };
     interface HTMLSyModalElement extends Components.SyModal, HTMLStencilElement {
     }
     var HTMLSyModalElement: {
@@ -1437,6 +1641,50 @@ declare global {
     var HTMLSyModelessGroupElement: {
         prototype: HTMLSyModelessGroupElement;
         new (): HTMLSyModelessGroupElement;
+    };
+    /**
+     * sy-nav (Stencil port, light DOM, scoped)
+     * - Renders slotted navigation items
+     * - Manages active states and disabled propagation
+     */
+    interface HTMLSyNavElement extends Components.SyNav, HTMLStencilElement {
+    }
+    var HTMLSyNavElement: {
+        prototype: HTMLSyNavElement;
+        new (): HTMLSyNavElement;
+    };
+    /**
+     * sy-nav-group (Stencil port, light DOM, scoped)
+     * - Navigation group component that organizes nav items and sub-navs
+     * - Automatically sets groupItem flag on child nav components
+     */
+    interface HTMLSyNavGroupElement extends Components.SyNavGroup, HTMLStencilElement {
+    }
+    var HTMLSyNavGroupElement: {
+        prototype: HTMLSyNavGroupElement;
+        new (): HTMLSyNavGroupElement;
+    };
+    /**
+     * sy-nav-item (Stencil port, light DOM, scoped)
+     * - Navigation item component
+     * - Manages active state and depth calculation
+     */
+    interface HTMLSyNavItemElement extends Components.SyNavItem, HTMLStencilElement {
+    }
+    var HTMLSyNavItemElement: {
+        prototype: HTMLSyNavItemElement;
+        new (): HTMLSyNavItemElement;
+    };
+    /**
+     * sy-nav-sub (Stencil port, light DOM, scoped)
+     * - Navigation submenu component with collapsible functionality
+     * - Supports click and hover triggers
+     */
+    interface HTMLSyNavSubElement extends Components.SyNavSub, HTMLStencilElement {
+    }
+    var HTMLSyNavSubElement: {
+        prototype: HTMLSyNavSubElement;
+        new (): HTMLSyNavSubElement;
     };
     interface HTMLSyOptionElementEventMap {
         "selected": { value: string; label: string };
@@ -1685,6 +1933,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "sy-avatar": HTMLSyAvatarElement;
+        "sy-avatar-group": HTMLSyAvatarGroupElement;
         "sy-badge": HTMLSyBadgeElement;
         "sy-banner-messsage": HTMLSyBannerMesssageElement;
         "sy-breadcrumb": HTMLSyBreadcrumbElement;
@@ -1699,9 +1948,17 @@ declare global {
         "sy-inline-message": HTMLSyInlineMessageElement;
         "sy-input": HTMLSyInputElement;
         "sy-input-number": HTMLSyInputNumberElement;
+        "sy-menu": HTMLSyMenuElement;
+        "sy-menu-group": HTMLSyMenuGroupElement;
+        "sy-menu-item": HTMLSyMenuItemElement;
+        "sy-menu-sub": HTMLSyMenuSubElement;
         "sy-modal": HTMLSyModalElement;
         "sy-modeless": HTMLSyModelessElement;
         "sy-modeless-group": HTMLSyModelessGroupElement;
+        "sy-nav": HTMLSyNavElement;
+        "sy-nav-group": HTMLSyNavGroupElement;
+        "sy-nav-item": HTMLSyNavItemElement;
+        "sy-nav-sub": HTMLSyNavSubElement;
         "sy-option": HTMLSyOptionElement;
         "sy-pagination": HTMLSyPaginationElement;
         "sy-popconfirm": HTMLSyPopconfirmElement;
@@ -1766,6 +2023,29 @@ declare namespace LocalJSX {
           * @default "lightgray"
          */
         "variant"?: "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
+    }
+    /**
+     * sy-avatar-group (Stencil port, light DOM, scoped)
+     * - Renders slotted <sy-avatar> children
+     * - If children count > maxCount, shows +N and a dropdown list appended to body
+     */
+    interface SyAvatarGroup {
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default Infinity as any
+         */
+        "maxCount"?: number;
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        /**
+          * @default 'stack'
+         */
+        "variant"?: 'stack' | 'grid';
     }
     interface SyBadge {
         /**
@@ -2140,6 +2420,70 @@ declare namespace LocalJSX {
          */
         "value"?: string | number;
     }
+    interface SyMenu {
+        /**
+          * @default false
+         */
+        "checkable"?: boolean;
+        /**
+          * @default 'right'
+         */
+        "direction"?: 'left' | 'right';
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 'bottomLeft'
+         */
+        "position"?: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'hover'
+         */
+        "trigger"?: 'click' | 'hover' | 'contextmenu';
+    }
+    interface SyMenuGroup {
+        /**
+          * @default ''
+         */
+        "title"?: string;
+    }
+    interface SyMenuItem {
+        /**
+          * @default false
+         */
+        "checkable"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "select"?: boolean;
+        /**
+          * @default false
+         */
+        "selectable"?: boolean;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface SyMenuSub {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default ''
+         */
+        "title"?: string;
+    }
     interface SyModal {
         /**
           * @default ''
@@ -2252,6 +2596,78 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface SyModelessGroup {
+    }
+    /**
+     * sy-nav (Stencil port, light DOM, scoped)
+     * - Renders slotted navigation items
+     * - Manages active states and disabled propagation
+     */
+    interface SyNav {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+    }
+    /**
+     * sy-nav-group (Stencil port, light DOM, scoped)
+     * - Navigation group component that organizes nav items and sub-navs
+     * - Automatically sets groupItem flag on child nav components
+     */
+    interface SyNavGroup {
+        /**
+          * @default 0
+         */
+        "depth"?: number;
+        /**
+          * @default ''
+         */
+        "title"?: string;
+    }
+    /**
+     * sy-nav-item (Stencil port, light DOM, scoped)
+     * - Navigation item component
+     * - Manages active state and depth calculation
+     */
+    interface SyNavItem {
+        /**
+          * @default 0
+         */
+        "depth"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    /**
+     * sy-nav-sub (Stencil port, light DOM, scoped)
+     * - Navigation submenu component with collapsible functionality
+     * - Supports click and hover triggers
+     */
+    interface SyNavSub {
+        /**
+          * @default 0
+         */
+        "depth"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default ''
+         */
+        "title"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
     }
     interface SyOption {
         /**
@@ -2776,40 +3192,49 @@ declare namespace LocalJSX {
     }
     interface SyTooltip {
         /**
+          * Delay in milliseconds before closing the tooltip after trigger event ends
           * @default 0
          */
         "closedelay"?: number;
         /**
+          * The content text to display inside the tooltip
           * @default ''
          */
         "content"?: string;
         /**
+          * Controls whether the tooltip arrow is hidden
           * @default false
          */
         "hideArrow"?: boolean;
         /**
+          * Maximum width of the tooltip in pixels
           * @default null
          */
         "maxWidth"?: number | null;
         /**
+          * Controls whether the tooltip is currently open/visible
           * @default false
          */
         "open"?: boolean;
         /**
+          * Delay in milliseconds before opening the tooltip after trigger event starts
           * @default 0
          */
         "opendelay"?: number;
         /**
+          * Position of the tooltip relative to the trigger element Options: 'top', 'topLeft', 'topRight', 'right', 'rightTop', 'rightBottom', 'bottom', 'bottomLeft', 'bottomRight', 'left', 'leftTop', 'leftBottom'
           * @default 'top'
          */
         "position"?: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
         /**
+          * Event that triggers the tooltip to show Options: 'hover', 'click', 'focus', 'none'
           * @default 'hover'
          */
         "trigger"?: 'hover' | 'click' | 'focus' | 'none';
     }
     interface IntrinsicElements {
         "sy-avatar": SyAvatar;
+        "sy-avatar-group": SyAvatarGroup;
         "sy-badge": SyBadge;
         "sy-banner-messsage": SyBannerMesssage;
         "sy-breadcrumb": SyBreadcrumb;
@@ -2824,9 +3249,17 @@ declare namespace LocalJSX {
         "sy-inline-message": SyInlineMessage;
         "sy-input": SyInput;
         "sy-input-number": SyInputNumber;
+        "sy-menu": SyMenu;
+        "sy-menu-group": SyMenuGroup;
+        "sy-menu-item": SyMenuItem;
+        "sy-menu-sub": SyMenuSub;
         "sy-modal": SyModal;
         "sy-modeless": SyModeless;
         "sy-modeless-group": SyModelessGroup;
+        "sy-nav": SyNav;
+        "sy-nav-group": SyNavGroup;
+        "sy-nav-item": SyNavItem;
+        "sy-nav-sub": SyNavSub;
         "sy-option": SyOption;
         "sy-pagination": SyPagination;
         "sy-popconfirm": SyPopconfirm;
@@ -2851,6 +3284,12 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "sy-avatar": LocalJSX.SyAvatar & JSXBase.HTMLAttributes<HTMLSyAvatarElement>;
+            /**
+             * sy-avatar-group (Stencil port, light DOM, scoped)
+             * - Renders slotted <sy-avatar> children
+             * - If children count > maxCount, shows +N and a dropdown list appended to body
+             */
+            "sy-avatar-group": LocalJSX.SyAvatarGroup & JSXBase.HTMLAttributes<HTMLSyAvatarGroupElement>;
             "sy-badge": LocalJSX.SyBadge & JSXBase.HTMLAttributes<HTMLSyBadgeElement>;
             "sy-banner-messsage": LocalJSX.SyBannerMesssage & JSXBase.HTMLAttributes<HTMLSyBannerMesssageElement>;
             "sy-breadcrumb": LocalJSX.SyBreadcrumb & JSXBase.HTMLAttributes<HTMLSyBreadcrumbElement>;
@@ -2865,9 +3304,37 @@ declare module "@stencil/core" {
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
+            "sy-menu": LocalJSX.SyMenu & JSXBase.HTMLAttributes<HTMLSyMenuElement>;
+            "sy-menu-group": LocalJSX.SyMenuGroup & JSXBase.HTMLAttributes<HTMLSyMenuGroupElement>;
+            "sy-menu-item": LocalJSX.SyMenuItem & JSXBase.HTMLAttributes<HTMLSyMenuItemElement>;
+            "sy-menu-sub": LocalJSX.SyMenuSub & JSXBase.HTMLAttributes<HTMLSyMenuSubElement>;
             "sy-modal": LocalJSX.SyModal & JSXBase.HTMLAttributes<HTMLSyModalElement>;
             "sy-modeless": LocalJSX.SyModeless & JSXBase.HTMLAttributes<HTMLSyModelessElement>;
             "sy-modeless-group": LocalJSX.SyModelessGroup & JSXBase.HTMLAttributes<HTMLSyModelessGroupElement>;
+            /**
+             * sy-nav (Stencil port, light DOM, scoped)
+             * - Renders slotted navigation items
+             * - Manages active states and disabled propagation
+             */
+            "sy-nav": LocalJSX.SyNav & JSXBase.HTMLAttributes<HTMLSyNavElement>;
+            /**
+             * sy-nav-group (Stencil port, light DOM, scoped)
+             * - Navigation group component that organizes nav items and sub-navs
+             * - Automatically sets groupItem flag on child nav components
+             */
+            "sy-nav-group": LocalJSX.SyNavGroup & JSXBase.HTMLAttributes<HTMLSyNavGroupElement>;
+            /**
+             * sy-nav-item (Stencil port, light DOM, scoped)
+             * - Navigation item component
+             * - Manages active state and depth calculation
+             */
+            "sy-nav-item": LocalJSX.SyNavItem & JSXBase.HTMLAttributes<HTMLSyNavItemElement>;
+            /**
+             * sy-nav-sub (Stencil port, light DOM, scoped)
+             * - Navigation submenu component with collapsible functionality
+             * - Supports click and hover triggers
+             */
+            "sy-nav-sub": LocalJSX.SyNavSub & JSXBase.HTMLAttributes<HTMLSyNavSubElement>;
             "sy-option": LocalJSX.SyOption & JSXBase.HTMLAttributes<HTMLSyOptionElement>;
             "sy-pagination": LocalJSX.SyPagination & JSXBase.HTMLAttributes<HTMLSyPaginationElement>;
             "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;

@@ -23,7 +23,7 @@ export class BannerElement {
   @Element() host: HTMLSyBannerElement;
 
   @Prop({ reflect: true }) closable: boolean = false;
-  @Prop({ attribute: 'showIcon' }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
+  @Prop({ attribute: 'showIcon', mutable: true }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
   @Prop() neutralIcon: string = '';
   @Prop() message: string = '';
   @Prop() header: string = '';

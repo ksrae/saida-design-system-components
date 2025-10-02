@@ -10,6 +10,260 @@
   </head>
   </head>
   <body class="sy-theme sy-theme-light">
+
+    <!-- NAV COMPONENT EXAMPLES -->
+    <section id="nav-examples">
+      <h1>Nav Component Examples (storybook-style)</h1>
+
+      <div class="example-section">
+        <h3>Main Complex Nav</h3>
+        <!-- Based on Nav export (complex nested structure) -->
+        <sy-nav id="navMain">
+          <sy-nav-group title="group depth 0">
+            <sy-nav-item value="1">Item 1</sy-nav-item>
+            <sy-nav-item value="2">Item 2</sy-nav-item>
+          </sy-nav-group>
+
+          <sy-nav-sub title='sub depth 0 with icon <sy-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z"></path></svg></sy-icon>'>
+            <sy-nav-item value="3">Item 3</sy-nav-item>
+            <sy-nav-sub title="sub depth 1">
+              <sy-nav-group title="group depth 2">
+                <sy-nav-group title="group depth 3">
+                  <sy-nav-item value="6">Item 6</sy-nav-item>
+                  <sy-nav-item value="7">Item 7</sy-nav-item>
+                </sy-nav-group>
+                <sy-nav-sub title="sub depth 2">
+                  <sy-nav-item value="8">Item 8</sy-nav-item>
+                </sy-nav-sub>
+              </sy-nav-group>
+            </sy-nav-sub>
+          </sy-nav-sub>
+
+          <sy-nav-item value="9">Item 9</sy-nav-item>
+        </sy-nav>
+        <p id="navMainResult">Selected: <span id="navMainSelected">(none)</span></p>
+      </div>
+
+      <div class="example-section">
+        <h3>NavSub (single)</h3>
+        <sy-nav id="navSubDemo">
+          <sy-nav-sub title="NavSub" value="sub-demo">
+            <sy-nav-item value="1">Item1</sy-nav-item>
+            <sy-nav-item value="2">Item2</sy-nav-item>
+          </sy-nav-sub>
+        </sy-nav>
+        <p id="navSubResult">Selected: <span id="navSubSelected">(none)</span></p>
+      </div>
+
+      <div class="example-section">
+        <h3>NavGroup</h3>
+        <sy-nav id="navGroupDemo">
+          <sy-nav-group title="Group">
+            <sy-nav-item value="g1">Item1</sy-nav-item>
+            <sy-nav-item value="g2">Item2</sy-nav-item>
+          </sy-nav-group>
+        </sy-nav>
+        <p id="navGroupResult">Selected: <span id="navGroupSelected">(none)</span></p>
+      </div>
+
+      <div class="example-section">
+        <h3>NavItem (single)</h3>
+        <sy-nav id="navItemDemo">
+          <sy-nav-item value="item-single">Item1</sy-nav-item>
+        </sy-nav>
+        <p id="navItemResult">Selected: <span id="navItemSelected">(none)</span></p>
+      </div>
+
+      <div class="example-section">
+        <h3>Trigger Modes (click / hover)</h3>
+        <sy-nav id="navTriggerClick" trigger="click">
+          <sy-nav-sub title="Click Sub" value="click-sub">
+            <sy-nav-item value="c1">C1</sy-nav-item>
+            <sy-nav-item value="c2">C2</sy-nav-item>
+          </sy-nav-sub>
+        </sy-nav>
+
+        <sy-nav id="navTriggerHover" trigger="hover" style="margin-left: 20px;">
+          <sy-nav-sub title="Hover Sub" value="hover-sub">
+            <sy-nav-item value="h1">H1</sy-nav-item>
+            <sy-nav-item value="h2">H2</sy-nav-item>
+          </sy-nav-sub>
+        </sy-nav>
+        <p id="navTriggerResult">Selected: <span id="navTriggerSelected">(none)</span></p>
+      </div>
+
+      <div class="example-section">
+        <h3>SubNav Selected Demo (cleanup example)</h3>
+        <sy-nav id="navItemSelected">
+          <sy-nav-sub title="Item1" value="1">
+            <sy-nav-item value="1-1">Item1-1</sy-nav-item>
+            <sy-nav-item value="1-2">Item1-2</sy-nav-item>
+          </sy-nav-sub>
+          <sy-nav-sub title="Item2" value="2">
+            <sy-nav-item value="2-1">Item2-1</sy-nav-item>
+            <sy-nav-item value="2-2">Item2-2</sy-nav-item>
+          </sy-nav-sub>
+        </sy-nav>
+        <p id="navItemSelectedResult"></p>
+      </div>
+
+      <script>
+        (function(){
+          // Helper to safely set text
+          function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = String(value);
+          }
+
+          // Main nav listeners
+          const navMain = document.getElementById('navMain');
+          if (navMain) navMain.addEventListener('selected', (e) => setText('navMainSelected', e.detail));
+
+          const navSubDemo = document.getElementById('navSubDemo');
+          if (navSubDemo) navSubDemo.addEventListener('selected', (e) => setText('navSubSelected', e.detail));
+
+          const navGroupDemo = document.getElementById('navGroupDemo');
+          if (navGroupDemo) navGroupDemo.addEventListener('selected', (e) => setText('navGroupSelected', e.detail));
+
+          const navItemDemo = document.getElementById('navItemDemo');
+          if (navItemDemo) navItemDemo.addEventListener('selected', (e) => setText('navItemSelected', e.detail));
+
+          const navTriggerClick = document.getElementById('navTriggerClick');
+          const navTriggerHover = document.getElementById('navTriggerHover');
+          if (navTriggerClick) navTriggerClick.addEventListener('selected', (e) => setText('navTriggerSelected', e.detail));
+          if (navTriggerHover) navTriggerHover.addEventListener('selected', (e) => setText('navTriggerSelected', e.detail));
+
+          // navItemSelected special demo with cleanup
+          (function(){
+            const elem = document.querySelector('#navItemSelected');
+            const result = document.querySelector('#navItemSelectedResult');
+            if (!elem || !result) return;
+
+            const handleSelected = (e) => { result.textContent = 'value ' + e.detail + ' is selected'; };
+            elem.addEventListener('selected', handleSelected);
+
+            // cleanup on unload
+            window.addEventListener('beforeunload', () => { elem.removeEventListener('selected', handleSelected); });
+          })();
+        })();
+      </script>
+    </section>
+
+    <!-- MENU COMPONENT EXAMPLES (from Lit storybook converted to static examples) -->
+    <section id="menu-examples">
+      <h1>Menu Component Examples</h1>
+
+      <div class="example-section">
+        <h3>Main Complex Menu</h3>
+        <div style="position: relative; margin-left:1080px; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+          <span>Menu</span>
+          <sy-menu id="menuMain" position="bottomLeft" trigger="hover">
+            <sy-menu-sub title="sub menu">
+              <sy-menu-group title="Group">
+                <sy-menu-item value="2">Item2</sy-menu-item>
+                <sy-menu-item value="3">Item3</sy-menu-item>
+                <sy-menu-sub title="sub menu 2">
+                  <sy-menu-item value="22">Item22</sy-menu-item>
+                  <sy-menu-item value="23">Item23</sy-menu-item>
+                </sy-menu-sub>
+              </sy-menu-group>
+              <sy-menu-item value="4">Item4</sy-menu-item>
+            </sy-menu-sub>
+            <sy-menu-sub title='sub menu with icon <sy-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z"></path></svg></sy-icon>'>
+              <sy-menu-item value="6">Item6</sy-menu-item>
+              <sy-menu-item value="7">Item7</sy-menu-item>
+            </sy-menu-sub>
+            <sy-menu-item value="1">Item1</sy-menu-item>
+            <sy-menu-item value="5">Item5</sy-menu-item>
+          </sy-menu>
+        </div>
+        <p id="menuMainResult"></p>
+      </div>
+
+      <div class="example-section">
+        <h3>Checkable Menu</h3>
+        <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+          <span>Menu</span>
+          <sy-menu id="menuCheckable" trigger="click" checkable>
+            <sy-menu-item value="1">Item1</sy-menu-item>
+            <sy-menu-item value="2">Item2</sy-menu-item>
+          </sy-menu>
+        </div>
+        <p id="menuCheckableResult"></p>
+      </div>
+
+      <div class="example-section">
+        <h3>Open / Opened Event Demo</h3>
+        <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+          <span>Menu</span>
+          <sy-menu id="menuOpenedDemo">
+            <sy-menu-item value="1">Item1</sy-menu-item>
+            <sy-menu-item value="2">Item2</sy-menu-item>
+          </sy-menu>
+        </div>
+        <p id="menuOpenedDemoResult"></p>
+      </div>
+
+      <div class="example-section">
+        <h3>Item Selected / Checked Events</h3>
+        <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+          <span>Menu</span>
+          <sy-menu id="menuEvents" checkable>
+            <sy-menu-item value="a">Item A</sy-menu-item>
+            <sy-menu-item value="b">Item B</sy-menu-item>
+          </sy-menu>
+        </div>
+        <p id="menuEventsResult"></p>
+      </div>
+
+      <script>
+        (function(){
+          const main = document.querySelector('#menuMain');
+          const mainResult = document.querySelector('#menuMainResult');
+          if(main) {
+            main.addEventListener('itemSelected', (e) => {
+              mainResult.textContent = 'selected: ' + JSON.stringify(e.detail);
+            });
+            main.addEventListener('itemChecked', (e) => {
+              mainResult.textContent = 'checked: ' + JSON.stringify(e.detail);
+            });
+            main.addEventListener('opened', (e) => {
+              mainResult.textContent = 'opened: ' + JSON.stringify(e.detail);
+            });
+          }
+
+          const check = document.querySelector('#menuCheckable');
+          const checkResult = document.querySelector('#menuCheckableResult');
+          if(check) {
+            check.addEventListener('itemChecked', (e) => {
+              checkResult.textContent = 'itemChecked: ' + JSON.stringify(e.detail);
+            });
+          }
+
+          const opened = document.querySelector('#menuOpenedDemo');
+          const openedResult = document.querySelector('#menuOpenedDemoResult');
+          if(opened) {
+            opened.addEventListener('opened', (e) => {
+              openedResult.textContent = e.detail ? 'Menu opened' : 'Menu closed';
+            });
+          }
+
+          const eventsMenu = document.querySelector('#menuEvents');
+          const eventsResult = document.querySelector('#menuEventsResult');
+          if(eventsMenu) {
+            eventsMenu.addEventListener('itemSelected', (e) => {
+              eventsResult.textContent = 'selected: ' + JSON.stringify(e.detail);
+            });
+            eventsMenu.addEventListener('itemChecked', (e) => {
+              eventsResult.textContent = 'checked: ' + JSON.stringify(e.detail);
+            });
+          }
+        })();
+      </script>
+    </section>
+
+    <hr style="margin: 30px 0; border: 1px solid #e0e0e0;">
+
     <h2>SY-PAGINATION Component Examples</h2>
 
     <!-- Basic Pagination -->
@@ -2288,7 +2542,7 @@
           const message = validationInput.validationMessage;
           const status = await validationInput.getStatus();
           validationResult.textContent = `isValid: ${isValid}, Status: ${status || 'valid'}, Message: "${message}"`;
-          console.log({ isValid, status, message, validity: validationInput.validity });
+          // console.log({ isValid, status, message, validity: validationInput.validity });
         };
 
         // Update status on every input
@@ -2299,13 +2553,13 @@
 
         document.querySelector("#checkBtn").addEventListener("click", async () => {
           const isValid = await validationInput.checkValidity();
-          alert('checkValidity() returned: ' + isValid);
+          console.log('checkValidity() returned: ' + isValid);
           updateValidationStatus();
         });
 
         document.querySelector("#reportBtn").addEventListener("click", async () => {
           const isValid = await validationInput.reportValidity();
-          alert('reportValidity() returned: ' + isValid);
+          console.log('reportValidity() returned: ' + isValid);
           updateValidationStatus();
         });
 
@@ -2815,6 +3069,27 @@
       <sy-avatar variant="magenta" letter="AB"></sy-avatar>
       <sy-avatar variant="darkgray" letter="AB"></sy-avatar>
 
+      <h3>Avatar Group - basic</h3>
+      <sy-avatar-group id="groupBasic" clickable maxCount="5" size="medium" variant="stack">
+        <sy-avatar image="/assets/test.png" tooltipContent="Alice"></sy-avatar>
+        <sy-avatar letter="BJ" tooltipContent="Bob Jones"></sy-avatar>
+        <sy-avatar text="Clara" tooltipContent="Clara Smith"></sy-avatar>
+        <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Icon User"></sy-avatar>
+        <sy-avatar letter="DK" tooltipContent="Dana King"></sy-avatar>
+  </sy-avatar-group>
+  <p id="groupBasicResult">groupBasic result: (none)</p>
+
+      <h3>Avatar Group - overflow (+N)</h3>
+      <sy-avatar-group id="groupOverflow" clickable maxCount="3" size="medium" variant="stack">
+        <sy-avatar image="/assets/test.png" tooltipContent="Alice"></sy-avatar>
+        <sy-avatar letter="BJ" tooltipContent="Bob Jones"></sy-avatar>
+        <sy-avatar text="Clara" tooltipContent="Clara Smith"></sy-avatar>
+        <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Icon User"></sy-avatar>
+        <sy-avatar letter="DK" tooltipContent="Dana King"></sy-avatar>
+        <sy-avatar text="Evan" tooltipContent="Evan Lee"></sy-avatar>
+  </sy-avatar-group>
+  <p id="groupOverflowResult">groupOverflow result: (none)</p>
+
       <h3>Avatar with Size</h3>
       <sy-avatar size="small" letter="AB"></sy-avatar>
       <sy-avatar size="medium" letter="AB"></sy-avatar>
@@ -2823,9 +3098,47 @@
       <h3>Clickable Avatar</h3>
       <sy-avatar id="clickableAvatar" clickable letter="AB"></sy-avatar>
       <script>
-        document.getElementById('clickableAvatar').addEventListener('selected', (e) => {
-          console.log('avatar clicked', e);
-        });
+        (async () => {
+          const clickable = document.getElementById('clickableAvatar');
+          const clickableResult = document.getElementById('clickableAvatarResult');
+          if (clickable) {
+            clickable.addEventListener('selected', (ev) => {
+              const detail = ev.detail || {};
+              const text = detail.text || detail.letter || detail.icon || detail.image || 'unknown';
+              // create result p if missing
+              let p = document.getElementById('clickableAvatarResult');
+              if (!p) {
+                p = document.createElement('p');
+                p.id = 'clickableAvatarResult';
+                clickable.parentElement?.insertBefore(p, clickable.nextSibling);
+              }
+              p.textContent = `clickableAvatar result: ${text}`;
+            });
+          }
+
+          // Global handler for avatar selected events (for groups)
+          document.addEventListener('selected', (ev) => {
+            // The event will bubble from sy-avatar elements
+            const custom = ev;
+            const target = custom.target;
+            if (!target) return;
+
+            // Find if this avatar belongs to a group
+            const group = target && target.closest ? target.closest('sy-avatar-group') : null;
+            if (group) {
+              const id = group.id || (group.getAttribute('id'));
+              const detail = custom.detail || {};
+              const text = detail.text || detail.letter || detail.icon || detail.image || 'unknown';
+              if (id === 'groupBasic') {
+                const p = document.getElementById('groupBasicResult');
+                if (p) p.textContent = `groupBasic result: ${text}`;
+              } else if (id === 'groupOverflow') {
+                const p = document.getElementById('groupOverflowResult');
+                if (p) p.textContent = `groupOverflow result: ${text}`;
+              }
+            }
+          }, true);
+        })();
       </script>
 
       <h3>Disabled Avatar</h3>

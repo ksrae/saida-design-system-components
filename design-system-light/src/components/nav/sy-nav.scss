@@ -1,0 +1,23 @@
+:root,
+:host {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      color: var(--nav-parent-text-enabled);
+      background-color: var(--nav-parent-background-enabled);
+      ul {
+        display: flex;
+        flex-direction: column;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        li{
+          &:focus-visible {
+            border: var(--border-medium) var(--nav-parent-border-focused) !important;       
+            outline: none !important;
+          }      
+        }
+    }
+}

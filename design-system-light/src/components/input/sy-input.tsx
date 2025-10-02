@@ -248,7 +248,6 @@ export class SyInput {
   };
 
   private handleClearClick = () => {
-    console.log('clear');
     this._isUserInput = true;
     this.value = "";
     this.emitChangedEvent();
