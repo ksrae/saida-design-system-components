@@ -255,12 +255,12 @@
   }
 
 /* Readonly */
-  :host(sy-slider[readonly]){
+  :host([readonly]){
     cursor: auto;
     .slider,
     .mark-circle,
     .mark-circle--active{
-      cursor: auto;  
+      cursor: auto;
     }
     .slider{
       background-color: var(--slider-rail-background-enabled);
@@ -288,7 +288,7 @@
   
 
   /* didsabled */
-  :host(sy-slider[disabled]){
+  :host([disabled]){
     .slider,
     .mark-circle,
     .mark-circle--active{
@@ -330,11 +330,17 @@
 
   /* Vertical */
 
-  :host(sy-slider[vertical]){
+  :host([vertical]){
     display: inline-flex;
     flex-direction: column;
     width: auto;
     height: 100%;
+    .sy-slider-root{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
     .slider-wrapper{
       height: 100%;
       display: flex;

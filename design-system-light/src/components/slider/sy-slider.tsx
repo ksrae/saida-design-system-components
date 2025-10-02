@@ -306,7 +306,7 @@ export class SySlider {
 
     if (this.vertical) {
       return (
-        <div>
+        <div class="sy-slider-root">
           <div class="slider-label">{this.label}</div>
           <div class="slider-wrapper">
             <div class={{'slider': true, 'slider--disabled': this.disabled, 'slider--range': this.range, 'slider--has-label': this.label.length > 0, 'slider--vertical': true}} onClick={(e) => this.handleVerticalSliderClick(e as MouseEvent)}>
@@ -405,8 +405,27 @@ export class SySlider {
   }
 
   private renderVerticalMarks() {
-    // simplified reuse of renderMarks for vertical; real implementation similar to horizontal but with bottom styles
-    return this.renderMarks();
+    const validMarkEntries = Object.entries(this.marks).filter(([key]) => parseFloat(key) >= this.min);
+    const markValues = validMarkEntries.map(([key]) => parseFloat(key));
+    const maxValueInMarks = markValues.includes(this.max);
+    const minValueInMarks = markValues.includes(this.min);
+    const nodes: any[] = [];
+    if (!minValueInMarks) {
+      nodes.push(<div class="mark" style={{ bottom: this.reverse ? '100%' : '0%' }}><span>{this.formatValue(this.min)}</span></div>);
+      nodes.push(<div class={`mark-circle ${this.range ? (this.displayMinRangeValue <= this.min ? 'mark-circle--active' : 'mark-circle--inactive') : (this.displayValue <= this.min ? 'mark-circle--active' : 'mark-circle--inactive')}`} style={{ bottom: this.reverse ? '100%' : '0%' }}></div>);
+    }
+    for (const [key, value] of validMarkEntries) {
+      const numeric = parseFloat(key);
+      const position = this.reverse ? 100 - ((numeric - this.min) / Math.max((this.max - this.min), 1)) * 100 : ((numeric - this.min) / Math.max((this.max - this.min), 1)) * 100;
+      const isActive = this.range ? (numeric >= this.displayMinRangeValue && numeric <= this.displayMaxRangeValue) : this.reverse ? (this.displayValue <= numeric) : (this.displayValue >= numeric);
+      nodes.push(<div class="mark" style={{ bottom: `${position}%` }}><span>{value}</span></div>);
+      nodes.push(<div class={{ 'mark-circle': true, [isActive ? 'mark-circle--active' : 'mark-circle--inactive']: true }} style={{ bottom: `${position}%` }}></div>);
+    }
+    if (!maxValueInMarks) {
+      nodes.push(<div class="mark" style={{ bottom: this.reverse ? '0%' : '100%' }}><span>{this.formatValue(this.max)}</span></div>);
+      nodes.push(<div class={`mark-circle ${this.range ? (this.displayMaxRangeValue >= this.max ? 'mark-circle--active' : 'mark-circle--inactive') : this.reverse ? (this.displayValue <= this.max ? 'mark-circle--active' : 'mark-circle--inactive') : (this.displayValue >= this.max ? 'mark-circle--active' : 'mark-circle--inactive')}`} style={{ bottom: this.reverse ? '0%' : '100%' }}></div>);
+    }
+    return nodes;
   }
 
 }
