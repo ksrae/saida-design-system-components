@@ -87,7 +87,7 @@ export class SyCheckbox {
 
   // Lifecycle Methods
   connectedCallback() {
-    if (this.hostElement.attachInternals) {
+    if (this.hostElement.attachInternals && !this.internals) {
       this.internals = this.hostElement.attachInternals();
     }
     this.formSubmitListener();

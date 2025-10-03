@@ -65,15 +65,6 @@ export class SyPagination {
       this.totalItems = !isNaN(parsedTotalItems) && parsedTotalItems >= 0 ? parsedTotalItems : 0;
     }
 
-    console.log('componentWillLoad values:', {
-      activePage: this.activePage,
-      pageSize: this.pageSize,
-      totalItems: this.totalItems,
-      activePageValue,
-      pageSizeValue,
-      totalItemsValue
-    });
-
     this.defaultFixedPageSize();
   }
 
@@ -105,36 +96,22 @@ export class SyPagination {
   private renderPages() {
     const pages = [];
 
-    console.log('=== PAGINATION DEBUG ===');
-    console.log('activePage:', this.activePage);
-    console.log('totalPages:', this.totalPages);
-    console.log('landingPages:', this.landingPages);
-    console.log('activeSidePages:', this.activeSidePages);
-    console.log('totalItems:', this.totalItems);
-    console.log('fixedPageSize:', this.fixedPageSize);
-
     let start = 2; // 첫 번째 페이지(1)는 별도 렌더링되므로 2부터 시작
     let end = this.totalPages - 1; // 마지막 페이지는 별도 렌더링되므로 -1
 
     if (this.totalPages <= 2) {
       // 총 페이지가 2 이하면 중간 페이지가 없음
-      console.log('totalPages <= 2, returning empty pages');
       return pages;
     }
 
     if (this.activePage < this.landingPages) {
       end = Math.min(this.totalPages - 1, start + this.landingPages - 2);
-      console.log('Case 1: activePage < landingPages');
     } else if (this.activePage + this.landingPages > this.totalPages + 1) {
       start = Math.max(2, this.totalPages - this.landingPages + 1);
-      console.log('Case 2: activePage + landingPages > totalPages + 1');
     } else {
       start = Math.max(2, this.activePage - this.activeSidePages);
       end = Math.min(this.totalPages - 1, this.activePage + this.activeSidePages);
-      console.log('Case 3: middle case');
     }
-
-    console.log('Calculated start:', start, 'end:', end);
 
     if (start > 2) {
       pages.push(
@@ -154,7 +131,6 @@ export class SyPagination {
     }
 
     for (let i = start; i <= end; i++) {
-      console.log('Adding page:', i);
       pages.push(
         <li
           class={{
@@ -167,9 +143,6 @@ export class SyPagination {
         </li>
       );
     }
-
-    console.log('Total pages added:', pages.length);
-    console.log('=== END DEBUG ===');
 
     if (end < this.totalPages - 1) {
       pages.push(

@@ -187,13 +187,11 @@ export class SyInputNumber {
   // --- Public Methods ---
   @Method()
   async setFocus() {
-    console.log('setFocus')
     this.input?.focus();
   }
 
   @Method()
   async setBlur() {
-    console.log('setBlur')
     this.input?.blur();
   }
 
