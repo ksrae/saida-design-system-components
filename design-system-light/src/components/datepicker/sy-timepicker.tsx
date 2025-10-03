@@ -18,7 +18,7 @@ export interface HTMLSyTimepickerElement extends HTMLElement {
   shadow: false,
   scoped: true
 })
-export class TimePickerElement {
+export class SyTimePicker {
   @Element() host: HTMLSyTimepickerElement;
 
   @Prop() hour = 0;

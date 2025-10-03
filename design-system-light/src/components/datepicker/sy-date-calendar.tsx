@@ -25,7 +25,7 @@ export interface HTMLSyDateCalendarElement extends HTMLElement {
   shadow: false,
   scoped: true
 })
-export class DateCalendarElement {
+export class SyDateCalendar {
   @Element() host: HTMLSyDateCalendarElement;
 
   @State() today = new Date();

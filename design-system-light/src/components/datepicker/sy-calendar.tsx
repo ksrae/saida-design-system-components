@@ -27,7 +27,7 @@ export interface HTMLSyCalendarElement extends HTMLElement {
   shadow: false,
   scoped: true
 })
-export class CalendarElement {
+export class SyCalendar {
   @Element() host: HTMLSyDateCalendarElement;
 
   @Prop() mode: 'day' | 'month' | 'year' = 'day';

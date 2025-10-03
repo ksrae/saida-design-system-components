@@ -7,12 +7,14 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 import { ButtonGroupState } from "./components/button-group";
+import { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
 import { ModelessPositionModel } from "./components/modeless/sy-modeless";
 import { VNode } from "@stencil/core";
 import { ToastOptions } from "./components/toast/sy-toast";
 import { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 export { ButtonGroupState } from "./components/button-group";
+export { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
 export { ModelessPositionModel } from "./components/modeless/sy-modeless";
 export { VNode } from "@stencil/core";
 export { ToastOptions } from "./components/toast/sy-toast";
@@ -275,6 +277,57 @@ export namespace Components {
           * @default ''
          */
         "titleText": string;
+    }
+    interface SyCollapse {
+        /**
+          * @default false
+         */
+        "accordion": boolean;
+        /**
+          * @default false
+         */
+        "borderless": boolean;
+        "closeAll": () => Promise<void>;
+        "closePanel": (index: number) => Promise<void>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "fullheight": boolean;
+        /**
+          * @default false
+         */
+        "ghost": boolean;
+        "openAll": () => Promise<void>;
+        "openPanel": (index: number) => Promise<void>;
+    }
+    interface SyCollapsePanel {
+        /**
+          * @default false
+         */
+        "active": boolean;
+        /**
+          * @default false
+         */
+        "arrow": boolean;
+        "close": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "fullheight": boolean;
+        /**
+          * @default false
+         */
+        "ghost": boolean;
+        "open": () => Promise<void>;
+        "toggle": () => Promise<void>;
     }
     interface SyColorpicker {
         /**
@@ -1714,6 +1767,10 @@ export interface SyCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyCheckboxElement;
 }
+export interface SyCollapsePanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyCollapsePanelElement;
+}
 export interface SyColorpickerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyColorpickerElement;
@@ -1928,6 +1985,29 @@ declare global {
     var HTMLSyCheckboxElement: {
         prototype: HTMLSyCheckboxElement;
         new (): HTMLSyCheckboxElement;
+    };
+    interface HTMLSyCollapseElement extends Components.SyCollapse, HTMLStencilElement {
+    }
+    var HTMLSyCollapseElement: {
+        prototype: HTMLSyCollapseElement;
+        new (): HTMLSyCollapseElement;
+    };
+    interface HTMLSyCollapsePanelElementEventMap {
+        "changed": CollapsePanelChangeDetail;
+    }
+    interface HTMLSyCollapsePanelElement extends Components.SyCollapsePanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyCollapsePanelElementEventMap>(type: K, listener: (this: HTMLSyCollapsePanelElement, ev: SyCollapsePanelCustomEvent<HTMLSyCollapsePanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyCollapsePanelElementEventMap>(type: K, listener: (this: HTMLSyCollapsePanelElement, ev: SyCollapsePanelCustomEvent<HTMLSyCollapsePanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyCollapsePanelElement: {
+        prototype: HTMLSyCollapsePanelElement;
+        new (): HTMLSyCollapsePanelElement;
     };
     interface HTMLSyColorpickerElementEventMap {
         "changed": { value: string; format: string; opacity: number };
@@ -2528,6 +2608,8 @@ declare global {
         "sy-button-group": HTMLSyButtonGroupElement;
         "sy-calendar": HTMLSyCalendarElement;
         "sy-checkbox": HTMLSyCheckboxElement;
+        "sy-collapse": HTMLSyCollapseElement;
+        "sy-collapse-panel": HTMLSyCollapsePanelElement;
         "sy-colorpicker": HTMLSyColorpickerElement;
         "sy-colorpicker-content": HTMLSyColorpickerContentElement;
         "sy-date-calendar": HTMLSyDateCalendarElement;
@@ -2835,6 +2917,51 @@ declare namespace LocalJSX {
           * @default ''
          */
         "titleText"?: string;
+    }
+    interface SyCollapse {
+        /**
+          * @default false
+         */
+        "accordion"?: boolean;
+        /**
+          * @default false
+         */
+        "borderless"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "fullheight"?: boolean;
+        /**
+          * @default false
+         */
+        "ghost"?: boolean;
+    }
+    interface SyCollapsePanel {
+        /**
+          * @default false
+         */
+        "active"?: boolean;
+        /**
+          * @default false
+         */
+        "arrow"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "fullheight"?: boolean;
+        /**
+          * @default false
+         */
+        "ghost"?: boolean;
+        "onChanged"?: (event: SyCollapsePanelCustomEvent<CollapsePanelChangeDetail>) => void;
     }
     interface SyColorpicker {
         /**
@@ -4248,6 +4375,8 @@ declare namespace LocalJSX {
         "sy-button-group": SyButtonGroup;
         "sy-calendar": SyCalendar;
         "sy-checkbox": SyCheckbox;
+        "sy-collapse": SyCollapse;
+        "sy-collapse-panel": SyCollapsePanel;
         "sy-colorpicker": SyColorpicker;
         "sy-colorpicker-content": SyColorpickerContent;
         "sy-date-calendar": SyDateCalendar;
@@ -4314,6 +4443,8 @@ declare module "@stencil/core" {
             "sy-button-group": LocalJSX.SyButtonGroup & JSXBase.HTMLAttributes<HTMLSyButtonGroupElement>;
             "sy-calendar": LocalJSX.SyCalendar & JSXBase.HTMLAttributes<HTMLSyCalendarElement>;
             "sy-checkbox": LocalJSX.SyCheckbox & JSXBase.HTMLAttributes<HTMLSyCheckboxElement>;
+            "sy-collapse": LocalJSX.SyCollapse & JSXBase.HTMLAttributes<HTMLSyCollapseElement>;
+            "sy-collapse-panel": LocalJSX.SyCollapsePanel & JSXBase.HTMLAttributes<HTMLSyCollapsePanelElement>;
             "sy-colorpicker": LocalJSX.SyColorpicker & JSXBase.HTMLAttributes<HTMLSyColorpickerElement>;
             "sy-colorpicker-content": LocalJSX.SyColorpickerContent & JSXBase.HTMLAttributes<HTMLSyColorpickerContentElement>;
             "sy-date-calendar": LocalJSX.SyDateCalendar & JSXBase.HTMLAttributes<HTMLSyDateCalendarElement>;

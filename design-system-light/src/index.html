@@ -50,6 +50,462 @@
 
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
+
+  <h1>Collapse Component Test</h1>
+
+  <!-- 1. Default Collapse -->
+  <div class="test-section">
+    <h2>1. Default Collapse</h2>
+    <p>기본 collapse 컴포넌트입니다. 여러 패널을 동시에 열 수 있습니다.</p>
+
+    <sy-collapse>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 2. Accordion Mode -->
+  <div class="test-section">
+    <h2>2. Accordion</h2>
+    <p>Accordion 모드: 한 번에 하나의 패널만 열립니다.</p>
+
+    <div class="controls">
+      <button onclick="toggleProp('accordion-collapse', 'accordion')">Toggle Accordion</button>
+    </div>
+
+    <sy-collapse id="accordion-collapse" accordion>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 3. Borderless -->
+  <div class="test-section">
+    <h2>3. Borderless</h2>
+    <p>테두리가 없는 collapse입니다.</p>
+
+    <div class="controls">
+      <button onclick="toggleProp('borderless-collapse', 'borderless')">Toggle Borderless</button>
+    </div>
+
+    <sy-collapse id="borderless-collapse" borderless>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 4. Disabled -->
+  <div class="test-section">
+    <h2>4. Disabled</h2>
+    <p>비활성화된 collapse입니다.</p>
+
+    <div class="controls">
+      <button onclick="toggleProp('disabled-collapse', 'disabled')">Toggle Disabled</button>
+    </div>
+
+    <sy-collapse id="disabled-collapse" disabled>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 5. Ghost -->
+  <div class="test-section">
+    <h2>5. Ghost</h2>
+    <p>Ghost 스타일의 collapse입니다.</p>
+
+    <div class="controls">
+      <button onclick="toggleProp('ghost-collapse', 'ghost')">Toggle Ghost</button>
+    </div>
+
+    <sy-collapse id="ghost-collapse" ghost>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 6. Full Height -->
+  <div class="test-section">
+    <h2>6. Full Height</h2>
+    <p>전체 높이를 사용하는 collapse입니다.</p>
+
+    <div class="controls">
+      <button onclick="toggleProp('fullheight-collapse', 'fullheight')">Toggle Full Height</button>
+    </div>
+
+    <sy-collapse id="fullheight-collapse" fullheight style="height: 400px;">
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 7. Panel with Arrow -->
+  <div class="test-section">
+    <h2>7. Panel with Arrow</h2>
+    <p>화살표 아이콘이 있는 패널입니다.</p>
+
+    <sy-collapse>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 8. Individual Panel Disabled -->
+  <div class="test-section">
+    <h2>8. Individual Panel Disabled</h2>
+    <p>특정 패널만 비활성화할 수 있습니다.</p>
+
+    <sy-collapse>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1 (Active)</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel disabled>
+        <div slot="header">This is panel header 2 (Disabled)</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3 (Active)</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 9. Initially Active Panel -->
+  <div class="test-section">
+    <h2>9. Initially Active Panel</h2>
+    <p>초기에 활성화된 패널이 있는 collapse입니다.</p>
+
+    <sy-collapse>
+      <sy-collapse-panel active>
+        <div slot="header">This is panel header 1 (Initially Active)</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 10. Combined Options -->
+  <div class="test-section">
+    <h2>10. Combined Options</h2>
+    <p>여러 옵션을 조합한 collapse입니다.</p>
+
+    <sy-collapse accordion borderless ghost>
+      <sy-collapse-panel arrow active>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1 (Accordion + Borderless + Ghost)</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel arrow>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 11. Public Methods - Collapse Level -->
+  <div class="test-section">
+    <h2>11. Public Methods - Collapse Level</h2>
+    <p>Collapse 레벨의 public 메서드를 테스트합니다.</p>
+
+    <div class="controls">
+      <button onclick="collapseOpenAll()">Open All</button>
+      <button onclick="collapseCloseAll()">Close All</button>
+      <button onclick="collapseOpenPanel(0)">Open Panel 1</button>
+      <button onclick="collapseOpenPanel(1)">Open Panel 2</button>
+      <button onclick="collapseOpenPanel(2)">Open Panel 3</button>
+      <button onclick="collapseClosePanel(0)">Close Panel 1</button>
+      <button onclick="collapseClosePanel(1)">Close Panel 2</button>
+      <button onclick="collapseClosePanel(2)">Close Panel 3</button>
+    </div>
+
+    <sy-collapse id="method-collapse">
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 12. Public Methods - Panel Level -->
+  <div class="test-section">
+    <h2>12. Public Methods - Panel Level</h2>
+    <p>Panel 레벨의 public 메서드를 테스트합니다.</p>
+
+    <div class="controls">
+      <button onclick="panelToggle('panel-method-1')">Toggle Panel 1</button>
+      <button onclick="panelToggle('panel-method-2')">Toggle Panel 2</button>
+      <button onclick="panelToggle('panel-method-3')">Toggle Panel 3</button>
+      <button onclick="panelOpen('panel-method-1')">Open Panel 1</button>
+      <button onclick="panelOpen('panel-method-2')">Open Panel 2</button>
+      <button onclick="panelOpen('panel-method-3')">Open Panel 3</button>
+      <button onclick="panelClose('panel-method-1')">Close Panel 1</button>
+      <button onclick="panelClose('panel-method-2')">Close Panel 2</button>
+      <button onclick="panelClose('panel-method-3')">Close Panel 3</button>
+    </div>
+
+    <sy-collapse>
+      <sy-collapse-panel id="panel-method-1">
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel id="panel-method-2">
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel id="panel-method-3">
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 13. Dynamic Control -->
+  <div class="test-section">
+    <h2>13. Dynamic Control</h2>
+    <p>JavaScript로 동적으로 제어할 수 있는 collapse입니다.</p>
+
+    <div class="controls">
+      <button onclick="toggleProp('dynamic-collapse', 'accordion')">Toggle Accordion</button>
+      <button onclick="toggleProp('dynamic-collapse', 'borderless')">Toggle Borderless</button>
+      <button onclick="toggleProp('dynamic-collapse', 'ghost')">Toggle Ghost</button>
+      <button onclick="toggleProp('dynamic-collapse', 'disabled')">Toggle Disabled</button>
+      <button onclick="dynamicOpenAll()">Open All</button>
+      <button onclick="dynamicCloseAll()">Close All</button>
+    </div>
+
+    <sy-collapse id="dynamic-collapse">
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <!-- 14. Event Listening -->
+  <div class="test-section">
+    <h2>14. Event Listening</h2>
+    <p>패널의 changed 이벤트를 감지합니다.</p>
+
+    <div id="event-log">
+      <strong>Event Log:</strong>
+      <div id="event-messages"></div>
+    </div>
+
+    <sy-collapse id="event-collapse">
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 1</div>
+        <div class="content">This is panel content 1</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 2</div>
+        <div class="content">This is panel content 2</div>
+      </sy-collapse-panel>
+      <sy-collapse-panel>
+        <div slot="header">This is panel header 3</div>
+        <div class="content">This is panel content 3</div>
+      </sy-collapse-panel>
+    </sy-collapse>
+  </div>
+
+  <script>
+    // Toggle property function
+    function toggleProp(elementId, propName) {
+      const element = document.getElementById(elementId);
+      element[propName] = !element[propName];
+      console.log(`${propName}:`, element[propName]);
+    }
+
+    // Collapse public methods
+    async function collapseOpenAll() {
+      const collapse = document.getElementById('method-collapse');
+      await collapse.openAll();
+      console.log('Opened all panels');
+    }
+
+    async function collapseCloseAll() {
+      const collapse = document.getElementById('method-collapse');
+      await collapse.closeAll();
+      console.log('Closed all panels');
+    }
+
+    async function collapseOpenPanel(index) {
+      const collapse = document.getElementById('method-collapse');
+      await collapse.openPanel(index);
+      console.log(`Opened panel ${index + 1}`);
+    }
+
+    async function collapseClosePanel(index) {
+      const collapse = document.getElementById('method-collapse');
+      await collapse.closePanel(index);
+      console.log(`Closed panel ${index + 1}`);
+    }
+
+    // Panel public methods
+    async function panelToggle(panelId) {
+      const panel = document.getElementById(panelId);
+      await panel.toggle();
+      console.log(`Toggled panel: ${panelId}`);
+    }
+
+    async function panelOpen(panelId) {
+      const panel = document.getElementById(panelId);
+      await panel.open();
+      console.log(`Opened panel: ${panelId}`);
+    }
+
+    async function panelClose(panelId) {
+      const panel = document.getElementById(panelId);
+      await panel.close();
+      console.log(`Closed panel: ${panelId}`);
+    }
+
+    // Dynamic control methods
+    async function dynamicOpenAll() {
+      const collapse = document.getElementById('dynamic-collapse');
+      await collapse.openAll();
+    }
+
+    async function dynamicCloseAll() {
+      const collapse = document.getElementById('dynamic-collapse');
+      await collapse.closeAll();
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      const eventCollapse = document.getElementById('event-collapse');
+      const eventMessages = document.getElementById('event-messages');
+
+      if (eventCollapse && eventMessages) {
+        eventCollapse.addEventListener('changed', (e) => {
+          const timestamp = new Date().toLocaleTimeString();
+          const detail = e.detail;
+          const message = `[${timestamp}] Panel ${detail.index + 1} - Active: ${detail.active}, Disabled: ${detail.disabled}`;
+
+          const messageElement = document.createElement('div');
+          messageElement.textContent = message;
+          messageElement.style.color = detail.active ? '#22c55e' : '#ef4444';
+
+          eventMessages.insertBefore(messageElement, eventMessages.firstChild);
+
+          // Keep only last 10 messages
+          while (eventMessages.children.length > 10) {
+            eventMessages.removeChild(eventMessages.lastChild);
+          }
+        });
+      }
+
+      // Log all changes to console
+      document.querySelectorAll('sy-collapse').forEach(collapse => {
+        collapse.addEventListener('changed', (e) => {
+          console.log('Panel changed:', {
+            index: e.detail.index,
+            active: e.detail.active,
+            disabled: e.detail.disabled,
+            ghost: e.detail.ghost,
+            borderless: e.detail.borderless
+          });
+        });
+      });
+    });
+  </script>
+
     <!-- datepicker text code here -->
 
     <h1>SY-DATEPICKER Component Examples</h1>

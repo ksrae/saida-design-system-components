@@ -18,7 +18,7 @@ export interface HTMLSyRangeCalendarElement extends HTMLElement {
   shadow: false,
   scoped: true
 })
-export class RangeCalendarElement {
+export class SyRangeCalendar {
   @Element() host: HTMLSyRangeCalendarElement;
 
   @Prop({ mutable: true })

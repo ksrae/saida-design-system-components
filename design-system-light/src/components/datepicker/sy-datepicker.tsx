@@ -29,12 +29,12 @@ export interface HTMLSyDatepickerElement extends HTMLElement {
   scoped: true,
   formAssociated: true,
 })
-export class DatePickerElement {
+export class SyDatePicker {
   @Element() host: HTMLSyDatepickerElement;
 
   @Prop() mode: 'day' | 'month' | 'year' = 'day';
   @Prop() variant: 'date' | 'datetime' | 'range' | 'time' = 'date';
-  @Prop() disabled: boolean = false;
+  @Prop({ mutable: true }) disabled: boolean = false;
   @Prop() readonly: boolean = false;
   @Prop() required: boolean = false;
   @Prop() year!: string;
