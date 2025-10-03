@@ -14,6 +14,7 @@ export interface HTMLSyRangeCalendarElement extends HTMLElement {
 
 @Component({
   tag: 'sy-range-calendar',
+  styleUrl: 'sy-range-calendar.scss',
   shadow: false,
   scoped: true
 })

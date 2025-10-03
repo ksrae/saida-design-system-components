@@ -14,6 +14,7 @@ export interface HTMLSyTimepickerElement extends HTMLElement {
 
 @Component({
   tag: 'sy-timepicker',
+  styleUrl: 'sy-timepicker.scss',
   shadow: false,
   scoped: true
 })

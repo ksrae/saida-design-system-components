@@ -24,6 +24,7 @@ export interface HTMLSyDatepickerElement extends HTMLElement {
 
 @Component({
   tag: 'sy-datepicker',
+  styleUrl: 'sy-datepicker.scss',
   shadow: false,
   scoped: true,
   formAssociated: true,

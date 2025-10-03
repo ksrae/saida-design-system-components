@@ -21,6 +21,7 @@ export interface HTMLSyDateCalendarElement extends HTMLElement {
 
 @Component({
   tag: 'sy-date-calendar',
+  styleUrl: 'sy-date-calendar.scss',
   shadow: false,
   scoped: true
 })
