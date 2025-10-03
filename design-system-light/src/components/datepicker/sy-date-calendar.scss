@@ -1,0 +1,215 @@
+@use "../../assets/style/global/font" as font;
+
+// 전체 컨테이너
+.date-calendar-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+// 헤더
+.calendar-header {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--date-time-picker-calendar-container-body-border-enabled, #e0e0e0);
+
+  sy-icon {
+    cursor: pointer;
+    color: var(--date-time-picker-calendar-container-header-icon-enabled, #555);
+    &:hover {
+      color: var(--date-time-picker-calendar-container-header-icon-hover, #000);
+    }
+  }
+
+  .calendar-header-privious,
+  .calendar-header-next {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .calendar-title {
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+    color: var(--date-time-picker-calendar-container-header-text-enabled, #333);
+    @include font.text-style-base-medium;
+    &:hover {
+      color: var(--date-time-picker-calendar-container-header-text-hover, #000);
+    }
+    span + span {
+      margin-left: 8px;
+    }
+  }
+}
+
+// 컨텐츠 영역
+.calendar-content {
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+// --- Day View ---
+.day-view-container {
+  display: inline-block;
+
+  .day-header-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 32px);
+    list-style: none;
+    padding: 0;
+    margin: 0 0 4px 0;
+    color: #888;
+    font-size: 12px;
+    justify-items: center;
+
+    li {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 20px;
+    }
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 32px);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 4px 0;
+    justify-items: center;
+
+    li {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 28px;
+    }
+  }
+
+  :host([hideweekend]) & {
+    .day-header-grid,
+    .days-grid {
+      grid-template-columns: repeat(5, 32px);
+    }
+  }
+}
+
+// --- Month, Year, Decade View ---
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 4px;
+  justify-items: center;
+
+  li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 100%;
+  }
+}
+
+// --- 공통 아이템 스타일 ---
+.date-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+
+  .days-grid & {
+    width: 28px;
+    height: 28px;
+  }
+  .calendar-grid & {
+    width: 72px;
+    height: 28px;
+  }
+  :host([mode="decade"]) .calendar-grid & {
+    width: 80px;
+  }
+}
+
+// --- 상태별 스타일 ---
+
+// ✅ [수정] 호버 효과를 속성 존재 여부로 체크
+.current-month:not([data-selected]):not([data-rangestart]):not([data-rangeend]) .date-item:hover {
+  background-color: var(--date-time-picker-calendar-menu-item-background-hover, #f0f0f0);
+}
+
+.current-month .date-item {
+  color: var(--date-time-picker-calendar-menu-item-text-enabled, #333);
+}
+
+.not-current-month .date-item {
+  color: var(--date-time-picker-calendar-container-body-text-disabled, #aaa);
+}
+
+// ✅ [수정] today 선택자를 속성 존재 여부로 체크
+li[data-today] .date-item {
+  border: 1px solid var(--date-time-picker-calendar-menu-item-border-current, #007bff);
+}
+
+// ✅ [수정] selected, rangestart, rangeend 선택자를 속성 존재 여부로 체크
+li[data-selected] .date-item,
+li[data-rangestart] .date-item,
+li[data-rangeend] .date-item {
+  background-color: var(--date-time-picker-calendar-menu-item-background-selected, #007bff);
+  color: var(--date-time-picker-calendar-menu-item-text-selected, #fff);
+  border-color: transparent;
+
+  &:hover {
+    background-color: var(--date-time-picker-calendar-menu-item-background-selected, #007bff);
+    color: var(--date-time-picker-calendar-menu-item-text-selected, #fff);
+  }
+}
+
+// ✅ [수정] inrange 선택자를 속성 존재 여부로 체크
+li[data-inrange] {
+  background-color: var(--background-brand-default, #e0efff);
+  border-radius: 0;
+
+  .date-item {
+    color: var(--date-time-picker-calendar-menu-item-text-enabled, #333);
+    background-color: transparent;
+  }
+
+  &[data-today] .date-item {
+    border: 1px solid var(--date-time-picker-calendar-menu-item-border-current, #007bff);
+    background-color: transparent;
+  }
+
+  &:hover {
+    background-color: var(--background-brand-default-hover, #d0e7ff);
+  }
+
+  &[data-rangestart],
+  &[data-rangeend] {
+    background-color: transparent;
+  }
+}
+
+// 푸터
+.calendar-footer {
+  display: flex;
+  height: 37px;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--date-time-picker-calendar-container-body-border-enabled, #e0e0e0);
+}
+:host([mode='month']) .calendar-footer,
+:host([mode='year']) .calendar-footer,
+:host([mode='decade']) .calendar-footer {
+  display: none;
+}

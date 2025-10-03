@@ -8,8 +8,629 @@
     <script type="module" src="/build/design-system-light.esm.js"></script>
     <script nomodule src="/build/design-system-light.js"></script>
   </head>
-  </head>
   <body class="sy-theme sy-theme-light">
+    <style>
+      .example-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+
+      .example-section h3 {
+        margin-top: 0;
+        color: #333;
+      }
+
+      section {
+        margin: 30px 0;
+      }
+
+      section h2 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+
+      button {
+        margin: 5px;
+        padding: 8px 15px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #2980b9;
+      }
+    </style>
+
+    <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
+
+    <!-- datepicker text code here -->
+
+    <h1>SY-DATEPICKER Component Examples</h1>
+
+    <!-- Basic Datepicker -->
+    <section>
+      <h2>1. Basic Datepicker</h2>
+      <div class="example-section">
+        <h3>Default Datepicker</h3>
+        <sy-datepicker id="basic-datepicker" placeholder="Select date"></sy-datepicker>
+        <p><strong>Selected:</strong> <span id="basic-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker with Pre-set Date -->
+    <section>
+      <h2>2. Datepicker with Date</h2>
+      <div class="example-section">
+        <h3>DateTime Picker with Values</h3>
+        <sy-datepicker
+          id="date-datepicker"
+          variant="datetime"
+          year="2024"
+          month="10"
+          day="15"
+          hour="14"
+          minute="30"
+          second="0">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="date-result">2024-10-15 14:30:00</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker with Custom Date Names -->
+    <section>
+      <h2>3. Datepicker with Custom Date Names</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="dateNames-datepicker"
+          dateNames="일,월,화,수,목,금,토"
+          placeholder="날짜 선택">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="dateNames-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Disabled Datepicker -->
+    <section>
+      <h2>4. Disabled Datepicker</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="disabled-datepicker"
+          disabled
+          placeholder="Disabled datepicker">
+        </sy-datepicker>
+        <p><strong>Status:</strong> <span id="disabled-result">Disabled</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker with Custom Format -->
+    <section>
+      <h2>5. Datepicker with Custom Format</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="format-datepicker"
+          variant="date"
+          format="dd/MM/yyyy"
+          placeholder="DD/MM/YYYY format">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="format-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker Hide Weekend -->
+    <section>
+      <h2>6. Datepicker Hide Weekend</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="weekend-datepicker"
+          hideWeekend
+          placeholder="주말이 숨겨진 달력">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="weekend-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker with Month Mode -->
+    <section>
+      <h2>7. Datepicker with Month Mode</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="mode-datepicker"
+          mode="month"
+          placeholder="월 선택 모드">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="mode-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker Monday Start -->
+    <section>
+      <h2>8. Datepicker Monday Start</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="monday-datepicker"
+          mondayStart
+          placeholder="월요일부터 시작">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="monday-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Datepicker with Custom Placeholder -->
+    <section>
+      <h2>9. Datepicker with Custom Placeholder</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="placeholder-datepicker"
+          placeholder="생일을 선택하세요"
+          format="yyyy년 MM월 dd일">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="placeholder-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Readonly Datepicker -->
+    <section>
+      <h2>10. Readonly Datepicker</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="readonly-datepicker"
+          readonly
+          year="2024"
+          month="10"
+          day="15"
+          placeholder="읽기 전용">
+        </sy-datepicker>
+        <p><strong>Status:</strong> <span id="readonly-result">Readonly</span></p>
+      </div>
+    </section>
+
+    <!-- Range Datepicker -->
+    <section>
+      <h2>11. Range Datepicker</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="range-datepicker"
+          variant="range"
+          placeholder="기간 선택">
+        </sy-datepicker>
+        <p><strong>Range Start:</strong> <span id="range-start-result">None</span></p>
+        <p><strong>Range End:</strong> <span id="range-end-result">None</span></p>
+      </div>
+    </section>
+
+    <!-- Time Picker -->
+    <section>
+      <h2>12. Time Picker</h2>
+      <div class="example-section">
+        <sy-datepicker
+          id="time-datepicker"
+          variant="time"
+          format="hh:mm:ss"
+          placeholder="시간 선택">
+        </sy-datepicker>
+        <p><strong>Selected:</strong> <span id="time-result">None</span></p>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Basic Datepicker
+        const basicDatepicker = document.getElementById('basic-datepicker');
+        const basicResult = document.getElementById('basic-result');
+
+        if (basicDatepicker && basicResult) {
+          basicDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day, hour, minute, second } = e.detail;
+            basicResult.textContent = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          });
+        }
+
+        // Date Datepicker
+        const dateDatepicker = document.getElementById('date-datepicker');
+        const dateResult = document.getElementById('date-result');
+
+        if (dateDatepicker && dateResult) {
+          dateDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day, hour, minute, second } = e.detail;
+            dateResult.textContent = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+          });
+        }
+
+        // Date Names Datepicker
+        const dateNamesDatepicker = document.getElementById('dateNames-datepicker');
+        const dateNamesResult = document.getElementById('dateNames-result');
+
+        if (dateNamesDatepicker && dateNamesResult) {
+          dateNamesDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day } = e.detail;
+            dateNamesResult.textContent = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          });
+        }
+
+        // Format Datepicker
+        const formatDatepicker = document.getElementById('format-datepicker');
+        const formatResult = document.getElementById('format-result');
+
+        if (formatDatepicker && formatResult) {
+          formatDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day } = e.detail;
+            formatResult.textContent = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
+          });
+        }
+
+        // Weekend Datepicker
+        const weekendDatepicker = document.getElementById('weekend-datepicker');
+        const weekendResult = document.getElementById('weekend-result');
+
+        if (weekendDatepicker && weekendResult) {
+          weekendDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day } = e.detail;
+            weekendResult.textContent = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          });
+        }
+
+        // Mode Datepicker
+        const modeDatepicker = document.getElementById('mode-datepicker');
+        const modeResult = document.getElementById('mode-result');
+
+        if (modeDatepicker && modeResult) {
+          modeDatepicker.addEventListener('selected', (e) => {
+            const { year, month } = e.detail;
+            modeResult.textContent = `${year}-${String(month + 1).padStart(2, '0')}`;
+          });
+        }
+
+        // Monday Datepicker
+        const mondayDatepicker = document.getElementById('monday-datepicker');
+        const mondayResult = document.getElementById('monday-result');
+
+        if (mondayDatepicker && mondayResult) {
+          mondayDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day } = e.detail;
+            mondayResult.textContent = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          });
+        }
+
+        // Placeholder Datepicker
+        const placeholderDatepicker = document.getElementById('placeholder-datepicker');
+        const placeholderResult = document.getElementById('placeholder-result');
+
+        if (placeholderDatepicker && placeholderResult) {
+          placeholderDatepicker.addEventListener('selected', (e) => {
+            const { year, month, day } = e.detail;
+            placeholderResult.textContent = `${year}년 ${String(month + 1).padStart(2, '0')}월 ${String(day).padStart(2, '0')}일`;
+          });
+        }
+
+        // Range Datepicker
+        const rangeDatepicker = document.getElementById('range-datepicker');
+        const rangeStartResult = document.getElementById('range-start-result');
+        const rangeEndResult = document.getElementById('range-end-result');
+
+        if (rangeDatepicker && rangeStartResult && rangeEndResult) {
+          rangeDatepicker.addEventListener('selected', (e) => {
+            const { rangestart, rangeend } = e.detail;
+            if (rangestart) {
+              rangeStartResult.textContent = `${rangestart.year}-${String(rangestart.month + 1).padStart(2, '0')}-${String(rangestart.day).padStart(2, '0')}`;
+            }
+            if (rangeend) {
+              rangeEndResult.textContent = `${rangeend.year}-${String(rangeend.month + 1).padStart(2, '0')}-${String(rangeend.day).padStart(2, '0')}`;
+            }
+          });
+        }
+
+        // Time Datepicker
+        const timeDatepicker = document.getElementById('time-datepicker');
+        const timeResult = document.getElementById('time-result');
+
+        if (timeDatepicker && timeResult) {
+          timeDatepicker.addEventListener('selected', (e) => {
+            const { hour, minute, second } = e.detail;
+            timeResult.textContent = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+          });
+        }
+
+        // Changed events
+        const datepickers = document.querySelectorAll('sy-datepicker');
+        datepickers.forEach((datepicker) => {
+          datepicker.addEventListener('changed', (e) => {
+            console.log('Datepicker changed:', e.detail);
+          });
+        });
+      });
+    </script>
+
+    <h1>SY-COLORPICKER Component Examples</h1>
+
+    <!-- Basic Color Picker -->
+    <section>
+      <h2>1. Basic Color Picker</h2>
+      <div class="example-section">
+        <h3>Default Color Picker</h3>
+        <sy-colorpicker id="basic-colorpicker" value="#ff0000"></sy-colorpicker>
+        <p><strong>Selected Color:</strong> <span id="basic-result">#ff0000</span></p>
+        <p><strong>Opacity:</strong> <span id="basic-opacity">1</span></p>
+      </div>
+    </section>
+
+    <!-- Color Picker with Text -->
+    <section>
+      <h2>2. Color Picker with Text Display</h2>
+      <div class="example-section">
+        <sy-colorpicker id="text-colorpicker" value="#00ff00" show-text></sy-colorpicker>
+        <p><strong>Selected Color:</strong> <span id="text-result">#00ff00</span></p>
+      </div>
+    </section>
+
+    <!-- Color Picker Formats -->
+    <section>
+      <h2>3. Different Color Formats</h2>
+      <div class="example-section">
+        <h3>HEX Format</h3>
+        <sy-colorpicker id="hex-colorpicker" value="#0000ff" format="hex" show-text></sy-colorpicker>
+        <p><strong>Value:</strong> <span id="hex-result">#0000ff</span></p>
+
+        <h3>RGB Format</h3>
+        <sy-colorpicker id="rgb-colorpicker" value="rgb(255, 128, 0)" format="rgb" show-text></sy-colorpicker>
+        <p><strong>Value:</strong> <span id="rgb-result">rgb(255, 128, 0)</span></p>
+
+        <h3>HSB Format</h3>
+        <sy-colorpicker id="hsb-colorpicker" value="hsb(180, 50%, 75%)" format="hsb" show-text></sy-colorpicker>
+        <p><strong>Value:</strong> <span id="hsb-result">hsb(180, 50%, 75%)</span></p>
+      </div>
+    </section>
+
+    <!-- Color Picker with Opacity -->
+    <section>
+      <h2>4. Color Picker with Opacity Control</h2>
+      <div class="example-section">
+        <sy-colorpicker id="opacity-colorpicker" value="#ff00ff" opacity="0.5" show-text></sy-colorpicker>
+        <p><strong>Selected Color:</strong> <span id="opacity-result">#ff00ff</span></p>
+        <p><strong>Opacity:</strong> <span id="opacity-value">0.5</span></p>
+      </div>
+    </section>
+
+    <!-- Color Picker without Opacity -->
+    <section>
+      <h2>5. Color Picker without Opacity Control</h2>
+      <div class="example-section">
+        <sy-colorpicker id="no-opacity-colorpicker" value="#ffff00" hide-opacity show-text></sy-colorpicker>
+        <p><strong>Selected Color:</strong> <span id="no-opacity-result">#ffff00</span></p>
+      </div>
+    </section>
+
+    <!-- Inline Color Picker -->
+    <section>
+      <h2>6. Inline Color Picker</h2>
+      <div class="example-section">
+        <h3>Always Visible (Inline Mode)</h3>
+        <sy-colorpicker id="inline-colorpicker" value="#00ffff" inline></sy-colorpicker>
+        <p><strong>Selected Color:</strong> <span id="inline-result">#00ffff</span></p>
+        <p><strong>Format:</strong> <span id="inline-format">hex</span></p>
+      </div>
+    </section>
+
+    <!-- Disabled and Readonly States -->
+    <section>
+      <h2>7. Disabled and Readonly States</h2>
+      <div class="example-section">
+        <h3>Disabled</h3>
+        <sy-colorpicker value="#888888" disabled show-text></sy-colorpicker>
+        <p>All interactions should be disabled</p>
+
+        <h3>Readonly</h3>
+        <sy-colorpicker value="#cccccc" readonly show-text></sy-colorpicker>
+        <p>Color picker is read-only</p>
+      </div>
+    </section>
+
+    <!-- Programmatic Control -->
+    <section>
+      <h2>8. Programmatic Control</h2>
+      <div class="example-section">
+        <sy-colorpicker id="programmatic-colorpicker" value="#ff5733" show-text></sy-colorpicker>
+        <div style="margin-top: 10px;">
+          <button id="set-red">Set Red</button>
+          <button id="set-green">Set Green</button>
+          <button id="set-blue">Set Blue</button>
+          <button id="set-random">Set Random Color</button>
+          <button id="toggle-format">Toggle Format (HEX/RGB/HSB)</button>
+          <button id="set-opacity-half">Set Opacity 0.5</button>
+          <button id="set-opacity-full">Set Opacity 1.0</button>
+        </div>
+        <p><strong>Current Color:</strong> <span id="programmatic-result">#ff5733</span></p>
+        <p><strong>Current Format:</strong> <span id="programmatic-format">hex</span></p>
+        <p><strong>Current Opacity:</strong> <span id="programmatic-opacity">1</span></p>
+      </div>
+    </section>
+
+    <!-- All Features Combined -->
+    <section>
+      <h2>9. All Features Combined</h2>
+      <div class="example-section">
+        <h3>Full Featured Color Picker</h3>
+        <sy-colorpicker
+          id="full-featured-colorpicker"
+          value="#9c27b0"
+          opacity="0.8"
+          show-text
+          format="hex"
+        ></sy-colorpicker>
+        <div style="margin-top: 10px;">
+          <label><input type="checkbox" id="toggle-text"> Show Text</label>
+          <label><input type="checkbox" id="toggle-opacity-control"> Hide Opacity</label>
+          <label><input type="checkbox" id="toggle-disabled"> Disabled</label>
+          <label><input type="checkbox" id="toggle-readonly"> Readonly</label>
+        </div>
+        <p><strong>Selected Color:</strong> <span id="full-result">#9c27b0</span></p>
+        <p><strong>Format:</strong> <span id="full-format">hex</span></p>
+        <p><strong>Opacity:</strong> <span id="full-opacity">0.8</span></p>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Basic Color Picker
+        const basicColorpicker = document.getElementById('basic-colorpicker');
+        const basicResult = document.getElementById('basic-result');
+        const basicOpacity = document.getElementById('basic-opacity');
+
+        basicColorpicker.addEventListener('changed', (e) => {
+          basicResult.textContent = e.detail.value;
+          basicOpacity.textContent = e.detail.opacity;
+        });
+
+        // Text Color Picker
+        const textColorpicker = document.getElementById('text-colorpicker');
+        const textResult = document.getElementById('text-result');
+
+        textColorpicker.addEventListener('changed', (e) => {
+          textResult.textContent = e.detail.value;
+          // console.log('Text colorpicker changed:', e.detail);
+        });
+
+        // HEX Format
+        const hexColorpicker = document.getElementById('hex-colorpicker');
+        const hexResult = document.getElementById('hex-result');
+
+        hexColorpicker.addEventListener('changed', (e) => {
+          hexResult.textContent = e.detail.value;
+          // console.log('HEX colorpicker changed:', e.detail);
+        });
+
+        // RGB Format
+        const rgbColorpicker = document.getElementById('rgb-colorpicker');
+        const rgbResult = document.getElementById('rgb-result');
+
+        rgbColorpicker.addEventListener('changed', (e) => {
+          rgbResult.textContent = e.detail.value;
+          // console.log('RGB colorpicker changed:', e.detail);
+        });
+
+        // HSB Format
+        const hsbColorpicker = document.getElementById('hsb-colorpicker');
+        const hsbResult = document.getElementById('hsb-result');
+
+        hsbColorpicker.addEventListener('changed', (e) => {
+          hsbResult.textContent = e.detail.value;
+          // console.log('HSB colorpicker changed:', e.detail);
+        });
+
+        // Opacity Control
+        const opacityColorpicker = document.getElementById('opacity-colorpicker');
+        const opacityResult = document.getElementById('opacity-result');
+        const opacityValue = document.getElementById('opacity-value');
+
+        opacityColorpicker.addEventListener('changed', (e) => {
+          opacityResult.textContent = e.detail.value;
+          opacityValue.textContent = e.detail.opacity;
+          // console.log('Opacity colorpicker changed:', e.detail);
+        });
+
+        // No Opacity Control
+        const noOpacityColorpicker = document.getElementById('no-opacity-colorpicker');
+        const noOpacityResult = document.getElementById('no-opacity-result');
+
+        noOpacityColorpicker.addEventListener('changed', (e) => {
+          noOpacityResult.textContent = e.detail.value;
+          // console.log('No opacity colorpicker changed:', e.detail);
+        });
+
+        // Inline Color Picker
+        const inlineColorpicker = document.getElementById('inline-colorpicker');
+        const inlineResult = document.getElementById('inline-result');
+        const inlineFormat = document.getElementById('inline-format');
+
+        inlineColorpicker.addEventListener('changed', (e) => {
+          inlineResult.textContent = e.detail.value;
+          inlineFormat.textContent = e.detail.format;
+          // console.log('Inline colorpicker changed:', e.detail);
+        });
+
+        // Programmatic Control
+        const programmaticColorpicker = document.getElementById('programmatic-colorpicker');
+        const programmaticResult = document.getElementById('programmatic-result');
+        const programmaticFormat = document.getElementById('programmatic-format');
+        const programmaticOpacity = document.getElementById('programmatic-opacity');
+
+        programmaticColorpicker.addEventListener('changed', (e) => {
+          programmaticResult.textContent = e.detail.value;
+          programmaticFormat.textContent = e.detail.format;
+          programmaticOpacity.textContent = e.detail.opacity;
+          // console.log('Programmatic colorpicker changed:', e.detail);
+        });
+
+        document.getElementById('set-red').addEventListener('click', () => {
+          programmaticColorpicker.value = '#ff0000';
+        });
+
+        document.getElementById('set-green').addEventListener('click', () => {
+          programmaticColorpicker.value = '#00ff00';
+        });
+
+        document.getElementById('set-blue').addEventListener('click', () => {
+          programmaticColorpicker.value = '#0000ff';
+        });
+
+        document.getElementById('set-random').addEventListener('click', () => {
+          const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+          programmaticColorpicker.value = randomColor;
+        });
+
+        let currentFormat = 0;
+        const formats = ['hex', 'rgb', 'hsb'];
+        document.getElementById('toggle-format').addEventListener('click', () => {
+          currentFormat = (currentFormat + 1) % formats.length;
+          programmaticColorpicker.format = formats[currentFormat];
+        });
+
+        document.getElementById('set-opacity-half').addEventListener('click', () => {
+          programmaticColorpicker.opacity = 0.5;
+        });
+
+        document.getElementById('set-opacity-full').addEventListener('click', () => {
+          programmaticColorpicker.opacity = 1.0;
+        });
+
+        // Full Featured Color Picker
+        const fullFeaturedColorpicker = document.getElementById('full-featured-colorpicker');
+        const fullResult = document.getElementById('full-result');
+        const fullFormat = document.getElementById('full-format');
+        const fullOpacity = document.getElementById('full-opacity');
+
+        fullFeaturedColorpicker.addEventListener('changed', (e) => {
+          fullResult.textContent = e.detail.value;
+          fullFormat.textContent = e.detail.format;
+          fullOpacity.textContent = e.detail.opacity;
+        });
+
+        document.getElementById('toggle-text').addEventListener('change', (e) => {
+          fullFeaturedColorpicker.showText = e.target.checked;
+        });
+
+        document.getElementById('toggle-opacity-control').addEventListener('change', (e) => {
+          fullFeaturedColorpicker.hideOpacity = e.target.checked;
+        });
+
+        document.getElementById('toggle-disabled').addEventListener('change', (e) => {
+          fullFeaturedColorpicker.disabled = e.target.checked;
+        });
+
+        document.getElementById('toggle-readonly').addEventListener('change', (e) => {
+          fullFeaturedColorpicker.readonly = e.target.checked;
+        });
+      });
+    </script>
+
+    <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
+
     <h2>SY-PAGINATION Component Examples</h2>
 
     <!-- Basic Pagination -->
@@ -17,10 +638,10 @@
       <h2>1. Basic Pagination</h2>
       <div class="example-section">
         <h3>Default Pagination</h3>
-        <sy-pagination 
+        <sy-pagination
           id="basic-pagination"
-          active-page="1" 
-          total-items="100" 
+          active-page="1"
+          total-items="100"
           page-size="10">
         </sy-pagination>
         <p><strong>Current Page:</strong> <span id="basic-result">1</span></p>
@@ -31,10 +652,10 @@
     <section>
       <h2>2. Pagination with Total Information</h2>
       <div class="example-section">
-        <sy-pagination 
+        <sy-pagination
           id="total-pagination"
-          active-page="1" 
-          total-items="250" 
+          active-page="1"
+          total-items="250"
           page-size="20"
           total>
         </sy-pagination>
@@ -46,10 +667,10 @@
     <section>
       <h2>3. Pagination with Page Size Options</h2>
       <div class="example-section">
-        <sy-pagination 
+        <sy-pagination
           id="size-options-pagination"
-          active-page="1" 
-          total-items="500" 
+          active-page="1"
+          total-items="500"
           page-size="10"
           page-size-options="10,20,50,100"
           total>
@@ -63,10 +684,10 @@
     <section>
       <h2>4. Pagination with Jumper (Go to Page)</h2>
       <div class="example-section">
-        <sy-pagination 
+        <sy-pagination
           id="jumper-pagination"
-          active-page="5" 
-          total-items="1000" 
+          active-page="5"
+          total-items="1000"
           page-size="25"
           page-size-options="25,50,100"
           jumper
@@ -81,19 +702,19 @@
       <h2>5. Hide on Single Page</h2>
       <div class="example-section">
         <h3>With hideonSingle (only 5 items, page size 10 - should be hidden)</h3>
-        <sy-pagination 
+        <sy-pagination
           id="hide-single-pagination"
-          active-page="1" 
-          total-items="5" 
+          active-page="1"
+          total-items="5"
           page-size="10"
           hideon-single>
         </sy-pagination>
         <p>Above pagination should be hidden because total pages = 1</p>
-        
+
         <h3>Without hideonSingle (same data - should be visible)</h3>
-        <sy-pagination 
-          active-page="1" 
-          total-items="5" 
+        <sy-pagination
+          active-page="1"
+          total-items="5"
           page-size="10">
         </sy-pagination>
       </div>
@@ -103,9 +724,9 @@
     <section>
       <h2>6. Disabled Pagination</h2>
       <div class="example-section">
-        <sy-pagination 
-          active-page="3" 
-          total-items="100" 
+        <sy-pagination
+          active-page="3"
+          total-items="100"
           page-size="10"
           page-size-options="10,20,50"
           jumper
@@ -120,10 +741,10 @@
     <section>
       <h2>7. Large Dataset with Ellipsis</h2>
       <div class="example-section">
-        <sy-pagination 
+        <sy-pagination
           id="large-pagination"
-          active-page="50" 
-          total-items="10000" 
+          active-page="50"
+          total-items="10000"
           page-size="100"
           page-size-options="50,100,200,500"
           jumper
@@ -138,10 +759,10 @@
     <section>
       <h2>8. Programmatic Control</h2>
       <div class="example-section">
-        <sy-pagination 
+        <sy-pagination
           id="programmatic-pagination"
-          active-page="1" 
-          total-items="200" 
+          active-page="1"
+          total-items="200"
           page-size="15"
           total>
         </sy-pagination>
@@ -162,7 +783,7 @@
         // Basic Pagination
         const basicPagination = document.getElementById('basic-pagination');
         const basicResult = document.getElementById('basic-result');
-        
+
         basicPagination.addEventListener('pageChanged', (e) => {
           basicResult.textContent = e.detail;
           console.log('Basic pagination page changed:', e.detail);
@@ -171,7 +792,7 @@
         // Total Pagination
         const totalPagination = document.getElementById('total-pagination');
         const totalResult = document.getElementById('total-result');
-        
+
         totalPagination.addEventListener('pageChanged', (e) => {
           totalResult.textContent = e.detail;
           console.log('Total pagination page changed:', e.detail);
@@ -181,12 +802,12 @@
         const sizeOptionsPagination = document.getElementById('size-options-pagination');
         const sizeOptionsPage = document.getElementById('size-options-page');
         const sizeOptionsSize = document.getElementById('size-options-size');
-        
+
         sizeOptionsPagination.addEventListener('pageChanged', (e) => {
           sizeOptionsPage.textContent = e.detail;
           console.log('Size options page changed:', e.detail);
         });
-        
+
         sizeOptionsPagination.addEventListener('pageSizeChanged', (e) => {
           sizeOptionsSize.textContent = e.detail;
           console.log('Page size changed:', e.detail);
@@ -195,7 +816,7 @@
         // Jumper Pagination
         const jumperPagination = document.getElementById('jumper-pagination');
         const jumperResult = document.getElementById('jumper-result');
-        
+
         jumperPagination.addEventListener('pageChanged', (e) => {
           jumperResult.textContent = e.detail;
           console.log('Jumper pagination page changed:', e.detail);
@@ -204,7 +825,7 @@
         // Large Dataset Pagination
         const largePagination = document.getElementById('large-pagination');
         const largeResult = document.getElementById('large-result');
-        
+
         largePagination.addEventListener('pageChanged', (e) => {
           largeResult.textContent = e.detail;
           console.log('Large pagination page changed:', e.detail);
@@ -214,7 +835,7 @@
         const programmaticPagination = document.getElementById('programmatic-pagination');
         const programmaticResult = document.getElementById('programmatic-result');
         const programmaticTotal = document.getElementById('programmatic-total');
-        
+
         programmaticPagination.addEventListener('pageChanged', (e) => {
           programmaticResult.textContent = e.detail;
           const totalPages = Math.ceil(programmaticPagination.totalItems / programmaticPagination.pageSize);
@@ -263,12 +884,12 @@
         border-radius: 4px;
         background-color: #f9f9f9;
       }
-      
+
       .example-section h3 {
         margin-top: 0;
         color: #333;
       }
-      
+
       .example-section p {
         margin: 10px 0;
         font-family: monospace;
@@ -277,17 +898,17 @@
         border-radius: 3px;
         border: 1px solid #ddd;
       }
-      
+
       section {
         margin: 30px 0;
       }
-      
+
       section h2 {
         color: #2c3e50;
         border-bottom: 2px solid #3498db;
         padding-bottom: 10px;
       }
-      
+
       button {
         margin: 5px;
         padding: 8px 15px;
@@ -297,11 +918,11 @@
         border-radius: 4px;
         cursor: pointer;
       }
-      
+
       button:hover {
         background: #2980b9;
       }
-      
+
       button:disabled {
         background: #bdc3c7;
         cursor: not-allowed;
@@ -465,7 +1086,7 @@
       });
     });
   </script>
-  
+
   <style>
     body {
       font-family: sans-serif;

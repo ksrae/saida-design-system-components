@@ -112,7 +112,7 @@ export class SyInput {
 
   // --- Lifecycle Methods ---
   connectedCallback() {
-    if (this.host.attachInternals) {
+    if (this.host.attachInternals && !this.internals) {
       this.internals = this.host.attachInternals();
     }
     if (this.internals?.form) {
