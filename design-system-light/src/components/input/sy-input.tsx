@@ -1,4 +1,4 @@
-import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface HTMLSyInputElement extends HTMLElement {
@@ -45,7 +45,7 @@ export interface HTMLSyInputElement extends HTMLElement {
 export class SyInput {
   // --- Element References ---
   @Element() host: HTMLSyInputElement;
-  private internals: ElementInternals;
+  @AttachInternals() internals: ElementInternals;
   private input!: HTMLInputElement;
 
   private _isUserInput: boolean = false;
@@ -112,9 +112,6 @@ export class SyInput {
 
   // --- Lifecycle Methods ---
   connectedCallback() {
-    if (this.host.attachInternals) {
-      this.internals = this.host.attachInternals();
-    }
     if (this.internals?.form) {
       this.internals.form.addEventListener('submit', this.handleFormSubmit);
     }

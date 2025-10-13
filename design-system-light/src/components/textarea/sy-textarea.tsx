@@ -1,4 +1,4 @@
-import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 // HTMLSyTextareaElement interface
@@ -47,7 +47,7 @@ export interface HTMLSyTextareaElement extends HTMLElement {
 })
 export class SyTextarea {
   @Element() host: HTMLSyTextareaElement;
-  private internals: ElementInternals;
+  @AttachInternals() internals: ElementInternals;
   private textarea!: HTMLTextAreaElement;
 
   private initialValue: string = '';
@@ -92,9 +92,6 @@ export class SyTextarea {
 
   // Lifecycle
   connectedCallback() {
-    if (this.host.attachInternals) {
-      this.internals = this.host.attachInternals();
-    }
     this.initialValue = this.value || '';
     this.formSubmitListener();
     this.handleSlotChange();
