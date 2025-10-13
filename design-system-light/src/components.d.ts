@@ -7,12 +7,14 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 import { ButtonGroupState } from "./components/button-group";
+import { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
 import { ModelessPositionModel } from "./components/modeless/sy-modeless";
 import { VNode } from "@stencil/core";
 import { ToastOptions } from "./components/toast/sy-toast";
 import { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 export { ButtonGroupState } from "./components/button-group";
+export { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
 export { ModelessPositionModel } from "./components/modeless/sy-modeless";
 export { VNode } from "@stencil/core";
 export { ToastOptions } from "./components/toast/sy-toast";
@@ -205,6 +207,41 @@ export namespace Components {
          */
         "vertical": boolean;
     }
+    interface SyCalendar {
+        "active": string;
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames": string;
+        "day": number;
+        /**
+          * @default 'hh:mm:ss'
+         */
+        "format": string;
+        /**
+          * @default false
+         */
+        "hideWeekend": boolean;
+        "hour": number;
+        "minute": number;
+        /**
+          * @default 'day'
+         */
+        "mode": 'day' | 'month' | 'year';
+        /**
+          * @default false
+         */
+        "mondayStart": boolean;
+        "month": number;
+        "rangeenddefault": string;
+        "rangestartdefault": string;
+        "second": number;
+        /**
+          * @default 'date'
+         */
+        "variant": 'date' | 'datetime' | 'range' | 'time';
+        "year": number;
+    }
     interface SyCheckbox {
         "checkValidity": () => Promise<boolean>;
         /**
@@ -240,6 +277,228 @@ export namespace Components {
           * @default ''
          */
         "titleText": string;
+    }
+    interface SyCollapse {
+        /**
+          * @default false
+         */
+        "accordion": boolean;
+        /**
+          * @default false
+         */
+        "borderless": boolean;
+        "closeAll": () => Promise<void>;
+        "closePanel": (index: number) => Promise<void>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "fullheight": boolean;
+        /**
+          * @default false
+         */
+        "ghost": boolean;
+        "openAll": () => Promise<void>;
+        "openPanel": (index: number) => Promise<void>;
+    }
+    interface SyCollapsePanel {
+        /**
+          * @default false
+         */
+        "active": boolean;
+        /**
+          * @default false
+         */
+        "arrow": boolean;
+        "close": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "fullheight": boolean;
+        /**
+          * @default false
+         */
+        "ghost": boolean;
+        "open": () => Promise<void>;
+        "toggle": () => Promise<void>;
+    }
+    interface SyColorpicker {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'hex'
+         */
+        "format": 'hex' | 'hsb' | 'rgb';
+        /**
+          * @default false
+         */
+        "hideOpacity": boolean;
+        /**
+          * @default false
+         */
+        "inline": boolean;
+        /**
+          * @default 1
+         */
+        "opacity": number;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default false
+         */
+        "showText": boolean;
+        /**
+          * @default '#ff0000'
+         */
+        "value": string;
+    }
+    interface SyColorpickerContent {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'hex'
+         */
+        "format": 'hex' | 'rgb' | 'hsb';
+        /**
+          * @default false
+         */
+        "hideOpacity": boolean;
+        /**
+          * @default 1
+         */
+        "opacity": number;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default '#ff0000'
+         */
+        "value": string;
+    }
+    interface SyDateCalendar {
+        "active": string;
+        /**
+          * @default new Date()
+         */
+        "currentDate": Date;
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames": string;
+        /**
+          * @default {     year: new Date().getFullYear(),     month: new Date().getMonth(),     day: new Date().getDate(),     hour: new Date().getHours(),     minute: new Date().getMinutes(),     second: new Date().getSeconds()   }
+         */
+        "datetime": {year: number, month: number, day: number, hour: number, minute: number, second: number};
+        /**
+          * @default false
+         */
+        "hideWeekend": boolean;
+        "hoverDate": string;
+        /**
+          * @default 'day'
+         */
+        "mode": 'day' | 'month' | 'year' | 'decade';
+        /**
+          * @default false
+         */
+        "mondayStart": boolean;
+        "range"?: 'start' | 'end';
+        /**
+          * @default undefined
+         */
+        "rangeend": {year: number, month: number, day: number } | undefined;
+        /**
+          * @default undefined
+         */
+        "rangestart": {year: number, month: number, day: number } | undefined;
+    }
+    interface SyDateTimeCalendar {
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames": string;
+        /**
+          * @default {     year: new Date().getFullYear(),     month: new Date().getMonth(),     day: new Date().getDate(),     hour: new Date().getHours(),     minute: new Date().getMinutes(),     second: new Date().getSeconds()   }
+         */
+        "datetime": {year: number, month: number, day: number, hour: number, minute: number, second: number};
+        /**
+          * @default false
+         */
+        "hideWeekend": boolean;
+        /**
+          * @default 'day'
+         */
+        "mode": 'day' | 'month' | 'year' | 'decade';
+        /**
+          * @default false
+         */
+        "mondayStart": boolean;
+    }
+    interface SyDatepicker {
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames": string;
+        "day": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'yyyy-MM-dd hh:mm:ss'
+         */
+        "format": string;
+        /**
+          * @default false
+         */
+        "hideWeekend": boolean;
+        "hour": string;
+        "minute": string;
+        /**
+          * @default 'day'
+         */
+        "mode": 'day' | 'month' | 'year';
+        /**
+          * @default false
+         */
+        "mondayStart": boolean;
+        "month": string;
+        /**
+          * @default ''
+         */
+        "name": string;
+        /**
+          * @default ''
+         */
+        "placeholder": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "second": string;
+        /**
+          * @default 'date'
+         */
+        "variant": 'date' | 'datetime' | 'range' | 'time';
+        "year": string;
     }
     interface SyDivider {
         /**
@@ -1013,6 +1272,34 @@ export namespace Components {
          */
         "variant": 'outlined' | 'solid';
     }
+    interface SyRangeCalendar {
+        "active": string;
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames": string;
+        "datetime"?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
+        /**
+          * @default false
+         */
+        "hideWeekend": boolean;
+        /**
+          * @default 'day'
+         */
+        "mode": 'day' | 'month' | 'year';
+        /**
+          * @default false
+         */
+        "mondayStart": boolean;
+        /**
+          * @default undefined
+         */
+        "rangeend": { year: number, month: number, day: number } | undefined;
+        /**
+          * @default undefined
+         */
+        "rangestart": { year: number, month: number, day: number } | undefined;
+    }
     interface SySelect {
         "checkValidity": () => Promise<boolean>;
         "clearCustomError": () => Promise<void>;
@@ -1353,6 +1640,32 @@ export namespace Components {
          */
         "value": string;
     }
+    interface SyTimepicker {
+        /**
+          * @default 'hh:mm:ss'
+         */
+        "format": string;
+        /**
+          * @default false
+         */
+        "hideButton": boolean;
+        /**
+          * @default 0
+         */
+        "hour": number;
+        /**
+          * @default 0
+         */
+        "minute": number;
+        /**
+          * @default 0
+         */
+        "second": number;
+        /**
+          * @default ':'
+         */
+        "timeSeparator": string;
+    }
     interface SyToast {
         "closeToast": (toastItemElement: HTMLSyToastItemElement) => Promise<void>;
         "createErrorToast": (option?: ToastOptions) => Promise<void>;
@@ -1446,9 +1759,37 @@ export interface SyBreadcrumbItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyBreadcrumbItemElement;
 }
+export interface SyCalendarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyCalendarElement;
+}
 export interface SyCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyCheckboxElement;
+}
+export interface SyCollapsePanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyCollapsePanelElement;
+}
+export interface SyColorpickerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyColorpickerElement;
+}
+export interface SyColorpickerContentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyColorpickerContentElement;
+}
+export interface SyDateCalendarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyDateCalendarElement;
+}
+export interface SyDateTimeCalendarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyDateTimeCalendarElement;
+}
+export interface SyDatepickerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyDatepickerElement;
 }
 export interface SyDrawerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1498,6 +1839,10 @@ export interface SyRadioGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyRadioGroupElement;
 }
+export interface SyRangeCalendarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyRangeCalendarElement;
+}
 export interface SySelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSySelectElement;
@@ -1517,6 +1862,10 @@ export interface SyTagCustomEvent<T> extends CustomEvent<T> {
 export interface SyTextareaCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyTextareaElement;
+}
+export interface SyTimepickerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTimepickerElement;
 }
 declare global {
     interface HTMLSyAvatarElementEventMap {
@@ -1600,6 +1949,24 @@ declare global {
         prototype: HTMLSyButtonGroupElement;
         new (): HTMLSyButtonGroupElement;
     };
+    interface HTMLSyCalendarElementEventMap {
+        "selected": any;
+        "closed": any;
+    }
+    interface HTMLSyCalendarElement extends Components.SyCalendar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyCalendarElementEventMap>(type: K, listener: (this: HTMLSyCalendarElement, ev: SyCalendarCustomEvent<HTMLSyCalendarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyCalendarElementEventMap>(type: K, listener: (this: HTMLSyCalendarElement, ev: SyCalendarCustomEvent<HTMLSyCalendarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyCalendarElement: {
+        prototype: HTMLSyCalendarElement;
+        new (): HTMLSyCalendarElement;
+    };
     interface HTMLSyCheckboxElementEventMap {
         "changed": { value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; };
         "focused": boolean;
@@ -1618,6 +1985,118 @@ declare global {
     var HTMLSyCheckboxElement: {
         prototype: HTMLSyCheckboxElement;
         new (): HTMLSyCheckboxElement;
+    };
+    interface HTMLSyCollapseElement extends Components.SyCollapse, HTMLStencilElement {
+    }
+    var HTMLSyCollapseElement: {
+        prototype: HTMLSyCollapseElement;
+        new (): HTMLSyCollapseElement;
+    };
+    interface HTMLSyCollapsePanelElementEventMap {
+        "changed": CollapsePanelChangeDetail;
+    }
+    interface HTMLSyCollapsePanelElement extends Components.SyCollapsePanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyCollapsePanelElementEventMap>(type: K, listener: (this: HTMLSyCollapsePanelElement, ev: SyCollapsePanelCustomEvent<HTMLSyCollapsePanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyCollapsePanelElementEventMap>(type: K, listener: (this: HTMLSyCollapsePanelElement, ev: SyCollapsePanelCustomEvent<HTMLSyCollapsePanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyCollapsePanelElement: {
+        prototype: HTMLSyCollapsePanelElement;
+        new (): HTMLSyCollapsePanelElement;
+    };
+    interface HTMLSyColorpickerElementEventMap {
+        "changed": { value: string; format: string; opacity: number };
+    }
+    interface HTMLSyColorpickerElement extends Components.SyColorpicker, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyColorpickerElementEventMap>(type: K, listener: (this: HTMLSyColorpickerElement, ev: SyColorpickerCustomEvent<HTMLSyColorpickerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyColorpickerElementEventMap>(type: K, listener: (this: HTMLSyColorpickerElement, ev: SyColorpickerCustomEvent<HTMLSyColorpickerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyColorpickerElement: {
+        prototype: HTMLSyColorpickerElement;
+        new (): HTMLSyColorpickerElement;
+    };
+    interface HTMLSyColorpickerContentElementEventMap {
+        "colorChange": { value: string; opacity: number; format: string };
+    }
+    interface HTMLSyColorpickerContentElement extends Components.SyColorpickerContent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyColorpickerContentElementEventMap>(type: K, listener: (this: HTMLSyColorpickerContentElement, ev: SyColorpickerContentCustomEvent<HTMLSyColorpickerContentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyColorpickerContentElementEventMap>(type: K, listener: (this: HTMLSyColorpickerContentElement, ev: SyColorpickerContentCustomEvent<HTMLSyColorpickerContentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyColorpickerContentElement: {
+        prototype: HTMLSyColorpickerContentElement;
+        new (): HTMLSyColorpickerContentElement;
+    };
+    interface HTMLSyDateCalendarElementEventMap {
+        "changed": any;
+        "selected": any;
+        "entered": any;
+        "mode-changed": any;
+    }
+    interface HTMLSyDateCalendarElement extends Components.SyDateCalendar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyDateCalendarElementEventMap>(type: K, listener: (this: HTMLSyDateCalendarElement, ev: SyDateCalendarCustomEvent<HTMLSyDateCalendarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyDateCalendarElementEventMap>(type: K, listener: (this: HTMLSyDateCalendarElement, ev: SyDateCalendarCustomEvent<HTMLSyDateCalendarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyDateCalendarElement: {
+        prototype: HTMLSyDateCalendarElement;
+        new (): HTMLSyDateCalendarElement;
+    };
+    interface HTMLSyDateTimeCalendarElementEventMap {
+        "selected": any;
+    }
+    interface HTMLSyDateTimeCalendarElement extends Components.SyDateTimeCalendar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyDateTimeCalendarElementEventMap>(type: K, listener: (this: HTMLSyDateTimeCalendarElement, ev: SyDateTimeCalendarCustomEvent<HTMLSyDateTimeCalendarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyDateTimeCalendarElementEventMap>(type: K, listener: (this: HTMLSyDateTimeCalendarElement, ev: SyDateTimeCalendarCustomEvent<HTMLSyDateTimeCalendarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyDateTimeCalendarElement: {
+        prototype: HTMLSyDateTimeCalendarElement;
+        new (): HTMLSyDateTimeCalendarElement;
+    };
+    interface HTMLSyDatepickerElementEventMap {
+        "changed": any;
+        "selected": any;
+    }
+    interface HTMLSyDatepickerElement extends Components.SyDatepicker, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyDatepickerElementEventMap>(type: K, listener: (this: HTMLSyDatepickerElement, ev: SyDatepickerCustomEvent<HTMLSyDatepickerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyDatepickerElementEventMap>(type: K, listener: (this: HTMLSyDatepickerElement, ev: SyDatepickerCustomEvent<HTMLSyDatepickerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyDatepickerElement: {
+        prototype: HTMLSyDatepickerElement;
+        new (): HTMLSyDatepickerElement;
     };
     interface HTMLSyDividerElement extends Components.SyDivider, HTMLStencilElement {
     }
@@ -1946,6 +2425,23 @@ declare global {
         prototype: HTMLSyRadioGroupElement;
         new (): HTMLSyRadioGroupElement;
     };
+    interface HTMLSyRangeCalendarElementEventMap {
+        "selected": any;
+    }
+    interface HTMLSyRangeCalendarElement extends Components.SyRangeCalendar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyRangeCalendarElementEventMap>(type: K, listener: (this: HTMLSyRangeCalendarElement, ev: SyRangeCalendarCustomEvent<HTMLSyRangeCalendarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyRangeCalendarElementEventMap>(type: K, listener: (this: HTMLSyRangeCalendarElement, ev: SyRangeCalendarCustomEvent<HTMLSyRangeCalendarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyRangeCalendarElement: {
+        prototype: HTMLSyRangeCalendarElement;
+        new (): HTMLSyRangeCalendarElement;
+    };
     interface HTMLSySelectElementEventMap {
         "opened": void;
         "removed": any;
@@ -2065,6 +2561,24 @@ declare global {
         prototype: HTMLSyTextareaElement;
         new (): HTMLSyTextareaElement;
     };
+    interface HTMLSyTimepickerElementEventMap {
+        "selected": any;
+        "changed": any;
+    }
+    interface HTMLSyTimepickerElement extends Components.SyTimepicker, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTimepickerElementEventMap>(type: K, listener: (this: HTMLSyTimepickerElement, ev: SyTimepickerCustomEvent<HTMLSyTimepickerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTimepickerElementEventMap>(type: K, listener: (this: HTMLSyTimepickerElement, ev: SyTimepickerCustomEvent<HTMLSyTimepickerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTimepickerElement: {
+        prototype: HTMLSyTimepickerElement;
+        new (): HTMLSyTimepickerElement;
+    };
     interface HTMLSyToastElement extends Components.SyToast, HTMLStencilElement {
     }
     var HTMLSyToastElement: {
@@ -2092,7 +2606,15 @@ declare global {
         "sy-breadcrumb-item": HTMLSyBreadcrumbItemElement;
         "sy-button": HTMLSyButtonElement;
         "sy-button-group": HTMLSyButtonGroupElement;
+        "sy-calendar": HTMLSyCalendarElement;
         "sy-checkbox": HTMLSyCheckboxElement;
+        "sy-collapse": HTMLSyCollapseElement;
+        "sy-collapse-panel": HTMLSyCollapsePanelElement;
+        "sy-colorpicker": HTMLSyColorpickerElement;
+        "sy-colorpicker-content": HTMLSyColorpickerContentElement;
+        "sy-date-calendar": HTMLSyDateCalendarElement;
+        "sy-date-time-calendar": HTMLSyDateTimeCalendarElement;
+        "sy-datepicker": HTMLSyDatepickerElement;
         "sy-divider": HTMLSyDividerElement;
         "sy-drawer": HTMLSyDrawerElement;
         "sy-empty": HTMLSyEmptyElement;
@@ -2120,6 +2642,7 @@ declare global {
         "sy-radio": HTMLSyRadioElement;
         "sy-radio-button": HTMLSyRadioButtonElement;
         "sy-radio-group": HTMLSyRadioGroupElement;
+        "sy-range-calendar": HTMLSyRangeCalendarElement;
         "sy-select": HTMLSySelectElement;
         "sy-skeleton": HTMLSySkeletonElement;
         "sy-slider": HTMLSySliderElement;
@@ -2128,6 +2651,7 @@ declare global {
         "sy-switch": HTMLSySwitchElement;
         "sy-tag": HTMLSyTagElement;
         "sy-textarea": HTMLSyTextareaElement;
+        "sy-timepicker": HTMLSyTimepickerElement;
         "sy-toast": HTMLSyToastElement;
         "sy-toast-item": HTMLSyToastItemElement;
         "sy-tooltip": HTMLSyTooltipElement;
@@ -2324,6 +2848,43 @@ declare namespace LocalJSX {
          */
         "vertical"?: boolean;
     }
+    interface SyCalendar {
+        "active": string;
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames"?: string;
+        "day": number;
+        /**
+          * @default 'hh:mm:ss'
+         */
+        "format"?: string;
+        /**
+          * @default false
+         */
+        "hideWeekend"?: boolean;
+        "hour": number;
+        "minute": number;
+        /**
+          * @default 'day'
+         */
+        "mode"?: 'day' | 'month' | 'year';
+        /**
+          * @default false
+         */
+        "mondayStart"?: boolean;
+        "month": number;
+        "onClosed"?: (event: SyCalendarCustomEvent<any>) => void;
+        "onSelected"?: (event: SyCalendarCustomEvent<any>) => void;
+        "rangeenddefault": string;
+        "rangestartdefault": string;
+        "second": number;
+        /**
+          * @default 'date'
+         */
+        "variant"?: 'date' | 'datetime' | 'range' | 'time';
+        "year": number;
+    }
     interface SyCheckbox {
         /**
           * @default false
@@ -2356,6 +2917,231 @@ declare namespace LocalJSX {
           * @default ''
          */
         "titleText"?: string;
+    }
+    interface SyCollapse {
+        /**
+          * @default false
+         */
+        "accordion"?: boolean;
+        /**
+          * @default false
+         */
+        "borderless"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "fullheight"?: boolean;
+        /**
+          * @default false
+         */
+        "ghost"?: boolean;
+    }
+    interface SyCollapsePanel {
+        /**
+          * @default false
+         */
+        "active"?: boolean;
+        /**
+          * @default false
+         */
+        "arrow"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "fullheight"?: boolean;
+        /**
+          * @default false
+         */
+        "ghost"?: boolean;
+        "onChanged"?: (event: SyCollapsePanelCustomEvent<CollapsePanelChangeDetail>) => void;
+    }
+    interface SyColorpicker {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 'hex'
+         */
+        "format"?: 'hex' | 'hsb' | 'rgb';
+        /**
+          * @default false
+         */
+        "hideOpacity"?: boolean;
+        /**
+          * @default false
+         */
+        "inline"?: boolean;
+        "onChanged"?: (event: SyColorpickerCustomEvent<{ value: string; format: string; opacity: number }>) => void;
+        /**
+          * @default 1
+         */
+        "opacity"?: number;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "showText"?: boolean;
+        /**
+          * @default '#ff0000'
+         */
+        "value"?: string;
+    }
+    interface SyColorpickerContent {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 'hex'
+         */
+        "format"?: 'hex' | 'rgb' | 'hsb';
+        /**
+          * @default false
+         */
+        "hideOpacity"?: boolean;
+        "onColorChange"?: (event: SyColorpickerContentCustomEvent<{ value: string; opacity: number; format: string }>) => void;
+        /**
+          * @default 1
+         */
+        "opacity"?: number;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default '#ff0000'
+         */
+        "value"?: string;
+    }
+    interface SyDateCalendar {
+        "active": string;
+        /**
+          * @default new Date()
+         */
+        "currentDate"?: Date;
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames"?: string;
+        /**
+          * @default {     year: new Date().getFullYear(),     month: new Date().getMonth(),     day: new Date().getDate(),     hour: new Date().getHours(),     minute: new Date().getMinutes(),     second: new Date().getSeconds()   }
+         */
+        "datetime"?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
+        /**
+          * @default false
+         */
+        "hideWeekend"?: boolean;
+        "hoverDate": string;
+        /**
+          * @default 'day'
+         */
+        "mode"?: 'day' | 'month' | 'year' | 'decade';
+        /**
+          * @default false
+         */
+        "mondayStart"?: boolean;
+        "onChanged"?: (event: SyDateCalendarCustomEvent<any>) => void;
+        "onEntered"?: (event: SyDateCalendarCustomEvent<any>) => void;
+        "onMode-changed"?: (event: SyDateCalendarCustomEvent<any>) => void;
+        "onSelected"?: (event: SyDateCalendarCustomEvent<any>) => void;
+        "range"?: 'start' | 'end';
+        /**
+          * @default undefined
+         */
+        "rangeend"?: {year: number, month: number, day: number } | undefined;
+        /**
+          * @default undefined
+         */
+        "rangestart"?: {year: number, month: number, day: number } | undefined;
+    }
+    interface SyDateTimeCalendar {
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames"?: string;
+        /**
+          * @default {     year: new Date().getFullYear(),     month: new Date().getMonth(),     day: new Date().getDate(),     hour: new Date().getHours(),     minute: new Date().getMinutes(),     second: new Date().getSeconds()   }
+         */
+        "datetime"?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
+        /**
+          * @default false
+         */
+        "hideWeekend"?: boolean;
+        /**
+          * @default 'day'
+         */
+        "mode"?: 'day' | 'month' | 'year' | 'decade';
+        /**
+          * @default false
+         */
+        "mondayStart"?: boolean;
+        "onSelected"?: (event: SyDateTimeCalendarCustomEvent<any>) => void;
+    }
+    interface SyDatepicker {
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames"?: string;
+        "day": string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 'yyyy-MM-dd hh:mm:ss'
+         */
+        "format"?: string;
+        /**
+          * @default false
+         */
+        "hideWeekend"?: boolean;
+        "hour": string;
+        "minute": string;
+        /**
+          * @default 'day'
+         */
+        "mode"?: 'day' | 'month' | 'year';
+        /**
+          * @default false
+         */
+        "mondayStart"?: boolean;
+        "month": string;
+        /**
+          * @default ''
+         */
+        "name"?: string;
+        "onChanged"?: (event: SyDatepickerCustomEvent<any>) => void;
+        "onSelected"?: (event: SyDatepickerCustomEvent<any>) => void;
+        /**
+          * @default ''
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        "second": string;
+        /**
+          * @default 'date'
+         */
+        "variant"?: 'date' | 'datetime' | 'range' | 'time';
+        "year": string;
     }
     interface SyDivider {
         /**
@@ -3100,6 +3886,35 @@ declare namespace LocalJSX {
          */
         "variant"?: 'outlined' | 'solid';
     }
+    interface SyRangeCalendar {
+        "active": string;
+        /**
+          * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
+         */
+        "dateNames"?: string;
+        "datetime"?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
+        /**
+          * @default false
+         */
+        "hideWeekend"?: boolean;
+        /**
+          * @default 'day'
+         */
+        "mode"?: 'day' | 'month' | 'year';
+        /**
+          * @default false
+         */
+        "mondayStart"?: boolean;
+        "onSelected"?: (event: SyRangeCalendarCustomEvent<any>) => void;
+        /**
+          * @default undefined
+         */
+        "rangeend"?: { year: number, month: number, day: number } | undefined;
+        /**
+          * @default undefined
+         */
+        "rangestart"?: { year: number, month: number, day: number } | undefined;
+    }
     interface SySelect {
         /**
           * @default false
@@ -3446,6 +4261,34 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    interface SyTimepicker {
+        /**
+          * @default 'hh:mm:ss'
+         */
+        "format"?: string;
+        /**
+          * @default false
+         */
+        "hideButton"?: boolean;
+        /**
+          * @default 0
+         */
+        "hour"?: number;
+        /**
+          * @default 0
+         */
+        "minute"?: number;
+        "onChanged"?: (event: SyTimepickerCustomEvent<any>) => void;
+        "onSelected"?: (event: SyTimepickerCustomEvent<any>) => void;
+        /**
+          * @default 0
+         */
+        "second"?: number;
+        /**
+          * @default ':'
+         */
+        "timeSeparator"?: string;
+    }
     interface SyToast {
         /**
           * @default 3000
@@ -3530,7 +4373,15 @@ declare namespace LocalJSX {
         "sy-breadcrumb-item": SyBreadcrumbItem;
         "sy-button": SyButton;
         "sy-button-group": SyButtonGroup;
+        "sy-calendar": SyCalendar;
         "sy-checkbox": SyCheckbox;
+        "sy-collapse": SyCollapse;
+        "sy-collapse-panel": SyCollapsePanel;
+        "sy-colorpicker": SyColorpicker;
+        "sy-colorpicker-content": SyColorpickerContent;
+        "sy-date-calendar": SyDateCalendar;
+        "sy-date-time-calendar": SyDateTimeCalendar;
+        "sy-datepicker": SyDatepicker;
         "sy-divider": SyDivider;
         "sy-drawer": SyDrawer;
         "sy-empty": SyEmpty;
@@ -3558,6 +4409,7 @@ declare namespace LocalJSX {
         "sy-radio": SyRadio;
         "sy-radio-button": SyRadioButton;
         "sy-radio-group": SyRadioGroup;
+        "sy-range-calendar": SyRangeCalendar;
         "sy-select": SySelect;
         "sy-skeleton": SySkeleton;
         "sy-slider": SySlider;
@@ -3566,6 +4418,7 @@ declare namespace LocalJSX {
         "sy-switch": SySwitch;
         "sy-tag": SyTag;
         "sy-textarea": SyTextarea;
+        "sy-timepicker": SyTimepicker;
         "sy-toast": SyToast;
         "sy-toast-item": SyToastItem;
         "sy-tooltip": SyTooltip;
@@ -3588,7 +4441,15 @@ declare module "@stencil/core" {
             "sy-breadcrumb-item": LocalJSX.SyBreadcrumbItem & JSXBase.HTMLAttributes<HTMLSyBreadcrumbItemElement>;
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
             "sy-button-group": LocalJSX.SyButtonGroup & JSXBase.HTMLAttributes<HTMLSyButtonGroupElement>;
+            "sy-calendar": LocalJSX.SyCalendar & JSXBase.HTMLAttributes<HTMLSyCalendarElement>;
             "sy-checkbox": LocalJSX.SyCheckbox & JSXBase.HTMLAttributes<HTMLSyCheckboxElement>;
+            "sy-collapse": LocalJSX.SyCollapse & JSXBase.HTMLAttributes<HTMLSyCollapseElement>;
+            "sy-collapse-panel": LocalJSX.SyCollapsePanel & JSXBase.HTMLAttributes<HTMLSyCollapsePanelElement>;
+            "sy-colorpicker": LocalJSX.SyColorpicker & JSXBase.HTMLAttributes<HTMLSyColorpickerElement>;
+            "sy-colorpicker-content": LocalJSX.SyColorpickerContent & JSXBase.HTMLAttributes<HTMLSyColorpickerContentElement>;
+            "sy-date-calendar": LocalJSX.SyDateCalendar & JSXBase.HTMLAttributes<HTMLSyDateCalendarElement>;
+            "sy-date-time-calendar": LocalJSX.SyDateTimeCalendar & JSXBase.HTMLAttributes<HTMLSyDateTimeCalendarElement>;
+            "sy-datepicker": LocalJSX.SyDatepicker & JSXBase.HTMLAttributes<HTMLSyDatepickerElement>;
             "sy-divider": LocalJSX.SyDivider & JSXBase.HTMLAttributes<HTMLSyDividerElement>;
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
@@ -3640,6 +4501,7 @@ declare module "@stencil/core" {
             "sy-radio": LocalJSX.SyRadio & JSXBase.HTMLAttributes<HTMLSyRadioElement>;
             "sy-radio-button": LocalJSX.SyRadioButton & JSXBase.HTMLAttributes<HTMLSyRadioButtonElement>;
             "sy-radio-group": LocalJSX.SyRadioGroup & JSXBase.HTMLAttributes<HTMLSyRadioGroupElement>;
+            "sy-range-calendar": LocalJSX.SyRangeCalendar & JSXBase.HTMLAttributes<HTMLSyRangeCalendarElement>;
             "sy-select": LocalJSX.SySelect & JSXBase.HTMLAttributes<HTMLSySelectElement>;
             "sy-skeleton": LocalJSX.SySkeleton & JSXBase.HTMLAttributes<HTMLSySkeletonElement>;
             "sy-slider": LocalJSX.SySlider & JSXBase.HTMLAttributes<HTMLSySliderElement>;
@@ -3648,6 +4510,7 @@ declare module "@stencil/core" {
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
+            "sy-timepicker": LocalJSX.SyTimepicker & JSXBase.HTMLAttributes<HTMLSyTimepickerElement>;
             "sy-toast": LocalJSX.SyToast & JSXBase.HTMLAttributes<HTMLSyToastElement>;
             "sy-toast-item": LocalJSX.SyToastItem & JSXBase.HTMLAttributes<HTMLSyToastItemElement>;
             "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;

@@ -59,18 +59,12 @@ export class SySelect {
   @State() private activeOptionIndex: number = -1;
   @State() private touched: boolean = false;
   @State() private formSubmitted: boolean = false;
-  @State() private optionsReady: boolean = false;
-  @State() private pendingDefaultValue: string = '';
+
 
   @State() private isValid: boolean = true;
   @State() private validStatus: 'valueMissing' | 'custom' | '' = '';
   @State() private hasSlotErrorMessage: boolean = false;
   @State() private hasPopupErrorComponent: boolean = false;
-
-  @Watch('inputValue')
-  watchInputValue(_newValue: string, _oldValue: string) {
-    // inputValue 변경 감지
-  }
 
   private handleOutsideClick = this.handleOutsideClickEvent.bind(this);
 
@@ -107,20 +101,8 @@ export class SySelect {
     this.defaultValue = fnAssignPropFromAlias(this.host, 'default-value') ?? this.defaultValue;
     this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
 
-    this.optionsReady = true;
-    this.inputPlaceholder = this.placeholder;
     this.isValid = true;
     this.validStatus = '';
-
-    // 초기 defaultValue 처리
-    if (this.defaultValue) {
-      this.pendingDefaultValue = this.defaultValue;
-      this.applyDefaultValue();
-    }
-  }
-
-  componentDidLoad() {
-    // DOM 조작만 수행
     this.updatePopupPosition();
 
     window.addEventListener('resize', this.updatePopupPosition.bind(this));
@@ -136,7 +118,10 @@ export class SySelect {
       this.resizeObserver.observe(selectContainer);
     }
   }
-
+  @Watch('inputValue')
+  watchInputValue(_newValue: string, _oldValue: string) {
+    // inputValue 변경 감지
+  }
   @Watch('isOpen')
   onIsOpenChange(newValue: boolean) {
     if (!newValue) {
@@ -178,11 +163,10 @@ export class SySelect {
     this.updatePlaceholder();
   }
   @Watch('defaultValue')
-  onDefaultValueChange(newValue: string) {
-    if (newValue !== this.pendingDefaultValue) {
-      this.pendingDefaultValue = newValue;
-      // 다음 tick에서 defaultValue 적용
-      Promise.resolve().then(() => {
+  onDefaultValueChange(newValue: string, oldValue: string) {
+    if (newValue !== oldValue) {
+      // 다음 렌더링 사이클에서 실행하여 안정성 확보
+      requestAnimationFrame(() => {
         this.applyDefaultValue();
       });
     }
@@ -252,27 +236,29 @@ export class SySelect {
   };
 
   private applyDefaultValue() {
-    if (!this.optionsReady || !this.pendingDefaultValue) {
+    // defaultValue가 없으면 아무것도 하지 않음
+    if (!this.defaultValue) {
+      // 기존 선택값 초기화 (옵션)
+      // this.selectedOptions = [];
+      // this.updateModel();
       return;
     }
 
-    const newModels = this.pendingDefaultValue.split(',').map((element: string) => element.trim());
+    const newModels = this.defaultValue.split(',').map((element: string) => element.trim());
+
     if ((this.mode === 'default' || this.mode === 'searchable') && newModels?.length) {
       this.models = [newModels[0]];
     } else {
       this.models = newModels;
     }
-
-    // 다음 tick에서 model 업데이트 및 pendingDefaultValue 초기화
-    Promise.resolve().then(() => {
-      this.updateModel();
-      this.pendingDefaultValue = '';
-    });
+    
+    // 모델이 설정된 후, 모델에 따라 selectedOptions를 업데이트
+    this.updateModel();
   }
 
   private handleSlotChange() {
-    // 슬롯 변경 시 필요한 로직만 수행 (상태 변경 없음)
-    // defaultValue 처리는 componentWillLoad()에서 이미 처리됨
+    // slot의 자식들이 준비되었으므로, defaultValue를 다시 적용합니다.
+    this.applyDefaultValue();
   }
 
   private updateModel() {
@@ -289,19 +275,29 @@ export class SySelect {
         this.selectedOptions = [];
       }
     } else {
-      const options = Array.from(this.host.children).filter(host => host.tagName === OPTION) as HTMLSyOptionElement[];
+      // `this.host.children` 대신 `querySelectorAll` 사용
+      const options = Array.from(this.host.querySelectorAll(OPTION)) as HTMLSyOptionElement[];
+      
       if (options?.length) {
-        const filterOptions = options.filter(opt => this.models?.some(m => opt.value.toString() && m === opt.value.toString() && !opt.disabled));
+        const filterOptions = options.filter(opt => this.models?.some(m => opt.value?.toString() && m === opt.value.toString() && !opt.disabled));
+
         if (filterOptions?.length) {
           this.selectedOptions = filterOptions.map(opt => ({
             value: opt.value.toString(),
             label: !opt?.label ? opt.value.toString() : opt.label.toString(),
           }));
         } else {
+          // defaultValue와 일치하는 옵션이 없는 경우, 선택을 비웁니다.
           this.selectedOptions = [];
         }
+      } else {
+        // 옵션이 아직 없는 경우
+        this.selectedOptions = [];
       }
     }
+    // placeholder와 폼 값을 업데이트합니다.
+    this.updatePlaceholder();
+    this.updateFormValue();
   }
 
   private toggleDropdown = (e: any) => {
@@ -1459,7 +1455,7 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
       <Host>
         {/* 원본 <sy-option> 요소들을 화면에 표시하지 않기 위해 숨겨진 div 안에 slot을 배치합니다. */}
         <div style={{ display: 'none' }}>
-          <slot onSlotchange={() => this.handleSlotChange()}></slot>
+          <slot onSlotchange={this.handleSlotChange.bind(this)}></slot>
         </div>
 
         <div
