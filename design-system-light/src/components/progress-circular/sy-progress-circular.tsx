@@ -13,7 +13,7 @@ export interface SegmentModel {
   shadow: false,
 })
 export class SyProgressCircular {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyProgressCircularElement;
 
   @Prop({ reflect: true, mutable: true }) percent: number = 0;
   @Prop() segment: string = '';

@@ -2,10 +2,6 @@
 
 import { Component, h, Prop, Element } from '@stencil/core';
 
-export interface HTMLSyDividerElement extends HTMLElement {
-  type: 'horizontal' | 'vertical';
-}
-
 @Component({
   tag: 'sy-divider',
   styleUrl: 'sy-divider.scss',

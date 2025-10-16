@@ -1,16 +1,5 @@
 import { Component, Prop, State, Element, h, Watch, Event, EventEmitter } from '@stencil/core';
-import { hexToRgb, rgbToHex, rgbToHsb, hsbToRgb, isValidFormat } from './color-utils';
-
-export interface HTMLSyColorpickerElement extends HTMLElement {
-  value: string;
-  opacity: number;
-  showText: boolean;
-  disabled: boolean;
-  readonly: boolean;
-  inline: boolean;
-  hideOpacity: boolean;
-  format: 'hex' | 'hsb' | 'rgb';
-}
+import { hexToRgb, rgbToHsb, hsbToRgb, isValidFormat } from './color-utils';
 
 @Component({
   tag: 'sy-colorpicker',
@@ -19,7 +8,7 @@ export interface HTMLSyColorpickerElement extends HTMLElement {
   shadow: false,
 })
 export class SyColorpicker {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyColorpickerElement;
 
   @Prop({ mutable: true }) value: string = '#ff0000';
   @Prop({ mutable: true }) opacity: number = 1;

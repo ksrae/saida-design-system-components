@@ -3,24 +3,14 @@
 import { Component, h, Prop, State, Watch, Element, JSX } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyBannerElement extends HTMLElement {
-  closable: boolean;
-  showIcon: boolean;
-  neutralIcon: string;
-  message: string;
-  header: string;
-  variant: 'info' | 'success' | 'warning' | 'error' | 'neutral';
-}
-
 @Component({
   tag: 'sy-banner-messsage',
   styleUrl: 'sy-banner.scss',
   shadow: false,
   scoped: true,
 })
-export class BannerElement {
-
-  @Element() host: HTMLSyBannerElement;
+export class SyBannerMessage {
+  @Element() host: HTMLSyBannerMesssageElement;
 
   @Prop({ reflect: true }) closable: boolean = false;
   @Prop({ attribute: 'showIcon', mutable: true }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
@@ -76,7 +66,7 @@ export class BannerElement {
   }
 
   private createBanner(): void {
-    document.querySelectorAll('sy-banner-messsage').forEach(banner => {
+    document.querySelectorAll('sy-banner-messsage').forEach((banner: any) => {
       if (banner !== this.host) {
         banner.remove();
       }

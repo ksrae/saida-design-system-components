@@ -1,6 +1,4 @@
 import { Component, Prop, State, h, Element, Watch, Method } from '@stencil/core';
-import { HTMLSyNavItemElement } from './sy-nav-item';
-import { HTMLSyNavGroupElement } from './sy-nav-group';
 
 export interface SyNavSubProps {
   title?: string;
@@ -8,16 +6,6 @@ export interface SyNavSubProps {
   open?: boolean;
   disabled?: boolean;
   depth?: number;
-}
-
-export interface HTMLSyNavSubElement extends HTMLElement {
-  value?: string;
-  active?: boolean;
-  setActive?: (active: boolean) => Promise<void>;
-  parentDisabled?: boolean;
-  depth?: number;
-  setClose?: () => void;
-  groupItem?: boolean;
 }
 
 const SUBNAV = 'SY-NAV-SUB';
@@ -36,18 +24,17 @@ const NAVITEM = 'SY-NAV-ITEM';
   shadow: false,
 })
 export class SyNavSub {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyNavSubElement;
 
   @Prop() title: string = '';
   @Prop() value: string = '';
   @Prop({ mutable: true }) open: boolean = false;
-  @Prop({ reflect: true }) disabled: boolean = false;
+  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
   @Prop({ reflect: true, mutable: true }) depth: number = 0;
 
-  @State() parentDisabled: boolean = false;
   @State() active: boolean = false;
   @State() trigger: 'click' | 'hover' = 'click';
-  @State() groupItem: boolean = false;
+  @State() isGroup: boolean = false;
 
   private receiveDisabled = false;
   private hasChild = false;
@@ -89,16 +76,21 @@ export class SyNavSub {
     this.updateTrigger();
   }
 
-  @Watch('parentDisabled')
-  watchParentDisabled(newValue: boolean) {
-    if (this.receiveDisabled) {
-      this.disabled = newValue;
-    }
-  }
-
   @Watch('disabled')
   watchDisabled() {
     this.sendDisabled();
+  }
+
+  @Method()
+  async parentDisabled(disabled: boolean) {
+    if (this.receiveDisabled) {
+      this.disabled = disabled;
+    }
+  }
+
+  @Method()
+  async groupItem(group: boolean) {
+    this.isGroup = group;
   }
 
   private calculateDepth() {
@@ -110,10 +102,10 @@ export class SyNavSub {
     if (parentTagName === 'sy-nav') {
       this.depth = 0;
     } else if (parentTagName === 'sy-nav-sub') {
-      const parentSub = parent as HTMLSyNavSubElement;
+      const parentSub = parent as unknown as HTMLSyNavSubElement;
       this.depth = (parentSub.depth || 0) + 1;
     } else if (parentTagName === 'sy-nav-group') {
-      const parentGroup = parent as HTMLSyNavGroupElement;
+      const parentGroup = parent as unknown as HTMLSyNavGroupElement;
       this.depth = parentGroup.depth || 0;
     }
   }
@@ -122,9 +114,9 @@ export class SyNavSub {
     const elements = this.host.querySelectorAll('sy-nav-sub, sy-nav-item');
     elements.forEach((element) => {
       if (element.tagName.toUpperCase() === 'SY-NAV-SUB') {
-        (element as HTMLSyNavSubElement).parentDisabled = this.disabled;
+        (element as any).parentDisabled(this.disabled);
       } else if (element.tagName.toUpperCase() === 'SY-NAV-ITEM') {
-        (element as HTMLSyNavItemElement).parentDisabled = this.disabled;
+        (element as any).parentDisabled(this.disabled);
       }
     });
   }
@@ -139,7 +131,8 @@ export class SyNavSub {
     }
   }
 
-  public setTrigger() {
+  @Method()
+  async setTrigger() {
     if (this.open) {
       this.setClose();
     } else {
@@ -147,7 +140,8 @@ export class SyNavSub {
     }
   }
 
-  public setOpen() {
+  @Method()
+  async setOpen() {
     if (this.disabled) return;
 
     this.open = true;
@@ -155,14 +149,15 @@ export class SyNavSub {
     this.eventEmitter();
   }
 
-  public setClose() {
+  @Method()
+  async setClose() {
     if (this.disabled) return;
     
     const children = Array.from(this.host.children);
     children?.forEach(child => {
       if (child.tagName.toUpperCase() === SUBNAV) {
         const childSub = child as HTMLSyNavSubElement;
-        childSub.setClose?.();
+        (childSub as any).setClose?.();
       }
     });
     
@@ -244,7 +239,7 @@ export class SyNavSub {
       'active': this.active,
       'open': this.open && this.hasChild,
       'close': !this.open && this.hasChild,
-      'group-list': this.groupItem,
+      'group-list': this.isGroup,
     };
 
     const submenuClasses = {

@@ -16,6 +16,19 @@
 | `size`        | `size`        |             | `"large" \| "medium" \| "small" \| "xlarge"` | `'medium'` |
 
 
+## Dependencies
+
+### Used by
+
+ - [sy-option](../select)
+
+### Graph
+```mermaid
+graph TD;
+  sy-option --> sy-spinner
+  style sy-spinner fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

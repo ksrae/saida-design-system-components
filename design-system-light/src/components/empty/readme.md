@@ -14,6 +14,10 @@
 
 ## Dependencies
 
+### Used by
+
+ - [sy-option](../select)
+
 ### Depends on
 
 - [sy-icon](../icon)
@@ -22,6 +26,7 @@
 ```mermaid
 graph TD;
   sy-empty --> sy-icon
+  sy-option --> sy-empty
   style sy-empty fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

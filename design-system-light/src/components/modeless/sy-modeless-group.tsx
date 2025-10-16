@@ -1,26 +1,11 @@
 import { Component, Element, h, Method, State, VNode } from '@stencil/core';
 
-export interface HTMLSyModelessGroupElement extends HTMLElement {
-  create: (
-    id: string, 
-    title?: string | HTMLElement | VNode,
-    content?: string | HTMLElement | VNode, 
-    option?: Partial<Pick<HTMLSyModelessElement, 'draggable' | 'resizable' | 'edge' | 'closable' | 'maximizable' | 'minimizable' | 'top' | 'left' | 'width' | 'height'>>
-  ) => Promise<void>;
-  updateContent: (id: string, content: string | HTMLElement | VNode) => Promise<void>;
-  updateTitle: (id: string, title: string | HTMLElement | VNode) => Promise<void>;
-  updateOption: (id: string, option: Partial<Pick<HTMLSyModelessElement, 'draggable' | 'resizable' | 'edge' | 'closable' | 'maximizable' | 'minimizable' | 'top' | 'left' | 'width' | 'height'>>) => Promise<void>;
-  close: (id: string) => Promise<void>;
-  closeAll: () => Promise<void>;
-}
-
 export interface ModelessGroupModel {
   id: string,
   title?: string | HTMLElement | VNode,
   content?: string | HTMLElement | VNode,
   option?: Partial<Pick<HTMLSyModelessElement, 'draggable' | 'resizable' | 'edge' | 'closable' | 'maximizable' | 'minimizable' | 'top' | 'left' | 'width' | 'height'>>,
 }
-
 
 @Component({
   tag: 'sy-modeless-group',

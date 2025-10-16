@@ -1,5 +1,4 @@
 import { Component, Prop, Method, Element, h } from '@stencil/core';
-import { HTMLSyToastItemElement } from './sy-toast-item'; // sy-toast-item의 인터페이스를 직접 임포트합니다.
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 export interface ToastOptions {
@@ -12,26 +11,14 @@ export interface ToastOptions {
   footerSlot?: string | HTMLElement;
 }
 
-export interface HTMLSyToastElement extends HTMLElement {
-  latestTop: boolean;
-  duration: number;
-  createToast: (variant: 'neutral' | 'success' | 'error' | 'info' | 'warning', option?: ToastOptions) => Promise<void>;
-  createNeutralToast: (option?: ToastOptions) => Promise<void>;
-  createSuccessToast: (option?: ToastOptions) => Promise<void>;
-  createErrorToast: (option?: ToastOptions) => Promise<void>;
-  createInfoToast: (option?: ToastOptions) => Promise<void>;
-  createWarningToast: (option?: ToastOptions) => Promise<void>;
-  closeToast: (toastItemElement: HTMLSyToastItemElement) => Promise<void>;
-}
-
 @Component({
   tag: 'sy-toast',
   styleUrl: 'sy-toast.scss',
   scoped: true,
   shadow: false,
 })
-export class Toast {
-  @Element() host: HTMLElement;
+export class SyToast {
+  @Element() host: HTMLSyToastElement;
 
   @Prop({ attribute: 'latestTop', mutable: true }) latestTop: boolean = false;
   @Prop() duration: number = 3000;

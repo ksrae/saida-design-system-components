@@ -1,29 +1,6 @@
 import { Component, Prop, State, Element, Watch, Method, h } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-// HTMLSyModalElement interface
-export interface HTMLSyModalElement extends HTMLElement {
-  // Props
-  cancelText: string;
-  closable: boolean;
-  enableModalMaximize: boolean;
-  hideFooter: boolean;
-  maskClosable: boolean;
-  okText: string;
-  open: boolean;
-  width: number;
-  top: string;
-  left: string;
-  variant: 'modal' | 'dialog';
-
-  // Methods
-  setOpen(): Promise<void>;
-  setClose(value?: any): Promise<void>;
-  setCancel(value?: any): Promise<void>;
-  setOk(value?: any): Promise<void>;
-  setMaximum(): Promise<void>;
-}
-
 @Component({
   tag: 'sy-modal',
   styleUrl: 'sy-modal.scss',
@@ -31,7 +8,7 @@ export interface HTMLSyModalElement extends HTMLElement {
   scoped: true,
 })
 export class SyModal {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyModalElement;
 
   // Props
   @Prop({ attribute: 'cancelText', mutable: true }) cancelText: string = '';

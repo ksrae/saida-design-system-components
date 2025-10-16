@@ -1,17 +1,5 @@
-import { Component, Prop, State, Element, h, Watch, Method } from '@stencil/core';
+import { Component, Prop, Element, h, Watch, Method } from '@stencil/core';
 import { CollapsePanelChangeDetail } from './sy-collapse-panel';
-
-export interface HTMLSyCollapseElement extends HTMLElement {
-  accordion: boolean;
-  borderless: boolean;
-  disabled: boolean;
-  fullheight: boolean;
-  ghost: boolean;
-  openAll: () => Promise<void>;
-  closeAll: () => Promise<void>;
-  openPanel: (index: number) => Promise<void>;
-  closePanel: (index: number) => Promise<void>;
-}
 
 @Component({
   tag: 'sy-collapse',
@@ -20,7 +8,7 @@ export interface HTMLSyCollapseElement extends HTMLElement {
   scoped: true
 })
 export class SyCollapse {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyCollapseElement;
 
   @Prop({ reflect: true }) accordion: boolean = false;
   @Prop() borderless: boolean = false;

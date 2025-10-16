@@ -1,108 +1,121 @@
-# Navigation Components
+# sy-nav-sub
 
-Complete navigation system with hierarchical menu structure support.
 
-## Components
 
-### sy-nav
-Main navigation container that manages global navigation state.
+<!-- Auto Generated Below -->
 
-**Properties:**
-- `disabled` (boolean): Disables entire navigation
 
-### sy-nav-item  
-Individual navigation item with click handling and active state.
+## Overview
 
-**Properties:**
-- `title` (string): Item title text
-- `value` (string): Item value for events
-- `href` (string): Navigation URL
-- `target` (string): Link target
-- `disabled` (boolean): Item disabled state
-- `clickable` (boolean): Whether item is clickable
-- `depth` (number): Nesting depth level
+sy-nav-sub (Stencil port, light DOM, scoped)
+- Navigation submenu component with collapsible functionality
+- Supports click and hover triggers
 
-**Events:**
-- `selected`: Fired when item is clicked
+## Properties
 
-### sy-nav-sub
-Collapsible submenu with nested navigation support.
+| Property   | Attribute  | Description | Type      | Default |
+| ---------- | ---------- | ----------- | --------- | ------- |
+| `depth`    | `depth`    |             | `number`  | `0`     |
+| `disabled` | `disabled` |             | `boolean` | `false` |
+| `open`     | `open`     |             | `boolean` | `false` |
+| `title`    | `title`    |             | `string`  | `''`    |
+| `value`    | `value`    |             | `string`  | `''`    |
 
-**Properties:**
-- `title` (string): Submenu title
-- `value` (string): Submenu value
-- `open` (boolean): Open/closed state  
-- `disabled` (boolean): Disabled state
-- `depth` (number): Nesting depth level
 
-**Events:**
-- `selected`: Fired when submenu is toggled
+## Methods
 
-**Methods:**
-- `setOpen()`: Opens the submenu
-- `setClose()`: Closes the submenu  
-- `setTrigger()`: Toggles submenu state
+### `groupItem(group: boolean) => Promise<void>`
 
-### sy-nav-group
-Groups navigation items with optional title header.
 
-**Properties:**
-- `title` (string): Group title text
-- `depth` (number): Nesting depth level
 
-## Features
+#### Parameters
 
-- **Light DOM + Scoped CSS**: All components use light DOM with scoped styling
-- **Hierarchical Structure**: Automatic depth calculation and nested navigation
-- **State Management**: Disabled state propagation and active item tracking
-- **Event System**: Consistent event bubbling with custom selected events
-- **Keyboard Navigation**: Enter key support for submenus
-- **Flexible Triggers**: Click and hover modes for submenus
-- **Group Organization**: Automatic groupItem flagging for styled grouping
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `group` | `boolean` |             |
 
-## Complete Usage Example
+#### Returns
 
-```html
-<sy-nav>
-  <!-- Simple nav items -->
-  <sy-nav-item title="Home" value="home" href="/home"></sy-nav-item>
-  <sy-nav-item title="About" value="about" href="/about"></sy-nav-item>
-  
-  <!-- Grouped items -->
-  <sy-nav-group title="Products">
-    <sy-nav-item title="Product A" value="product-a"></sy-nav-item>
-    <sy-nav-item title="Product B" value="product-b"></sy-nav-item>
-  </sy-nav-group>
-  
-  <!-- Nested submenus -->
-  <sy-nav-sub title="Services" value="services">
-    <sy-nav-item title="Web Design" value="web-design"></sy-nav-item>
-    <sy-nav-item title="Consulting" value="consulting"></sy-nav-item>
-    
-    <sy-nav-sub title="Development" value="development">
-      <sy-nav-item title="Frontend" value="frontend"></sy-nav-item>
-      <sy-nav-item title="Backend" value="backend"></sy-nav-item>
-      
-      <sy-nav-group title="Technologies">
-        <sy-nav-item title="React" value="react"></sy-nav-item>
-        <sy-nav-item title="Node.js" value="nodejs"></sy-nav-item>
-      </sy-nav-group>
-    </sy-nav-sub>
-  </sy-nav-sub>
-  
-  <!-- Disabled section -->
-  <sy-nav-sub title="Admin" value="admin" disabled>
-    <sy-nav-item title="Users" value="users"></sy-nav-item>
-    <sy-nav-item title="Settings" value="settings"></sy-nav-item>
-  </sy-nav-sub>
-</sy-nav>
+Type: `Promise<void>`
+
+
+
+### `parentDisabled(disabled: boolean) => Promise<void>`
+
+
+
+#### Parameters
+
+| Name       | Type      | Description |
+| ---------- | --------- | ----------- |
+| `disabled` | `boolean` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setActive(active: boolean) => Promise<void>`
+
+
+
+#### Parameters
+
+| Name     | Type      | Description |
+| -------- | --------- | ----------- |
+| `active` | `boolean` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setClose() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setOpen() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setTrigger() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
+## Dependencies
+
+### Depends on
+
+- [sy-icon](../icon)
+
+### Graph
+```mermaid
+graph TD;
+  sy-nav-sub --> sy-icon
+  style sy-nav-sub fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-## Event Handling
+----------------------------------------------
 
-```javascript
-document.addEventListener('selected', (event) => {
-  console.log('Navigation selected:', event.detail);
-  // Handle navigation based on event.detail value
-});
-```
+*Built with [StencilJS](https://stenciljs.com/)*

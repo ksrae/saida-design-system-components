@@ -1,0 +1,23 @@
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
+import { SyButtonProps, ButtonType } from '../../sy-button.main';
+import buttonMeta from '../../sy-button.main.stories';
+
+const meta: Meta<SyButtonProps> = {
+  title: 'Button/Attributes/Type',
+  component: 'sy-button',
+  tags: [],
+  render: (args) => ButtonType(args),
+  argTypes: {
+    type: buttonMeta?.argTypes?.type
+  },
+  args: {
+    type: 'button'
+  },
+};
+
+export default meta;
+
+type Story = StoryObj<SyButtonProps>;
+export const Default: Story = {};
+
+

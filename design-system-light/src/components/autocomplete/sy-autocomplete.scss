@@ -1,0 +1,212 @@
+    @use "../../assets/style/global/font" as font;
+
+    /* Autocomplete Input */
+    :root,
+    :host {
+      display: flex;
+      flex-direction: column;
+      // background-color: var(--autocomplete-input-background-enabled);
+      /* Size */
+      --autocomplete-size-large: var(--component-large);
+      --autocomplete-size-medium: var(--component-medium);
+      --autocomplete-size-small: var(--component-small);
+
+      /* Input spacing */
+      --autocomplete-spacing-large: var(--spacing-small);
+      --autocomplete-spacing-medium: var(--spacing-xsmall);
+      --autocomplete-spacing-small: var(--spacing-2xsmall);
+      .autocomplete {
+        flex: 1;
+        height: var(--autocomplete-size-medium);
+        border: var(--border-small) var(--autocomplete-input-border-enabled);
+        padding: 0 var(--autocomplete-spacing-medium);
+        color: var(--autocomplete-input-text-enabled);
+        background-color: var(--autocomplete-input-background-enabled);
+        border-radius: var(--border-radius-medium);
+        box-sizing: border-box;
+        @include font.text-style-base-regular;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: none;
+
+        input {
+          flex: 1;
+          border: var(--border-small) transparent;
+          background: var(--autocomplete-input-background-enabled);
+          color: var(--autocomplete-input-text-enabled);
+          outline: none;
+          padding: 0px;
+
+          &:focus-visible {
+            border: var(--border-small) transparent;
+            outline: var(--border-small) var(--focus-outline);
+            box-shadow: none;
+            outline-offset: 0px;
+            outline: none;
+          }
+        }
+
+        &:hover {
+          color: var(--autocomplete-input-text-hover);
+          border: var(--border-small) var(--autocomplete-input-border-hover);
+          background-color: var(--autocomplete-input-background-hover);
+        }
+
+        &[type="number"] {
+          padding-right: 30px;
+        }
+
+        &[type="number"]::-webkit-inner-spin-button {
+          opacity: 1 !important;
+          background: transparent !important;
+          border-width: 0px;
+          margin: 0;
+          height: 34px;
+          width: 23px;
+          cursor: pointer;
+          display: inline-block;
+          content: "";
+        }
+
+        &:focus-visible {
+          border: var(--border-small) var(--focus-outline) !important;
+          outline: var(--border-small) var(--focus-outline) !important;
+        }
+
+        &.autocomplete--large {
+          height: var(--autocomplete-size-large);
+          padding: 0 var(--autocomplete-spacing-large);
+          height: 40px;
+
+          input {
+            @include font.text-style-large-regular;
+          }
+        }
+
+        &.autocomplete--small {
+          height: var(--autocomplete-size-small);
+          padding: 0 var(--autocomplete-spacing-small);
+          border-radius: var(--border-radius-small);
+
+          input {
+            @include font.text-style-small-regular;
+          }
+        }
+
+        &.autocomplete--focused {
+          border: var(--border-small) var(--focus-outline) !important;
+          outline: var(--border-small) var(--focus-outline) !important;
+        }
+
+        &.autocomplete--borderless {
+          border: var(--border-small) transparent;
+        }
+
+
+        &.autocomplete--valid {
+          border: var(--border-small) var(--border-success) !important;
+
+          &:focus-visible {
+            border: var(--border-small) var(--border-success) !important;
+            outline: var(--border-small) var(--focus-outline) !important;
+          }
+        }
+
+        &.autocomplete--invalid {
+          border: var(--border-small) var(--border-error) !important;
+
+          &:focus-visible {
+            border: var(--border-small) var(--border-error) !important;
+            outline: var(--border-small) var(--focus-outline) !important;
+          }
+        }
+
+        .autocomplete--clear {
+          cursor: pointer;
+        }
+      }
+
+      // remove default clear button incase of type="search"
+      // compatable with chrome,edge,and firefox
+      input::-webkit-search-decoration,
+      input::-webkit-search-cancel-button,
+      input::-webkit-search-results-button,
+      input::-webkit-search-results-decoration {
+        opacity: 0;
+        pointer-events: none
+      }
+
+    }
+
+    /* autocomplete-option-container */
+    .autocomplete-option-container {
+      // border: var(--border-small) var(--autocomplete-default-border-enabled);
+      box-shadow: var(--box-shadow);
+      background-color: var(--autocomplete-inputlistcontainer-background-enabled);
+      border-radius: var(--border-radius-medium);
+      max-height: 300px;
+      overflow-y: auto;
+      padding-top: var(--spacing-3xsmall);
+      padding-bottom: var(--spacing-3xsmall);
+      margin: var(--spacing-3xsmall) 0;
+      max-width: 100%;
+      min-height: var(--autocomplete-size-medium);
+    }
+
+    :host(sy-autocomplete-option) {
+      position: absolute;
+      left: 0;
+      top: 0;
+      outline: none;
+      display: block;
+      visibility: hidden;
+      z-index: var(--z-index-autocomplete);
+
+      .option--list {
+        cursor: pointer;
+        display: block;
+        color: var(--autocomplete-input-text-enabled);
+        padding: 0 var(--spacing-xsmall);
+        height: var(--autocomplete-size-medium);
+        width: 100%;
+        box-sizing: border-box;
+
+        &:hover {
+          background-color: var(--autocomplete-menuitem-default-background-hover);
+        }
+
+        &.option--active {
+          background-color: var(--autocomplete-menuitem-default-background-active);
+        }
+
+        &.option--selected {
+          background-color: var(--autocomplete-menuitem-default-background-selected);
+          @include font.text-style-base-medium;
+        }
+
+        .option--list-inner {
+          display: flex;
+          align-items: center;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          height: 100%;
+        }
+      }
+    }
+
+    .error-container {
+      color: var(--required);
+      display: none;
+
+      &.visible-error {
+        display: block;
+      }
+    }
+
+    :host(sy-autocomplete) {
+      display: flex;
+      position: relative;
+    }

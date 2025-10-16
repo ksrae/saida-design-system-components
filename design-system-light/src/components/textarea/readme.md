@@ -7,26 +7,26 @@
 
 ## Properties
 
-| Property           | Attribute            | Description | Type                                             | Default                   |
-| ------------------ | -------------------- | ----------- | ------------------------------------------------ | ------------------------- |
-| `autofocus`        | `autofocus`          |             | `boolean`                                        | `false`                   |
-| `borderless`       | `borderless`         |             | `boolean`                                        | `false`                   |
-| `clearable`        | `clearable`          |             | `boolean`                                        | `false`                   |
-| `counter`          | `counter`            |             | `boolean`                                        | `false`                   |
-| `disabled`         | `disabled`           |             | `boolean`                                        | `false`                   |
-| `label`            | `label`              |             | `string`                                         | `""`                      |
-| `max`              | `max`                |             | `number`                                         | `Number.MAX_SAFE_INTEGER` |
-| `min`              | `min`                |             | `number`                                         | `0`                       |
-| `name`             | `name`               |             | `string`                                         | `""`                      |
-| `noNativeValidity` | `no-native-validity` |             | `boolean`                                        | `false`                   |
-| `placeholder`      | `placeholder`        |             | `string`                                         | `""`                      |
-| `readonly`         | `readonly`           |             | `boolean`                                        | `false`                   |
-| `required`         | `required`           |             | `boolean`                                        | `false`                   |
-| `resize`           | `resize`             |             | `"both" \| "horizontal" \| "none" \| "vertical"` | `"none"`                  |
-| `rows`             | `rows`               |             | `number`                                         | `4`                       |
-| `size`             | `size`               |             | `"large" \| "medium" \| "small"`                 | `"medium"`                |
-| `status`           | `status`             |             | `"default" \| "error" \| "success" \| "warning"` | `'default'`               |
-| `value`            | `value`              |             | `string`                                         | `""`                      |
+| Property           | Attribute          | Description | Type                                             | Default                   |
+| ------------------ | ------------------ | ----------- | ------------------------------------------------ | ------------------------- |
+| `autofocus`        | `autofocus`        |             | `boolean`                                        | `false`                   |
+| `borderless`       | `borderless`       |             | `boolean`                                        | `false`                   |
+| `clearable`        | `clearable`        |             | `boolean`                                        | `false`                   |
+| `counter`          | `counter`          |             | `boolean`                                        | `false`                   |
+| `disabled`         | `disabled`         |             | `boolean`                                        | `false`                   |
+| `label`            | `label`            |             | `string`                                         | `""`                      |
+| `max`              | `max`              |             | `number`                                         | `Number.MAX_SAFE_INTEGER` |
+| `min`              | `min`              |             | `number`                                         | `0`                       |
+| `name`             | `name`             |             | `string`                                         | `""`                      |
+| `noNativeValidity` | `nonativevalidity` |             | `boolean`                                        | `false`                   |
+| `placeholder`      | `placeholder`      |             | `string`                                         | `""`                      |
+| `readonly`         | `readonly`         |             | `boolean`                                        | `false`                   |
+| `required`         | `required`         |             | `boolean`                                        | `false`                   |
+| `resize`           | `resize`           |             | `"both" \| "horizontal" \| "none" \| "vertical"` | `"none"`                  |
+| `rows`             | `rows`             |             | `number`                                         | `4`                       |
+| `size`             | `size`             |             | `"large" \| "medium" \| "small"`                 | `"medium"`                |
+| `status`           | `status`           |             | `"default" \| "error" \| "success" \| "warning"` | `'default'`               |
+| `value`            | `value`            |             | `string`                                         | `""`                      |
 
 
 ## Events
@@ -60,13 +60,13 @@ Type: `Promise<void>`
 
 
 
-### `getStatus() => Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">`
+### `getStatus() => Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">`
 
 
 
 #### Returns
 
-Type: `Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">`
+Type: `Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">`
 
 
 

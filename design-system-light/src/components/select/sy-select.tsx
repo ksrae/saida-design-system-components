@@ -1,7 +1,6 @@
 // src/components/select/select.tsx
 
 import { Component, Prop, State, h, Element, Watch, Event, EventEmitter, Host, AttachInternals, Method } from '@stencil/core';
-import { HTMLSyOptionElement } from './sy-select-option'; // 정의된 인터페이스를 import 합니다.
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 const OPTION = 'SY-OPTION';
@@ -14,7 +13,7 @@ const OPTION = 'SY-OPTION';
   formAssociated: true,
 })
 export class SySelect {
-  @Element() private host: HTMLElement;
+  @Element() private host: HTMLSySelectElement;
   @AttachInternals() internals: ElementInternals;
 
   private initialSelectedOptions: { value: string; label?: string }[] = [];
@@ -360,7 +359,7 @@ export class SySelect {
       option.value = value;
       option.label = value;
       option.isCustomTag = true;
-      option.addEventListener('selected', (e: any) => {
+          option.addEventListener('activated', (e: any) => {
         e.stopPropagation();
         this.handleTemporaryOptionSelection(option);
       });
@@ -1125,7 +1124,7 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
                 });
               }
             });
-            optionClone.addEventListener('selected', (e: any) => {
+            optionClone.addEventListener('activated', (e: any) => {
               e.stopPropagation();
               this.optionSelection(optionClone);
               if ((this.mode === 'default' || this.mode === 'searchable') && !optionClone.readonly && !optionClone.disabled) {

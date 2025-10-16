@@ -1,25 +1,14 @@
 import { Component, h, Prop, State, Element, Method } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyToastItemElement extends HTMLElement {
-  open: boolean;
-  position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
-  variant: 'neutral' | 'success' | 'error' | 'info' | 'warning';
-  closable: boolean;
-  duration: number;
-  latestTop: boolean;
-  show: () => Promise<void>;
-  close: () => Promise<void>;
-}
-
 @Component({
   tag: 'sy-toast-item',
   styleUrl: 'sy-toast-item.scss',
   scoped: true,
   shadow: false,
 })
-export class ToastItem {
-  @Element() host: HTMLElement;
+export class SyToastItem {
+  @Element() host: HTMLSyToastItemElement;
 
   @Prop({ reflect: true, mutable: true }) open = false;
   @Prop({ reflect: true }) position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'bottomRight';

@@ -1,19 +1,5 @@
 import { Component, Prop, State, Element, Event, EventEmitter, h, Watch, Method } from '@stencil/core';
 
-export interface HTMLSyCollapsePanelElement extends HTMLElement {
-  active: boolean;
-  arrow: boolean;
-  disabled: boolean;
-  ghost: boolean;
-  fullheight: boolean;
-  index: number;
-  borderless: boolean;
-  changed: EventEmitter<CollapsePanelChangeDetail>;
-  toggle: () => Promise<void>;
-  open: () => Promise<void>;
-  close: () => Promise<void>;
-}
-
 export interface CollapsePanelChangeDetail {
   active: boolean;
   arrow: boolean;
@@ -31,7 +17,7 @@ export interface CollapsePanelChangeDetail {
   scoped: true
 })
 export class SyCollapsePanel {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyCollapsePanelElement;
 
   @Prop({ reflect: true, mutable: true }) active: boolean = false;
   @Prop() arrow: boolean = false;
@@ -52,7 +38,7 @@ export class SyCollapsePanel {
     if (!parent) return -1;
 
     const panels = Array.from(parent.querySelectorAll<HTMLSyCollapsePanelElement>('sy-collapse-panel'));
-    return panels.indexOf(this.host as HTMLSyCollapsePanelElement);
+    return panels.indexOf(this.host);
   }
 
   @Watch('disabled')
@@ -63,8 +49,8 @@ export class SyCollapsePanel {
   }
 
   @Watch('active')
-  watchActive(newValue: boolean, oldValue: boolean) {
-    const index = this.currentIndex;
+  watchActive(newValue: boolean, _oldValue: boolean) {
+    // const index = this.currentIndex;
 
     if (newValue) {
       this.contentHeight = this.calculateContentHeight();

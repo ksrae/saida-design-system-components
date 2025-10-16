@@ -1,17 +1,6 @@
 import { Component, Element, Prop, State, Watch, h } from "@stencil/core";
 import { fnAssignPropFromAlias } from "../../utils/utils";
 
-export interface HTMLSyBadgeElement extends HTMLElement {
-  dot: boolean;
-  hidden: boolean;
-  standalone: boolean;
-  overflowCount: number;
-  value: number;
-  position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
-  size: 'small' | 'medium';
-  variant: 'red' | 'yellow' | 'green' | 'blue' | 'gray';
-}
-
 @Component({
   tag: 'sy-badge',
   styleUrl: 'sy-badge.scss',

@@ -1,25 +1,13 @@
 import { Component, h, Prop, State, Element, Watch, Method } from '@stencil/core';
 
-export interface HTMLSySkeletonElement extends HTMLElement {
-  // Props
-  type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
-  rows: number;
-  width: string;
-  disabled: boolean;
-
-  // Methods
-  stopAnimation(): Promise<void>;
-  resetAnimation(): Promise<void>;
-}
-
 @Component({
   tag: 'sy-skeleton',
   styleUrl: 'sy-skeleton.scss',
   scoped: true,
   shadow: false,
 })
-export class Skeleton {
-  @Element() host: HTMLElement;
+export class SySkeleton {
+  @Element() host: HTMLSySkeletonElement;
 
   // --- Props (Lit의 @property와 동일) ---
   @Prop() type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree' = 'text';

@@ -2,28 +2,6 @@
 
 import { Component, h, Prop, State, Method, Element, Event, EventEmitter, Watch } from '@stencil/core';
 
-export interface HTMLSyCheckboxElement extends HTMLElement {
-  titleText: string;
-  name: string;
-  checked: boolean;
-  disabled: boolean;
-  indeterminate: boolean;
-  readonly: boolean;
-  required: boolean;
-  changed: EventEmitter<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>;
-  focused: EventEmitter<boolean>;
-  blured: EventEmitter<boolean>;
-  setFocus: () => Promise<void>;
-  setBlur: () => Promise<void>;
-  checkValidity: () => Promise<boolean>;
-  reportValidity: () => Promise<boolean>;
-  setCustomError: () => Promise<void>;
-  clearCustomError: () => Promise<void>;
-  validity: ValidityState;
-  validationMessage: string;
-  willValidate: boolean;
-}
-
 @Component({
   tag: 'sy-checkbox',
   styleUrl: 'sy-checkbox.scss',
@@ -32,7 +10,7 @@ export interface HTMLSyCheckboxElement extends HTMLElement {
 })
 
 export class SyCheckbox {
-  @Element() hostElement: HTMLElement;
+  @Element() hostElement: HTMLSyCheckboxElement;
 
   private internals: ElementInternals;
   private inputEl?: HTMLInputElement;

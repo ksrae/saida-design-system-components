@@ -4,22 +4,7 @@ import { Component, Prop, State, h, Element, Watch, Event, EventEmitter } from '
 import { Fragment } from '@stencil/core/internal';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyOptionElement extends HTMLElement {
-    disabled: boolean;
-    label: string;
-    readonly: boolean;
-    value: string;
-    showTooltip: boolean;
-    hide: boolean;
-    selected: boolean;
-    empty: boolean;
-    loading: boolean;
-    isCustomTag: boolean;
-    active: boolean;
-    getHide(): () => Promise<boolean>;
-    onSelected: EventEmitter<{ value: string; label: string }>;
-  }
-  
+ 
 @Component({
   tag: 'sy-option',
   styleUrl: 'sy-select-option.scss',
@@ -27,7 +12,7 @@ export interface HTMLSyOptionElement extends HTMLElement {
   shadow: false,
 })
 export class SyOption {
-  @Element() private host: HTMLElement;
+  @Element() host: HTMLSyOptionElement;
 
   @Prop() disabled: boolean = false;
   @Prop({ reflect: true, mutable: true }) label: string = '';
@@ -36,19 +21,19 @@ export class SyOption {
   @Prop({ attribute: 'showTooltip', mutable: true}) showTooltip: boolean = false;
   @Prop({ reflect: true, mutable: true }) selected: boolean = false;
 
-  @State() hide: boolean = false;
-  @State() empty: boolean = false;
-  @State() loading: boolean = false;
-  @State() isCustomTag: boolean = false;
-  @State() active: boolean = false;
+  @Prop() hide: boolean = false;
+  @Prop() empty: boolean = false;
+  @Prop() loading: boolean = false;
+  @Prop() isCustomTag: boolean = false;
+  @Prop() active: boolean = false;
   @State() private hasSlotContents: boolean = false;
 
   @Event({
-    eventName: 'selected',
+    eventName: 'activated',
     composed: true,
     bubbles: true,
   })
-  onSelected: EventEmitter<{ value: string; label: string }>;
+  onActivated: EventEmitter<{ value: string; label: string }>;
 
   @Watch('label')
   @Watch('value')
@@ -87,7 +72,7 @@ export class SyOption {
 
   private handleOptionClick = () => {
     if (this.disabled || this.readonly || this.empty || this.loading) return;
-    this.onSelected.emit({ value: this.value, label: this.label });
+    this.onActivated.emit({ value: this.value, label: this.label });
   };
 
   disconnectedCallback(): void {}

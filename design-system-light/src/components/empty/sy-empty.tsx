@@ -2,10 +2,6 @@
 
 import { Component, h, Prop } from '@stencil/core';
 
-export interface HTMLSyEmptyElement extends HTMLElement {
-  description: string;
-}
-
 @Component({
   tag: 'sy-empty',
   styleUrl: 'sy-empty.scss',

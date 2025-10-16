@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true
 })
 export class SyPagination {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyPaginationElement;
 
   @Prop({ attribute: 'activePage', mutable: true }) activePage: number = 1; // active page
   @Prop() disabled = false; // disables

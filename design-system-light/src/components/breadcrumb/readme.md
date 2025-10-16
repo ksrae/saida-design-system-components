@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property          | Attribute          | Description | Type                 | Default     |
-| ----------------- | ------------------ | ----------- | -------------------- | ----------- |
-| `active`          | `active`           |             | `boolean`            | `false`     |
-| `disabled`        | `disabled`         |             | `boolean`            | `false`     |
-| `isLast`          | `is-last`          |             | `boolean`            | `false`     |
-| `parentSeparator` | `parent-separator` |             | `"arrow" \| "slash"` | `'slash'`   |
-| `separator`       | `separator`        |             | `"arrow" \| "slash"` | `undefined` |
+| Property          | Attribute         | Description | Type                 | Default     |
+| ----------------- | ----------------- | ----------- | -------------------- | ----------- |
+| `active`          | `active`          |             | `boolean`            | `false`     |
+| `disabled`        | `disabled`        |             | `boolean`            | `false`     |
+| `isLast`          | `is-last`         |             | `boolean`            | `false`     |
+| `parentSeparator` | `parentseparator` |             | `"arrow" \| "slash"` | `'slash'`   |
+| `separator`       | `separator`       |             | `"arrow" \| "slash"` | `undefined` |
 
 
 ## Events

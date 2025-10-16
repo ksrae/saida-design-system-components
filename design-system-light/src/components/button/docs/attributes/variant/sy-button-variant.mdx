@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonVariantStories from "./sy-button-variant.stories";
+
+<Meta of={ButtonVariantStories} />
+
+# Variant
+Use the variant attribute to set the button's variant.<br/>
+There are four variants:
+- `Primary`: The most important.
+- `Secondary`: Not the most important.
+- `Default`: Not important; this is the default.
+- `Borderless`: To fit the design concept.
+
+
+<Canvas of={ButtonVariantStories.Default} />
+
+<Controls of={ButtonVariantStories.Default} />

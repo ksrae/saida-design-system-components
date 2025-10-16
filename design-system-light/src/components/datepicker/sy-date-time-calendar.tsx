@@ -1,15 +1,6 @@
 import { Component, Prop, State, Element, h, Event, EventEmitter, Watch } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyDateTimeCalendarElement extends HTMLElement {
-  mode?: 'day' | 'month' | 'year';
-  datetime?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
-  dateNames?: string;
-  mondayStart?: boolean;
-  hideWeekend?: boolean;
-  selected: EventEmitter<any>;
-}
-
 @Component({
   tag: 'sy-date-time-calendar',
   styleUrl: 'sy-date-time-calendar.scss',
@@ -36,8 +27,6 @@ export class SyDateTimeCalendar {
 
   @State() private hasInitialSelection = false;
   @State() private internalDatetime: {year: number, month: number, day: number, hour: number, minute: number, second: number};
-
-  private timepickerRef?: HTMLSyTimepickerElement;
 
   @Watch('datetime')
   watchDatetime(newVal: any) {
@@ -67,20 +56,6 @@ export class SyDateTimeCalendar {
     }
   }
 
-  componentDidLoad() {
-    // ref를 통해 이벤트 리스너 등록
-    if (this.timepickerRef) {
-      this.timepickerRef.addEventListener('changed', this.handleTimeChanged as any);
-    }
-  }
-
-  disconnectedCallback() {
-    // 클린업
-    if (this.timepickerRef) {
-      this.timepickerRef.removeEventListener('changed', this.handleTimeChanged as any);
-    }
-  }
-
   render() {
     const now = new Date();
     return (
@@ -99,11 +74,11 @@ export class SyDateTimeCalendar {
         </div>
         <div class="time-picker-container">
           <sy-timepicker
-            ref={(el) => this.timepickerRef = el}
             hour={(this.hasInitialSelection && this.internalDatetime) ? this.internalDatetime.hour : now.getHours()}
             minute={(this.hasInitialSelection && this.internalDatetime) ? this.internalDatetime.minute : now.getMinutes()}
             second={(this.hasInitialSelection && this.internalDatetime) ? this.internalDatetime.second : now.getSeconds()}
-            hideButton={true}>
+            hideButton={true}
+            onChanged={this.handleTimeChanged}>
           </sy-timepicker>
           <div class="calendar-footer">
             <sy-button variant="primary" size="small" onClick={this.confirmSelection}>OK</sy-button>

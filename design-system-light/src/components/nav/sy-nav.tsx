@@ -1,15 +1,8 @@
 import { Component, Prop, h, Element, Listen, Watch } from '@stencil/core';
-import { HTMLSyNavItemElement } from './sy-nav-item';
-import { HTMLSyNavSubElement } from './sy-nav-sub';
 
 export interface SyNavProps {
   disabled?: boolean;
 }
-
-export interface SyNavElement extends HTMLElement {
-  disabled?: boolean;
-}
-
 
 const SUBNAV = 'SY-NAV-SUB';
 const NAVITEM = 'SY-NAV-ITEM';
@@ -27,11 +20,20 @@ const GROUPNAV = 'SY-NAV-GROUP';
   shadow: false,
 })
 export class SyNav {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyNavElement;
 
   @Prop({ reflect: true }) disabled: boolean = false;
 
   private currentActiveElement: HTMLSyNavItemElement | HTMLSyNavSubElement | null = null;
+
+  // helper to safely invoke methods on child components that may not be present
+  private invokeChildMethod(element: Element, methodName: string, ...args: any[]) {
+    const fn = (element as any)[methodName];
+    if (typeof fn === 'function') {
+      return fn.apply(element, args);
+    }
+    return undefined;
+  }
 
   componentDidLoad() {
     this.sendDisabled();
@@ -45,8 +47,8 @@ export class SyNav {
   private sendDisabled() {
     const elements = this.host.querySelectorAll('sy-nav-sub, sy-nav-item');
     elements.forEach((element) => {
-      const el = element as HTMLSyNavItemElement | HTMLSyNavSubElement;
-      el.parentDisabled = this.disabled;
+      // Safely call parentDisabled if the child component exposes it.
+      this.invokeChildMethod(element, 'parentDisabled', this.disabled);
     });
   }
 
@@ -61,12 +63,11 @@ export class SyNav {
     // 이전에 active된 요소가 있다면 비활성화
     if (this.currentActiveElement && this.currentActiveElement !== newActiveElement) {
       try {
-        const maybeSetActive = (this.currentActiveElement as any).setActive;
-        if (typeof maybeSetActive === 'function') {
-          // Some Stencil component methods return Promises; await if present
-          await maybeSetActive.call(this.currentActiveElement, false);
-        } else {
-          console.log('Nav handleSelected - setActive is not a function on currentActiveElement');
+        // Prefer using the safe invoker to call setActive if present. It may
+        // return a Promise or void depending on the implementation.
+        const result = this.invokeChildMethod(this.currentActiveElement as Element, 'setActive', false);
+        if (result && typeof (result as Promise<any>).then === 'function') {
+          await result;
         }
       } catch (error) {
         console.log('Nav handleSelected - error calling/awaiting setActive:', error);

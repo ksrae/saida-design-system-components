@@ -3,25 +3,13 @@
 import { Component, h, Prop, Element, Watch, Event, EventEmitter } from '@stencil/core';
 import { fnAssignPropFromAlias, fnHasSlotContentByName } from '../../utils/utils';
 
-export interface HTMLSyDrawerElement extends HTMLElement {
-  maskless: boolean;
-  preventClose: boolean;
-  position: 'top' | 'left' | 'right' | 'bottom';
-  size: 'small' | 'medium' | 'large' | 'custom';
-  closable: boolean;
-  open: boolean;
-  customSize: number;
-  opened: EventEmitter<void>;
-  closed: EventEmitter<void>;
-}
-
 @Component({
   tag: 'sy-drawer',
   styleUrl: 'sy-drawer.scss',
   shadow: false,
   scoped: true,
 })
-export class Drawer {
+export class SyDrawer {
   @Element() host: HTMLSyDrawerElement;
 
   @Prop({ reflect: true }) maskless: boolean = false;

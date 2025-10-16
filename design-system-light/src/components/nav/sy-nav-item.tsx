@@ -1,19 +1,9 @@
-import { Component, Prop, State, h, Element, Watch, Method } from '@stencil/core';
-import { HTMLSyNavSubElement } from './sy-nav-sub';
-import { HTMLSyNavGroupElement } from './sy-nav-group';
+import { Component, Prop, State, h, Element, Method } from '@stencil/core';
 
 export interface SyNavItemProps {
   value?: string;
   disabled?: boolean;
   depth?: number;
-}
-
-export interface HTMLSyNavItemElement extends HTMLElement {
-  value?: string;
-  active?: boolean;
-  setActive?: (active: boolean) => Promise<void>;
-  parentDisabled?: boolean;
-  groupItem?: boolean;
 }
 
 /**
@@ -28,15 +18,15 @@ export interface HTMLSyNavItemElement extends HTMLElement {
   shadow: false,
 })
 export class SyNavItem {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyNavItemElement;
 
   @Prop() value: string = '';
-  @Prop({ reflect: true }) disabled: boolean = false;
+  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
   @Prop({ reflect: true, mutable: true }) depth: number = 0;
 
   @State() active: boolean = false;
-  @State() groupItem: boolean = false;
-  @State() parentDisabled: boolean = false;
+  @State() isGroup: boolean = false;
+  // @State() parentDisabled: boolean = false;
   @State() private sanitizedSlotContent: string = '';
 
   private receiveDisabled = false;
@@ -57,11 +47,16 @@ export class SyNavItem {
     this.handleSlotChange();
   }
 
-  @Watch('parentDisabled')
-  watchParentDisabled(newValue: boolean) {
+  @Method()
+  async parentDisabled(disabled: boolean) {
     if (this.receiveDisabled) {
-      this.disabled = newValue;
+      this.disabled = disabled;
     }
+  }
+
+  @Method()
+  async groupItem(group: boolean) {
+    this.isGroup = group;
   }
 
   private calculateDepth() {
@@ -73,10 +68,10 @@ export class SyNavItem {
     if (parentTagName === 'sy-nav') {
       this.depth = 0;
     } else if (parentTagName === 'sy-nav-sub') {
-      const parentSub = parent as HTMLSyNavSubElement;
+      const parentSub = parent as unknown as HTMLSyNavSubElement;
       this.depth = (parentSub.depth || 0) + 1;
     } else if (parentTagName === 'sy-nav-group') {
-      const parentGroup = parent as HTMLSyNavGroupElement;
+      const parentGroup = parent as unknown as HTMLSyNavGroupElement;
       this.depth = parentGroup.depth || 0;
     }
   }
@@ -116,7 +111,7 @@ export class SyNavItem {
     const classes = {
       'nav-item': true,
       'active': this.active,
-      'group-list': this.groupItem,
+      'group-list': this.isGroup,
       'disabled': this.disabled,
     };
 

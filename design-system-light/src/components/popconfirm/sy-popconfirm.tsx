@@ -1,28 +1,6 @@
 import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-// HTMLSyPopconfirmElement interface
-export interface HTMLSyPopconfirmElement extends HTMLElement {
-  // Props
-  arrow: boolean;
-  closable: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
-  trigger: 'click' | 'none';
-  opendelay: number;
-  closedelay: number;
-  confirmText: string;
-  cancelText: string;
-  sticky: boolean;
-
-  // Events
-  visibleChanged: EventEmitter<boolean>;
-  selected: EventEmitter<'ok' | 'cancel'>;
-
-  // Methods
-  setOpen(): Promise<void>;
-  setClose(): Promise<void>;
-}
-
 @Component({
   tag: 'sy-popconfirm',
   styleUrl: 'sy-popconfirm.scss',
@@ -30,7 +8,7 @@ export interface HTMLSyPopconfirmElement extends HTMLElement {
   scoped: true,
 })
 export class SyPopconfirm {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyPopconfirmElement;
 
   private parentDom: HTMLElement;
   private addedToBody = false;

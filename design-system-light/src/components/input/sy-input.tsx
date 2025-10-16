@@ -1,40 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyInputElement extends HTMLElement {
-  // Public Props
-  autofocus: boolean;
-  borderless: boolean;
-  clearable: boolean;
-  disabled: boolean;
-  label: string;
-  max?: number;
-  min?: number;
-  name: string;
-  placeholder: string;
-  readonly: boolean;
-  required: boolean;
-  size: "small" | "medium" | "large";
-  status: 'default' | 'warning' | 'error' | 'success';
-  value: string;
-  variant: "password" | "search" | "text";
-  noNativeValidity: boolean;
-
-  // Public Methods
-  setFocus: () => Promise<void>;
-  setBlur: () => Promise<void>;
-  checkValidity: () => Promise<boolean>;
-  reportValidity: () => Promise<boolean>;
-  setCustomError: () => Promise<void>;
-  clearCustomError: () => Promise<void>;
-  getStatus: () => Promise<'valueMissing' | 'tooShort' | 'tooLong' | 'custom' | ''>;
-
-  // Form Properties (Readonly)
-  readonly validity: ValidityState;
-  readonly validationMessage: string;
-  readonly willValidate: boolean;
-}
-
 @Component({
   tag: 'sy-input',
   styleUrl: 'sy-input.scss',

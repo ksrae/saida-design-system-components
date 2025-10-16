@@ -13,7 +13,7 @@ export interface SegmentModel {
   shadow: false,
 })
 export class SyProgressBar {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyProgressBarElement;
 
   /** When true, percentage is ignored, the label is hidden, and the progress bar is drawn in an indeterminate state. */
   @Prop() indeterminate: boolean = false;

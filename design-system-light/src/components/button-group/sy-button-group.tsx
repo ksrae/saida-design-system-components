@@ -1,10 +1,6 @@
 import { Component, h, Prop, Element } from '@stencil/core';
 import { fnGetChildrenByTagName } from '../../utils/utils';
 
-export interface HTMLSyButtonGroupElement extends HTMLElement {
-  vertical: boolean;
-}
-
 export interface ButtonGroupState {
   buttonGroup: boolean;
   vertical: boolean;
@@ -14,17 +10,17 @@ export interface ButtonGroupState {
 
 @Component({
   tag: 'sy-button-group',
+  styleUrl: 'sy-button-group.scss',
   shadow: false,
   scoped: true,
-  styleUrl: 'sy-button-group.scss'
 })
-export class ButtonGroup {
+export class SyButtonGroup {
   @Element() host: HTMLSyButtonGroupElement;
   @Prop({ reflect: true }) vertical: boolean = false;
 
   private containerEl: HTMLDivElement; // Ref로 참조할 div 요소를 담을 변수
   private mutationObserver: MutationObserver;
-  private buttons: HTMLSyButtonElement[] = [];
+  private buttons: HTMLElement[] = [];
 
   // componentDidRender는 초기 렌더링 및 모든 후속 렌더링 후에 호출됩니다.
   componentDidRender() {
@@ -48,27 +44,27 @@ export class ButtonGroup {
   }
 
   private updateButtons() {
-    const children = fnGetChildrenByTagName(this.containerEl, 'sy-button') as HTMLSyButtonElement[];
+    const children = fnGetChildrenByTagName(this.containerEl, 'sy-button') as HTMLElement[];
 
     if (this.haveButtonsChanged(children)) {
       this.buttons = children;
       if (this.buttons.length === 0) return;
 
       this.buttons.forEach((button, index) => {
-        if (typeof button.setButtonGroupState === 'function') {
+        if (typeof (button as any).setButtonGroupState === 'function') {
           const state: ButtonGroupState = {
             buttonGroup: true,
             vertical: this.vertical,
             first: index === 0,
             last: index === this.buttons.length - 1,
           };
-          button.setButtonGroupState(state);
+          (button as any).setButtonGroupState(state);
         }
       });
     }
   }
 
-  private haveButtonsChanged(newButtons: HTMLSyButtonElement[]): boolean {
+  private haveButtonsChanged(newButtons: HTMLElement[]): boolean {
     if (this.buttons.length !== newButtons.length) return true;
     for (let i = 0; i < this.buttons.length; i++) {
       if (this.buttons[i] !== newButtons[i]) return true;

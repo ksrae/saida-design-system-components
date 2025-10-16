@@ -3,24 +3,13 @@
 import { Component, h, Prop, State, Event, EventEmitter, Method, forceUpdate, Element } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyBreadcrumbItemElement extends HTMLElement {
-  active: boolean;
-  disabled: boolean;
-  separator?: 'slash' | 'arrow';
-  parentSeparator: 'slash' | 'arrow';
-  isLast: boolean;
-  forceUpdate: () => Promise<void>;
-  selected: EventEmitter<HTMLSyBreadcrumbItemElement>;
-}
-
 @Component({
   tag: 'sy-breadcrumb-item',
   styleUrl: 'sy-breadcrumb.scss',
   shadow: false,
   scoped: true,
 })
-export class BreadcrumbItemElement {
-
+export class SyBreadcrumbItem {
   @Element() host: HTMLSyBreadcrumbItemElement;
 
   @Prop({ reflect: true }) active: boolean = false;

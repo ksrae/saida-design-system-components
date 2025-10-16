@@ -1,17 +1,6 @@
 import { Component, Prop, State, Element, h, Event, EventEmitter } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyTimepickerElement extends HTMLElement {
-  hour?: number;
-  minute?: number;
-  second?: number;
-  hideButton?: boolean;
-  timeSeparator?: string;
-  format?: string;
-  selected: EventEmitter<any>;
-  changed: EventEmitter<any>;
-}
-
 @Component({
   tag: 'sy-timepicker',
   styleUrl: 'sy-timepicker.scss',
@@ -32,6 +21,9 @@ export class SyTimePicker {
   @Event() changed: EventEmitter;
 
   @State() selectedTime = '00:00:00';
+  @State() private internalHour: number = 0;
+  @State() private internalMinute: number = 0;
+  @State() private internalSecond: number = 0;
 
   private hourColumn?: HTMLElement;
   private minuteColumn?: HTMLElement;
@@ -40,7 +32,20 @@ export class SyTimePicker {
   componentWillLoad() {
     this.hideButton = fnAssignPropFromAlias(this.host, 'hide-button') ?? this.hideButton;
     this.timeSeparator = fnAssignPropFromAlias(this.host, 'time-separator') ?? this.timeSeparator;
+    
+    // Initialize internal state from props
+    this.internalHour = this.hour;
+    this.internalMinute = this.minute;
+    this.internalSecond = this.second;
   }
+  
+  componentWillUpdate() {
+    // Sync internal state with prop changes
+    if (this.hour !== this.internalHour) this.internalHour = this.hour;
+    if (this.minute !== this.internalMinute) this.internalMinute = this.minute;
+    if (this.second !== this.internalSecond) this.internalSecond = this.second;
+  }
+  
   componentDidLoad() {
     this.updateSelectedTime();
     this.cacheColumnRefs();
@@ -58,9 +63,9 @@ export class SyTimePicker {
       <div class="time-section">
         <div class="header">{this.selectedTime}</div>
         <div class="time-contents">
-          <div class="time-column hour">{this.renderTimeColumn('hour', 24, this.hour)}</div>
-          <div class="time-column minute">{this.renderTimeColumn('minute', 60, this.minute)}</div>
-          <div class="time-column second">{this.renderTimeColumn('second', 60, this.second)}</div>
+          <div class="time-column hour">{this.renderTimeColumn('hour', 24, this.internalHour)}</div>
+          <div class="time-column minute">{this.renderTimeColumn('minute', 60, this.internalMinute)}</div>
+          <div class="time-column second">{this.renderTimeColumn('second', 60, this.internalSecond)}</div>
         </div>
         {!this.hideButton ? (
           <div class="calendar-footer">
@@ -75,9 +80,9 @@ export class SyTimePicker {
     // closable = true
     this.selected.emit({
       closable: true,
-      hour: this.hour,
-      minute: this.minute,
-      second: this.second,
+      hour: this.internalHour,
+      minute: this.internalMinute,
+      second: this.internalSecond,
       range: undefined
     });
   }
@@ -101,36 +106,37 @@ export class SyTimePicker {
   }
 
   private selectTime = (type: 'hour' | 'minute' | 'second', value: number) => {
-    // Stencil에서는 @Prop을 직접 수정할 수 없으므로 이벤트를 발생시켜야 합니다
-    const updatedValues = {
-      hour: this.hour,
-      minute: this.minute,
-      second: this.second,
-      [type]: value
-    };
+    // Update internal state instead of props
+    if (type === 'hour') {
+      this.internalHour = value;
+    } else if (type === 'minute') {
+      this.internalMinute = value;
+    } else {
+      this.internalSecond = value;
+    }
 
-    // changed 이벤트 발생 (부모 컴포넌트에서 prop 업데이트)
+    // Emit changed event for parent to update props if needed
     this.changed.emit({
-      hour: updatedValues.hour,
-      minute: updatedValues.minute,
-      second: updatedValues.second
+      hour: this.internalHour,
+      minute: this.internalMinute,
+      second: this.internalSecond
     });
 
     // selected 이벤트도 발생 (closable: false)
     this.selected.emit({
       closable: false,
-      hour: updatedValues.hour,
-      minute: updatedValues.minute,
-      second: updatedValues.second,
+      hour: this.internalHour,
+      minute: this.internalMinute,
+      second: this.internalSecond,
       range: undefined
     });
   }
 
   private updateSelectedTime() {
     // format에 따라 시간을 포맷팅
-    const hour = this.hour < 10 ? '0' + this.hour : this.hour.toString();
-    const minute = this.minute < 10 ? '0' + this.minute : this.minute.toString();
-    const second = this.second < 10 ? '0' + this.second : this.second.toString();
+    const hour = this.internalHour < 10 ? '0' + this.internalHour : this.internalHour.toString();
+    const minute = this.internalMinute < 10 ? '0' + this.internalMinute : this.internalMinute.toString();
+    const second = this.internalSecond < 10 ? '0' + this.internalSecond : this.internalSecond.toString();
 
     // format 패턴에 따라 시간 문자열 생성
     let formattedTime = this.format;
@@ -157,13 +163,13 @@ export class SyTimePicker {
 
   private scrollToSelected() {
     if (this.hourColumn) {
-      this.scrollToIndex(this.hourColumn, this.hour);
+      this.scrollToIndex(this.hourColumn, this.internalHour);
     }
     if (this.minuteColumn) {
-      this.scrollToIndex(this.minuteColumn, this.minute);
+      this.scrollToIndex(this.minuteColumn, this.internalMinute);
     }
     if (this.secondColumn) {
-      this.scrollToIndex(this.secondColumn, this.second);
+      this.scrollToIndex(this.secondColumn, this.internalSecond);
     }
   }
 

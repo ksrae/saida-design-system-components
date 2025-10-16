@@ -5,40 +5,34 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+sy-avatar-group (Stencil port, light DOM, scoped)
+- Renders slotted <sy-avatar> children
+- If children count > maxCount, shows +N and a dropdown list appended to body
+
 ## Properties
 
-| Property         | Attribute        | Description | Type                                                                                                                           | Default       |
-| ---------------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| `clickable`      | `clickable`      |             | `boolean`                                                                                                                      | `false`       |
-| `disabled`       | `disabled`       |             | `boolean`                                                                                                                      | `false`       |
-| `icon`           | `icon`           |             | `string`                                                                                                                       | `''`          |
-| `image`          | `image`          |             | `string`                                                                                                                       | `''`          |
-| `letter`         | `letter`         |             | `string`                                                                                                                       | `''`          |
-| `size`           | `size`           |             | `"large" \| "medium" \| "small"`                                                                                               | `'medium'`    |
-| `text`           | `text`           |             | `string`                                                                                                                       | `''`          |
-| `tooltipContent` | `tooltipcontent` |             | `string`                                                                                                                       | `''`          |
-| `variant`        | `variant`        |             | `"blue" \| "darkgray" \| "green" \| "lightgray" \| "lime" \| "magenta" \| "orange" \| "purple" \| "red" \| "teal" \| "yellow"` | `"lightgray"` |
-
-
-## Events
-
-| Event           | Description | Type                                                                          |
-| --------------- | ----------- | ----------------------------------------------------------------------------- |
-| `disableStatus` |             | `CustomEvent<{ disabled: boolean; }>`                                         |
-| `selected`      |             | `CustomEvent<{ letter: string; text: string; icon: string; image: string; }>` |
+| Property    | Attribute   | Description | Type                             | Default           |
+| ----------- | ----------- | ----------- | -------------------------------- | ----------------- |
+| `clickable` | `clickable` |             | `boolean`                        | `false`           |
+| `maxCount`  | `maxcount`  |             | `number`                         | `Infinity as any` |
+| `size`      | `size`      |             | `"large" \| "medium" \| "small"` | `'medium'`        |
+| `variant`   | `variant`   |             | `"grid" \| "stack"`              | `'stack'`         |
 
 
 ## Dependencies
 
 ### Depends on
 
-- [sy-icon](../icon)
+- [sy-avatar](.)
 
 ### Graph
 ```mermaid
 graph TD;
+  sy-avatar-group --> sy-avatar
   sy-avatar --> sy-icon
-  style sy-avatar fill:#f9f,stroke:#333,stroke-width:4px
+  style sy-avatar-group fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

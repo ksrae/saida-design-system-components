@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonSetClickStories from "./sy-button-click.stories";
+
+<Meta of={ButtonSetClickStories} />
+
+# Set Click
+The `setClick` method allows you to programmatically trigger a click event on the button. <br/>
+This can be useful for accessibility purposes or to control the button's state in response to user interactions.
+
+<Canvas of={ButtonSetClickStories.Default} />
+<Controls of={ButtonSetClickStories.Default} />

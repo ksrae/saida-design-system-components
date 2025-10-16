@@ -1,15 +1,5 @@
 import { Component, Prop, State, Element, Method, Watch, h } from '@stencil/core';
 
-export interface HTMLSyPopoverElement extends HTMLElement {
-  arrow: boolean;
-  open: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
-  trigger: 'hover' | 'click' | 'focus' | 'null';
-  opendelay: number;
-  closedelay: number;
-  // sticky 프로퍼티 추가
-  sticky: boolean;
-}
 /**
  * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
  * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
@@ -21,7 +11,7 @@ export interface HTMLSyPopoverElement extends HTMLElement {
   scoped: true,
 })
 export class SyPopover {
-  @Element() el: HTMLElement;
+  @Element() host: HTMLSyPopoverElement;
   // 상태 관련 필드
   private addedToBody = false;         // body에 추가되었는지 여부
   private isMouseOverParent = false;   // 부모 요소 위에 마우스가 있는지
@@ -80,9 +70,9 @@ export class SyPopover {
     this.setupGlobalClickListener();
 
     if (this.arrow) {
-      this.el.setAttribute('arrow', 'true');
+      this.host.setAttribute('arrow', 'true');
     } else {
-      this.el.removeAttribute('arrow');
+      this.host.removeAttribute('arrow');
     }
   }
 
@@ -106,10 +96,10 @@ export class SyPopover {
    */
   componentDidRender() {
     // parentDom이 이미 설정되어 있고 addedToBody가 true면 재설정하지 않음
-    if (!this.parentDom || (this.addedToBody && this.el.parentElement === document.body)) {
+    if (!this.parentDom || (this.addedToBody && this.host.parentElement === document.body)) {
       // addedToBody가 true인 경우 원래 부모를 유지해야 함
       if (!this.addedToBody) {
-        this.parentDom = this.el.parentElement;
+        this.parentDom = this.host.parentElement;
       } else {
         return; // addEvent 호출하지 않음
       }
@@ -243,7 +233,7 @@ export class SyPopover {
     }
 
     if (this.parentDom !== document.body) {
-      if (this.addedToBody && this.el.isConnected && this.el.parentElement === document.body) {
+      if (this.addedToBody && this.host.isConnected && this.host.parentElement === document.body) {
         if (this.preventPositionUpdate ||
             this.optionInteractionActive ||
             (performance.now() - this.lastOptionClickTime < this.CLICK_DEBOUNCE_TIME) ||
@@ -256,7 +246,7 @@ export class SyPopover {
       }
 
       try {
-        document.body.appendChild(this.el);
+        document.body.appendChild(this.host);
         this.addedToBody = true;
         this.setupGlobalClickListener();
         this.updatePopoverPositionWithDelay();
@@ -265,8 +255,8 @@ export class SyPopover {
       }
 
       if (this.trigger === 'hover') {
-        this.el.addEventListener('mouseenter', this.popoverMouseEnter);
-        this.el.addEventListener('mouseleave', this.popoverMouseLeave);
+        this.host.addEventListener('mouseenter', this.popoverMouseEnter);
+        this.host.addEventListener('mouseleave', this.popoverMouseLeave);
         this.setupOptionDetection();
       }
     } else {
@@ -281,7 +271,7 @@ export class SyPopover {
     }
 
     try {
-      if (!this.el.isConnected || this.el.parentElement !== document.body) {
+      if (!this.host.isConnected || this.host.parentElement !== document.body) {
         this.addedToBody = false;
         return;
       }
@@ -289,11 +279,11 @@ export class SyPopover {
       this.closeTreeSelectOptions();
 
       if (this.trigger === 'hover') {
-        this.el.removeEventListener('mouseenter', this.popoverMouseEnter);
-        this.el.removeEventListener('mouseleave', this.popoverMouseLeave);
+        this.host.removeEventListener('mouseenter', this.popoverMouseEnter);
+        this.host.removeEventListener('mouseleave', this.popoverMouseLeave);
       }
 
-      document.body.removeChild(this.el);
+      document.body.removeChild(this.host);
       this.addedToBody = false;
 
       this.isMouseOverParent = false;
@@ -341,19 +331,19 @@ export class SyPopover {
       // 3. sticky 옵션과 부모 요소의 가시성 체크 로직 추가
       // =================================================================
       if (!this.sticky && !this.isParentInView()) {
-        this.el.style.visibility = 'hidden';
+        this.host.style.visibility = 'hidden';
         return;
       }
 
       const parentRect = this.parentDom.getBoundingClientRect();
-      this.el.style.display = 'block';
-      this.el.style.visibility = 'hidden';
-      this.el.style.position = 'absolute';
-      this.el.style.left = '0';
-      this.el.style.top = '0';
+      this.host.style.display = 'block';
+      this.host.style.visibility = 'hidden';
+      this.host.style.position = 'absolute';
+      this.host.style.left = '0';
+      this.host.style.top = '0';
 
       requestAnimationFrame(() => {
-        const popoverRect = this.el.getBoundingClientRect();
+        const popoverRect = this.host.getBoundingClientRect();
         const positions = this.calculateAllPositions(parentRect, popoverRect);
 
         const { position: bestPosition, coords } = this.findBestPosition(
@@ -363,28 +353,28 @@ export class SyPopover {
           popoverRect
         );
 
-        this.el.style.top = `${coords.top}px`;
-        this.el.style.left = `${coords.left}px`;
+        this.host.style.top = `${coords.top}px`;
+        this.host.style.left = `${coords.left}px`;
 
         const adjusted = this.adjustForScreenBounds(popoverRect);
 
-        if(this.el.contains(this.arrowElement)) {
-          this.el.removeChild(this.arrowElement);
+        if(this.host.contains(this.arrowElement)) {
+          this.host.removeChild(this.arrowElement);
         }
 
         if(this.arrow) {
           this.arrowElement = this.createArrow(
             bestPosition,
             parentRect,
-            adjusted ? { top: parseFloat(this.el.style.top), left: parseFloat(this.el.style.left) } : coords,
+            adjusted ? { top: parseFloat(this.host.style.top), left: parseFloat(this.host.style.left) } : coords,
             popoverRect,
             adjusted
           );
-          this.el.appendChild(this.arrowElement);
+          this.host.appendChild(this.arrowElement);
         }
 
         this.openTimer = setTimeout(() => {
-          this.el.style.visibility = 'visible';
+          this.host.style.visibility = 'visible';
         }, this.opendelay);
       });
     }
@@ -518,24 +508,24 @@ export class SyPopover {
     const viewportHeight = window.innerHeight;
     let adjusted = false;
 
-    const currentLeft = parseFloat(this.el.style.left);
-    const currentTop = parseFloat(this.el.style.top);
+    const currentLeft = parseFloat(this.host.style.left);
+    const currentTop = parseFloat(this.host.style.top);
 
     if (currentLeft < window.scrollX) {
-      this.el.style.left = `${window.scrollX}px`;
+      this.host.style.left = `${window.scrollX}px`;
       adjusted = true;
     }
     else if (currentLeft + popoverRect.width > window.scrollX + viewportWidth) {
-      this.el.style.left = `${window.scrollX + viewportWidth - popoverRect.width}px`;
+      this.host.style.left = `${window.scrollX + viewportWidth - popoverRect.width}px`;
       adjusted = true;
     }
 
     if (currentTop < window.scrollY) {
-      this.el.style.top = `${window.scrollY}px`;
+      this.host.style.top = `${window.scrollY}px`;
       adjusted = true;
     }
     else if (currentTop + popoverRect.height > window.scrollY + viewportHeight) {
-      this.el.style.top = `${window.scrollY + viewportHeight - popoverRect.height}px`;
+      this.host.style.top = `${window.scrollY + viewportHeight - popoverRect.height}px`;
       adjusted = true;
     }
 
@@ -689,7 +679,7 @@ export class SyPopover {
 
     const target = event.target as HTMLElement;
 
-    const isInPopover = this.el?.contains(target);
+    const isInPopover = this.host?.contains(target);
     const isParent = this.parentDom?.contains(target);
 
     if (!isInPopover && !isParent) {
@@ -757,8 +747,8 @@ export class SyPopover {
       });
 
       container.addEventListener('mouseleave', (e: any) => {
-        const relatedTarget = e.relatedTarget as HTMLElement;
-        if (relatedTarget === this.el || this.el.contains(relatedTarget) || this.isOptionRelated(relatedTarget) || this.parentDom?.contains(relatedTarget)) return;
+        const relatedTarget = e.relatedTarget as any;
+        if (relatedTarget === this.host || this.host.contains(relatedTarget) || this.isOptionRelated(relatedTarget) || this.parentDom?.contains(relatedTarget)) return;
 
         if (this.trigger === 'hover') {
           this.optionInteractionActive = false;

@@ -1,27 +1,5 @@
 
-import { Component, Prop, State, h, Element, Watch } from '@stencil/core';
-import type { HTMLSyPopoverElement } from '../popover/sy-popover';
-import type { HTMLSyPopconfirmElement } from '../popconfirm/sy-popconfirm';
-import type { HTMLSyInlineMessageElement } from '../inline-message/sy-inline-message';
-
-/** Minimal typing for tooltip component used by menu */
-export interface HTMLSyTooltipElement extends HTMLElement {
-	open?: boolean;
-}
-
-/** Minimal typing for menu-item used by menu */
-export interface HTMLSyMenuItemElement extends HTMLElement {
-	selectable?: boolean;
-	select?: boolean;
-	checkable?: boolean;
-}
-
-/** Minimal typing for sy-menu instances when querying other menus */
-export interface HTMLSyMenuElement extends HTMLElement {
-	delayedMenuClose?: () => void;
-}
-
-// keep imports minimal to avoid coupling with other component types
+import { Component, Prop, State, h, Element, Watch, Method } from '@stencil/core';
 
 @Component({
 	tag: 'sy-menu',
@@ -29,8 +7,8 @@ export interface HTMLSyMenuElement extends HTMLElement {
 	scoped: true,
 	shadow: false,
 })
-export class MenuElement {
-	@Element() el!: HTMLElement;
+export class SyMenu {
+	@Element() host!: HTMLSyMenuElement;
 
 	private addedToBody = false; // 상태 변수 추가
 	private isMouseOverParent = false;
@@ -69,7 +47,7 @@ export class MenuElement {
 	}
 
 	componentDidLoad() {
-		this.parentDom = this.el.parentElement;
+		this.parentDom = this.host.parentElement;
 		this.setDropdown();
 		if (this.open) {
 			this.appendToRoot();
@@ -78,8 +56,8 @@ export class MenuElement {
 		this.addEvent();
 
 		// forward child events
-		this.el.addEventListener('itemSelected', this.itemSelectedEvent as EventListener);
-		this.el.addEventListener('itemChecked', this.itemCheckedEvent as EventListener);
+		this.host.addEventListener('itemSelected', this.itemSelectedEvent as EventListener);
+		this.host.addEventListener('itemChecked', this.itemCheckedEvent as EventListener);
 	}
 
 	disconnectedCallback() {
@@ -95,8 +73,8 @@ export class MenuElement {
 		}
 
 		// remove forwarded listeners
-		this.el.removeEventListener('itemSelected', this.itemSelectedEvent as EventListener);
-		this.el.removeEventListener('itemChecked', this.itemCheckedEvent as EventListener);
+		this.host.removeEventListener('itemSelected', this.itemSelectedEvent as EventListener);
+		this.host.removeEventListener('itemChecked', this.itemCheckedEvent as EventListener);
 	}
 
 	render() {
@@ -178,9 +156,9 @@ export class MenuElement {
 	}
 
 	private appendToRoot() {
-		if (this.el.parentNode !== document.body) {
+		if (this.host.parentNode !== document.body) {
 			this.openTimer = setTimeout(() => {
-							document.body.appendChild(this.el);
+							document.body.appendChild(this.host);
 							this.addedToBody = true;
 							this.open = true;
 							this.updateMenuPosition();
@@ -190,8 +168,8 @@ export class MenuElement {
 
 	private removeMenu() {
 		try {
-			if (this.el.parentNode === document.body) {
-				document.body.removeChild(this.el);
+			if (this.host.parentNode === document.body) {
+				document.body.removeChild(this.host);
 			}
 			this.addedToBody = false;
 			this.open = false;
@@ -224,12 +202,13 @@ export class MenuElement {
 
 	private removeAllMenus() {
 				const menuList = document.querySelectorAll('sy-menu') as NodeListOf<HTMLSyMenuElement>;
-				menuList.forEach((menu: HTMLSyMenuElement) => {
-					menu.delayedMenuClose?.();
+				menuList.forEach(menu => {
+					(menu as any).delayedMenuClose?.();
 				});
 	}
 
-	public delayedMenuClose = () => {
+	@Method()
+	async delayedMenuClose() {
 		if (this.closeTimer) clearTimeout(this.closeTimer);
 		this.closeTimer = setTimeout(() => {
 			if (!this.isMouseOverParent) {
@@ -238,7 +217,7 @@ export class MenuElement {
 			}
 		}, this.closedelay);
 
-		this.el.dispatchEvent(new CustomEvent('opened', {
+		this.host.dispatchEvent(new CustomEvent('opened', {
 			detail: false,
 			bubbles: true,
 			composed: true,
@@ -252,7 +231,7 @@ export class MenuElement {
 		this.removeAllMenus();
 		this.appendToRoot();
 
-		this.el.dispatchEvent(new CustomEvent('opened', {
+		this.host.dispatchEvent(new CustomEvent('opened', {
 			detail: true,
 			bubbles: true,
 			composed: true,
@@ -281,7 +260,7 @@ export class MenuElement {
 		if (this.open) {
 			this.removeMenu();
 
-			this.el.dispatchEvent(new CustomEvent('opened', {
+			this.host.dispatchEvent(new CustomEvent('opened', {
 				detail: false,
 				bubbles: true,
 				composed: true,
@@ -291,7 +270,7 @@ export class MenuElement {
 			if (this.closeTimer) clearTimeout(this.closeTimer);
 			this.appendToRoot();
 
-			this.el.dispatchEvent(new CustomEvent('opened', {
+			this.host.dispatchEvent(new CustomEvent('opened', {
 				detail: true,
 				bubbles: true,
 				composed: true,
@@ -315,7 +294,7 @@ export class MenuElement {
 	};
 
 	private handleDocumentClick = (event: any) => {
-		const isInMenu = this.el.contains(event.target as Node);
+		const isInMenu = this.host.contains(event.target as Node);
 		const isParent = this.parentDom?.contains(event.target as Node);
 
 		if (!isInMenu && !isParent) {
@@ -325,11 +304,11 @@ export class MenuElement {
 
 	private updateMenuPosition(e?: any) {
 		if (this.parentDom && this.parentDom instanceof HTMLElement) {
-			this.el.style.visibility = 'hidden';
+			this.host.style.visibility = 'hidden';
 
 			setTimeout(() => {
 				const parentRect = this.parentDom.getBoundingClientRect();
-				const rect = this.el.getBoundingClientRect();
+				const rect = this.host.getBoundingClientRect();
 
 				if (rect.width > 0 && rect.height) {
 					this.width = rect.width;
@@ -346,81 +325,83 @@ export class MenuElement {
 						this.removeMenu();
 					}
 
-					this.el.style.left = `${this.mouseX + scrollLeft}px`;
-					this.el.style.top = `${this.mouseY + scrollTop}px`;
+					this.host.style.left = `${this.mouseX + scrollLeft}px`;
+					this.host.style.top = `${this.mouseY + scrollTop}px`;
 
 					if (this.mouseX + this.width > viewportWidth + scrollLeft) {
-						this.el.style.left = `${viewportWidth - this.width - scrollLeft}px`;
+						this.host.style.left = `${viewportWidth - this.width - scrollLeft}px`;
 					}
 					if (this.mouseY + this.height > viewportHeight + scrollTop) {
-						this.el.style.top = `${viewportHeight - this.height - scrollTop - 16}px`;
+						this.host.style.top = `${viewportHeight - this.height - scrollTop - 16}px`;
 					}
 				} else {
 					if (this.position.indexOf('bottom') === 0) {
 						if (parentRect.bottom + this.height > viewportHeight && (parentRect.top - this.height) >= 0) {
-							this.el.style.top = `${parentRect.top - this.height + scrollTop}px`;
+							this.host.style.top = `${parentRect.top - this.height + scrollTop}px`;
 						} else {
-							this.el.style.top = `${parentRect.bottom + scrollTop}px`;
+							this.host.style.top = `${parentRect.bottom + scrollTop}px`;
 						}
 
 						if (this.position.indexOf('Left') > -1) {
-							this.el.style.left = `${parentRect.left + scrollLeft}px`;
+							this.host.style.left = `${parentRect.left + scrollLeft}px`;
 						} else if (this.position.indexOf('Right') > -1) {
-							this.el.style.left = `${parentRect.right - this.width + scrollLeft}px`;
+							this.host.style.left = `${parentRect.right - this.width + scrollLeft}px`;
 						} else {
-							this.el.style.left = `${(parentRect.left + (parentRect.width - this.width) / 2) + scrollLeft}px`;
+							this.host.style.left = `${(parentRect.left + (parentRect.width - this.width) / 2) + scrollLeft}px`;
 						}
 					} else if (this.position.indexOf('right') === 0) {
 						if (parentRect.right + this.width > viewportWidth && (parentRect.left - this.width) >= 0) {
-							this.el.style.left = `${parentRect.left - this.width + scrollLeft}px`;
+							this.host.style.left = `${parentRect.left - this.width + scrollLeft}px`;
 							this.direction = 'left';
 						} else {
-							this.el.style.left = `${parentRect.right + scrollLeft}px`;
+							this.host.style.left = `${parentRect.right + scrollLeft}px`;
 							this.direction = 'right';
 						}
 
-						this.el.style.top = `${parentRect.top + scrollTop}px`;
+						this.host.style.top = `${parentRect.top + scrollTop}px`;
 					} else if (this.position.indexOf('top') === 0) {
 						if (parentRect.top - this.height < 0 && (parentRect.bottom + this.height) <= viewportHeight) {
-							this.el.style.top = `${parentRect.bottom + scrollTop}px`;
+							this.host.style.top = `${parentRect.bottom + scrollTop}px`;
 						} else {
-							this.el.style.top = `${parentRect.top - this.height + scrollTop}px`;
+							this.host.style.top = `${parentRect.top - this.height + scrollTop}px`;
 						}
 
 						if (this.position.indexOf('Left') > -1) {
-							this.el.style.left = `${parentRect.left + scrollLeft}px`;
+							this.host.style.left = `${parentRect.left + scrollLeft}px`;
 						} else if (this.position.indexOf('Right') > -1) {
-							this.el.style.left = `${parentRect.right - this.width + scrollLeft}px`;
+							this.host.style.left = `${parentRect.right - this.width + scrollLeft}px`;
 						} else {
-							this.el.style.left = `${(parentRect.left + (parentRect.width - this.width) / 2) + scrollLeft}px`;
+							this.host.style.left = `${(parentRect.left + (parentRect.width - this.width) / 2) + scrollLeft}px`;
 						}
 					}
 				}
 
-				this.el.style.width = `${this.width}px`;
-				this.el.style.visibility = 'visible';
+				this.host.style.width = `${this.width}px`;
+				this.host.style.visibility = 'visible';
 			}, this.DISPLAY_INTERVAL);
 		}
 	}
 
 	// dropdown calls this function for setting selectable to all items.
-	public setSelectableAllItems() {
-				const items = Array.from(this.el.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
+	@Method()
+	async setSelectableAllItems() {
+				const items = Array.from(this.host.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
 				if (items.length) {
 					items.forEach((item) => item.selectable = true);
 				}
 	}
 
 	// dropdown calls this function for clear selected to all items.
-	public clearSelectedItem() {
-				const itemsClear = Array.from(this.el.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
+	@Method()
+	async clearSelectedItem() {
+				const itemsClear = Array.from(this.host.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
 				if (itemsClear.length) {
 					itemsClear.forEach((item) => item.select = false);
 				}
 	}
 
 	private setCheckableAllItems() {
-				const itemsCheck = Array.from(this.el.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
+				const itemsCheck = Array.from(this.host.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
 				if (itemsCheck.length) {
 					itemsCheck.forEach((item) => item.checkable = this.checkable);
 				}

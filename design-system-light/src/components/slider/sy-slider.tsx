@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   shadow: false,
 })
 export class SySlider {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSySliderElement;
 
   @Prop() min: number = 0;
   @Prop() max: number = 100;

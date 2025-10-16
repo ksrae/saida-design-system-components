@@ -7,7 +7,7 @@ import { Component, Prop, State, h, Element, Watch } from '@stencil/core';
   styleUrl: 'sy-menu-item.scss',
 })
 export class SyMenuItem {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyMenuItemElement;
 
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop() value: string = '';

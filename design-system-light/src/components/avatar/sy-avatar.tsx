@@ -1,20 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, Watch, h, Element } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyAvatarElement extends HTMLElement {
-  clickable: boolean;
-  disabled: boolean;
-  image: string;
-  text: string;
-  icon: string;
-  letter: string;
-  variant: "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
-  size: 'small' | 'medium' | 'large';
-  tooltipContent: string;
-  selected: EventEmitter<{ letter: string; text: string; icon: string; image: string }>;
-  disableStatus: EventEmitter<{ disabled: boolean }>;
-}
-
 @Component({
   tag: 'sy-avatar',
   styleUrl: 'sy-avatar.scss',

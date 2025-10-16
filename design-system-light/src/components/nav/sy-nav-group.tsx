@@ -1,18 +1,9 @@
 import { Component, Prop, h, Element } from '@stencil/core';
-import { HTMLSyNavItemElement } from './sy-nav-item';
-import { HTMLSyNavSubElement } from './sy-nav-sub';
 
 export interface SyNavGroupProps {
   title?: string;
   depth?: number;
 }
-
-export interface HTMLSyNavGroupElement extends HTMLElement {
-  depth?: number;
-  parentDisabled?: boolean;
-  groupItem?: boolean;
-}
-
 
 /**
  * sy-nav-group (Stencil port, light DOM, scoped)
@@ -26,7 +17,7 @@ export interface HTMLSyNavGroupElement extends HTMLElement {
   shadow: false,
 })
 export class SyNavGroup {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyNavGroupElement;
 
   @Prop() title: string = '';
   @Prop({ reflect: true, mutable: true }) depth: number = 0;
@@ -48,10 +39,10 @@ export class SyNavGroup {
     if (parentTagName === 'sy-nav') {
       this.depth = 0;
     } else if (parentTagName === 'sy-nav-sub') {
-      const parentSub = parent as HTMLSyNavSubElement;
+      const parentSub = parent as unknown as HTMLSyNavSubElement;
       this.depth = (parentSub.depth || 0) + 1;
     } else if (parentTagName === 'sy-nav-group') {
-      const parentGroup = parent as HTMLSyNavGroupElement;
+      const parentGroup = parent as unknown as HTMLSyNavGroupElement;
       this.depth = (parentGroup.depth || 0) + 1;
     }
   }
@@ -60,14 +51,14 @@ export class SyNavGroup {
     const navItems = this.host.querySelectorAll('sy-nav-item') as NodeListOf<HTMLSyNavItemElement>;
     if (navItems.length > 0) {
       navItems.forEach((item: HTMLSyNavItemElement) => {
-        item.groupItem = true;
+        item.groupItem(true);
       });
     }
 
     const navSubs = this.host.querySelectorAll('sy-nav-sub') as NodeListOf<HTMLSyNavSubElement>;
     if (navSubs.length > 0) {
       navSubs.forEach((sub: HTMLSyNavSubElement) => {
-        sub.groupItem = true;
+        sub.groupItem(true);
       });
     }
   }

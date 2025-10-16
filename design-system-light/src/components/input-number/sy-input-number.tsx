@@ -1,38 +1,6 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyInputNumberElement extends HTMLElement {
-  autofocus: boolean;
-  borderless: boolean;
-  decimalPlaces?: number;
-  disabled: boolean;
-  label: string;
-  max: number;
-  min: number;
-  name: string;
-  readonly: boolean;
-  required: boolean;
-  rounding?: 'round' | 'ceil' | 'floor';
-  size: "small" | "medium" | "large";
-  status: 'default' | 'warning' | 'error' | 'success';
-  step: number;
-  value: string | number;
-  noNativeValidity: boolean;
-  setFocus: () => Promise<void>;
-  setBlur: () => Promise<void>;
-  stepUp: (n?: number) => Promise<void>;
-  stepDown: (n?: number) => Promise<void>;
-  setClear: () => Promise<void>;
-  checkValidity: () => Promise<boolean>;
-  reportValidity: () => Promise<boolean>;
-  setCustomError: () => Promise<void>;
-  clearCustomError: () => Promise<void>;
-  getStatus: () => Promise<'valueMissing' | 'rangeUnderflow' | 'rangeOverflow' | 'stepMismatch' | 'typeMismatch' | 'custom' | ''>;
-  readonly validity: ValidityState;
-  readonly validationMessage: string;
-  readonly willValidate: boolean;
-}
-
 @Component({
   tag: 'sy-input-number',
   styleUrl: 'sy-input-number.scss',
@@ -54,7 +22,7 @@ export class SyInputNumber {
   // --- Props ---
   @Prop() autofocus = false;
   @Prop({ reflect: true }) borderless = false;
-  @Prop({ attribute: 'decimalPlaces', mutable: true }) decimalPlaces?: number;
+  @Prop({ attribute: 'decimal-places', mutable: true }) decimalPlaces?: number;
   @Prop({ reflect: true, mutable: true }) disabled = false;
   @Prop() label: string = "";
   @Prop() max: number = Number.MAX_SAFE_INTEGER;
@@ -130,8 +98,18 @@ export class SyInputNumber {
     this.clearStepTimer();
   }
 
-  componentWillLoad() {
-    this.decimalPlaces = fnAssignPropFromAlias(this.host, 'decimal-places') ?? this.decimalPlaces;
+  componentWillLoad() {   
+    // Manually check for decimal-places attribute if prop is undefined
+    if (this.decimalPlaces === undefined) {
+      const decimalPlacesAttr = this.host.getAttribute('decimal-places') || this.host.getAttribute('decimalPlaces');
+      if (decimalPlacesAttr !== null) {
+        const parsed = Number(decimalPlacesAttr);
+        if (!isNaN(parsed) && parsed >= 0) {
+          this.decimalPlaces = parsed;
+        }
+      }
+    }
+    
     this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
 
     this.initialValue = this.value;
@@ -380,10 +358,17 @@ export class SyInputNumber {
     }
 
     let valueToFormat = num;
-    const propDecimalPlaces = this.decimalPlaces !== undefined ? Number(this.decimalPlaces) : undefined;
-    const decimalPlaces = (propDecimalPlaces !== undefined && !isNaN(propDecimalPlaces))
+    
+    const propDecimalPlaces = this.decimalPlaces !== undefined && this.decimalPlaces !== null 
+      ? Number(this.decimalPlaces) 
+      : undefined;
+                  
+    // If decimalPlaces is explicitly set and is a valid number (including 0), use it. Otherwise, calculate from step and num.
+    const decimalPlaces = (typeof propDecimalPlaces === 'number' && !isNaN(propDecimalPlaces) && propDecimalPlaces >= 0)
       ? propDecimalPlaces
       : Math.max(this.getDecimalPlaces(this.step), this.getDecimalPlaces(num));
+      
+    
     const multiplier = Math.pow(10, decimalPlaces);
 
     switch (this.rounding) {
@@ -397,7 +382,9 @@ export class SyInputNumber {
         valueToFormat = Math.round(num * multiplier) / multiplier;
         break;
     }
-    return valueToFormat.toFixed(decimalPlaces);
+    
+    const result = valueToFormat.toFixed(decimalPlaces);
+    return result;
   }
 
   private clampValue(num: number): number {

@@ -1,19 +1,5 @@
 import { Component, Prop, State, h, Element } from '@stencil/core';
-import type { HTMLSyMenuElement } from '../menu/sy-menu';
 import { fnAssignPropFromAlias } from '../../utils/utils';
-
-/** Minimal typing for sy-avatar component used by avatar-group */
-export interface HTMLSyAvatarElement extends HTMLElement {
-  disabled?: boolean;
-  image?: string;
-  icon?: string;
-  letter?: string;
-  text?: string;
-  variant?: 'lightgray' | 'red' | 'orange' | 'yellow' | 'lime' | 'green' | 'teal' | 'blue' | 'purple' | 'magenta' | 'darkgray';
-  tooltipContent?: string;
-  size?: 'small' | 'medium' | 'large';
-  clickable?: boolean;
-}
 
 /**
  * sy-avatar-group (Stencil port, light DOM, scoped)
@@ -27,7 +13,7 @@ export interface HTMLSyAvatarElement extends HTMLElement {
   shadow: false,
 })
 export class SyAvatarGroup {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyAvatarGroupElement;
 
   @Prop({ reflect: true }) clickable: boolean = false;
   @Prop({ reflect: true, attribute: 'maxCount', mutable: true }) maxCount: number = Infinity as any;

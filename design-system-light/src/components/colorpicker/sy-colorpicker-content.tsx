@@ -1,15 +1,6 @@
 import { Component, Prop, State, Element, h, Watch, Event, EventEmitter } from '@stencil/core';
 import { hexToRgb, rgbToHex, rgbToHsb, hsbToRgb, isValidFormat } from './color-utils';
 
-export interface HTMLSyColorpickerContentElement extends HTMLElement {
-  value: string;
-  opacity: number;
-  hideOpacity: boolean;
-  format: 'hex' | 'rgb' | 'hsb';
-  disabled: boolean;
-  readonly: boolean;
-}
-
 @Component({
   tag: 'sy-colorpicker-content',
   styleUrl: 'sy-colorpicker-content.scss',
@@ -17,7 +8,7 @@ export interface HTMLSyColorpickerContentElement extends HTMLElement {
   shadow: false,
 })
 export class SyColorpickerContent {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyColorpickerContentElement;
 
   @Prop() value: string = '#ff0000';
   @Prop({ mutable: true }) opacity: number = 1;
@@ -35,7 +26,7 @@ export class SyColorpickerContent {
   @Event() colorChange: EventEmitter<{ value: string; opacity: number; format: string }>;
 
   private isUpdatingInternally = false;
-  private canvasElement: HTMLCanvasElement;
+  // private canvasElement: HTMLCanvasElement;
   private boundSyncCanvasSize: () => void;
   private canvasListenerAdded: boolean = false;
   private canvasMouseDownHandler = (event: MouseEvent) => this.handleCanvasMouseDown(event);

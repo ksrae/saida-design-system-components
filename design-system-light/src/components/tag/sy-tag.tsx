@@ -2,22 +2,6 @@
 
 import { Component, h, Prop, State, Watch, Event, EventEmitter, Element } from '@stencil/core';
 
-// HTMLSyTagElement interface
-export interface HTMLSyTagElement extends HTMLElement {
-  // Props
-  disabled: boolean;
-  readonly: boolean;
-  removable: boolean;
-  rounded: boolean;
-  selectable: boolean;
-  size: 'small' | 'medium' | 'large';
-  variant: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
-
-  // Events
-  selected: EventEmitter<{ tag: HTMLElement }>;
-  removed: EventEmitter<{ tag: HTMLElement }>;
-}
-
 @Component({
   tag: 'sy-tag',
   styleUrl: 'sy-tag.scss',
@@ -25,7 +9,7 @@ export interface HTMLSyTagElement extends HTMLElement {
   scoped: true,
 })
 export class SyTag {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyTagElement;
 
   @Prop({ reflect: true }) disabled = false;
   @Prop({ reflect: true }) readonly = false;
@@ -39,8 +23,8 @@ export class SyTag {
   @State() private checked = false;
 
   // Stencil의 이벤트 발송 방식
-  @Event() selected: EventEmitter<{ tag: HTMLElement }>;
-  @Event() removed: EventEmitter<{ tag: HTMLElement }>;
+  @Event() selected: EventEmitter<{ tag: HTMLSyTagElement }>;
+  @Event() removed: EventEmitter<{ tag: HTMLSyTagElement }>;
 
   // Lit의 `updated` 라이프사이클 훅을 @Watch로 대체
   @Watch('selectable')

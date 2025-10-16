@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonTypeStories from "./sy-button-type.stories";
+
+<Meta of={ButtonTypeStories} />
+
+# Type
+The `type` attribute of the button determines its behavior. It can be set to one of the following values: <br/>
+
+
+- `button`: The default type, which does not submit a form. Most commonly used for general actions. <br/> 
+- `submit`: Submits the form data to the server.<br/>
+- `reset`: Resets the form data to its initial values.
+
+<Canvas of={ButtonTypeStories.Default} />
+<Controls of={ButtonTypeStories.Default} />

@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonSlotStories from "./sy-button-slot.stories";
+
+<Meta of={ButtonSlotStories} />
+
+# Slot
+Slot contents of Button can include text only or text with HTML tags. <br/>
+When adding HTML tags, be sure to keep security in mind.
+<Canvas of={ButtonSlotStories.Default} />
+
+<Controls of={ButtonSlotStories.Default} />

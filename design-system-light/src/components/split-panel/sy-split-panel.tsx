@@ -1,16 +1,6 @@
 import { Component, Prop, State, Element, Event, EventEmitter, Watch, h } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSySplitPanelElement extends HTMLElement {
-  disabled: boolean;
-  hideDivider: boolean;
-  minRatio: number;
-  ratio: number;
-  type: 'horizontal' | 'vertical';
-  horizontalChanged: EventEmitter<{ leftRatio: number; rightRatio: number }>;
-  verticalChanged: EventEmitter<{ topRatio: number; bottomRatio: number }>;
-}
-
 @Component({
   tag: 'sy-split-panel',
   styleUrl: 'sy-split-panel.scss',
@@ -18,7 +8,7 @@ export interface HTMLSySplitPanelElement extends HTMLElement {
   scoped: true,
 })
 export class SySplitPanel {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSySplitPanelElement;
 
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop({ reflect: true, attribute: 'hideDivider', mutable: true }) hideDivider: boolean = false;

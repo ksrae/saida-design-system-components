@@ -1,17 +1,6 @@
 import { Component, Prop, State, Element, h, Event, EventEmitter, Watch } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyRangeCalendarElement extends HTMLElement {
-  mode?: 'day' | 'month' | 'year';
-  active?: string;
-  datetime?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
-  rangestart?: { year: number, month: number, day: number };
-  rangeend?: { year: number, month: number, day: number };
-  mondayStart?: boolean;
-  hideWeekend?: boolean;
-  selected: EventEmitter<any>;
-}
-
 @Component({
   tag: 'sy-range-calendar',
   styleUrl: 'sy-range-calendar.scss',
@@ -34,8 +23,8 @@ export class SyRangeCalendar {
 
   @Prop() active!: string;
   @Prop() datetime?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
-  @Prop() rangestart: { year: number, month: number, day: number } | undefined = undefined;
-  @Prop() rangeend: { year: number, month: number, day: number } | undefined = undefined;
+  @Prop() rangestart?: { year: number, month: number, day: number };
+  @Prop() rangeend?: { year: number, month: number, day: number };
   @Prop({ attribute: 'dateNames', mutable: true }) dateNames: string = 'Su,Mo,Tu,We,Th,Fr,Sa';
   @Prop({ attribute: 'mondayStart', mutable: true }) mondayStart: boolean = false;
   @Prop({ attribute: 'hideWeekend', mutable: true }) hideWeekend: boolean = false;
@@ -49,27 +38,28 @@ export class SyRangeCalendar {
   @State() private hoverDate = '';
   private _mode: 'day' | 'month' | 'year' = 'day';
 
+  // Watch를 사용하여 props 변경 감지
+  @Watch('active')
+  @Watch('rangestart')
+  @Watch('rangeend')
+  handlePropsChange() {
+    // props 변경 시 다음 틱에서 달력 위치 재계산
+    setTimeout(() => {
+      this.initializeCalendarDates();
+    }, 0);
+  }
+
   connectedCallback() {
     this.startCalendarMode = this.mode;
     this.endCalendarMode = this.mode;
-    this.initializeCalendarDates();
   }
 
   componentWillLoad() {
     this.dateNames = fnAssignPropFromAlias(this.host, 'date-names') ?? this.dateNames;
     this.mondayStart = fnAssignPropFromAlias(this.host, 'monday-start') ?? this.mondayStart;
     this.hideWeekend = fnAssignPropFromAlias(this.host, 'hide-weekend') ?? this.hideWeekend;
-  }
-
-  /**
-   * [핵심] rangestart, rangeend, 또는 'active' 속성이 변경될 때마다
-   * 달력의 위치를 다시 계산하는 initializeCalendarDates()를 호출합니다.
-   * 이것이 캘린더가 열린 상태에서 start/end 클릭에 반응하게 만드는 부분입니다.
-   */
-  @Watch('rangestart')
-  @Watch('rangeend')
-  @Watch('active')
-  watchRangeChanges() {
+    
+    // 초기 달력 위치 설정
     this.initializeCalendarDates();
   }
 

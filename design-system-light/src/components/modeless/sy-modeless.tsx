@@ -8,35 +8,14 @@ export interface ModelessPositionModel {
   height: number;
 }
 
+export interface ModelessPositionChangedDetail {
+  id: string;
+  position: ModelessPositionModel;
+}
+
 const DEFAULT_MIN_WIDTH = 1;
 const DEFAULT_MIN_HEIGHT = 1;
 
-
-export interface HTMLSyModelessElement extends HTMLElement {
-  open: boolean;
-  draggable: boolean;
-  resizable: boolean;
-  closable: boolean;
-  minimizable: boolean;
-  maximizable: boolean;
-  edge: boolean;
-  maximum: boolean;
-  minimum: boolean;
-  top: number | undefined;
-  left: number | undefined;
-  width: number;
-  height: number;
-  minWidth: number;
-  minHeight: number;
-  setOpen: () => Promise<void>;
-  setClose: () => Promise<void>;
-  setMaximum: () => Promise<void>;
-  setRestore: () => Promise<void>;
-  setMinimum: () => Promise<void>;
-  closed: EventEmitter<{ id: string }>;
-  statusChanged: EventEmitter<{ id: string; status: string }>;
-  positionChanged: EventEmitter<{ id: string; position: ModelessPositionModel }>;
-}
 
 @Component({
   tag: 'sy-modeless',
@@ -67,7 +46,7 @@ export class SyModeless {
   // --- Events ---
   @Event() closed: EventEmitter<{ id: string }>;
   @Event() statusChanged: EventEmitter<{ id: string; status: string }>;
-  @Event() positionChanged: EventEmitter<{ id: string; position: ModelessPositionModel }>;
+  @Event() positionChanged: EventEmitter<ModelessPositionChangedDetail>;
 
   // --- Internal State ---
   @State() private status: 'maximum' | 'minimum' | 'restore' = 'restore';
@@ -199,10 +178,10 @@ export class SyModeless {
     if (this.isDragging || this.isResizing || this.isActive) {
       return;
     }
-    
+
     this.host.parentElement?.appendChild(this.host);
 
-    document.querySelectorAll('sy-modeless').forEach((el: HTMLElement) => {
+    document.querySelectorAll('sy-modeless').forEach((el: HTMLSyModelessElement) => {
       if (el !== this.host) {
         el.setAttribute('is-active', 'false');
         el.removeAttribute('is-active');
@@ -217,7 +196,7 @@ export class SyModeless {
     if (!this.draggable || this.status !== 'restore' || event.button !== 0) {
       return;
     }
-    
+
     this.startX = event.clientX;
     this.startY = event.clientY;
     this.startTop = this.position.top;
@@ -229,7 +208,7 @@ export class SyModeless {
 
   private handleDragMove = (event: MouseEvent): void => {
     if (!this.isDragging) {
-      const movedEnough = Math.abs(event.clientX - this.startX) > 5 || 
+      const movedEnough = Math.abs(event.clientX - this.startX) > 5 ||
                          Math.abs(event.clientY - this.startY) > 5;
       if (movedEnough) {
         this.isDragging = true;
@@ -267,13 +246,13 @@ export class SyModeless {
 
   private onResizeStart = (event: MouseEvent): void => {
     if (!this.resizable || this.status !== 'restore' || event.button !== 0) return;
-    
+
     const target = event.target as HTMLElement;
     if (!target.classList.contains('resize-handle')) return;
 
     event.preventDefault();
     event.stopPropagation();
-    
+
     this.isResizing = true;
     this.startX = event.clientX;
     this.startY = event.clientY;
@@ -295,32 +274,32 @@ export class SyModeless {
     let newWidth = this.startWidth;
     let newHeight = this.startHeight;
 
-    if (this.resizeHandle.contains('bottom-right')) { 
-      newWidth += dx; 
-      newHeight += dy; 
-    } else if (this.resizeHandle.contains('bottom-left')) { 
-      newWidth -= dx; 
-      newHeight += dy; 
-      newLeft += dx; 
-    } else if (this.resizeHandle.contains('top-right')) { 
-      newWidth += dx; 
-      newHeight -= dy; 
-      newTop += dy; 
-    } else if (this.resizeHandle.contains('top-left')) { 
-      newWidth -= dx; 
-      newHeight -= dy; 
-      newTop += dy; 
-      newLeft += dx; 
-    } else if (this.resizeHandle.contains('top')) { 
-      newHeight -= dy; 
-      newTop += dy; 
-    } else if (this.resizeHandle.contains('bottom')) { 
-      newHeight += dy; 
-    } else if (this.resizeHandle.contains('left')) { 
-      newWidth -= dx; 
-      newLeft += dx; 
-    } else if (this.resizeHandle.contains('right')) { 
-      newWidth += dx; 
+    if (this.resizeHandle.contains('bottom-right')) {
+      newWidth += dx;
+      newHeight += dy;
+    } else if (this.resizeHandle.contains('bottom-left')) {
+      newWidth -= dx;
+      newHeight += dy;
+      newLeft += dx;
+    } else if (this.resizeHandle.contains('top-right')) {
+      newWidth += dx;
+      newHeight -= dy;
+      newTop += dy;
+    } else if (this.resizeHandle.contains('top-left')) {
+      newWidth -= dx;
+      newHeight -= dy;
+      newTop += dy;
+      newLeft += dx;
+    } else if (this.resizeHandle.contains('top')) {
+      newHeight -= dy;
+      newTop += dy;
+    } else if (this.resizeHandle.contains('bottom')) {
+      newHeight += dy;
+    } else if (this.resizeHandle.contains('left')) {
+      newWidth -= dx;
+      newLeft += dx;
+    } else if (this.resizeHandle.contains('right')) {
+      newWidth += dx;
     }
 
     if (newWidth < this.minWidth) {
@@ -361,10 +340,10 @@ export class SyModeless {
   @Listen('resize', { target: 'window' })
   private onWindowResize(): void {
     if (this.status === 'maximum') {
-      this.position = { 
-        ...this.position, 
-        width: window.innerWidth, 
-        height: window.innerHeight 
+      this.position = {
+        ...this.position,
+        width: window.innerWidth,
+        height: window.innerHeight
       };
       this.updatePosition();
     }
@@ -403,7 +382,7 @@ export class SyModeless {
         const activeLeft = parseFloat(activeModeless.getAttribute('data-left') || '0');
         top = activeTop + 30 - scrollTop;
         left = activeLeft + 30 - scrollLeft;
-        if (top + scrollTop + height > windowHeight + scrollTop || 
+        if (top + scrollTop + height > windowHeight + scrollTop ||
             left + scrollLeft + width > windowWidth + scrollLeft) {
           top = 0;
           left = 0;
@@ -436,24 +415,24 @@ export class SyModeless {
     const header = this.host.querySelector<HTMLElement>('.header');
     const title = this.host.querySelector<HTMLElement>('.title');
     const headerIcons = this.host.querySelector<HTMLElement>('.header-icons');
-    
+
     if (!header || !title || !headerIcons) return;
-    
+
     const headerStyle = window.getComputedStyle(header);
     const paddingX = parseFloat(headerStyle.paddingLeft) + parseFloat(headerStyle.paddingRight);
     const calculatedMinWidth = title.scrollWidth + headerIcons.offsetWidth + paddingX + 20;
-    
+
     this.minWidth = Math.max(DEFAULT_MIN_WIDTH, this.minWidth, calculatedMinWidth);
     this.minHeight = Math.max(DEFAULT_MIN_HEIGHT, this.minHeight, header.offsetHeight);
 
     let needsUpdate = false;
-    if (this.position.width < this.minWidth) { 
-      this.position.width = this.minWidth; 
-      needsUpdate = true; 
+    if (this.position.width < this.minWidth) {
+      this.position.width = this.minWidth;
+      needsUpdate = true;
     }
-    if (this.position.height < this.minHeight) { 
-      this.position.height = this.minHeight; 
-      needsUpdate = true; 
+    if (this.position.height < this.minHeight) {
+      this.position.height = this.minHeight;
+      needsUpdate = true;
     }
     if (needsUpdate) this.updatePosition();
   }
@@ -475,11 +454,11 @@ export class SyModeless {
     this.status = 'minimum';
     const header = this.host.querySelector<HTMLElement>('.header');
     const headerHeight = header?.offsetHeight || 40;
-    this.position = { 
-      top: window.innerHeight - headerHeight - 8, 
-      left: 0, 
-      width: 200, 
-      height: headerHeight 
+    this.position = {
+      top: window.innerHeight - headerHeight - 8,
+      left: 0,
+      width: 200,
+      height: headerHeight
     };
     this.host.style.position = 'fixed';
     this.updatePosition();
@@ -492,9 +471,9 @@ export class SyModeless {
     this.status = 'restore';
     if (this.prevPosition) {
       this.position = { ...this.prevPosition };
-    } else { 
-      this.setInitialPosition(); 
-      return; 
+    } else {
+      this.setInitialPosition();
+      return;
     }
     this.host.style.position = 'absolute';
     this.restoreBodyScroll();
@@ -502,19 +481,19 @@ export class SyModeless {
     this.updateMinimizedPositions();
     this.emitStatus();
   }
-  
+
   private updateMinimizedPositions(): void {
     const minimizedModeless = Array.from(document.querySelectorAll('sy-modeless[minimum]'));
     let currentLeft = 0;
     const gap = 8;
-    
+
     minimizedModeless.forEach(el => {
       const element = el as HTMLElement;
       if (element.getAttribute('data-status') !== 'minimum') return;
-      
+
       const header = element.querySelector<HTMLElement>('.header');
       const headerHeight = header?.offsetHeight || 40;
-      
+
       element.style.left = `${currentLeft}px`;
       element.style.top = `${window.innerHeight - headerHeight - 8}px`;
       currentLeft += element.offsetWidth + gap;
@@ -537,15 +516,15 @@ export class SyModeless {
     this.host.style.left = `${this.position.left}px`;
     this.host.style.width = `${this.position.width}px`;
     this.host.style.height = `${this.position.height}px`;
-    
+
     // Store position in data attributes for other components to access
     this.host.setAttribute('data-top', this.position.top.toString());
     this.host.setAttribute('data-left', this.position.left.toString());
     this.host.setAttribute('data-status', this.status);
-    
+
     this.emitPosition();
   }
-  
+
   private closeWindow(): void {
     this.closed.emit({ id: this.host.id || '' });
     if (this.status === 'maximum') this.restoreBodyScroll();
@@ -563,35 +542,35 @@ export class SyModeless {
       document.body.style.overflow = '';
     }
   }
-  
+
   private emitStatus(): void {
-    this.statusChanged.emit({ 
-      id: this.host.id || '', 
-      status: this.status 
+    this.statusChanged.emit({
+      id: this.host.id || '',
+      status: this.status
     });
   }
-  
+
   private emitPosition(): void {
-    this.positionChanged.emit({ 
-      id: this.host.id || '', 
-      position: this.position 
+    this.positionChanged.emit({
+      id: this.host.id || '',
+      position: this.position
     });
   }
 
   private _onMaximizeClick = (): void => { this.maximum = true; }
   private _onMinimizeClick = (): void => { this.minimum = true; }
-  private _onRestoreClick = (): void => { 
-    this.maximum = false; 
-    this.minimum = false; 
+  private _onRestoreClick = (): void => {
+    this.maximum = false;
+    this.minimum = false;
   }
 
   // --- Render Method ---
   render() {
     return (
       <Host>
-        <div 
-          class="header" 
-          onMouseDown={this.onDragStart} 
+        <div
+          class="header"
+          onMouseDown={this.onDragStart}
           hidden={!this.draggable}
         >
           <div class="title">
@@ -601,9 +580,9 @@ export class SyModeless {
             <slot name="header" />
             {this.minimizable && this.status !== 'maximum' && (
               this.status === 'minimum' ? (
-                <sy-icon 
-                  size="large" 
-                  selectable 
+                <sy-icon
+                  size="large"
+                  selectable
                   onSelected={this._onRestoreClick}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -611,9 +590,9 @@ export class SyModeless {
                   </svg>
                 </sy-icon>
               ) : (
-                <sy-icon 
-                  size="large" 
-                  selectable 
+                <sy-icon
+                  size="large"
+                  selectable
                   onSelected={this._onMinimizeClick}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -624,9 +603,9 @@ export class SyModeless {
             )}
             {this.maximizable && this.status !== 'minimum' && (
               this.status === 'maximum' ? (
-                <sy-icon 
-                  size="large" 
-                  selectable 
+                <sy-icon
+                  size="large"
+                  selectable
                   onSelected={this._onRestoreClick}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -634,9 +613,9 @@ export class SyModeless {
                   </svg>
                 </sy-icon>
               ) : (
-                <sy-icon 
-                  size="large" 
-                  selectable 
+                <sy-icon
+                  size="large"
+                  selectable
                   onSelected={this._onMaximizeClick}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -646,9 +625,9 @@ export class SyModeless {
               )
             )}
             {this.closable && (
-              <sy-icon 
-                size="large" 
-                selectable 
+              <sy-icon
+                size="large"
+                selectable
                 onSelected={this.closeWindow.bind(this)}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -658,7 +637,7 @@ export class SyModeless {
             )}
           </div>
         </div>
-        
+
         <div class={`body${this.status === 'minimum' ? ' minimum' : ''}`}>
           <slot name="content" />
         </div>

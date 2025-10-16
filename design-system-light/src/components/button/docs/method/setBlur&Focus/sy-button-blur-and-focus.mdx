@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonFocusBlurStories from "./sy-button-blur-and-focus.stories";
+
+<Meta of={ButtonFocusBlurStories} />
+
+# Focus & Blur
+The `setFocus` and `setBlur` methods allow you to programmatically focus or blur the button. <br/>
+This can be useful for accessibility purposes or to control the button's state in response to user interactions.
+
+<Canvas of={ButtonFocusBlurStories.Default} />
+<Controls of={ButtonFocusBlurStories.Default} />

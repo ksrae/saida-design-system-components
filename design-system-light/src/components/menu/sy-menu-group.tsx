@@ -7,7 +7,7 @@ import { Component, Prop, h, Element } from '@stencil/core';
   styleUrl: 'sy-menu-group.scss',
 })
 export class SyMenuGroup {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyMenuGroupElement;
 
   @Prop() title: string = '';
 

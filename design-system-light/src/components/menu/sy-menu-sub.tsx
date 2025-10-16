@@ -7,7 +7,7 @@ import { Component, Prop, State, h, Element } from '@stencil/core';
   styleUrl: 'sy-menu-sub.scss',
 })
 export class SyMenuSub {
-  @Element() host!: HTMLElement;
+  @Element() host!: HTMLSyMenuSubElement;
 
   private DefaultOpendelay = 0;
   private DefaultClosedelay = 0;
@@ -18,9 +18,9 @@ export class SyMenuSub {
   @Prop() title: string = '';
 
   // queries
-  private get submenuTitle(): HTMLElement | null {
-    return this.host.querySelector('.submenu-title');
-  }
+  // private get submenuTitle(): HTMLElement | null {
+  //   return this.host.querySelector('.submenu-title');
+  // }
   private get submenu(): HTMLElement | null {
     return this.host.querySelector('.submenu');
   }

@@ -13,6 +13,7 @@
 | `disabled` | `disabled` |             | `boolean`             | `false`     |
 | `label`    | `label`    |             | `string`              | `undefined` |
 | `loading`  | `loading`  |             | `boolean`             | `false`     |
+| `name`     | `name`     |             | `string`              | `''`        |
 | `readonly` | `readonly` |             | `boolean`             | `false`     |
 | `size`     | `size`     |             | `"medium" \| "small"` | `'medium'`  |
 

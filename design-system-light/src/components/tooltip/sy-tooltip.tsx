@@ -1,19 +1,5 @@
-import { Component, Prop, State, Element, Watch, h } from '@stencil/core';
+import { Component, Prop, State, Element, Watch, h, Method } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
-
-// Export a minimal interface for other components to reference
-export interface HTMLSyTooltipElement extends HTMLElement {
-  hideArrow: boolean;
-  open: boolean;
-  closedelay: number;
-  maxWidth: number | null;
-  opendelay: number;
-  content: string;
-  position: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom';
-  trigger: 'hover' | 'click' | 'focus' | 'none';
-  remove(): void;
-}
-
 
 @Component({
   tag: 'sy-tooltip',
@@ -22,7 +8,7 @@ export interface HTMLSyTooltipElement extends HTMLElement {
   scoped: true,
 })
 export class SyTooltip {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyTooltipElement;
 
   /**
    * Controls whether the tooltip arrow is hidden
@@ -165,7 +151,8 @@ export class SyTooltip {
     if (this.closeTimer) clearTimeout(this.closeTimer);
   }
 
-  public remove() {
+  @Method()
+  async close() {
     this.open = false;
   }
 

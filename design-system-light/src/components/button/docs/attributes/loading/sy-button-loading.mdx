@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonLoadingStories from "./sy-button-loading.stories";
+
+<Meta of={ButtonLoadingStories} />
+
+# Loading
+To set whether the button shows loading state or doesn't.<br/>
+If the value of loading is true, it behaves according to the following conditions
+
+<Canvas of={ButtonLoadingStories.Default} />
+<Controls of={ButtonLoadingStories.Default} />

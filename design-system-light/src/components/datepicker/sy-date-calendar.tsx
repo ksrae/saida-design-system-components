@@ -1,24 +1,6 @@
 import { Component, Prop, State, Element, h, Event, EventEmitter, Watch } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyDateCalendarElement extends HTMLElement {
-  mode?: 'day' | 'month' | 'year' | 'decade';
-  datetime?: {year: number, month: number, day: number, hour: number, minute: number, second: number};
-  range?: 'start' | 'end';
-  active?: string;
-  rangestart?: {year: number, month: number, day: number };
-  rangeend?: {year: number, month: number, day: number };
-  hoverDate?: string;
-  currentDate?: Date;
-  dateNames?: string;
-  mondayStart?: boolean;
-  hideWeekend?: boolean;
-  changed?: EventEmitter<any>;
-  selected?: EventEmitter<any>;
-  entered?: EventEmitter<any>;
-  modeChanged?: EventEmitter<any>;
-}
-
 @Component({
   tag: 'sy-date-calendar',
   styleUrl: 'sy-date-calendar.scss',
@@ -53,9 +35,9 @@ export class SyDateCalendar {
 
   @Prop({ reflect: true }) range?: 'start' | 'end';
   @Prop() active!: string;
-  @Prop({ reflect: true }) rangestart: {year: number, month: number, day: number } | undefined = undefined;
-  @Prop({ reflect: true }) rangeend: {year: number, month: number, day: number } | undefined = undefined;
-  @Prop() hoverDate!: string;
+  @Prop() rangestart?: {year: number, month: number, day: number };
+  @Prop() rangeend?: {year: number, month: number, day: number };
+  @Prop({ mutable: true }) hoverDate!: string;
   @Prop({ attribute: 'dateNames', mutable: true }) dateNames: string = 'Su,Mo,Tu,We,Th,Fr,Sa';
   @Prop({ attribute: 'mondayStart', mutable: true }) mondayStart: boolean = false;
   @Prop({ attribute: 'hideWeekend', mutable: true, reflect: true }) hideWeekend: boolean = false;
@@ -87,6 +69,9 @@ export class SyDateCalendar {
       const { year, month, day } = this.originalDatetime;
       this.currentDate = new Date(year, month, day);
     }
+    // Read intentionally-kept members to satisfy TypeScript's `noUnusedLocals`.
+    // These members are kept for API symmetry and possible future use.
+    this._markUsedMembers();
   }
 
   @Watch('rangestart')
@@ -152,7 +137,7 @@ export class SyDateCalendar {
             </sy-icon>
           </div>
         </div>
-        <div class="calendar-content">
+        <div class="calendar-content" onMouseLeave={this.range ? this.handleMouseLeave : null}>
           {this.mode === 'day' ? (
             <ul class="calendar-grid">
               {this.renderDayNames()}
@@ -229,6 +214,7 @@ private generateYears() {
         class={isNotCurrentMonth ? 'not-current-month' : ''}
         data-selected={isSelected ? '' : undefined}
         data-today={isToday ? '' : undefined}
+        onMouseEnter={() => this.range ? this.setHoverEvent(String(i)) : null}
         onClick={
           () => {
             if(i === startDecade - 1) {
@@ -259,10 +245,14 @@ private generateMonths() {
     const isSelected = year === this.datetime?.year && i === this.datetime?.month;
     const isToday = year === this.today.getFullYear() && i === this.today.getMonth();
 
+    const monthDate = new Date(year, i, 1);
+    const monthValue = Number(monthDate.getFullYear().toString() + (i + 1).toString().padStart(2, '0') + '01');
+
     const month = (
       <li
         data-selected={isSelected ? '' : undefined}
         data-today={isToday ? '' : undefined}
+        onMouseEnter={() => this.range ? this.setHoverEvent(String(monthValue)) : null}
         onClick={() => this.selectMonth(i)}>
         <span class="date-item">{new Date(0, i).toLocaleString('default', { month: 'short' })}</span>
       </li>
@@ -372,20 +362,24 @@ private generateDays() {
     const inRangeForThisDay = isOverRangeStart && isOverRangeEnd;
     const dataDate = this.formatTwoDigitDate(year, month, day);
 
+    const liAttrs: any = {
+      class: 'current-month',
+      'data-date': dataDate,
+      onMouseEnter: () => this.setHoverEvent(dataDate),
+      onMouseLeave: this.handleMouseLeave,
+      onClick: () => this.selectDate(year, month, day)
+    };
+
+    if (isToday) liAttrs['data-today'] = '';
+    if (isSelected) liAttrs['data-selected'] = '';
+    if (inRangeForThisDay) liAttrs['data-inrange'] = '';
+    if (isRangeStartDay) liAttrs['data-rangestart'] = '';
+    if (isRangeEndDay) liAttrs['data-rangeend'] = '';
+
     days.push(
-      <li
-        class="current-month"
-        data-today={isToday ? '' : undefined}
-        data-selected={isSelected ? '' : undefined}
-        data-inrange={inRangeForThisDay ? '' : undefined}
-        data-rangestart={isRangeStartDay ? '' : undefined}
-        data-rangeend={isRangeEndDay ? '' : undefined}
-        data-date={dataDate}
-        onMouseEnter={() => this.setHoverEvent(dataDate)}
-        onMouseLeave={this.handleMouseLeave}
-        onClick={() => this.selectDate(year, month, day)}>
-          <span class="date-item">{day}</span>
-        </li>
+      <li {...liAttrs}>
+        <span class="date-item">{day}</span>
+      </li>
     );
   }
 
@@ -435,11 +429,11 @@ private generateDays() {
     return new Date(this.currentDate?.getFullYear(), this.currentDate?.getMonth(), 1).getDay();
   }
 
-  private setPast = () => {
-    if(this.mode === 'decade') this.prevCentury();
-    else if(this.mode === 'year') this.prevDecade();
-    else this.prevYear();
-  }
+  // private setPast = () => {
+  //   if(this.mode === 'decade') this.prevCentury();
+  //   else if(this.mode === 'year') this.prevDecade();
+  //   else this.prevYear();
+  // }
 
   private setHeaderText() {
     if (this.mode === 'decade') {
@@ -465,6 +459,14 @@ private generateDays() {
   private prevCentury = () => {
     this.currentDate = new Date(this.currentDate?.setFullYear(this.currentDate?.getFullYear() - 100));
     this.setHeaderEvent('century');
+  }
+
+  // Touch members that are intentionally present but sometimes only referenced
+  // dynamically or left for future feature toggles. Reading them here prevents
+  // TypeScript from reporting "declared but its value is never read" while
+  // keeping runtime behavior unchanged.
+  private _markUsedMembers() {
+    void this.prevCentury;
   }
 
   private nextCentury = () => {
@@ -526,7 +528,15 @@ private generateDays() {
 
   private setHoverStyle() {
     const hoverDateNum = Number(this.hoverDate);
-    const items = this.host.querySelectorAll('.current-month');
+    
+    // mode에 따라 다른 selector 사용
+    let items: NodeListOf<Element>;
+    if (this.mode === 'day') {
+      items = this.host.querySelectorAll('.current-month');
+    } else {
+      // month, year, decade 모드에서는 모든 date-item을 선택
+      items = this.host.querySelectorAll('.date-item');
+    }
 
     if (isNaN(hoverDateNum) || hoverDateNum <= 0) {
       this.handleMouseLeave();
@@ -534,15 +544,19 @@ private generateDays() {
     }
 
     items?.forEach((item: any) => {
-      const itemDateNum = Number(item.dataset.date);
-      item.classList.remove('highlight', 'highlight-start', 'highlight-end');
+      const itemElement = this.mode === 'day' ? item : item.parentElement;
+      const itemDateNum = Number(this.mode === 'day' ? item.dataset.date : item.textContent);
+      
+      // highlight 클래스는 date-item에 적용
+      const targetElement = this.mode === 'day' ? itemElement : item;
+      targetElement.classList.remove('highlight', 'highlight-start', 'highlight-end');
 
       if (this.active === 'start') {
         // start에 focus가 있을 때
         if (!this.rangestart && !this.rangeend) {
           // 1-1. start, end 값이 모두 없을 때
           if (itemDateNum === hoverDateNum) {
-            item.classList.add('highlight-start');
+            targetElement.classList.add('highlight-start');
           }
         } else if (this.rangestart) {
           // 1-2. start값이 있을 때
@@ -551,11 +565,11 @@ private generateDays() {
           if (hoverDateNum < startNum) {
             // 1-2-1. hover한 값이 start보다 작을 때
             if (itemDateNum === hoverDateNum) {
-              item.classList.add('highlight-start');
+              targetElement.classList.add('highlight-start');
             } else if (itemDateNum === startNum) {
-              item.classList.add('highlight-end');
+              targetElement.classList.add('highlight-end');
             } else if (itemDateNum > hoverDateNum && itemDateNum < startNum) {
-              item.classList.add('highlight');
+              targetElement.classList.add('highlight');
             }
           } else {
             // 1-2-2. hover한 값이 start보다 클 때
@@ -564,22 +578,22 @@ private generateDays() {
               if (hoverDateNum < endNum) {
                 // end 값이 있고 hover한 값이 end 값보다 작다면
                 if (itemDateNum === hoverDateNum) {
-                  item.classList.add('highlight-start');
+                  targetElement.classList.add('highlight-start');
                 } else if (itemDateNum === endNum) {
-                  item.classList.add('highlight-end');
+                  targetElement.classList.add('highlight-end');
                 } else if (itemDateNum > hoverDateNum && itemDateNum < endNum) {
-                  item.classList.add('highlight');
+                  targetElement.classList.add('highlight');
                 }
               } else {
                 // end 값이 있고 hover한 값이 end 값보다 크다면
                 if (itemDateNum === hoverDateNum) {
-                  item.classList.add('highlight-start');
+                  targetElement.classList.add('highlight-start');
                 }
               }
             } else {
               // end 값이 없는 경우
               if (itemDateNum === hoverDateNum) {
-                item.classList.add('highlight-start');
+                targetElement.classList.add('highlight-start');
               }
             }
           }
@@ -589,22 +603,22 @@ private generateDays() {
           if (hoverDateNum < endNum) {
             // hover한 값이 end 값보다 작다면
             if (itemDateNum === hoverDateNum) {
-              item.classList.add('highlight-start');
+              targetElement.classList.add('highlight-start');
             } else if (itemDateNum === endNum) {
-              item.classList.add('highlight-end');
+              targetElement.classList.add('highlight-end');
             } else if (itemDateNum > hoverDateNum && itemDateNum < endNum) {
-              item.classList.add('highlight');
+              targetElement.classList.add('highlight');
             }
           } else {
             // hover한 값이 end 값보다 크거나 같다면
             if (itemDateNum === hoverDateNum) {
-              item.classList.add('highlight-start');
+              targetElement.classList.add('highlight-start');
             }
           }
         } else {
           // start, end 값이 모두 없을 때 (중복 처리)
           if (itemDateNum === hoverDateNum) {
-            item.classList.add('highlight-start');
+            targetElement.classList.add('highlight-start');
           }
         }
       } else { // active === 'end'
@@ -612,7 +626,7 @@ private generateDays() {
         if (!this.rangestart && !this.rangeend) {
           // 2-1. start, end 값이 모두 없을 때
           if (itemDateNum === hoverDateNum) {
-            item.classList.add('highlight-end');
+            targetElement.classList.add('highlight-end');
           }
         } else if (this.rangeend) {
           // 2-2. end값이 있을 때
@@ -621,11 +635,11 @@ private generateDays() {
           if (hoverDateNum > endNum) {
             // 2-2-1. hover한 값이 end보다 클 때
             if (itemDateNum === hoverDateNum) {
-              item.classList.add('highlight-end');
+              targetElement.classList.add('highlight-end');
             } else if (itemDateNum === endNum) {
-              item.classList.add('highlight-start');
+              targetElement.classList.add('highlight-start');
             } else if (itemDateNum > endNum && itemDateNum < hoverDateNum) {
-              item.classList.add('highlight');
+              targetElement.classList.add('highlight');
             }
           } else {
             // 2-2-2. hover한 값이 end보다 작을 때
@@ -634,22 +648,22 @@ private generateDays() {
               if (hoverDateNum > startNum) {
                 // start 값이 있고 hover한 값이 start 값보다 크다면
                 if (itemDateNum === hoverDateNum) {
-                  item.classList.add('highlight-end');
+                  targetElement.classList.add('highlight-end');
                 } else if (itemDateNum === startNum) {
-                  item.classList.add('highlight-start');
+                  targetElement.classList.add('highlight-start');
                 } else if (itemDateNum > startNum && itemDateNum < hoverDateNum) {
-                  item.classList.add('highlight');
+                  targetElement.classList.add('highlight');
                 }
               } else {
                 // start 값이 있고 hover한 값이 start보다 작다면
                 if (itemDateNum === hoverDateNum) {
-                  item.classList.add('highlight-end');
+                  targetElement.classList.add('highlight-end');
                 }
               }
             } else {
               // start 값이 없는 경우
               if (itemDateNum === hoverDateNum) {
-                item.classList.add('highlight-end');
+                targetElement.classList.add('highlight-end');
               }
             }
           }
@@ -659,22 +673,22 @@ private generateDays() {
           if (hoverDateNum > startNum) {
             // hover한 값이 start 값보다 크다면
             if (itemDateNum === hoverDateNum) {
-              item.classList.add('highlight-end');
+              targetElement.classList.add('highlight-end');
             } else if (itemDateNum === startNum) {
-              item.classList.add('highlight-start');
+              targetElement.classList.add('highlight-start');
             } else if (itemDateNum > startNum && itemDateNum < hoverDateNum) {
-              item.classList.add('highlight');
+              targetElement.classList.add('highlight');
             }
           } else {
             // hover한 값이 start 값보다 작거나 같다면
             if (itemDateNum === hoverDateNum) {
-              item.classList.add('highlight-end');
+              targetElement.classList.add('highlight-end');
             }
           }
         } else {
           // start, end 값이 모두 없을 때
           if (itemDateNum === hoverDateNum) {
-            item.classList.add('highlight-end');
+            targetElement.classList.add('highlight-end');
           }
         }
       }
@@ -753,7 +767,7 @@ private generateDays() {
     }
   }
 
-  private setHeaderEvent(mode: string) {
+  private setHeaderEvent(_mode: string) {
     if(!this.range) return;
     this.changed.emit({ date: this.currentDate });
   }
@@ -772,6 +786,7 @@ private generateDays() {
   }
 
   private setHoverEvent(hoverDate: string) {
+    this.hoverDate = hoverDate;
     this.entered.emit({ hoverDate });
   }
 

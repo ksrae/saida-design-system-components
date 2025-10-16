@@ -2,19 +2,6 @@ import { Component, h, Prop, State, Method, Element, Watch } from '@stencil/core
 import { fnFindClosestParentByTagName, fnGetAssignedNodesContent } from '../../utils/utils';
 import { ButtonGroupState } from '../button-group';
 
-export interface HTMLSyButtonElement extends HTMLElement {
-  disabled: boolean;
-  justified: boolean;
-  loading: boolean;
-  size: 'small' | 'medium' | 'large';
-  variant: 'default' | 'primary' | 'secondary' | 'borderless';
-  type: 'button' | 'submit' | 'reset';
-  setButtonGroupState: (state: ButtonGroupState) => Promise<void>;
-  setClick: () => Promise<void>;
-  setFocus: () => Promise<void>;
-  setBlur: () => Promise<void>;
-}
-
 @Component({
   tag: 'sy-button',
   styleUrl: 'sy-button.scss',

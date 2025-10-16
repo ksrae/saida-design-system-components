@@ -1,22 +1,6 @@
 import { Component, h, Prop, State, Element, Watch, Listen, Event, EventEmitter } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-// HTMLSyInlineMessageElement interface
-export interface HTMLSyInlineMessageElement extends HTMLElement {
-  // Props
-  variant: 'info' | 'success' | 'warning' | 'error';
-  message: string;
-  showIcon: boolean;
-  open: boolean;
-  trigger: 'click' | 'focusout';
-  btnLabel: string;
-  position: 'top' | 'bottom' | 'left' | 'right';
-  sticky: boolean;
-
-  // Events
-  btnClick: EventEmitter<MouseEvent>;
-}
-
 const DEBOUNCE_TIME = 50;
 
 @Component({
@@ -25,8 +9,8 @@ const DEBOUNCE_TIME = 50;
   scoped: true,  // 요청하신 scoped 스타일 적용
   shadow: false, // 요청하신 Light DOM 사용
 })
-export class InlineMessage {
-  @Element() host: HTMLElement;
+export class SyInlineMessage {
+  @Element() host: HTMLSyInlineMessageElement;
 
   // --- Props (Lit의 @property와 동일) ---
   @Prop() variant: 'info' | 'success' | 'warning' | 'error' = 'info';

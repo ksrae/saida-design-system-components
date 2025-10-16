@@ -7,24 +7,24 @@
 
 ## Properties
 
-| Property           | Attribute            | Description | Type                                             | Default                   |
-| ------------------ | -------------------- | ----------- | ------------------------------------------------ | ------------------------- |
-| `autofocus`        | `autofocus`          |             | `boolean`                                        | `false`                   |
-| `borderless`       | `borderless`         |             | `boolean`                                        | `false`                   |
-| `decimalPlaces`    | `decimal-places`     |             | `number`                                         | `undefined`               |
-| `disabled`         | `disabled`           |             | `boolean`                                        | `false`                   |
-| `label`            | `label`              |             | `string`                                         | `""`                      |
-| `max`              | `max`                |             | `number`                                         | `Number.MAX_SAFE_INTEGER` |
-| `min`              | `min`                |             | `number`                                         | `Number.MIN_SAFE_INTEGER` |
-| `name`             | `name`               |             | `string`                                         | `""`                      |
-| `noNativeValidity` | `no-native-validity` |             | `boolean`                                        | `false`                   |
-| `readonly`         | `readonly`           |             | `boolean`                                        | `false`                   |
-| `required`         | `required`           |             | `boolean`                                        | `false`                   |
-| `rounding`         | `rounding`           |             | `"ceil" \| "floor" \| "round"`                   | `undefined`               |
-| `size`             | `size`               |             | `"large" \| "medium" \| "small"`                 | `"medium"`                |
-| `status`           | `status`             |             | `"default" \| "error" \| "success" \| "warning"` | `'default'`               |
-| `step`             | `step`               |             | `number`                                         | `1`                       |
-| `value`            | `value`              |             | `number \| string`                               | `''`                      |
+| Property           | Attribute          | Description | Type                                             | Default                   |
+| ------------------ | ------------------ | ----------- | ------------------------------------------------ | ------------------------- |
+| `autofocus`        | `autofocus`        |             | `boolean`                                        | `false`                   |
+| `borderless`       | `borderless`       |             | `boolean`                                        | `false`                   |
+| `decimalPlaces`    | `decimal-places`   |             | `number`                                         | `undefined`               |
+| `disabled`         | `disabled`         |             | `boolean`                                        | `false`                   |
+| `label`            | `label`            |             | `string`                                         | `""`                      |
+| `max`              | `max`              |             | `number`                                         | `Number.MAX_SAFE_INTEGER` |
+| `min`              | `min`              |             | `number`                                         | `Number.MIN_SAFE_INTEGER` |
+| `name`             | `name`             |             | `string`                                         | `""`                      |
+| `noNativeValidity` | `nonativevalidity` |             | `boolean`                                        | `false`                   |
+| `readonly`         | `readonly`         |             | `boolean`                                        | `false`                   |
+| `required`         | `required`         |             | `boolean`                                        | `false`                   |
+| `rounding`         | `rounding`         |             | `"ceil" \| "floor" \| "round"`                   | `undefined`               |
+| `size`             | `size`             |             | `"large" \| "medium" \| "small"`                 | `"medium"`                |
+| `status`           | `status`           |             | `"default" \| "error" \| "success" \| "warning"` | `'default'`               |
+| `step`             | `step`             |             | `number`                                         | `1`                       |
+| `value`            | `value`            |             | `number \| string`                               | `''`                      |
 
 
 ## Events
@@ -58,13 +58,13 @@ Type: `Promise<void>`
 
 
 
-### `getStatus() => Promise<"" | "custom" | "valueMissing" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
+### `getStatus() => Promise<"" | "valueMissing" | "custom" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
 
 
 
 #### Returns
 
-Type: `Promise<"" | "custom" | "valueMissing" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
+Type: `Promise<"" | "valueMissing" | "custom" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
 
 
 
@@ -153,6 +153,11 @@ Type: `Promise<void>`
 
 ## Dependencies
 
+### Used by
+
+ - [sy-colorpicker-content](../colorpicker)
+ - [sy-pagination](../pagination)
+
 ### Depends on
 
 - [sy-icon](../icon)
@@ -161,6 +166,8 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   sy-input-number --> sy-icon
+  sy-colorpicker-content --> sy-input-number
+  sy-pagination --> sy-input-number
   style sy-input-number fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

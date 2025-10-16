@@ -7,15 +7,15 @@
 
 ## Properties
 
-| Property       | Attribute       | Description | Type                                         | Default    |
-| -------------- | --------------- | ----------- | -------------------------------------------- | ---------- |
-| `closable`     | `closable`      |             | `boolean`                                    | `false`    |
-| `customSize`   | `custom-size`   |             | `number`                                     | `100`      |
-| `maskless`     | `maskless`      |             | `boolean`                                    | `false`    |
-| `open`         | `open`          |             | `boolean`                                    | `false`    |
-| `position`     | `position`      |             | `"bottom" \| "left" \| "right" \| "top"`     | `'right'`  |
-| `preventClose` | `prevent-close` |             | `boolean`                                    | `false`    |
-| `size`         | `size`          |             | `"custom" \| "large" \| "medium" \| "small"` | `'medium'` |
+| Property       | Attribute      | Description | Type                                         | Default    |
+| -------------- | -------------- | ----------- | -------------------------------------------- | ---------- |
+| `closable`     | `closable`     |             | `boolean`                                    | `false`    |
+| `customSize`   | `customsize`   |             | `number`                                     | `100`      |
+| `maskless`     | `maskless`     |             | `boolean`                                    | `false`    |
+| `open`         | `open`         |             | `boolean`                                    | `false`    |
+| `position`     | `position`     |             | `"bottom" \| "left" \| "right" \| "top"`     | `'right'`  |
+| `preventClose` | `preventclose` |             | `boolean`                                    | `false`    |
+| `size`         | `size`         |             | `"custom" \| "large" \| "medium" \| "small"` | `'medium'` |
 
 
 ## Events

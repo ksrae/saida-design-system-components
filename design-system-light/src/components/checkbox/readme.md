@@ -92,6 +92,10 @@ Type: `Promise<void>`
 
 ## Dependencies
 
+### Used by
+
+ - [sy-menu-item](../menu)
+
 ### Depends on
 
 - [sy-icon](../icon)
@@ -100,6 +104,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   sy-checkbox --> sy-icon
+  sy-menu-item --> sy-checkbox
   style sy-checkbox fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

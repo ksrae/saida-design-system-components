@@ -3,31 +3,6 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyRadioGroupElement extends HTMLElement {
-  // Public Props
-  disabled: boolean;
-  defaultValue: string;
-  readonly: boolean;
-  required: boolean;
-  size: 'small' | 'medium' | 'large';
-  position: 'horizontal' | 'vertical';
-  variant: 'outlined' | 'solid';
-  name: string;
-  noNativeValidity: boolean;
-
-  // Public Methods
-  checkValidity: () => Promise<boolean>;
-  reportValidity: () => Promise<boolean>;
-  setCustomError: () => Promise<void>;
-  clearCustomError: () => Promise<void>;
-  getStatus: () => Promise<'valueMissing' | 'custom' | ''>;
-
-  // Form Properties (Readonly)
-  readonly validity: ValidityState;
-  readonly validationMessage: string;
-  readonly willValidate: boolean;
-}
-
 @Component({
   tag: 'sy-radio-group',
   styleUrl: 'sy-radio-group.scss',

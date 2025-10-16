@@ -1,26 +1,6 @@
 import { Component, Prop, State, h, Event, EventEmitter, Element } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
-export interface HTMLSyCalendarElement extends HTMLElement {
-  mode?: 'day' | 'month' | 'year';
-  variant?: 'date' | 'datetime' | 'range' | 'time';
-  format?: string;
-  active?: string;
-  year?: number;
-  month?: number;
-  day?: number;
-  hour?: number;
-  minute?: number;
-  second?: number;
-  rangestartdefault?: string;
-  rangeenddefault?: string;
-  dateNames?: string;
-  mondayStart?: boolean;
-  hideWeekend?: boolean;
-  selected: EventEmitter<any>;
-  closed: EventEmitter<void>;
-}
-
 @Component({
   tag: 'sy-calendar',
   styleUrl: 'sy-calendar.scss',
@@ -28,12 +8,12 @@ export interface HTMLSyCalendarElement extends HTMLElement {
   scoped: true
 })
 export class SyCalendar {
-  @Element() host: HTMLSyDateCalendarElement;
+  @Element() host: HTMLSyCalendarElement;
 
   @Prop() mode: 'day' | 'month' | 'year' = 'day';
   @Prop() variant: 'date' | 'datetime' | 'range' | 'time' = 'date';
   @Prop() format: string = 'hh:mm:ss';
-  @Prop({ reflect: true }) active!: string;
+  @Prop({ reflect: true, mutable: true }) active!: string;
 
   @Prop() year!: number;
   @Prop() month!: number;
@@ -42,8 +22,8 @@ export class SyCalendar {
   @Prop() minute!: number;
   @Prop() second!: number;
 
-  @Prop() rangestartdefault!: string;
-  @Prop() rangeenddefault!: string;
+  @Prop() rangestart?: {year: number, month: number, day: number };
+  @Prop() rangeend?: {year: number, month: number, day: number };
   @Prop({ attribute: 'dateNames', mutable: true }) dateNames: string = 'Su,Mo,Tu,We,Th,Fr,Sa';
   @Prop({ attribute: 'mondayStart', mutable: true }) mondayStart: boolean = false;
   @Prop({ attribute: 'hideWeekend', mutable: true }) hideWeekend: boolean = false;
@@ -53,42 +33,34 @@ export class SyCalendar {
 
   private readonly todayDate = new Date();
 
-  @State() private rangestart: {year: number, month: number, day: number } | undefined = undefined;
-  @State() private rangeend: {year: number, month: number, day: number } | undefined = undefined;
-  @State() private rangeSelected = {start: false, end: false};
   @State() selectedDatetime!: {year: number, month: number, day: number, hour: number, minute: number, second: number};
 
   private parentDom: any;
   private addedToBody = false;
-  private preventRender = false;
-  private initialRender: boolean = true;
-  private renderTimeoutId: any;
+  // private preventRender = false;
+  // private initialRender: boolean = true;
+  // private renderTimeoutId: any;
 
   componentWillLoad() {
     this.dateNames = fnAssignPropFromAlias(this.host, 'date-names') ?? this.dateNames;
     this.mondayStart = fnAssignPropFromAlias(this.host, 'monday-start') ?? this.mondayStart;
     this.hideWeekend = fnAssignPropFromAlias(this.host, 'hide-weekend') ?? this.hideWeekend;
+
+    // Properly initialize selectedDatetime
+    const now = new Date();
+    this.selectedDatetime = {
+      year: this.year !== undefined ? this.year : (this.selectedDatetime?.year ?? now.getFullYear()),
+      month: this.month !== undefined ? this.month : (this.selectedDatetime?.month ?? now.getMonth()),
+      day: this.day !== undefined ? this.day : (this.selectedDatetime?.day ?? now.getDate()),
+      hour: this.hour !== undefined ? this.hour : (this.selectedDatetime?.hour ?? now.getHours()),
+      minute: this.minute !== undefined ? this.minute : (this.selectedDatetime?.minute ?? now.getMinutes()),
+      second: this.second !== undefined ? this.second : (this.selectedDatetime?.second ?? now.getSeconds())
+    };
+
+    void this.addedToBody;
   }
 
   componentDidLoad() {
-    this.rangeSelected = {start: false, end: false};
-
-    if(!this.rangestartdefault || !this.rangeenddefault) {
-      // this.datetime = {year: this.year, month: this.month, day: this.day, hour: this.hour, minute: this.minute, second: this.second};
-    } else {
-      this.rangestart = this.rangestartdefault ? JSON.parse(this.rangestartdefault) : undefined;
-      this.rangeend = this.rangeenddefault ? JSON.parse(this.rangeenddefault) : undefined;
-    }
-
-    this.selectedDatetime = {
-      year: this.year ?? undefined,
-      month: this.month ?? undefined,
-      day: this.day ?? undefined,
-      hour: (this.selectedDatetime && typeof this.selectedDatetime.hour === 'number') ? this.selectedDatetime.hour : (this.hour ? this.hour : new Date().getHours()),
-      minute: (this.selectedDatetime && typeof this.selectedDatetime.minute === 'number') ? this.selectedDatetime.minute : (this.minute ? this.minute : new Date().getMinutes()),
-      second: (this.selectedDatetime && typeof this.selectedDatetime.second === 'number') ? this.selectedDatetime.second : (this.second ? this.second : new Date().getSeconds())
-    };
-
     this.appendToRoot();
   }
 
@@ -107,33 +79,17 @@ export class SyCalendar {
   }
 
   private handleRangeDateSelected = (event: CustomEvent) => {
+    event.stopPropagation(); // 이벤트 버블링 중단!
+    
     const { year, month, day, range} = event.detail;
-    console.log({year, month, day, range});
 
-    if(range === 'start') {
-      if(year && month !== undefined && day) {
-        this.rangestart = {year, month, day};
-        this.rangeend = undefined;
-        this.rangeSelected = {start: true, end: false};
-      } else {
-        this.rangestart = undefined as any;
-        this.rangeend = undefined;
-        this.rangeSelected = {start: false, end: false};
-      }
-    } else if (range === 'end') {
-      this.rangeend = {year, month, day};
-      this.rangeSelected = {...this.rangeSelected, end: true};
-    }
-
-    this.selected.emit({year, month, day, range});
-
-    if(this.rangeSelected.start && this.rangeSelected.end) {
-      this.rangeSelected = {start: false, end: false};
-    } else if (this.rangeSelected.start && !this.rangeSelected.end) {
-      this.active = 'end';
-    } else if (!this.rangeSelected.start && this.rangeSelected.end) {
-      this.active = 'start';
-    }
+    // 단순히 이벤트만 전달 - 상태 변경 없음!
+    this.selected.emit({
+      year, 
+      month, 
+      day, 
+      range
+    });
   }
 
   private handleDateTimeSelected = (event: CustomEvent) => {
@@ -205,7 +161,7 @@ export class SyCalendar {
     }
   }
 
-  private handleCalendarClosed = (event: Event) => {
+  private handleCalendarClosed = (_event: Event) => {
     this.closed.emit(undefined);
   }
 
@@ -249,7 +205,8 @@ render() {
           hour={this.selectedDatetime?.hour ?? this.todayDate.getHours()}
           minute={this.selectedDatetime?.minute ?? this.todayDate.getMinutes()}
           second={this.selectedDatetime?.second ?? this.todayDate.getSeconds()}
-          format={this.format}>
+          format={this.format}
+          onSelected={this.handleTimeSelected}>
         </sy-timepicker>
       )}
     </div>

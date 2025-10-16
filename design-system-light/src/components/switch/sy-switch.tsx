@@ -1,20 +1,5 @@
 import { Component, Prop, State, Event, EventEmitter, h, Watch, Element } from '@stencil/core';
 
-// HTMLSySwitchElement interface
-export interface HTMLSySwitchElement extends HTMLElement {
-  // Props
-  checked: boolean;
-  disabled: boolean;
-  label: string;
-  loading: boolean;
-  readonly: boolean;
-  size: 'small' | 'medium';
-  name: string;
-
-  // Events
-  changed: EventEmitter<boolean>;
-}
-
 @Component({
   tag: 'sy-switch',
   styleUrl: 'sy-switch.scss',
@@ -22,7 +7,7 @@ export interface HTMLSySwitchElement extends HTMLElement {
   scoped: true,
 })
 export class SySwitch {
-  @Element() hostElement: HTMLElement;
+  @Element() host: HTMLSySwitchElement;
 
   // Props
   @Prop({ reflect: true, mutable: true }) checked: boolean = false;
@@ -83,7 +68,7 @@ export class SySwitch {
       bubbles: true,
       composed: true
     });
-    this.hostElement.dispatchEvent(event);
+    this.host.dispatchEvent(event);
   }
 
   private handleHover(_event: MouseEvent) {

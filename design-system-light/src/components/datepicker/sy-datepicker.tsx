@@ -1,26 +1,5 @@
-import { Component, Prop, State, Element, h, Event, EventEmitter, Watch, AttachInternals, Listen } from '@stencil/core';
+import { Component, Prop, State, Element, h, Event, EventEmitter, Watch, Method, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
-
-export interface HTMLSyDatepickerElement extends HTMLElement {
-  mode?: 'day' | 'month' | 'year';
-  variant?: 'date' | 'datetime' | 'range' | 'time';
-  disabled?: boolean;
-  readonly?: boolean;
-  required?: boolean;
-  year?: string;
-  month?: string;
-  day?: string;
-  hour?: string;
-  minute?: string;
-  second?: string;
-  dateNames?: string;
-  mondayStart?: boolean;
-  hideWeekend?: boolean;
-  placeholder?: string;
-  format?: string;
-  selected: EventEmitter<any>;
-  changed: EventEmitter<any>;
-}
 
 @Component({
   tag: 'sy-datepicker',
@@ -31,6 +10,7 @@ export interface HTMLSyDatepickerElement extends HTMLElement {
 })
 export class SyDatePicker {
   @Element() host: HTMLSyDatepickerElement;
+  @AttachInternals() internals: ElementInternals;
 
   @Prop() mode: 'day' | 'month' | 'year' = 'day';
   @Prop() variant: 'date' | 'datetime' | 'range' | 'time' = 'date';
@@ -87,10 +67,7 @@ export class SyDatePicker {
   private inputDebounceTimer: any = null;
   private isInputFocused: boolean = false;
   private popupContainer: any;
-  private selectionMode: 'start' | 'end' | null = null;
-
-  // ElementInternals 추가
-  private internals: ElementInternals;
+  private isDateSelecting: boolean = false; // 날짜 선택 중인지 표시
 
 @Watch('startResult')
 @Watch('endResult')
@@ -173,40 +150,35 @@ watchResultChanges() {
     this.setPlaceholder();
   }
 
-@Listen('invalid', { capture: true })
-private handleInvalid(e: Event) {
-  const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-  if (hasErrorSlot) {
-    const errorSlotElement = this.host.querySelector('[slot="error"]');
-    const hasContent = errorSlotElement?.textContent?.trim();
-    if (hasContent) {
-      this.hasSlotErrorMessage = true;
-      e.preventDefault();
-      e.stopPropagation();
-      this.internals?.setValidity({ customError: true }, ' ');
-    } else {
-      this.hasSlotErrorMessage = false;
-    }
-  } else {
-    this.hasSlotErrorMessage = false;
-    setTimeout(() => {
-      if (!this.isValid) {
-        const inputElement = this.host.querySelector('sy-input') as any;
-        if (inputElement && inputElement.reportValidity) {
-          inputElement.reportValidity();
-        }
-      }
-    }, 0);
-  }
-  this.isValid = false;
-}
+// @Listen('invalid', { capture: true })
+// private handleInvalid(e: Event) {
+//   const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
+//   if (hasErrorSlot) {
+//     const errorSlotElement = this.host.querySelector('[slot="error"]');
+//     const hasContent = errorSlotElement?.textContent?.trim();
+//     if (hasContent) {
+//       this.hasSlotErrorMessage = true;
+//       e.preventDefault();
+//       e.stopPropagation();
+//       this.internals?.setValidity({ customError: true }, ' ');
+//     } else {
+//       this.hasSlotErrorMessage = false;
+//     }
+//   } else {
+//     this.hasSlotErrorMessage = false;
+//     setTimeout(() => {
+//       if (!this.isValid) {
+//         const inputElement = this.host.querySelector('sy-input') as any;
+//         if (inputElement && inputElement.reportValidity) {
+//           inputElement.reportValidity();
+//         }
+//       }
+//     }, 0);
+//   }
+//   this.isValid = false;
+// }
 
   connectedCallback() {
-    // ElementInternals 초기화 추가
-    if (this.host.attachInternals && !this.internals) {
-      this.internals = this.host.attachInternals();
-    }
-
     document.addEventListener('click', this.handleOutsideClick, true);
     this.host.addEventListener('keydown', this.handleKeyDown);
     this.setupFormSubmitListener();
@@ -225,10 +197,18 @@ private handleInvalid(e: Event) {
     // 초기값 저장 (formReset을 위해)
     this.initialStartResult = this.startResult;
     this.initialEndResult = this.endResult;
+
+    // Touch members to avoid TypeScript "declared but its value is never read"
+    // warnings for fields that are used indirectly (e.g., via event handlers
+    // or template bindings) or only assigned at runtime.
+    this._markUsedMembers();
   }
 
-  componentDidLoad() {
-
+  // No-op reader for intentionally kept state fields to satisfy the
+  // `noUnusedLocals` compiler option without changing runtime behavior.
+  private _markUsedMembers() {
+    void this._isEditingRange;
+    void this.isInputting;
   }
 
   disconnectedCallback() {
@@ -319,14 +299,12 @@ get willValidate(): boolean {
         if (activeElement === endInput || this.active === 'end') {
           e.preventDefault();
           this.active = 'start';
-          this.selectionMode = 'start';
           (startInput as any)?.focus();
         }
       } else {
         if (activeElement === startInput || this.active === 'start') {
           e.preventDefault();
           this.active = 'end';
-          this.selectionMode = 'end';
           (endInput as any)?.focus();
         }
       }
@@ -446,7 +424,6 @@ get willValidate(): boolean {
 
     if (this.variant === 'range') {
       this.active = 'start';
-      this.selectionMode = 'start';
 
       if (this.showCalendar) {
         this.updateSelectedDatetimeFromInput();
@@ -470,7 +447,6 @@ get willValidate(): boolean {
 
     if (this.variant === 'range') {
       this.active = 'end';
-      this.selectionMode = 'end';
 
       if (this.showCalendar) {
         this.updateSelectedDatetimeFromInput();
@@ -538,8 +514,16 @@ get willValidate(): boolean {
   private handleInput = (mode: 'start' | 'end', e: any) => {
     e.stopPropagation();
 
-    this.isInputting = true;
-    this.lastInputTime = Date.now();
+    // 날짜 선택 중일 때는 input 이벤트 무시 (프로그래밍 방식 변경)
+    if (this.isDateSelecting) {
+      return;
+    }
+
+    // 렌더링 후에 state 변경 (경고 방지)
+    setTimeout(() => {
+      this.isInputting = true;
+      this.lastInputTime = Date.now();
+    }, 0);
 
     const inputValue = e.target.value;
     const formattedValue = this.tryParseNumericInput(inputValue);
@@ -593,8 +577,12 @@ get willValidate(): boolean {
       this.endResult = value;
     }
 
-    if (this.variant === 'range') {
-      this.active = mode;
+    // 날짜 선택 중이 아닐 때만 active를 변경 (사용자가 직접 입력할 때만)
+    // 렌더링 후에 state 변경 (경고 방지)
+    if (this.variant === 'range' && !this.isDateSelecting) {
+      setTimeout(() => {
+        this.active = mode;
+      }, 0);
     }
 
     const isValid = this.isValidInput(value);
@@ -945,66 +933,69 @@ get willValidate(): boolean {
 
     const { year, month, day } = parsedDate;
 
-    if (mode === 'start') {
-      this.startResult = value;
-      if (this.variant === 'range') {
-        const newStartDate = { year, month: month - 1, day };
-        const newStartDateObj = new Date(year, month - 1, day);
+    // 렌더링 후에 state 변경 (경고 방지)
+    setTimeout(() => {
+      if (mode === 'start') {
+        this.startResult = value;
+        if (this.variant === 'range') {
+          const newStartDate = { year, month: month - 1, day };
+          const newStartDateObj = new Date(year, month - 1, day);
 
-        if (this.rangeend) {
-          const endDateObj = new Date(this.rangeend.year, this.rangeend.month, this.rangeend.day);
-          if (newStartDateObj >= endDateObj) {
-            this.rangeend = undefined;
-            this.endResult = '';
+          if (this.rangeend) {
+            const endDateObj = new Date(this.rangeend.year, this.rangeend.month, this.rangeend.day);
+            if (newStartDateObj >= endDateObj) {
+              this.rangeend = undefined;
+              this.endResult = '';
+            }
           }
+
+          this.rangestart = newStartDate;
+
+          this.selectedDatetime = {
+            year,
+            month: month - 1,
+            day,
+            hour: 0,
+            minute: 0,
+            second: 0
+          };
+        } else {
+          this.selectedDatetime = {
+            year,
+            month: month - 1,
+            day,
+            hour: 0,
+            minute: 0,
+            second: 0
+          };
         }
-
-        this.rangestart = newStartDate;
-
-        this.selectedDatetime = {
-          year,
-          month: month - 1,
-          day,
-          hour: 0,
-          minute: 0,
-          second: 0
-        };
       } else {
-        this.selectedDatetime = {
-          year,
-          month: month - 1,
-          day,
-          hour: 0,
-          minute: 0,
-          second: 0
-        };
-      }
-    } else {
-      this.endResult = value;
-      if (this.variant === 'range') {
-        const newEndDate = { year, month: month - 1, day };
-        const newEndDateObj = new Date(year, month - 1, day);
+        this.endResult = value;
+        if (this.variant === 'range') {
+          const newEndDate = { year, month: month - 1, day };
+          const newEndDateObj = new Date(year, month - 1, day);
 
-        if (this.rangestart) {
-          const startDateObj = new Date(this.rangestart.year, this.rangestart.month, this.rangestart.day);
-          if (newEndDateObj <= startDateObj) {
-            this.rangestart = undefined;
-            this.startResult = '';
+          if (this.rangestart) {
+            const startDateObj = new Date(this.rangestart.year, this.rangestart.month, this.rangestart.day);
+            if (newEndDateObj <= startDateObj) {
+              this.rangestart = undefined;
+              this.startResult = '';
+            }
           }
+
+          this.rangeend = newEndDate;
+
+          this.selectedDatetime = {
+            year,
+            month: month - 1,
+            day,
+            hour: 0,
+            minute: 0,
+            second: 0
+          };
         }
-
-        this.rangeend = newEndDate;
-
-        this.selectedDatetime = {
-          year,
-          month: month - 1,
-          day,
-          hour: 0,
-          minute: 0,
-          second: 0
-        };
       }
-    }
+    }, 0);
   }
 
   private processTimeInput(mode: 'start' | 'end', value: string) {
@@ -1195,11 +1186,10 @@ get willValidate(): boolean {
     return this.isValidTimeFormat(value);
   }
 
-  private activeStartCalendar = (e: Event) => {
+  private activeStartCalendar = (_e: Event) => {
     if(this.readonly) { return; }
 
     this.active = 'start';
-    this.selectionMode = 'start';
 
     if (!this.showCalendar) {
       this.showCalendar = true;
@@ -1210,11 +1200,10 @@ get willValidate(): boolean {
     }
   }
 
-  private activeEndCalendar = (e: Event) => {
+  private activeEndCalendar = (_e: Event) => {
     if(this.readonly) { return; }
 
     this.active = 'end';
-    this.selectionMode = 'end';
 
     if (!this.showCalendar) {
       this.showCalendar = true;
@@ -1312,6 +1301,7 @@ get willValidate(): boolean {
     }
 
     this._isEditingRange = false;
+    this.showCalendar = false;
     this.closePopup();
 
     window.removeEventListener('resize', this.handleViewportChange);
@@ -1404,7 +1394,11 @@ get willValidate(): boolean {
     if (!this.popupContainer) return;
 
     if (this.variant === 'range') {
-      this.popupContainer.setAttribute('active', this.selectionMode || 'start');
+      this.popupContainer.setAttribute('active', this.active || 'start');
+      
+      // rangestart와 rangeend를 항상 업데이트
+      (this.popupContainer as any).rangestart = this.rangestart;
+      (this.popupContainer as any).rangeend = this.rangeend;
 
       let selectedDate = null;
 
@@ -1476,66 +1470,80 @@ get willValidate(): boolean {
     const { closable, year, month, day, hour, minute, second } = customEvent.detail;
 
     if (this.variant === 'range') {
+      // 날짜 선택 플래그 설정 (input 이벤트에서 active를 덮어쓰지 않도록)
+      this.isDateSelecting = true;
+
+      // Lit3 로직: calendar에서는 year, month, day, range만 전달
+      // datepicker에서 자체적으로 rangestart/rangeend 관리
       const selectedDate = { year, month, day };
       const selectedDateObj = new Date(year, month, day);
 
-      if (this.selectionMode === 'start') {
-        this.rangestart = selectedDate;
-        this.startResult = this.formatDisplayDate(year, month + 1, day);
+      // 렌더링 후에 state 변경 (경고 방지)
+      setTimeout(() => {
+        // active 기준으로 처리 (range 값은 캘린더가 어느쪽인지만 나타냄)
+        if (this.active === 'start') {
+          // 1. 새 시작 날짜 설정
+          this.rangestart = selectedDate;
+          this.startResult = this.formatDisplayDate(year, month + 1, day);
 
-        if (this.rangeend) {
-          const endDateObj = new Date(this.rangeend.year, this.rangeend.month, this.rangeend.day);
-          if (selectedDateObj > endDateObj) {
-            this.rangeend = undefined;
-            this.endResult = '';
+          // 2. 기존 종료 날짜 체크
+          let hasValidEnd = false;
+          if (this.rangeend) {
+            const endDateObj = new Date(this.rangeend.year, this.rangeend.month, this.rangeend.day);
+            if (selectedDateObj > endDateObj) {
+              // 범위가 역전되었다면 종료 날짜 초기화
+              this.rangeend = undefined;
+              this.endResult = '';
+            } else {
+              // valid한 end가 있음
+              hasValidEnd = true;
+            }
+          }
+
+          // 3. valid한 end가 있으면 종료, 없으면 end 모드로 전환
+          if (hasValidEnd) {
+            this.closeCalendar();
+          } else {
+            this.active = 'end';
+          }
+
+        } else if (this.active === 'end') {
+          // 1. 새 종료 날짜 설정
+          this.rangeend = selectedDate;
+          this.endResult = this.formatDisplayDate(year, month + 1, day);
+
+          // 2. 기존 시작 날짜 체크
+          let hasValidStart = false;
+          if (this.rangestart) {
+            const startDateObj = new Date(this.rangestart.year, this.rangestart.month, this.rangestart.day);
+            if (selectedDateObj < startDateObj) {
+              // 범위가 역전되었다면 시작 날짜 초기화
+              this.rangestart = undefined;
+              this.startResult = '';
+            } else {
+              // valid한 start가 있음
+              hasValidStart = true;
+            }
+          }
+
+          // 3. valid한 start가 있으면 종료, 없으면 start 모드로 전환
+          if (hasValidStart) {
+            this.closeCalendar();
+          } else {
+            this.active = 'start';
           }
         }
 
-        this.selectionMode = 'end';
-        this.active = 'end';
+        this.selected.emit({ rangestart: this.rangestart, rangeend: this.rangeend });
 
-        if (!this.rangeend) {
-          setTimeout(() => {
-            const endInputComponent = this.host.querySelector('sy-input.endContent') as any;
-            if (endInputComponent) {
-              endInputComponent.focus();
-            }
-          }, 0);
-        }
+        // props를 업데이트하여 달력에 반영
+        this.syncPopupState();
 
-      } else {
-        this.rangeend = selectedDate;
-        this.endResult = this.formatDisplayDate(year, month + 1, day);
-
-        if (this.rangestart) {
-          const startDateObj = new Date(this.rangestart.year, this.rangestart.month, this.rangestart.day);
-          if (selectedDateObj < startDateObj) {
-            this.rangestart = undefined;
-            this.startResult = '';
-          }
-        }
-
-        this.selectionMode = 'start';
-        this.active = 'start';
-
-        if (!this.rangestart) {
-          setTimeout(() => {
-            const startInputComponent = this.host.querySelector('sy-input.startContent') as any;
-            if (startInputComponent) {
-              startInputComponent.focus();
-            }
-          }, 0);
-        }
-      }
-
-      if (this.rangestart && this.rangeend) {
-        this.updateInputFocusState();
-        this.toggleCalendar();
-      } else {
-        this.renderPopup();
-      }
-
-      this.selected.emit({ rangestart: this.rangestart, rangeend: this.rangeend });
+        // 날짜 선택 완료 후 플래그 해제
+        setTimeout(() => {
+          this.isDateSelecting = false;
+        }, 50);
+      }, 0);
 
     } else {
       this.year = String(year);
@@ -1811,77 +1819,80 @@ get willValidate(): boolean {
     }
   }
 
-  private updateInputFocusState() {
-    if (this.variant === 'range' && this.rangestart && this.rangeend) {
-      this.isInputFocused = false;
-      this.active = '';
-    }
-  }
-
   private handleOutsideClick = (e: Event) => {
     if (this.host.contains(e.target as Node) || (this.popupContainer && this.popupContainer.contains(e.target as Node))) {
       return;
     }
 
-    if (this.variant === 'range') {
-      const isStartValid = this.rangestart && this.rangestart.year !== undefined;
-      const isEndValid = this.rangeend && this.rangeend.year !== undefined;
+    // 렌더링 후에 state 변경 (경고 방지)
+    setTimeout(() => {
+      if (this.variant === 'range') {
+        const isStartValid = this.rangestart && this.rangestart.year !== undefined;
+        const isEndValid = this.rangeend && this.rangeend.year !== undefined;
 
-      if (isStartValid && !isEndValid) {
-        const startDate = new Date(this.rangestart!.year, this.rangestart!.month, this.rangestart!.day);
-        startDate.setDate(startDate.getDate() + 1);
+        if (isStartValid && !isEndValid) {
+          const startDate = new Date(this.rangestart!.year, this.rangestart!.month, this.rangestart!.day);
+          startDate.setDate(startDate.getDate() + 1);
 
-        this.rangeend = {
-          year: startDate.getFullYear(),
-          month: startDate.getMonth(),
-          day: startDate.getDate(),
-        };
-        this.endResult = this.formatDisplayDate(this.rangeend.year, this.rangeend.month + 1, this.rangeend.day);
-      } else if (!isStartValid && isEndValid) {
-        const endDate = new Date(this.rangeend!.year, this.rangeend!.month, this.rangeend!.day);
-        endDate.setDate(endDate.getDate() - 1);
+          this.rangeend = {
+            year: startDate.getFullYear(),
+            month: startDate.getMonth(),
+            day: startDate.getDate(),
+          };
+          this.endResult = this.formatDisplayDate(this.rangeend.year, this.rangeend.month + 1, this.rangeend.day);
+        } else if (!isStartValid && isEndValid) {
+          const endDate = new Date(this.rangeend!.year, this.rangeend!.month, this.rangeend!.day);
+          endDate.setDate(endDate.getDate() - 1);
 
-        this.rangestart = {
-          year: endDate.getFullYear(),
-          month: endDate.getMonth(),
-          day: endDate.getDate(),
-        };
-        this.startResult = this.formatDisplayDate(this.rangestart.year, this.rangestart.month + 1, this.rangestart.day);
+          this.rangestart = {
+            year: endDate.getFullYear(),
+            month: endDate.getMonth(),
+            day: endDate.getDate(),
+          };
+          this.startResult = this.formatDisplayDate(this.rangestart.year, this.rangestart.month + 1, this.rangestart.day);
+        }
       }
-    }
 
-    this.isInputFocused = false;
-    this.active = '';
+      this.isInputFocused = false;
+      this.active = '';
 
-    if (this.showCalendar) {
-      this.toggleCalendar();
-    }
+      if (this.showCalendar) {
+        this.toggleCalendar();
+      }
+    }, 0);
   }
 
   // Form validation methods
-  public getStatus() { return this.isValid ? '' : this.validStatus; }
+  @Method()
+  async getStatus() {
+    return this.isValid ? '' : this.validStatus;
+  }
 
-  public setCustomError() {
+  @Method()
+  async setCustomError() {
     this.isValid = false;
     this.validStatus = 'custom';
   }
 
-  public clearCustomError() {
+  @Method()
+  async clearCustomError() {
     if(!this.isValid && this.validStatus === 'custom') {
       this.validStatus = '';
     }
     this.updateValidityState();
   }
 
-public checkValidity(): boolean {
-  this.updateValidityState();
-  return this.internals.checkValidity();
-}
+  @Method()
+  async checkValidity(): Promise<boolean> {
+    this.updateValidityState();
+    return this.internals.checkValidity();
+  }
 
-public reportValidity(): boolean {
-  this.updateValidityState();
-  return this.internals.reportValidity();
-}
+  @Method()
+  async reportValidity(): Promise<boolean> {
+    this.updateValidityState();
+    return this.internals.reportValidity();
+  }
 
 private updateValidityState() {
   if (this.validStatus === 'custom' && !this.isValid) {

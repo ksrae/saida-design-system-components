@@ -20,13 +20,17 @@
 
 ## Events
 
-| Event      | Description | Type                                 |
-| ---------- | ----------- | ------------------------------------ |
-| `removed`  |             | `CustomEvent<{ tag: HTMLElement; }>` |
-| `selected` |             | `CustomEvent<{ tag: HTMLElement; }>` |
+| Event      | Description | Type                                      |
+| ---------- | ----------- | ----------------------------------------- |
+| `removed`  |             | `CustomEvent<{ tag: HTMLSyTagElement; }>` |
+| `selected` |             | `CustomEvent<{ tag: HTMLSyTagElement; }>` |
 
 
 ## Dependencies
+
+### Used by
+
+ - [sy-select](../select)
 
 ### Depends on
 
@@ -36,6 +40,7 @@
 ```mermaid
 graph TD;
   sy-tag --> sy-icon
+  sy-select --> sy-tag
   style sy-tag fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

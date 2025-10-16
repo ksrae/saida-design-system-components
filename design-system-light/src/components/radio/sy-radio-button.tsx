@@ -2,15 +2,6 @@
 
 import { Component, Prop, State, Event, EventEmitter, h, Element, Listen } from '@stencil/core';
 
-export interface HTMLSyRadioButtonElement extends HTMLElement {
-  // Public Props
-  checked: boolean;
-  disabled: boolean;
-  value: string;
-  size: 'small' | 'medium' | 'large';
-  variant: 'outlined' | 'solid';
-}
-
 @Component({
   tag: 'sy-radio-button',
   styleUrl: 'sy-radio-button.scss',

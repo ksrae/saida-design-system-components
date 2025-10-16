@@ -1,12 +1,5 @@
 import { Component, h, Prop, State, Element, Event, EventEmitter, Watch } from '@stencil/core';
 
-export interface HTMLSyIconElement extends HTMLElement {
-  size: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
-  path?: string;
-  selectable: boolean;
-  selected: EventEmitter<{ value: string }>;
-}
-
 @Component({
   tag: 'sy-icon',
   styleUrl: 'sy-icon.scss',
@@ -14,7 +7,7 @@ export interface HTMLSyIconElement extends HTMLElement {
   scoped: true,
 })
 export class SyIcon {
-  @Element() host: HTMLElement;
+  @Element() host: HTMLSyIconElement;
 
   @Prop({ reflect: true }) size: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge' = 'medium';
   @Prop({ reflect: true }) path?: string; // slot보다 path가 우선함.

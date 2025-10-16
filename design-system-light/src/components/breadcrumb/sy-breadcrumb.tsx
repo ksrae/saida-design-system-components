@@ -3,18 +3,13 @@
 import { Component, h, Prop, Element, Watch } from '@stencil/core';
 import { fnGetChildrenByTagName } from '../../utils/utils';
 
-export interface HTMLSyBreadcrumbElement extends HTMLElement {
-  separator: 'slash' | 'arrow';
-}
-
 @Component({
   tag: 'sy-breadcrumb',
   styleUrl: 'sy-breadcrumb.scss',
   shadow: false,
   scoped: true,
 })
-export class BreadcrumbElement {
-
+export class SyBreadcrumb {
   @Element() host: HTMLSyBreadcrumbElement;
 
   @Prop() separator: 'slash' | 'arrow' = 'slash';
