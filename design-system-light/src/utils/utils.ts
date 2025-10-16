@@ -7,8 +7,11 @@
  * @param host Stencil 컴포넌트의 루트 HTMLElement
  * @returns slot에 들어간 콘텐츠의 HTML 문자열
  */
+
+import { HTMLStencilElement } from "@stencil/core/internal";
+
 // slot 태그를 제외한 모든 자식 노드를 slot 콘텐츠로 처리 (Light DOM 대응)
-export function fnGetAssignedNodesContent(host: HTMLElement): string {
+export function fnGetAssignedNodesContent(host: HTMLStencilElement | HTMLElement): string {
 	return Array.from(host.childNodes)
 		.filter(node =>
 			node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName !== 'SLOT' ||
@@ -22,7 +25,7 @@ export function fnGetAssignedNodesContent(host: HTMLElement): string {
 }
 
 // 특정 tagName을 가진 slot 할당 요소들을 배열로 반환합니다.
-export function fnGetChildrenByTagName(parentElement: HTMLElement, childTagName: string): any[] {
+export function fnGetChildrenByTagName(parentElement: HTMLStencilElement | HTMLElement, childTagName: string): any[] {
 	if (!parentElement) {
 		return [];
 	}
@@ -33,7 +36,7 @@ export function fnGetChildrenByTagName(parentElement: HTMLElement, childTagName:
 }
 
 // 특정 태그 이름을 가진 부모 요소가 존재하는지 확인하는 함수
-export function fnFindClosestParentByTagName(host: HTMLElement, tagName: string): boolean {
+export function fnFindClosestParentByTagName(host: HTMLStencilElement | HTMLElement, tagName: string): boolean {
   let parent = host.parentElement;
 
   while (parent) {
@@ -47,7 +50,7 @@ export function fnFindClosestParentByTagName(host: HTMLElement, tagName: string)
 }
 
 // 특정 이름의 slot에 콘텐츠가 있는지 확인하는 함수
-export function fnHasSlotContentByName(host: HTMLElement, slotName: string): boolean {
+export function fnHasSlotContentByName(host: HTMLStencilElement, slotName: string): boolean {
 	if (!host.isConnected) return false;
 	return !!host.querySelector(`[slot="${slotName}"]`);
 }
@@ -87,7 +90,7 @@ export function fnHasSlotContentByName(host: HTMLElement, slotName: string): boo
  * This makes simple calls like:
  *   this.overflowCount = fnAssignPropFromAlias<number>(this.host, 'overflow-count') ?? this.overflowCount;
  */
-export function fnAssignPropFromAlias<T = string>(host: HTMLElement, ...aliases: string[]): T | null {
+export function fnAssignPropFromAlias<T = string>(host: HTMLStencilElement, ...aliases: string[]): T | null {
 	try {
 		const v = fnResolvePropAlias(host, ...aliases);
 		if (v == null) return null;
@@ -112,7 +115,7 @@ export function fnAssignPropFromAlias<T = string>(host: HTMLElement, ...aliases:
 	}
 }
 
-function fnResolvePropAlias(host: HTMLElement, ...aliasAttr: string[]): string | null {
+function fnResolvePropAlias(host: HTMLStencilElement, ...aliasAttr: string[]): string | null {
 	try {
 		if (!host) return null;
 		const aliases = aliasAttr && aliasAttr.length ? aliasAttr : [];
