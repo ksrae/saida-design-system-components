@@ -4,9 +4,11 @@
     "allowUnreachableCode": false,
     "declaration": false,
     "experimentalDecorators": true,
+    "types": ["jest"],
     "lib": [
       "dom",
-      "es2022"
+      "es2022",
+      "esnext"
     ],
     "moduleResolution": "bundler",
     "module": "esnext",
@@ -15,12 +17,17 @@
     "noUnusedParameters": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "jsxFragmentFactory": "h.Fragment"
+    "jsxFragmentFactory": "h.Fragment",
+    "skipLibCheck": true
   },
   "include": [
     "src"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "components",
+    "loader",
+    "www"
   ]
 }

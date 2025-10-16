@@ -2,38 +2,43 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 
 export const config: Config = {
-  namespace: 'design-system-light',
+  namespace: 'synergy',
+  tsconfig: 'tsconfig.build.json',
   plugins: [
     sass({
-      injectGlobalPaths: [
-
-      ],
-
     })
   ],
-  sourceMap: false,
+  sourceMap: false, 
   globalStyle: 'src/assets/style/global.scss',
   outputTargets: [
     {
       type: 'dist',
+      dir: 'dist',
       esmLoaderPath: '../loader',
       copy: [
-        { src: 'assets/style', dest: 'assets/style' }, // 스타일 폴더를 dist의 style로 복사
+        { src: 'assets/style', dest: 'assets/style' }
       ],
+
     },
     {
       type: 'dist-custom-elements',
-      customElementsExportBehavior: 'auto-define-custom-elements',
+      dir: 'dist/components',
+      copy: [
+        {
+          src: '../custom-elements',
+          dest: 'components',
+          warn: true,
+        },
+      ],
       externalRuntime: false,
-    },
-    {
-      type: 'docs-readme',
+      generateTypeDeclarations: true
     },
     {
       type: 'www',
       serviceWorker: null, // disable service workers
-    },
+    }
   ],
+
   testing: {
     browserHeadless: "shell",
   },

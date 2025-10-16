@@ -1,26 +1,35 @@
 {
-  "name": "design-system-light",
+  "name": "@dc/synergy",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "design system with stencil js",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/design-system-light/design-system-light.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/design-system-light/design-system-light.esm.js",
-      "require": "./dist/design-system-light/design-system-light.cjs.js"
+      "types": "./dist/types/components.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
     },
     "./loader": {
-      "import": "./loader/index.js",
-      "require": "./loader/index.cjs",
-      "types": "./loader/index.d.ts"
+      "types": "./dist/loader/index.d.ts",
+      "import": "./dist/loader/index.js",
+      "require": "./dist/loader/index.cjs.js"
     },
-    "./sy-button": {
-      "import": "./dist/components/sy-button.js",
-      "types": "./dist/components/sy-button.d.ts"
+    "./synergy": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/synergy/synergy.esm.js"
+    },
+    "./components/*.js": {
+      "types": "./components/*.d.ts",
+      "import": "./components/*.js"
+    },
+    "./components": {
+      "types": "./components/custom-elements.d.ts",
+      "import": "./components/index.js",
+      "default": "./components/index.js"
     }
   },
   "repository": {
@@ -29,7 +38,7 @@
   },
   "files": [
     "dist/",
-    "loader/"
+    "components/"
   ],
   "scripts": {
     "build": "stencil build",
