@@ -33,19 +33,32 @@
   ],
   "scripts": {
     "build": "stencil build",
+    "build:all": "stencil build --config stencil.prod.config.ts",
+    "clear": "powershell -Command \"Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist, components, .stencil\"",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "build-storybook": "stencil build && storybook build",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build-storybook:docs": "stencil build && storybook build --docs",
+    "storybook:docs": "storybook dev --docs -p 6006"
   },
   "devDependencies": {
-    "@stencil/core": "^4.37.0",
+    "@stencil/angular-output-target": "^1.1.1",
+    "@stencil/core": "^4.38.1",
+    "@stencil/react-output-target": "^1.2.0",
     "@stencil/sass": "^3.2.2",
+    "@stencil/storybook-plugin": "^0.4.2",
+    "@storybook/addon-docs": "^9.1.10",
+    "@storybook/addon-links": "^9.1.10",
+    "@storybook/addon-themes": "^9.1.10",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.5",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
-    "puppeteer": "^24.3.0"
+    "puppeteer": "^24.3.0",
+    "storybook": "^9.1.10"
   },
   "license": "MIT"
 }
