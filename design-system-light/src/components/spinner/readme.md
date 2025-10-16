@@ -20,11 +20,13 @@
 
 ### Used by
 
+ - [sy-autocomplete-option](../autocomplete)
  - [sy-option](../select)
 
 ### Graph
 ```mermaid
 graph TD;
+  sy-autocomplete-option --> sy-spinner
   sy-option --> sy-spinner
   style sy-spinner fill:#f9f,stroke:#333,stroke-width:4px
 ```

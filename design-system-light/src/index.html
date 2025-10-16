@@ -50,601 +50,423 @@
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
   <!-- ==================== Autocomplete Component Test ==================== -->
-  <section>
-    <h1>Autocomplete Component Test</h1>
+<section>
+  <h1>Autocomplete Component Test</h1>
 
-    <!-- 1. Basic Autocomplete -->
-    <div class="example-section">
-      <h3>1. Basic Autocomplete (focus trigger)</h3>
-      <p>Focus 시 전체 목록을 표시하는 기본 autocomplete입니다.</p>
-      
-      <sy-autocomplete 
-        id="basic-autocomplete"
-        placeholder="Select a fruit"
+  <!-- 1. Basic Autocomplete -->
+  <div class="example-section">
+    <h3>1. Basic Autocomplete (focus trigger)</h3>
+    <p>Focus 시 전체 목록을 표시하는 기본 autocomplete입니다.</p>
+
+    <sy-autocomplete
+      id="basic-autocomplete"
+      placeholder="Select a fruit"
+      trigger="focus"
+    ></sy-autocomplete>
+
+    <div id="basic-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+  </div>
+
+  <!-- 2. Input Trigger Autocomplete -->
+  <div class="example-section">
+    <h3>2. Input Trigger Autocomplete</h3>
+    <p>입력 시작 시 목록이 표시됩니다.</p>
+
+    <sy-autocomplete
+      id="input-autocomplete"
+      placeholder="Type to search fruits"
+      trigger="input"
+    ></sy-autocomplete>
+
+    <div id="input-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+  </div>
+
+  <!-- 3. Required Validation Test -->
+  <div class="example-section">
+    <h3>3. Required Validation Test</h3>
+    <p>Required field validation을 테스트합니다.</p>
+
+    <form id="form-required" novalidate>
+      <sy-autocomplete
+        id="required-autocomplete"
+        placeholder="Select a fruit (required)"
+        required
+        trigger="input"
+      >
+        <span slot="error">This field is required</span>
+      </sy-autocomplete>
+
+      <div style="margin-top: 10px;">
+        <button type="submit">Submit Form</button>
+        <button type="reset">Reset Form</button>
+      </div>
+    </form>
+
+    <p id="required-result" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></p>
+  </div>
+
+  <!-- 4. Custom Error Test -->
+  <div class="example-section">
+    <h3>4. Custom Error Test</h3>
+    <p>Custom error validation을 테스트합니다.</p>
+
+    <form id="form-custom" novalidate>
+      <sy-autocomplete
+        id="custom-autocomplete"
+        placeholder="Custom error test"
+        trigger="input"
+      >
+        <div slot="error">
+          <p class="custom-error-message">This field has a custom error message.</p>
+        </div>
+      </sy-autocomplete>
+
+      <div style="margin-top: 10px;">
+        <button type="submit">Set Custom Error and Submit</button>
+        <button type="reset">Clear Custom Error and Reset</button>
+      </div>
+    </form>
+
+    <p id="custom-result" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></p>
+  </div>
+
+  <!-- 5. Size Variants -->
+  <div class="example-section">
+    <h3>5. Size Variants</h3>
+
+    <div style="margin-bottom: 15px;">
+      <label>Small:</label>
+      <sy-autocomplete
+        id="small-autocomplete"
+        placeholder="Small size"
+        size="small"
         trigger="focus"
       ></sy-autocomplete>
-
-      <div id="basic-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
     </div>
 
-    <!-- 2. Input Trigger Autocomplete -->
-    <div class="example-section">
-      <h3>2. Input Trigger Autocomplete (default)</h3>
-      <p>입력 시작 시 목록이 표시됩니다. 필터링이 자동으로 적용됩니다.</p>
-      
-      <sy-autocomplete 
-        id="input-autocomplete"
-        placeholder="Type to search fruits"
-        trigger="input"
-      ></sy-autocomplete>
-
-      <div id="input-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-    </div>
-
-    <!-- 3. Arrow Key Navigation Test -->
-    <div class="example-section">
-      <h3>3. Arrow Key Navigation</h3>
-      <p>입력 후 <strong>Arrow Up/Down</strong> 키로 옵션을 탐색하고 <strong>Enter</strong>로 선택하세요.</p>
-      
-      <sy-autocomplete 
-        id="arrow-autocomplete"
-        placeholder="Type 'a' then use arrow keys"
-        trigger="input"
-      ></sy-autocomplete>
-
-      <div id="arrow-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;">
-        <strong>Active Index:</strong> <span id="arrow-active">-1</span><br>
-        <strong>Selected:</strong> <span id="arrow-selected">None</span>
-      </div>
-    </div>
-
-    <!-- 4. Debounced Autocomplete -->
-    <div class="example-section">
-      <h3>4. Debounced Autocomplete</h3>
-      <p>500ms debounce가 적용되어 입력이 멈춘 후 필터링됩니다.</p>
-      
-      <sy-autocomplete 
-        id="debounced-autocomplete"
-        placeholder="Type quickly to see debounce"
-        trigger="input"
-        debounce="500"
-      ></sy-autocomplete>
-
-      <div id="debounced-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-    </div>
-
-    <!-- 5. Case Sensitive -->
-    <div class="example-section">
-      <h3>5. Case Sensitive Autocomplete</h3>
-      <p>대소문자를 구분하여 필터링합니다. (case-sensitive="true")</p>
-      
-      <sy-autocomplete 
-        id="case-autocomplete"
-        placeholder="Try 'apple', 'Apple', or 'APPLE'"
-        trigger="input"
-        case-sensitive="true"
-      ></sy-autocomplete>
-
-      <div id="case-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-    </div>
-
-    <!-- 6. Size Variants -->
-    <div class="example-section">
-      <h3>6. Size Variants</h3>
-      
-      <div style="margin-bottom: 15px;">
-        <label><strong>Small:</strong></label>
-        <sy-autocomplete 
-          id="small-autocomplete"
-          placeholder="Small size"
-          size="small"
-          trigger="focus"
-        ></sy-autocomplete>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <label><strong>Medium (default):</strong></label>
-        <sy-autocomplete 
-          id="medium-autocomplete"
-          placeholder="Medium size"
-          size="medium"
-          trigger="focus"
-        ></sy-autocomplete>
-      </div>
-
-      <div>
-        <label><strong>Large:</strong></label>
-        <sy-autocomplete 
-          id="large-autocomplete"
-          placeholder="Large size"
-          size="large"
-          trigger="focus"
-        ></sy-autocomplete>
-      </div>
-    </div>
-
-    <!-- 7. Loading State -->
-    <div class="example-section">
-      <h3>7. Loading State</h3>
-      <p>로딩 상태를 시뮬레이션합니다.</p>
-      
-      <sy-autocomplete 
-        id="loading-autocomplete"
-        placeholder="Click button to simulate loading"
+    <div style="margin-bottom: 15px;">
+      <label>Medium:</label>
+      <sy-autocomplete
+        id="medium-autocomplete"
+        placeholder="Medium size"
+        size="medium"
         trigger="focus"
       ></sy-autocomplete>
+    </div>
 
+    <div>
+      <label>Large:</label>
+      <sy-autocomplete
+        id="large-autocomplete"
+        placeholder="Large size"
+        size="large"
+        trigger="focus"
+      ></sy-autocomplete>
+    </div>
+  </div>
+
+  <!-- 6. Loading State -->
+  <div class="example-section">
+    <h3>6. Loading State</h3>
+
+    <sy-autocomplete
+      id="loading-autocomplete"
+      placeholder="Click button to simulate loading"
+      trigger="focus"
+    ></sy-autocomplete>
+
+    <div style="margin-top: 10px;">
       <button onclick="simulateLoading()">Simulate Loading</button>
       <button onclick="stopLoading()">Stop Loading</button>
     </div>
+  </div>
 
-    <!-- 8. Disabled State -->
-    <div class="example-section">
-      <h3>8. Disabled State</h3>
-      
-      <sy-autocomplete 
-        id="disabled-autocomplete"
-        placeholder="This is disabled"
-        disabled="true"
-        trigger="focus"
-      ></sy-autocomplete>
+  <!-- 7. Disabled State -->
+  <div class="example-section">
+    <h3>7. Disabled State</h3>
 
-      <button onclick="toggleDisabled()">Toggle Disabled</button>
+    <sy-autocomplete
+      id="disabled-autocomplete"
+      placeholder="This is disabled"
+      disabled
+      trigger="focus"
+    ></sy-autocomplete>
+
+    <button onclick="toggleDisabled()">Toggle Disabled</button>
+  </div>
+
+  <!-- 8. Event Handling -->
+  <div class="example-section">
+    <h3>8. Event Handling</h3>
+
+    <sy-autocomplete
+      id="event-autocomplete"
+      placeholder="Type and select to trigger events"
+      trigger="input"
+    ></sy-autocomplete>
+
+    <div id="event-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;">
+      <strong>Changed Events:</strong> <span id="changed-count">0</span><br>
+      <strong>Selected Events:</strong> <span id="selected-count">0</span><br>
+      <strong>Last Value:</strong> <span id="last-value">-</span>
     </div>
+  </div>
 
-    <!-- 9. Required & Validation -->
-    <div class="example-section">
-      <h3>9. Required & Validation</h3>
-      <p>Form validation이 적용됩니다.</p>
-      
-      <form id="autocomplete-form" novalidate>
-        <sy-autocomplete 
-          id="required-autocomplete"
-          placeholder="Required field"
-          required="true"
-          trigger="input"
-          error-message="Please select a fruit"
-        ></sy-autocomplete>
+  <!-- 9. Dynamic Data Update -->
+  <div class="example-section">
+    <h3>9. Dynamic Data Update</h3>
 
-        <div style="margin-top: 10px;">
-          <button 
-            type="submit" 
-            style="background: #e74c3c; font-weight: bold;">
-            ⚠️ SUBMIT FORM (Required Test)
-          </button>
-          <button type="reset">Reset</button>
-        </div>
-      </form>
+    <sy-autocomplete
+      id="dynamic-autocomplete"
+      placeholder="Dynamic data source"
+      trigger="focus"
+    ></sy-autocomplete>
 
-      <div id="form-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+    <div style="margin-top: 10px;">
+      <button onclick="loadFruits()">Load Fruits</button>
+      <button onclick="loadCountries()">Load Countries</button>
+      <button onclick="loadColors()">Load Colors</button>
     </div>
+  </div>
+</section>
 
-    <!-- 10. Custom Error Message -->
-    <div class="example-section">
-      <h3>10. Custom Error Message</h3>
-      <p>커스텀 에러 메시지를 사용하는 autocomplete입니다.</p>
-      
-      <form id="custom-error-form" novalidate>
-        <sy-autocomplete 
-          id="custom-error-autocomplete"
-          placeholder="Type something and submit without selecting"
-          required
-          error-message="🚫 Custom error: You must select a valid fruit!"
-          trigger="input"
-        ></sy-autocomplete>
+<script>
+  // Sample data
+  const fruits = [
+    'Apple', 'Apricot', 'Avocado',
+    'Banana', 'Blackberry', 'Blueberry',
+    'Cherry', 'Coconut', 'Cranberry',
+    'Date', 'Dragon Fruit', 'Elderberry',
+    'Fig', 'Grape', 'Grapefruit',
+    'Honeydew', 'Kiwi', 'Lemon',
+    'Mango', 'Orange', 'Papaya',
+    'Pineapple', 'Strawberry', 'Watermelon'
+  ];
 
-        <div style="margin-top: 10px;">
-          <button type="submit" style="background: #e67e22;">Submit (Test Custom Error)</button>
-          <button type="button" onclick="validateCustomError()">Just Validate (no submit)</button>
-        </div>
-      </form>
+  const countries = [
+    'Argentina', 'Australia', 'Brazil',
+    'Canada', 'China', 'France',
+    'Germany', 'India', 'Italy',
+    'Japan', 'Korea', 'Mexico',
+    'Russia', 'Spain', 'United Kingdom',
+    'United States'
+  ];
 
-      <div id="custom-error-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-    </div>
+  const colors = [
+    'Red', 'Orange', 'Yellow',
+    'Green', 'Blue', 'Indigo',
+    'Violet', 'Pink', 'Purple',
+    'Brown', 'Black', 'White'
+  ];
 
-    <!-- 11. Programmatic Control -->
-    <div class="example-section">
-      <h3>11. Programmatic Control</h3>
-      <p>JavaScript로 값을 제어합니다.</p>
-      
-      <sy-autocomplete 
-        id="controlled-autocomplete"
-        placeholder="Programmatically controlled"
-        trigger="input"
-      ></sy-autocomplete>
+  // Global variables for event counting
+  let changedCount = 0;
+  let selectedCount = 0;
 
-      <div style="margin-top: 10px;">
-        <button onclick="setValue('Apple')">Set to Apple</button>
-        <button onclick="setValue('Banana')">Set to Banana</button>
-        <button onclick="clearValue()">Clear</button>
-        <button onclick="focusAutocomplete()">Focus</button>
-      </div>
+  // Helper functions that need to be global
+  function simulateLoading() {
+    const loadingAc = document.getElementById('loading-autocomplete');
+    if (loadingAc) {
+      loadingAc.loading = true;
+      setTimeout(() => {
+        loadingAc.loading = false;
+      }, 2000);
+    }
+  }
 
-      <div id="controlled-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-    </div>
+  function stopLoading() {
+    const loadingAc = document.getElementById('loading-autocomplete');
+    if (loadingAc) {
+      loadingAc.loading = false;
+    }
+  }
 
-    <!-- 12. Event Handling -->
-    <div class="example-section">
-      <h3>12. Event Handling</h3>
-      <p>모든 이벤트를 추적합니다.</p>
-      
-      <sy-autocomplete 
-        id="event-autocomplete"
-        placeholder="Type and select to trigger events"
-        trigger="input"
-      ></sy-autocomplete>
+  function toggleDisabled() {
+    const disabledAc = document.getElementById('disabled-autocomplete');
+    if (disabledAc) {
+      disabledAc.disabled = !disabledAc.disabled;
+    }
+  }
 
-      <div id="event-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;">
-        <strong>Changed Events:</strong> <span id="changed-count">0</span><br>
-        <strong>Selected Events:</strong> <span id="selected-count">0</span><br>
-        <strong>Last Value:</strong> <span id="last-value">-</span>
-      </div>
-      <button onclick="resetEventCounters()">Reset Counters</button>
-    </div>
+  function loadFruits() {
+    const dynamicAc = document.getElementById('dynamic-autocomplete');
+    if (dynamicAc) {
+      dynamicAc.source = fruits;
+      dynamicAc.value = '';
+    }
+  }
 
-    <!-- 13. Dynamic Data Update -->
-    <div class="example-section">
-      <h3>13. Dynamic Data Update</h3>
-      <p>런타임에 데이터를 변경합니다.</p>
-      
-      <sy-autocomplete 
-        id="dynamic-autocomplete"
-        placeholder="Dynamic data source"
-        trigger="focus"
-      ></sy-autocomplete>
+  function loadCountries() {
+    const dynamicAc = document.getElementById('dynamic-autocomplete');
+    if (dynamicAc) {
+      dynamicAc.source = countries;
+      dynamicAc.value = '';
+    }
+  }
 
-      <div style="margin-top: 10px;">
-        <button onclick="loadFruits()">Load Fruits</button>
-        <button onclick="loadCountries()">Load Countries</button>
-        <button onclick="loadColors()">Load Colors</button>
-      </div>
-    </div>
+  function loadColors() {
+    const dynamicAc = document.getElementById('dynamic-autocomplete');
+    if (dynamicAc) {
+      dynamicAc.source = colors;
+      dynamicAc.value = '';
+    }
+  }
 
-    <!-- 14. Empty State -->
-    <div class="example-section">
-      <h3>14. Empty State</h3>
-      <p>매칭되는 옵션이 없을 때 empty state를 표시합니다.</p>
-      
-      <sy-autocomplete 
-        id="empty-autocomplete"
-        placeholder="Type 'xyz' to see empty state"
-        trigger="input"
-      ></sy-autocomplete>
-    </div>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Basic Autocomplete
+    (() => {
+      const basicAc = document.getElementById('basic-autocomplete');
+      const output = document.getElementById('basic-output');
 
-    <!-- JavaScript for Autocomplete Tests -->
-    <script>
-      // Sample data
-      const fruits = [
-        'Apple', 'Apricot', 'Avocado',
-        'Banana', 'Blackberry', 'Blueberry',
-        'Cherry', 'Coconut', 'Cranberry',
-        'Dragon Fruit', 'Durian',
-        'Elderberry',
-        'Fig',
-        'Grape', 'Grapefruit', 'Guava',
-        'Honeydew',
-        'Kiwi', 'Kumquat',
-        'Lemon', 'Lime', 'Lychee',
-        'Mango', 'Melon',
-        'Nectarine',
-        'Orange',
-        'Papaya', 'Passion Fruit', 'Peach', 'Pear', 'Persimmon', 'Pineapple', 'Plum', 'Pomegranate',
-        'Raspberry',
-        'Strawberry',
-        'Tangerine',
-        'Watermelon'
-      ];
+      if (basicAc) {
+        basicAc.source = fruits;
 
-      const countries = [
-        'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia',
-        'Austria', 'Belgium', 'Brazil', 'Canada', 'Chile',
-        'China', 'Colombia', 'Denmark', 'Egypt', 'Finland',
-        'France', 'Germany', 'Greece', 'India', 'Indonesia',
-        'Ireland', 'Italy', 'Japan', 'Kenya', 'Korea',
-        'Mexico', 'Netherlands', 'New Zealand', 'Norway', 'Poland',
-        'Portugal', 'Russia', 'Singapore', 'South Africa', 'Spain',
-        'Sweden', 'Switzerland', 'Thailand', 'Turkey', 'United Kingdom',
-        'United States', 'Vietnam'
-      ];
+        basicAc.addEventListener('selected', (e) => {
+          output.innerHTML = `<strong>Selected:</strong> ${e.detail.value}`;
+        });
+      }
+    })();
 
-      const colors = [
-        'Red', 'Orange', 'Yellow', 'Green', 'Blue',
-        'Indigo', 'Violet', 'Pink', 'Purple', 'Brown',
-        'Black', 'White', 'Gray', 'Cyan', 'Magenta'
-      ];
+    // 2. Input Trigger Autocomplete
+    (() => {
+      const inputAc = document.getElementById('input-autocomplete');
+      const output = document.getElementById('input-output');
 
-      // Initialize autocomplete components
-      function initializeAutocompletes() {
-        console.log('[initializeAutocompletes] Function called!');
-        
-        // 1. Basic autocomplete
-        const basicAc = document.getElementById('basic-autocomplete');
-        if (basicAc) {
-          basicAc.source = fruits;
-          basicAc.addEventListener('selected', (e) => {
-            document.getElementById('basic-output').innerHTML = 
-              `<strong>Selected:</strong> ${e.detail.value}<br><strong>Valid:</strong> ${e.detail.isValid}`;
-          });
-        }
+      if (inputAc) {
+        inputAc.source = fruits;
 
-        // 2. Input trigger autocomplete
-        const inputAc = document.getElementById('input-autocomplete');
-        if (inputAc) {
-          inputAc.source = fruits;
-          inputAc.addEventListener('changed', (e) => {
-            document.getElementById('input-output').innerHTML = 
-              `<strong>Changed:</strong> ${e.detail.value}`;
-          });
-          inputAc.addEventListener('selected', (e) => {
-            document.getElementById('input-output').innerHTML = 
-              `<strong>Selected:</strong> ${e.detail.value}`;
-          });
-        }
+        inputAc.addEventListener('changed', (e) => {
+          output.innerHTML = `<strong>Changed:</strong> ${e.detail.value}`;
+        });
 
-        // 3. Arrow key navigation
-        const arrowAc = document.getElementById('arrow-autocomplete');
-        if (arrowAc) {
-          arrowAc.source = fruits;
-          
-          // Listen to internal active index changes
-          arrowAc.addEventListener('activeIndexChanged', (e) => {
-            document.getElementById('arrow-active').textContent = e.detail;
-          });
-          
-          arrowAc.addEventListener('selected', (e) => {
-            document.getElementById('arrow-selected').textContent = e.detail.value;
-          });
-        }
+        inputAc.addEventListener('selected', (e) => {
+          output.innerHTML = `<strong>Selected:</strong> ${e.detail.value}`;
+        });
+      }
+    })();
 
-        // 4. Debounced autocomplete
-        const debouncedAc = document.getElementById('debounced-autocomplete');
-        if (debouncedAc) {
-          debouncedAc.source = countries;
-          debouncedAc.addEventListener('changed', (e) => {
-            const now = new Date().toLocaleTimeString();
-            document.getElementById('debounced-output').innerHTML = 
-              `<strong>Changed at ${now}:</strong> ${e.detail.value}`;
-          });
-        }
+    // 3. Required Validation Test
+    (() => {
+      const formrequired = document.getElementById('form-required');
+      const requiredAc = document.getElementById('required-autocomplete');
+      const resultElement = document.getElementById('required-result');
 
-        // 5. Case sensitive autocomplete
-        const caseAc = document.getElementById('case-autocomplete');
-        if (caseAc) {
-          caseAc.source = ['Apple', 'apple', 'APPLE', 'Banana', 'banana', 'BANANA'];
-          caseAc.addEventListener('selected', (e) => {
-            document.getElementById('case-output').innerHTML = 
-              `<strong>Selected (case sensitive):</strong> ${e.detail.value}`;
-          });
-        }
+      if (formrequired && requiredAc) {
+        requiredAc.source = fruits;
 
-        // 6. Size variants
-        ['small', 'medium', 'large'].forEach(size => {
-          const sizeAc = document.getElementById(`${size}-autocomplete`);
-          if (sizeAc) {
-            sizeAc.source = fruits.slice(0, 10);
+        formrequired.addEventListener('submit', async (event) => {
+          // event.preventDefault();
+
+          const isValid = await requiredAc.reportValidity();
+          const status = await requiredAc.getStatus();
+          const value = requiredAc.value;
+
+          if (isValid) {
+            resultElement.innerHTML =
+              '<strong style="color: green;">✓ Form is valid!</strong><br>' +
+              `Value: "${value}"`;
+          } else {
+            resultElement.innerHTML =
+              '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
+              `Value: "${value}"<br>` +
+              `Status: ${status}<br>` +
+              `Message: ${requiredAc.validationMessage}`;
           }
         });
 
-        // 7. Loading autocomplete
-        const loadingAc = document.getElementById('loading-autocomplete');
-        if (loadingAc) {
-          loadingAc.source = fruits;
-        }
-
-        // 8. Disabled autocomplete
-        const disabledAc = document.getElementById('disabled-autocomplete');
-        if (disabledAc) {
-          disabledAc.source = fruits;
-        }
-
-        // 9. Required autocomplete
-        const requiredAc = document.getElementById('required-autocomplete');
-        if (requiredAc) {
-          requiredAc.source = fruits;
-        }
-
-        // 10. Custom error autocomplete
-        const customErrorAc = document.getElementById('custom-error-autocomplete');
-        if (customErrorAc) {
-          customErrorAc.source = fruits;
-        }
-
-        // 11. Controlled autocomplete
-        const controlledAc = document.getElementById('controlled-autocomplete');
-        if (controlledAc) {
-          controlledAc.source = fruits;
-          controlledAc.addEventListener('selected', (e) => {
-            document.getElementById('controlled-output').innerHTML = 
-              `<strong>Value:</strong> ${e.detail.value}`;
-          });
-        }
-
-        // 12. Event handling autocomplete
-        let changedCount = 0;
-        let selectedCount = 0;
-        const eventAc = document.getElementById('event-autocomplete');
-        if (eventAc) {
-          eventAc.source = fruits;
-          eventAc.addEventListener('changed', (e) => {
-            changedCount++;
-            document.getElementById('changed-count').textContent = changedCount;
-            document.getElementById('last-value').textContent = e.detail.value;
-          });
-          eventAc.addEventListener('selected', (e) => {
-            selectedCount++;
-            document.getElementById('selected-count').textContent = selectedCount;
-            document.getElementById('last-value').textContent = e.detail.value;
-          });
-        }
-
-        // 13. Dynamic autocomplete
-        const dynamicAc = document.getElementById('dynamic-autocomplete');
-        if (dynamicAc) {
-          dynamicAc.source = fruits;
-        }
-
-        // 14. Empty state autocomplete
-        const emptyAc = document.getElementById('empty-autocomplete');
-        if (emptyAc) {
-          emptyAc.source = fruits;
-        }
-
-        // Form submit handler
-        const form = document.getElementById('autocomplete-form');
-        console.log('[Init] Form element found:', !!form);
-        console.log('[Init] requiredAc element found:', !!requiredAc);
-        
-        if (form) {
-          console.log(1);
-          form.addEventListener('submit', async (e) => {
-            console.log(2);
-            e.preventDefault();
-            console.log('[Form Submit] Event triggered!');
-            
-            console.log('[Form Submit] Checking validity...');
-            console.log('[Form Submit] value:', requiredAc.value);
-            console.log('[Form Submit] required:', requiredAc.required);
-            
-            const isValid = await requiredAc.checkValidity();
-            console.log('[Form Submit] checkValidity() returned:', isValid);
-            console.log('[Form Submit] validationMessage:', requiredAc.validationMessage);
-            console.log('[Form Submit] validity state:', requiredAc.validity);
-            
-            if (isValid) {
-              document.getElementById('form-output').innerHTML = 
-                '<strong style="color: green;">✓ Form is valid!</strong><br>' +
-                `Value: ${requiredAc.value}`;
-            } else {
-              document.getElementById('form-output').innerHTML = 
-                '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
-                `Value: "${requiredAc.value}"<br>` +
-                `Validation Message: ${requiredAc.validationMessage}`;
-            }
-          });
-
-          form.addEventListener('reset', () => {
-            setTimeout(() => {
-              document.getElementById('form-output').innerHTML = '<em>Form reset</em>';
-            }, 0);
-          });
-        } else {
-          console.error('[Init] Form not found!');
-        }
-
-        // 10. Custom error form submit handler
-        const customErrorForm = document.getElementById('custom-error-form');
-        console.log('[Init] Custom error form element found:', !!customErrorForm);
-        console.log('[Init] customErrorAc element found:', !!customErrorAc);
-        
-        if (customErrorForm && customErrorAc) {
-          customErrorForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            console.log('[Custom Error Form Submit] Event triggered!');
-            
-            const isValid = await customErrorAc.checkValidity();
-            console.log('[Custom Error Form Submit] checkValidity() returned:', isValid);
-            console.log('[Custom Error Form Submit] validationMessage:', customErrorAc.validationMessage);
-            
-            if (isValid) {
-              document.getElementById('custom-error-output').innerHTML = 
-                '<strong style="color: green;">✓ Form is valid!</strong><br>' +
-                `Value: ${customErrorAc.value}`;
-            } else {
-              document.getElementById('custom-error-output').innerHTML = 
-                '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
-                `Value: "${customErrorAc.value}"<br>` +
-                `Custom Error Message: ${customErrorAc.validationMessage}`;
-            }
-          });
-        }
+        formrequired.addEventListener('reset', (event) => {
+          resultElement.innerHTML = '<em>Form reset</em>';
+        });
       }
+    })();
 
-      // Helper functions for tests
-      function simulateLoading() {
-        const loadingAc = document.getElementById('loading-autocomplete');
-        loadingAc.loading = true;
-        setTimeout(() => {
-          loadingAc.loading = false;
-        }, 2000);
+    // 4. Custom Error Test
+    (() => {
+      const formcustom = document.getElementById('form-custom');
+      const customAc = document.getElementById('custom-autocomplete');
+      const resultElement = document.getElementById('custom-result');
+
+      if (formcustom && customAc) {
+        customAc.source = fruits;
+
+        formcustom.addEventListener('reset', (event) => {
+          //event.preventDefault();
+          customAc.clearCustomError();
+          customAc.formResetCallback();
+          resultElement.innerHTML = '<em>Custom error cleared and form reset</em>';
+        });
+
+        formcustom.addEventListener('submit', async (event) => {
+          // event.preventDefault();
+          await customAc.setCustomError();
+
+          const isValid = await customAc.reportValidity();
+          const status = await customAc.getStatus();
+
+          resultElement.innerHTML =
+            '<strong style="color: red;">✗ Custom error set!</strong><br>' +
+            `Status: ${status}<br>` +
+            `Message: ${customAc.validationMessage}`;
+        });
       }
+    })();
 
-      function stopLoading() {
-        const loadingAc = document.getElementById('loading-autocomplete');
-        loadingAc.loading = false;
+    // 5. Size Variants
+    (() => {
+      const sizes = ['small', 'medium', 'large'];
+      sizes.forEach(size => {
+        const sizeAc = document.getElementById(`${size}-autocomplete`);
+        if (sizeAc) {
+          sizeAc.source = fruits.slice(0, 10);
+        }
+      });
+    })();
+
+    // 6. Loading State
+    (() => {
+      const loadingAc = document.getElementById('loading-autocomplete');
+      if (loadingAc) {
+        loadingAc.source = fruits;
       }
+    })();
 
-      function toggleDisabled() {
-        const disabledAc = document.getElementById('disabled-autocomplete');
-        disabledAc.disabled = !disabledAc.disabled;
+    // 7. Disabled State
+    (() => {
+      const disabledAc = document.getElementById('disabled-autocomplete');
+      if (disabledAc) {
+        disabledAc.source = fruits;
       }
+    })();
 
-      async function validateCustomError() {
-        console.log('[validateCustomError] Custom Error Validate button clicked (NOT FORM SUBMIT)');
-        const customErrorAc = document.getElementById('custom-error-autocomplete');
-        const isValid = await customErrorAc.checkValidity();
-        console.log('[validateCustomError] checkValidity() returned:', isValid);
-        console.log('[validateCustomError] validationMessage:', customErrorAc.validationMessage);
-        document.getElementById('custom-error-output').innerHTML = 
-          isValid 
-            ? '<strong style="color: green;">✓ Valid</strong>' 
-            : `<strong style="color: red;">✗ Invalid</strong><br>${customErrorAc.validationMessage}`;
+    // 8. Event Handling
+    (() => {
+      const eventAc = document.getElementById('event-autocomplete');
+      if (eventAc) {
+        eventAc.source = fruits;
+
+        eventAc.addEventListener('changed', (e) => {
+          changedCount++;
+          document.getElementById('changed-count').textContent = changedCount;
+          document.getElementById('last-value').textContent = e.detail.value;
+        });
+
+        eventAc.addEventListener('selected', (e) => {
+          selectedCount++;
+          document.getElementById('selected-count').textContent = selectedCount;
+          document.getElementById('last-value').textContent = e.detail.value;
+        });
       }
+    })();
 
-      function setValue(value) {
-        const controlledAc = document.getElementById('controlled-autocomplete');
-        controlledAc.value = value;
-        document.getElementById('controlled-output').innerHTML = 
-          `<strong>Value set to:</strong> ${value}`;
-      }
-
-      function clearValue() {
-        const controlledAc = document.getElementById('controlled-autocomplete');
-        controlledAc.value = '';
-        document.getElementById('controlled-output').innerHTML = 
-          '<strong>Value cleared</strong>';
-      }
-
-      function focusAutocomplete() {
-        const controlledAc = document.getElementById('controlled-autocomplete');
-        controlledAc.focus();
-      }
-
-      function resetEventCounters() {
-        document.getElementById('changed-count').textContent = '0';
-        document.getElementById('selected-count').textContent = '0';
-        document.getElementById('last-value').textContent = '-';
-      }
-
-      function loadFruits() {
-        const dynamicAc = document.getElementById('dynamic-autocomplete');
+    // 9. Dynamic Data
+    (() => {
+      const dynamicAc = document.getElementById('dynamic-autocomplete');
+      if (dynamicAc) {
         dynamicAc.source = fruits;
-        dynamicAc.value = '';
       }
-
-      function loadCountries() {
-        const dynamicAc = document.getElementById('dynamic-autocomplete');
-        dynamicAc.source = countries;
-        dynamicAc.value = '';
-      }
-
-      function loadColors() {
-        const dynamicAc = document.getElementById('dynamic-autocomplete');
-        dynamicAc.source = colors;
-        dynamicAc.value = '';
-      }
-
-      // Initialize on load
-      console.log('[Script] Autocomplete script loaded, readyState:', document.readyState);
-      if (document.readyState === 'loading') {
-        console.log('[Script] Waiting for DOMContentLoaded...');
-        document.addEventListener('DOMContentLoaded', initializeAutocompletes);
-      } else {
-        console.log('[Script] DOM already loaded, initializing now...');
-        initializeAutocompletes();
-      }
-    </script>
-  </section>
+    })();
+  });
+</script>
 
   <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
@@ -3999,38 +3821,38 @@
           eventResult.textContent = JSON.stringify(event.detail);
         });
 
-        const form = document.getElementById('formRadio');
+        const formRadio = document.getElementById('formRadio');
         const syRadioGroupElement = document.getElementById('formRadioId');
         const resultElement = document.getElementById('formRadioResult');
 
-        form.addEventListener('submit', (event) => {
+        formRadio.addEventListener('submit', (event) => {
           console.log(1);
-          event.preventDefault();
-          formValidityRadio('formRadioId', resultElement, form);
+          // event.preventDefault();
+          formValidityRadio('formRadioId', resultElement, formRadio);
         });
 
-        form.addEventListener('reset', (event) => {
+        formRadio.addEventListener('reset', (event) => {
           resultElement.innerHTML = '';
         });
     })();
 
     // Test 2: Custom Error
     (() => {
-        const form = document.getElementById('formCustomRadio');
+        const formCustomRadio = document.getElementById('formCustomRadio');
         const syRadioGroupElement = document.getElementById('formCustomRadioId');
         const resultElement = document.getElementById('formCustomRadioResult');
 
-        form.addEventListener('reset', (event) => {
-            event.preventDefault();
+        formCustomRadio.addEventListener('reset', (event) => {
+            // event.preventDefault();
             syRadioGroupElement.clearCustomError();
             syRadioGroupElement.formResetCallback();
             resultElement.innerHTML = '';
         });
 
-        form.addEventListener('submit', (event) => {
-          event.preventDefault();
+        formCustomRadio.addEventListener('submit', (event) => {
+          // event.preventDefault();
           syRadioGroupElement.setCustomError();
-          formValidityRadio('formCustomRadioId', resultElement, form);
+          formValidityRadio('formCustomRadioId', resultElement, formCustomRadio);
         });
     })();
 
@@ -4222,7 +4044,7 @@
       if (formValidation) {
         const resultEl = document.getElementById('formRadioButtonResult');
         formValidation.addEventListener('submit', (event) => {
-          event.preventDefault();
+          //event.preventDefault();
           formValidity('formRadioButtonId', resultEl, formValidation);
         });
         formValidation.addEventListener('reset', () => { resultEl.innerHTML = ''; });
@@ -4234,7 +4056,7 @@
         const syElement = document.getElementById('formCustomRadioButtonId');
         const resultEl = document.getElementById('formCustomRadioButtonResult');
         formCustom.addEventListener('submit', (event) => {
-          event.preventDefault();
+          //event.preventDefault();
           syElement.setCustomError();
           formValidity('formCustomRadioButtonId', resultEl, formCustom);
         });
@@ -4655,37 +4477,37 @@
     <script>
       // Test 1: Required Field Validation
       (() => {
-          const form = document.getElementById('formInput');
+          const formInput = document.getElementById('formInput');
           const syInput1Element = document.getElementById('formInputId');
           const resultElement = document.getElementById('formInputResult');
 
-          form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            formValidityInput('formInputId', resultElement, form);
+          formInput.addEventListener('submit', (event) => {
+            //event.preventDefault();
+            formValidityInput('formInputId', resultElement, formInput);
           });
 
-          form.addEventListener('reset', (event) => {
+          formInput.addEventListener('reset', (event) => {
             resultElement.innerHTML = '';
           });
       })();
 
       // Test 2: Custom Error
       (() => {
-          const form = document.getElementById('formCustomInput');
+          const formCustomInput = document.getElementById('formCustomInput');
           const syInputElement = document.getElementById('formCustomInputId');
           const resultElement = document.getElementById('formCustomInputResult');
 
-          form.addEventListener('reset', (event) => {
-              event.preventDefault();
+          formCustomInput.addEventListener('reset', (event) => {
+              //event.preventDefault();
               syInputElement.clearCustomError();
               syInputElement.formResetCallback();
               resultElement.innerHTML = '';
           });
 
-          form.addEventListener('submit', (event) => {
-            event.preventDefault();
+          formCustomInput.addEventListener('submit', (event) => {
+            //event.preventDefault();
             syInputElement.setCustomError();
-            formValidityInput('formCustomInputId', resultElement, form);
+            formValidityInput('formCustomInputId', resultElement, formCustomInput);
           });
       })();
 
@@ -4830,37 +4652,37 @@
 
             // Test 1: Required Field Validation
             (() => {
-                const form = document.getElementById('formTextarea');
+                const formTextarea = document.getElementById('formTextarea');
                 const syTextarea1Element = document.getElementById('formTextareaId');
                 const resultElement = document.getElementById('formTextareaResult');
 
-                form.addEventListener('submit', (event) => {
-                  event.preventDefault();
-                  formValidity('formTextareaId', resultElement, form);
+                formTextarea.addEventListener('submit', (event) => {
+                  //event.preventDefault();
+                  formValidity('formTextareaId', resultElement, formTextarea);
                 });
 
-                form.addEventListener('reset', (event) => {
+                formTextarea.addEventListener('reset', (event) => {
                   resultElement.innerHTML = '';
                 });
             })();
 
             // Test 2: Custom Error
             (() => {
-                const form = document.getElementById('formCustomTextarea');
+                const formCustomTextarea = document.getElementById('formCustomTextarea');
                 const syTextareaElement = document.getElementById('formCustomTextareaId');
                 const resultElement = document.getElementById('formCustomTextareaResult');
 
-                form.addEventListener('reset', (event) => {
-                    event.preventDefault();
+                formCustomTextarea.addEventListener('reset', (event) => {
+                    //event.preventDefault();
                     syTextareaElement.clearCustomError();
                     syTextareaElement.formResetCallback();
                     resultElement.innerHTML = '';
                 });
 
-                form.addEventListener('submit', (event) => {
-                  event.preventDefault();
+                formCustomTextarea.addEventListener('submit', (event) => {
+                 // event.preventDefault();
                   syTextareaElement.setCustomError();
-                  formValidity('formCustomTextareaId', resultElement, form);
+                  formValidity('formCustomTextareaId', resultElement, formCustomTextarea);
                 });
             })();
 

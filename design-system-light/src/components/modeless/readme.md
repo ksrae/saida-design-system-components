@@ -39,12 +39,12 @@ Type: `Promise<void>`
 
 #### Parameters
 
-| Name      | Type                                                                                                                                                                                                                                                                                                                                            | Description |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `id`      | `string`                                                                                                                                                                                                                                                                                                                                        |             |
-| `title`   | `string \| HTMLElement \| VNode`                                                                                                                                                                                                                                                                                                                |             |
-| `content` | `string \| HTMLElement \| VNode`                                                                                                                                                                                                                                                                                                                |             |
-| `option`  | `{ draggable?: HTMLSyModelessElement; height?: HTMLSyModelessElement; width?: HTMLSyModelessElement; top?: HTMLSyModelessElement; closable?: HTMLSyModelessElement; left?: HTMLSyModelessElement; resizable?: HTMLSyModelessElement; edge?: HTMLSyModelessElement; maximizable?: HTMLSyModelessElement; minimizable?: HTMLSyModelessElement; }` |             |
+| Name      | Type                                                                                                                                                                                            | Description |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `id`      | `string`                                                                                                                                                                                        |             |
+| `title`   | `string \| HTMLElement \| VNode`                                                                                                                                                                |             |
+| `content` | `string \| HTMLElement \| VNode`                                                                                                                                                                |             |
+| `option`  | `{ draggable?: boolean; height?: number; width?: number; top?: number; resizable?: boolean; closable?: boolean; minimizable?: boolean; maximizable?: boolean; edge?: boolean; left?: number; }` |             |
 
 #### Returns
 
@@ -75,10 +75,10 @@ Type: `Promise<void>`
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                                                                            | Description |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `id`     | `string`                                                                                                                                                                                                                                                                                                                                        |             |
-| `option` | `{ draggable?: HTMLSyModelessElement; height?: HTMLSyModelessElement; width?: HTMLSyModelessElement; top?: HTMLSyModelessElement; closable?: HTMLSyModelessElement; left?: HTMLSyModelessElement; resizable?: HTMLSyModelessElement; edge?: HTMLSyModelessElement; maximizable?: HTMLSyModelessElement; minimizable?: HTMLSyModelessElement; }` |             |
+| Name     | Type                                                                                                                                                                                            | Description |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `id`     | `string`                                                                                                                                                                                        |             |
+| `option` | `{ draggable?: boolean; height?: number; width?: number; top?: number; resizable?: boolean; closable?: boolean; minimizable?: boolean; maximizable?: boolean; edge?: boolean; left?: number; }` |             |
 
 #### Returns
 

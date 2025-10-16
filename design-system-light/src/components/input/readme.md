@@ -58,13 +58,13 @@ Type: `Promise<void>`
 
 
 
-### `getStatus() => Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">`
+### `getStatus() => Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">`
 
 
 
 #### Returns
 
-Type: `Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">`
+Type: `Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">`
 
 
 

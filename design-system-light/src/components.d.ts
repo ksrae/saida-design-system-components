@@ -5,21 +5,93 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 import { ButtonGroupState } from "./components/button-group";
 import { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
-import { ModelessPositionModel } from "./components/modeless/sy-modeless";
+import { ModelessPositionChangedDetail } from "./components/modeless/sy-modeless";
 import { VNode } from "@stencil/core";
 import { ToastOptions } from "./components/toast/sy-toast";
-import { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
-export { HTMLSyBreadcrumbItemElement } from "./components/breadcrumb/sy-breadcrumb-item";
 export { ButtonGroupState } from "./components/button-group";
 export { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
-export { ModelessPositionModel } from "./components/modeless/sy-modeless";
+export { ModelessPositionChangedDetail } from "./components/modeless/sy-modeless";
 export { VNode } from "@stencil/core";
 export { ToastOptions } from "./components/toast/sy-toast";
-export { HTMLSyToastItemElement } from "./components/toast/sy-toast-item";
 export namespace Components {
+    interface SyAutocomplete {
+        /**
+          * @default false
+         */
+        "caseSensitive": boolean;
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
+        /**
+          * @default 0
+         */
+        "debounceTime": number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "errorMessage": string;
+        "getStatus": () => Promise<string>;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default 0
+         */
+        "min": number;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default ''
+         */
+        "placeholder": string;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setBlur": () => Promise<void>;
+        "setCustomError": () => Promise<void>;
+        "setFocus": () => Promise<void>;
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium" | "large";
+        /**
+          * @default []
+         */
+        "source": string[];
+        /**
+          * @default "focus"
+         */
+        "trigger": "focus" | "input";
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface SyAutocompleteOption {
+        /**
+          * @default -1
+         */
+        "activeIndex": number;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        "setEvent": (index: number) => Promise<void>;
+        /**
+          * @default []
+         */
+        "source": string[];
+    }
     interface SyAvatar {
         /**
           * @default false
@@ -233,8 +305,8 @@ export namespace Components {
          */
         "mondayStart": boolean;
         "month": number;
-        "rangeenddefault": string;
-        "rangestartdefault": string;
+        "rangeend"?: {year: number, month: number, day: number };
+        "rangestart"?: {year: number, month: number, day: number };
         "second": number;
         /**
           * @default 'date'
@@ -417,14 +489,8 @@ export namespace Components {
          */
         "mondayStart": boolean;
         "range"?: 'start' | 'end';
-        /**
-          * @default undefined
-         */
-        "rangeend": {year: number, month: number, day: number } | undefined;
-        /**
-          * @default undefined
-         */
-        "rangestart": {year: number, month: number, day: number } | undefined;
+        "rangeend"?: {year: number, month: number, day: number };
+        "rangestart"?: {year: number, month: number, day: number };
     }
     interface SyDateTimeCalendar {
         /**
@@ -449,6 +515,8 @@ export namespace Components {
         "mondayStart": boolean;
     }
     interface SyDatepicker {
+        "checkValidity": () => Promise<boolean>;
+        "clearCustomError": () => Promise<void>;
         /**
           * @default 'Su,Mo,Tu,We,Th,Fr,Sa'
          */
@@ -462,6 +530,7 @@ export namespace Components {
           * @default 'yyyy-MM-dd hh:mm:ss'
          */
         "format": string;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom">;
         /**
           * @default false
          */
@@ -489,11 +558,13 @@ export namespace Components {
           * @default false
          */
         "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
         /**
           * @default false
          */
         "required": boolean;
         "second": string;
+        "setCustomError": () => Promise<void>;
         /**
           * @default 'date'
          */
@@ -607,7 +678,7 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
-        "getStatus": () => Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">;
         /**
           * @default ""
          */
@@ -671,7 +742,7 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
-        "getStatus": () => Promise<"" | "custom" | "valueMissing" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">;
         /**
           * @default ""
          */
@@ -730,6 +801,8 @@ export namespace Components {
           * @default false
          */
         "checkable": boolean;
+        "clearSelectedItem": () => Promise<void>;
+        "delayedMenuClose": () => Promise<void>;
         /**
           * @default 'right'
          */
@@ -742,6 +815,7 @@ export namespace Components {
           * @default 'bottomLeft'
          */
         "position": 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        "setSelectableAllItems": () => Promise<void>;
         /**
           * @default 'hover'
          */
@@ -955,6 +1029,8 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
+        "groupItem": (group: boolean) => Promise<void>;
+        "parentDisabled": (disabled: boolean) => Promise<void>;
         "setActive": (active: boolean) => Promise<void>;
         /**
           * @default ''
@@ -975,11 +1051,16 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
+        "groupItem": (group: boolean) => Promise<void>;
         /**
           * @default false
          */
         "open": boolean;
+        "parentDisabled": (disabled: boolean) => Promise<void>;
         "setActive": (active: boolean) => Promise<void>;
+        "setClose": () => Promise<void>;
+        "setOpen": () => Promise<void>;
+        "setTrigger": () => Promise<void>;
         /**
           * @default ''
          */
@@ -993,11 +1074,31 @@ export namespace Components {
         /**
           * @default false
          */
+        "active": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
+        "empty": boolean;
+        /**
+          * @default false
+         */
+        "hide": boolean;
+        /**
+          * @default false
+         */
+        "isCustomTag": boolean;
         /**
           * @default ''
          */
         "label": string;
+        /**
+          * @default false
+         */
+        "loading": boolean;
         /**
           * @default false
          */
@@ -1240,7 +1341,7 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
-        "getStatus": () => Promise<"" | "custom" | "valueMissing">;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom">;
         /**
           * @default ''
          */
@@ -1291,14 +1392,8 @@ export namespace Components {
           * @default false
          */
         "mondayStart": boolean;
-        /**
-          * @default undefined
-         */
-        "rangeend": { year: number, month: number, day: number } | undefined;
-        /**
-          * @default undefined
-         */
-        "rangestart": { year: number, month: number, day: number } | undefined;
+        "rangeend"?: { year: number, month: number, day: number };
+        "rangestart"?: { year: number, month: number, day: number };
     }
     interface SySelect {
         "checkValidity": () => Promise<boolean>;
@@ -1582,7 +1677,7 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
-        "getStatus": () => Promise<"" | "custom" | "valueMissing" | "tooShort" | "tooLong">;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">;
         /**
           * @default ""
          */
@@ -1709,6 +1804,7 @@ export namespace Components {
         "variant": 'neutral' | 'success' | 'error' | 'info' | 'warning';
     }
     interface SyTooltip {
+        "close": () => Promise<void>;
         /**
           * Delay in milliseconds before closing the tooltip after trigger event ends
           * @default 0
@@ -1750,6 +1846,14 @@ export namespace Components {
          */
         "trigger": 'hover' | 'click' | 'focus' | 'none';
     }
+}
+export interface SyAutocompleteCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyAutocompleteElement;
+}
+export interface SyAutocompleteOptionCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyAutocompleteOptionElement;
 }
 export interface SyAvatarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1868,6 +1972,42 @@ export interface SyTimepickerCustomEvent<T> extends CustomEvent<T> {
     target: HTMLSyTimepickerElement;
 }
 declare global {
+    interface HTMLSyAutocompleteElementEventMap {
+        "changed": { value: string; isValid: boolean; status: string };
+        "selected": { value: string; isValid: boolean; status: string };
+    }
+    interface HTMLSyAutocompleteElement extends Components.SyAutocomplete, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyAutocompleteElementEventMap>(type: K, listener: (this: HTMLSyAutocompleteElement, ev: SyAutocompleteCustomEvent<HTMLSyAutocompleteElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyAutocompleteElementEventMap>(type: K, listener: (this: HTMLSyAutocompleteElement, ev: SyAutocompleteCustomEvent<HTMLSyAutocompleteElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyAutocompleteElement: {
+        prototype: HTMLSyAutocompleteElement;
+        new (): HTMLSyAutocompleteElement;
+    };
+    interface HTMLSyAutocompleteOptionElementEventMap {
+        "activeChanged": number;
+        "selected": string;
+    }
+    interface HTMLSyAutocompleteOptionElement extends Components.SyAutocompleteOption, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyAutocompleteOptionElementEventMap>(type: K, listener: (this: HTMLSyAutocompleteOptionElement, ev: SyAutocompleteOptionCustomEvent<HTMLSyAutocompleteOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyAutocompleteOptionElementEventMap>(type: K, listener: (this: HTMLSyAutocompleteOptionElement, ev: SyAutocompleteOptionCustomEvent<HTMLSyAutocompleteOptionElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyAutocompleteOptionElement: {
+        prototype: HTMLSyAutocompleteOptionElement;
+        new (): HTMLSyAutocompleteOptionElement;
+    };
     interface HTMLSyAvatarElementEventMap {
         "selected": {
     letter: string;
@@ -2233,7 +2373,7 @@ declare global {
     interface HTMLSyModelessElementEventMap {
         "closed": { id: string };
         "statusChanged": { id: string; status: string };
-        "positionChanged": { id: string; position: ModelessPositionModel };
+        "positionChanged": ModelessPositionChangedDetail;
     }
     interface HTMLSyModelessElement extends Components.SyModeless, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyModelessElementEventMap>(type: K, listener: (this: HTMLSyModelessElement, ev: SyModelessCustomEvent<HTMLSyModelessElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2300,7 +2440,7 @@ declare global {
         new (): HTMLSyNavSubElement;
     };
     interface HTMLSyOptionElementEventMap {
-        "selected": { value: string; label: string };
+        "activated": { value: string; label: string };
     }
     interface HTMLSyOptionElement extends Components.SyOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyOptionElementEventMap>(type: K, listener: (this: HTMLSyOptionElement, ev: SyOptionCustomEvent<HTMLSyOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2525,8 +2665,8 @@ declare global {
         new (): HTMLSySwitchElement;
     };
     interface HTMLSyTagElementEventMap {
-        "selected": { tag: HTMLElement };
-        "removed": { tag: HTMLElement };
+        "selected": { tag: HTMLSyTagElement };
+        "removed": { tag: HTMLSyTagElement };
     }
     interface HTMLSyTagElement extends Components.SyTag, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTagElementEventMap>(type: K, listener: (this: HTMLSyTagElement, ev: SyTagCustomEvent<HTMLSyTagElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2598,6 +2738,8 @@ declare global {
         new (): HTMLSyTooltipElement;
     };
     interface HTMLElementTagNameMap {
+        "sy-autocomplete": HTMLSyAutocompleteElement;
+        "sy-autocomplete-option": HTMLSyAutocompleteOptionElement;
         "sy-avatar": HTMLSyAvatarElement;
         "sy-avatar-group": HTMLSyAvatarGroupElement;
         "sy-badge": HTMLSyBadgeElement;
@@ -2658,6 +2800,78 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface SyAutocomplete {
+        /**
+          * @default false
+         */
+        "caseSensitive"?: boolean;
+        /**
+          * @default 0
+         */
+        "debounceTime"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "errorMessage"?: string;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default 0
+         */
+        "min"?: number;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        "onChanged"?: (event: SyAutocompleteCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        "onSelected"?: (event: SyAutocompleteCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        /**
+          * @default ''
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium" | "large";
+        /**
+          * @default []
+         */
+        "source"?: string[];
+        /**
+          * @default "focus"
+         */
+        "trigger"?: "focus" | "input";
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface SyAutocompleteOption {
+        /**
+          * @default -1
+         */
+        "activeIndex"?: number;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        "onActiveChanged"?: (event: SyAutocompleteOptionCustomEvent<number>) => void;
+        "onSelected"?: (event: SyAutocompleteOptionCustomEvent<string>) => void;
+        /**
+          * @default []
+         */
+        "source"?: string[];
+    }
     interface SyAvatar {
         /**
           * @default false
@@ -2876,8 +3090,8 @@ declare namespace LocalJSX {
         "month": number;
         "onClosed"?: (event: SyCalendarCustomEvent<any>) => void;
         "onSelected"?: (event: SyCalendarCustomEvent<any>) => void;
-        "rangeenddefault": string;
-        "rangestartdefault": string;
+        "rangeend"?: {year: number, month: number, day: number };
+        "rangestart"?: {year: number, month: number, day: number };
         "second": number;
         /**
           * @default 'date'
@@ -3057,14 +3271,8 @@ declare namespace LocalJSX {
         "onMode-changed"?: (event: SyDateCalendarCustomEvent<any>) => void;
         "onSelected"?: (event: SyDateCalendarCustomEvent<any>) => void;
         "range"?: 'start' | 'end';
-        /**
-          * @default undefined
-         */
-        "rangeend"?: {year: number, month: number, day: number } | undefined;
-        /**
-          * @default undefined
-         */
-        "rangestart"?: {year: number, month: number, day: number } | undefined;
+        "rangeend"?: {year: number, month: number, day: number };
+        "rangestart"?: {year: number, month: number, day: number };
     }
     interface SyDateTimeCalendar {
         /**
@@ -3517,7 +3725,7 @@ declare namespace LocalJSX {
          */
         "minimum"?: boolean;
         "onClosed"?: (event: SyModelessCustomEvent<{ id: string }>) => void;
-        "onPositionChanged"?: (event: SyModelessCustomEvent<{ id: string; position: ModelessPositionModel }>) => void;
+        "onPositionChanged"?: (event: SyModelessCustomEvent<ModelessPositionChangedDetail>) => void;
         "onStatusChanged"?: (event: SyModelessCustomEvent<{ id: string; status: string }>) => void;
         /**
           * @default false
@@ -3614,12 +3822,32 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "active"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "empty"?: boolean;
+        /**
+          * @default false
+         */
+        "hide"?: boolean;
+        /**
+          * @default false
+         */
+        "isCustomTag"?: boolean;
         /**
           * @default ''
          */
         "label"?: string;
-        "onSelected"?: (event: SyOptionCustomEvent<{ value: string; label: string }>) => void;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        "onActivated"?: (event: SyOptionCustomEvent<{ value: string; label: string }>) => void;
         /**
           * @default false
          */
@@ -3906,14 +4134,8 @@ declare namespace LocalJSX {
          */
         "mondayStart"?: boolean;
         "onSelected"?: (event: SyRangeCalendarCustomEvent<any>) => void;
-        /**
-          * @default undefined
-         */
-        "rangeend"?: { year: number, month: number, day: number } | undefined;
-        /**
-          * @default undefined
-         */
-        "rangestart"?: { year: number, month: number, day: number } | undefined;
+        "rangeend"?: { year: number, month: number, day: number };
+        "rangestart"?: { year: number, month: number, day: number };
     }
     interface SySelect {
         /**
@@ -4157,8 +4379,8 @@ declare namespace LocalJSX {
           * @default false
          */
         "disabled"?: boolean;
-        "onRemoved"?: (event: SyTagCustomEvent<{ tag: HTMLElement }>) => void;
-        "onSelected"?: (event: SyTagCustomEvent<{ tag: HTMLElement }>) => void;
+        "onRemoved"?: (event: SyTagCustomEvent<{ tag: HTMLSyTagElement }>) => void;
+        "onSelected"?: (event: SyTagCustomEvent<{ tag: HTMLSyTagElement }>) => void;
         /**
           * @default false
          */
@@ -4365,6 +4587,8 @@ declare namespace LocalJSX {
         "trigger"?: 'hover' | 'click' | 'focus' | 'none';
     }
     interface IntrinsicElements {
+        "sy-autocomplete": SyAutocomplete;
+        "sy-autocomplete-option": SyAutocompleteOption;
         "sy-avatar": SyAvatar;
         "sy-avatar-group": SyAvatarGroup;
         "sy-badge": SyBadge;
@@ -4428,6 +4652,8 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "sy-autocomplete": LocalJSX.SyAutocomplete & JSXBase.HTMLAttributes<HTMLSyAutocompleteElement>;
+            "sy-autocomplete-option": LocalJSX.SyAutocompleteOption & JSXBase.HTMLAttributes<HTMLSyAutocompleteOptionElement>;
             "sy-avatar": LocalJSX.SyAvatar & JSXBase.HTMLAttributes<HTMLSyAvatarElement>;
             /**
              * sy-avatar-group (Stencil port, light DOM, scoped)

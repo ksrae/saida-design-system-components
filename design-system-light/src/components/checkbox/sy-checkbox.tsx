@@ -6,7 +6,7 @@ import { Component, h, Prop, State, Method, Element, Event, EventEmitter, Watch 
   tag: 'sy-checkbox',
   styleUrl: 'sy-checkbox.scss',
   shadow: false,
-  formAssociated: true
+  formAssociated: true,
 })
 
 export class SyCheckbox {

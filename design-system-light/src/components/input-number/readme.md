@@ -58,13 +58,13 @@ Type: `Promise<void>`
 
 
 
-### `getStatus() => Promise<"" | "valueMissing" | "custom" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
+### `getStatus() => Promise<"" | "custom" | "valueMissing" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
 
 
 
 #### Returns
 
-Type: `Promise<"" | "valueMissing" | "custom" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
+Type: `Promise<"" | "custom" | "valueMissing" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">`
 
 
 

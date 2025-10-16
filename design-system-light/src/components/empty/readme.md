@@ -16,6 +16,7 @@
 
 ### Used by
 
+ - [sy-autocomplete-option](../autocomplete)
  - [sy-option](../select)
 
 ### Depends on
@@ -26,6 +27,7 @@
 ```mermaid
 graph TD;
   sy-empty --> sy-icon
+  sy-autocomplete-option --> sy-empty
   sy-option --> sy-empty
   style sy-empty fill:#f9f,stroke:#333,stroke-width:4px
 ```
