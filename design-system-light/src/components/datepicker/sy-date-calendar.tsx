@@ -528,7 +528,7 @@ private generateDays() {
 
   private setHoverStyle() {
     const hoverDateNum = Number(this.hoverDate);
-
+    
     // mode에 따라 다른 selector 사용
     let items: NodeListOf<Element>;
     if (this.mode === 'day') {
@@ -546,7 +546,7 @@ private generateDays() {
     items?.forEach((item: any) => {
       const itemElement = this.mode === 'day' ? item : item.parentElement;
       const itemDateNum = Number(this.mode === 'day' ? item.dataset.date : item.textContent);
-
+      
       // highlight 클래스는 date-item에 적용
       const targetElement = this.mode === 'day' ? itemElement : item;
       targetElement.classList.remove('highlight', 'highlight-start', 'highlight-end');

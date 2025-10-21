@@ -1,12 +1,12 @@
 // src/components/checkbox/sy-checkbox.tsx
 
-import { Component, h, Prop, State, Method, Element, Event, EventEmitter, Watch } from '@stencil/core';
+import { Component, h, Prop, State, Method, Element, Event, EventEmitter, Watch, Listen } from '@stencil/core';
 
 @Component({
   tag: 'sy-checkbox',
   styleUrl: 'sy-checkbox.scss',
   shadow: false,
-  formAssociated: true,
+  formAssociated: true
 })
 
 export class SyCheckbox {
@@ -31,6 +31,7 @@ export class SyCheckbox {
   @State() private validStatus: 'valueMissing' | 'custom' | '' = "";
   @State() private hasSlotErrorMessage: boolean = false;
   @State() private hasPopupErrorComponent: boolean = false;
+  @State() private touched: boolean = false;
   @State() private formSubmitted: boolean = false;
 
 
@@ -91,6 +92,7 @@ export class SyCheckbox {
   formResetCallback() {
     this.checked = false;
     this.indeterminate = false;
+    this.touched = false;
     this.formSubmitted = false;
     this.setCheckedValidation();
   }
@@ -132,9 +134,42 @@ export class SyCheckbox {
     this.updateValidityState();
   }
 
+  @Listen('invalid', { capture: true })
+  handleInvalidEvent(e: Event) {
+    // Mark that a submission/validation attempt occurred so errors become visible
+    this.formSubmitted = true;
+
+    const hasErrorSlot = !!this.hostElement.querySelector('[slot="error"]');
+    if (hasErrorSlot) {
+      const errorSlotElement = this.hostElement.querySelector('[slot="error"]');
+      const hasContent = errorSlotElement?.textContent?.trim();
+      if (hasContent) {
+        this.hasSlotErrorMessage = true;
+        this.hostElement.setAttribute('has-custom-error', '');
+        e.preventDefault();
+        e.stopPropagation();
+        this.internals?.setValidity({ customError: true }, ' ');
+      } else {
+        this.hasSlotErrorMessage = false;
+        this.hostElement.removeAttribute('has-custom-error');
+      }
+    } else {
+      this.hasSlotErrorMessage = false;
+      this.hostElement.removeAttribute('has-custom-error');
+    }
+    this.isValid = false;
+    // Re-evaluate validity so render reflects formSubmitted state immediately
+    this.updateValidityState();
+  }
+
   // Event Handlers
   private handleFocus = () => { this.hasFocus = true; this.focused.emit(this.checked); }
-  private handleBlur = () => { this.hasFocus = false; this.blured.emit(this.checked); }
+  private handleBlur = () => { 
+    this.hasFocus = false; 
+    this.touched = true;
+    this.updateValidityState();
+    this.blured.emit(this.checked); 
+  }
   private handleClick = (e: MouseEvent) => {
     e.preventDefault();
     if (this.disabled || this.readonly) return;
@@ -221,7 +256,7 @@ export class SyCheckbox {
 
   render() {
     const wrapperClasses = { 'checkbox': true, 'checkbox--checked': this.checked, 'checkbox--disabled': this.disabled, 'checkbox--focused': this.hasFocus, 'checkbox--indeterminate': this.renderIndeterminate, 'readonly': this.readonly };
-    const errorContainerClasses = { 'error-container': true, 'popup-error-container': this.hasPopupErrorComponent, 'text-error-container': !this.hasPopupErrorComponent, 'visible-error': this.formSubmitted && !this.isValid };
+    const errorContainerClasses = { 'error-container': true, 'popup-error-container': this.hasPopupErrorComponent, 'text-error-container': !this.hasPopupErrorComponent, 'visible-error': (this.touched || this.formSubmitted) && !this.isValid };
 
     return (
       <div class="checkbox-wrapper">

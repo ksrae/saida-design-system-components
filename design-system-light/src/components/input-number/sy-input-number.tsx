@@ -229,9 +229,29 @@ export class SyInputNumber {
 
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
-    if (this.noNativeValidity || this.hasSlotErrorMessage) {
-      e.preventDefault();
+    this.formSubmitted = true;
+
+    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
+    if (this.noNativeValidity || hasErrorSlot) {
+      const errorSlotElement = this.host.querySelector('[slot="error"]');
+      const hasContent = errorSlotElement?.textContent?.trim();
+      if (hasContent) {
+        this.hasSlotErrorMessage = true;
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.input) this.input.setCustomValidity('');
+        this.internals?.setValidity({ customError: true }, ' ');
+      } else {
+        this.hasSlotErrorMessage = false;
+      }
+    } else {
+      this.hasSlotErrorMessage = false;
+      setTimeout(() => {
+        if (!this.isValid) this.input?.reportValidity();
+      }, 0);
     }
+    this.isValid = false;
+    this.updateValidityState();
   }
 
   // --- Event Handlers ---

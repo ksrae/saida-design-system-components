@@ -24,10 +24,10 @@ export class SyAutocompleteOption {
     this.activeChanged.emit(this.activeIndex);
   }
 
-  @Watch('activeIndex')
-  handleActiveIndexChange() {
-    console.log('[sy-autocomplete-option] activeIndex changed to:', this.activeIndex);
-  }
+  // @Watch('activeIndex')
+  // handleActiveIndexChange() {
+  //   console.log('[sy-autocomplete-option] activeIndex changed to:', this.activeIndex);
+  // }
 
   @Watch('source')
   handleSourceChange() {

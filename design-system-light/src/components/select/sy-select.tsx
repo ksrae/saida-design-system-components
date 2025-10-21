@@ -1,6 +1,6 @@
 // src/components/select/select.tsx
 
-import { Component, Prop, State, h, Element, Watch, Event, EventEmitter, Host, AttachInternals, Method } from '@stencil/core';
+import { Component, Prop, State, h, Element, Watch, Event, EventEmitter, Host, AttachInternals, Method, Listen } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 const OPTION = 'SY-OPTION';
@@ -67,10 +67,6 @@ export class SySelect {
 
   private handleOutsideClick = this.handleOutsideClickEvent.bind(this);
 
-  constructor() {
-    this.host?.addEventListener('invalid', this.handleInvalid);
-  }
-
   connectedCallback() {
     document.addEventListener('click', this.handleOutsideClick);
     document.addEventListener('keydown', this.handleDocumentKeydown.bind(this));
@@ -83,7 +79,6 @@ export class SySelect {
     document.removeEventListener('keydown', this.handleDocumentKeydown.bind(this));
     window.removeEventListener('resize', this.updatePopupPosition.bind(this));
     window.removeEventListener('scroll', this.updatePopupPosition.bind(this), true);
-    this.host?.removeEventListener('invalid', this.handleInvalid);
     this.formSubmitListenerRemover();
 
     if (this.resizeObserver) {
@@ -1384,7 +1379,11 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
     this.internals.setValidity({ customError: true }, 'Custom validation error');
   }
 
-  private handleInvalid = (e: Event) => {
+  @Listen('invalid', { capture: true })
+  handleInvalidEvent(e: Event) {
+    // Mark that a submission/validation attempt occurred so errors become visible
+    this.formSubmitted = true;
+
     const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
     if (this.noNativeValidity || hasErrorSlot) {
       const errorSlotElement = this.host.querySelector('[slot="error"]');
@@ -1404,7 +1403,9 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
       this.host.removeAttribute('has-custom-error');
     }
     this.isValid = false;
-  };
+    // Re-evaluate validity so render reflects formSubmitted state immediately
+    this.updateValidityState();
+  }
 
   private handleCustomErrorSlot = () => {
     const errorSlot = this.host.querySelector('slot[name="error"]') as HTMLSlotElement;

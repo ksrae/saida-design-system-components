@@ -4,8 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>Stencil Component Starter</title>
-    <link rel="stylesheet" href="./build/synergy.css">
-    <script type="module" src="./build/synergy.esm.js"></script>
+    <link rel="stylesheet" href="/build/synergy.css">
+    <script type="module" src="/build/synergy.esm.js"></script>
+    <script nomodule src="/build/synergy.js"></script>
   </head>
   <body class="sy-theme sy-theme-light">
     <style>
@@ -50,423 +51,586 @@
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
   <!-- ==================== Autocomplete Component Test ==================== -->
-<section>
-  <h1>Autocomplete Component Test</h1>
+  <section>
+    <h1>Autocomplete Component Test</h1>
 
-  <!-- 1. Basic Autocomplete -->
-  <div class="example-section">
-    <h3>1. Basic Autocomplete (focus trigger)</h3>
-    <p>Focus 시 전체 목록을 표시하는 기본 autocomplete입니다.</p>
+    <!-- 1. Basic Autocomplete -->
+    <div class="example-section">
+      <h3>1. Basic Autocomplete (focus trigger)</h3>
+      <p>Focus 시 전체 목록을 표시하는 기본 autocomplete입니다.</p>
+      
+      <sy-autocomplete 
+        id="basic-autocomplete"
+        placeholder="Select a fruit"
+        trigger="focus"
+      ></sy-autocomplete>
 
-    <sy-autocomplete
-      id="basic-autocomplete"
-      placeholder="Select a fruit"
-      trigger="focus"
-    ></sy-autocomplete>
+      <div id="basic-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+    </div>
 
-    <div id="basic-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-  </div>
-
-  <!-- 2. Input Trigger Autocomplete -->
-  <div class="example-section">
-    <h3>2. Input Trigger Autocomplete</h3>
-    <p>입력 시작 시 목록이 표시됩니다.</p>
-
-    <sy-autocomplete
-      id="input-autocomplete"
-      placeholder="Type to search fruits"
-      trigger="input"
-    ></sy-autocomplete>
-
-    <div id="input-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
-  </div>
-
-  <!-- 3. Required Validation Test -->
-  <div class="example-section">
-    <h3>3. Required Validation Test</h3>
-    <p>Required field validation을 테스트합니다.</p>
-
-    <form id="form-required" novalidate>
-      <sy-autocomplete
-        id="required-autocomplete"
-        placeholder="Select a fruit (required)"
-        required
+    <!-- 2. Input Trigger Autocomplete -->
+    <div class="example-section">
+      <h3>2. Input Trigger Autocomplete (default)</h3>
+      <p>입력 시작 시 목록이 표시됩니다. 필터링이 자동으로 적용됩니다.</p>
+      
+      <sy-autocomplete 
+        id="input-autocomplete"
+        placeholder="Type to search fruits"
         trigger="input"
-      >
-        <span slot="error">This field is required</span>
-      </sy-autocomplete>
+      ></sy-autocomplete>
 
-      <div style="margin-top: 10px;">
-        <button type="submit">Submit Form</button>
-        <button type="reset">Reset Form</button>
-      </div>
-    </form>
+      <div id="input-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+    </div>
 
-    <p id="required-result" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></p>
-  </div>
-
-  <!-- 4. Custom Error Test -->
-  <div class="example-section">
-    <h3>4. Custom Error Test</h3>
-    <p>Custom error validation을 테스트합니다.</p>
-
-    <form id="form-custom" novalidate>
-      <sy-autocomplete
-        id="custom-autocomplete"
-        placeholder="Custom error test"
+    <!-- 3. Arrow Key Navigation Test -->
+    <div class="example-section">
+      <h3>3. Arrow Key Navigation</h3>
+      <p>입력 후 <strong>Arrow Up/Down</strong> 키로 옵션을 탐색하고 <strong>Enter</strong>로 선택하세요.</p>
+      
+      <sy-autocomplete 
+        id="arrow-autocomplete"
+        placeholder="Type 'a' then use arrow keys"
         trigger="input"
-      >
-        <div slot="error">
-          <p class="custom-error-message">This field has a custom error message.</p>
-        </div>
-      </sy-autocomplete>
+      ></sy-autocomplete>
 
-      <div style="margin-top: 10px;">
-        <button type="submit">Set Custom Error and Submit</button>
-        <button type="reset">Clear Custom Error and Reset</button>
+      <div id="arrow-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;">
+        <strong>Active Index:</strong> <span id="arrow-active">-1</span><br>
+        <strong>Selected:</strong> <span id="arrow-selected">None</span>
       </div>
-    </form>
-
-    <p id="custom-result" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></p>
-  </div>
-
-  <!-- 5. Size Variants -->
-  <div class="example-section">
-    <h3>5. Size Variants</h3>
-
-    <div style="margin-bottom: 15px;">
-      <label>Small:</label>
-      <sy-autocomplete
-        id="small-autocomplete"
-        placeholder="Small size"
-        size="small"
-        trigger="focus"
-      ></sy-autocomplete>
     </div>
 
-    <div style="margin-bottom: 15px;">
-      <label>Medium:</label>
-      <sy-autocomplete
-        id="medium-autocomplete"
-        placeholder="Medium size"
-        size="medium"
-        trigger="focus"
+    <!-- 4. Debounced Autocomplete -->
+    <div class="example-section">
+      <h3>4. Debounced Autocomplete</h3>
+      <p>500ms debounce가 적용되어 입력이 멈춘 후 필터링됩니다.</p>
+      
+      <sy-autocomplete 
+        id="debounced-autocomplete"
+        placeholder="Type quickly to see debounce"
+        trigger="input"
+        debounce="500"
       ></sy-autocomplete>
+
+      <div id="debounced-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
     </div>
 
-    <div>
-      <label>Large:</label>
-      <sy-autocomplete
-        id="large-autocomplete"
-        placeholder="Large size"
-        size="large"
+    <!-- 5. Case Sensitive -->
+    <div class="example-section">
+      <h3>5. Case Sensitive Autocomplete</h3>
+      <p>대소문자를 구분하여 필터링합니다. (case-sensitive="true")</p>
+      
+      <sy-autocomplete 
+        id="case-autocomplete"
+        placeholder="Try 'apple', 'Apple', or 'APPLE'"
+        trigger="input"
+        case-sensitive="true"
+      ></sy-autocomplete>
+
+      <div id="case-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+    </div>
+
+    <!-- 6. Size Variants -->
+    <div class="example-section">
+      <h3>6. Size Variants</h3>
+      
+      <div style="margin-bottom: 15px;">
+        <label><strong>Small:</strong></label>
+        <sy-autocomplete 
+          id="small-autocomplete"
+          placeholder="Small size"
+          size="small"
+          trigger="focus"
+        ></sy-autocomplete>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label><strong>Medium (default):</strong></label>
+        <sy-autocomplete 
+          id="medium-autocomplete"
+          placeholder="Medium size"
+          size="medium"
+          trigger="focus"
+        ></sy-autocomplete>
+      </div>
+
+      <div>
+        <label><strong>Large:</strong></label>
+        <sy-autocomplete 
+          id="large-autocomplete"
+          placeholder="Large size"
+          size="large"
+          trigger="focus"
+        ></sy-autocomplete>
+      </div>
+    </div>
+
+    <!-- 7. Loading State -->
+    <div class="example-section">
+      <h3>7. Loading State</h3>
+      <p>로딩 상태를 시뮬레이션합니다.</p>
+      
+      <sy-autocomplete 
+        id="loading-autocomplete"
+        placeholder="Click button to simulate loading"
         trigger="focus"
       ></sy-autocomplete>
-    </div>
-  </div>
 
-  <!-- 6. Loading State -->
-  <div class="example-section">
-    <h3>6. Loading State</h3>
-
-    <sy-autocomplete
-      id="loading-autocomplete"
-      placeholder="Click button to simulate loading"
-      trigger="focus"
-    ></sy-autocomplete>
-
-    <div style="margin-top: 10px;">
       <button onclick="simulateLoading()">Simulate Loading</button>
       <button onclick="stopLoading()">Stop Loading</button>
     </div>
-  </div>
 
-  <!-- 7. Disabled State -->
-  <div class="example-section">
-    <h3>7. Disabled State</h3>
+    <!-- 8. Disabled State -->
+    <div class="example-section">
+      <h3>8. Disabled State</h3>
+      
+      <sy-autocomplete 
+        id="disabled-autocomplete"
+        placeholder="This is disabled"
+        disabled="true"
+        trigger="focus"
+      ></sy-autocomplete>
 
-    <sy-autocomplete
-      id="disabled-autocomplete"
-      placeholder="This is disabled"
-      disabled
-      trigger="focus"
-    ></sy-autocomplete>
-
-    <button onclick="toggleDisabled()">Toggle Disabled</button>
-  </div>
-
-  <!-- 8. Event Handling -->
-  <div class="example-section">
-    <h3>8. Event Handling</h3>
-
-    <sy-autocomplete
-      id="event-autocomplete"
-      placeholder="Type and select to trigger events"
-      trigger="input"
-    ></sy-autocomplete>
-
-    <div id="event-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;">
-      <strong>Changed Events:</strong> <span id="changed-count">0</span><br>
-      <strong>Selected Events:</strong> <span id="selected-count">0</span><br>
-      <strong>Last Value:</strong> <span id="last-value">-</span>
+      <button onclick="toggleDisabled()">Toggle Disabled</button>
     </div>
-  </div>
 
-  <!-- 9. Dynamic Data Update -->
-  <div class="example-section">
-    <h3>9. Dynamic Data Update</h3>
+    <!-- 9. Required & Validation -->
+    <div class="example-section">
+      <h3>9. Required & Validation</h3>
+      <p>Form validation이 적용됩니다.</p>
+      
+      <form id="autocomplete-form">
+        <sy-autocomplete 
+          id="required-autocomplete"
+          placeholder="Required field"
+          required="true"
+          trigger="input"
+        >
+          <div slot="error">
+            <p class="textareaErrorMessage">This field sets a custom error message.</p>
+          </div>
+        </sy-autocomplete>
 
-    <sy-autocomplete
-      id="dynamic-autocomplete"
-      placeholder="Dynamic data source"
-      trigger="focus"
-    ></sy-autocomplete>
+        <div style="margin-top: 10px;">
+          <button 
+            type="submit" 
+            style="background: #e74c3c; font-weight: bold;">
+            ⚠️ SUBMIT FORM (Required Test)
+          </button>
+          <button type="reset">Reset</button>
+        </div>
+      </form>
 
-    <div style="margin-top: 10px;">
-      <button onclick="loadFruits()">Load Fruits</button>
-      <button onclick="loadCountries()">Load Countries</button>
-      <button onclick="loadColors()">Load Colors</button>
+      <div id="form-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
     </div>
-  </div>
-</section>
 
-<script>
-  // Sample data
-  const fruits = [
-    'Apple', 'Apricot', 'Avocado',
-    'Banana', 'Blackberry', 'Blueberry',
-    'Cherry', 'Coconut', 'Cranberry',
-    'Date', 'Dragon Fruit', 'Elderberry',
-    'Fig', 'Grape', 'Grapefruit',
-    'Honeydew', 'Kiwi', 'Lemon',
-    'Mango', 'Orange', 'Papaya',
-    'Pineapple', 'Strawberry', 'Watermelon'
-  ];
+    <!-- 10. Custom Error Message -->
+    <div class="example-section">
+      <h3>10. Custom Error Message (Slot-based)</h3>
+      <p>Slot을 통해 커스텀 에러 메시지를 표시합니다. (textarea, input과 동일한 방식)</p>
+      
+      <form id="custom-error-form" novalidate>
+        <sy-autocomplete 
+          id="custom-error-autocomplete"
+          placeholder="Type something and submit without selecting"
+          required
+          trigger="input"
+        >
+          <div slot="error">
+            <p class="textareaErrorMessage">🚫 Custom error: You must select a valid fruit!</p>
+          </div>
+        </sy-autocomplete>
 
-  const countries = [
-    'Argentina', 'Australia', 'Brazil',
-    'Canada', 'China', 'France',
-    'Germany', 'India', 'Italy',
-    'Japan', 'Korea', 'Mexico',
-    'Russia', 'Spain', 'United Kingdom',
-    'United States'
-  ];
+        <div style="margin-top: 10px;">
+          <button type="submit" style="background: #e67e22;">Submit (Test Custom Error)</button>
+          <button type="button" onclick="validateCustomError()">Just Validate (no submit)</button>
+        </div>
+      </form>
 
-  const colors = [
-    'Red', 'Orange', 'Yellow',
-    'Green', 'Blue', 'Indigo',
-    'Violet', 'Pink', 'Purple',
-    'Brown', 'Black', 'White'
-  ];
+      <div id="custom-error-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+    </div>
 
-  // Global variables for event counting
-  let changedCount = 0;
-  let selectedCount = 0;
+    <!-- 11. Programmatic Control -->
+    <div class="example-section">
+      <h3>11. Programmatic Control</h3>
+      <p>JavaScript로 값을 제어합니다.</p>
+      
+      <sy-autocomplete 
+        id="controlled-autocomplete"
+        placeholder="Programmatically controlled"
+        trigger="input"
+      ></sy-autocomplete>
 
-  // Helper functions that need to be global
-  function simulateLoading() {
-    const loadingAc = document.getElementById('loading-autocomplete');
-    if (loadingAc) {
-      loadingAc.loading = true;
-      setTimeout(() => {
-        loadingAc.loading = false;
-      }, 2000);
-    }
-  }
+      <div style="margin-top: 10px;">
+        <button onclick="setValue('Apple')">Set to Apple</button>
+        <button onclick="setValue('Banana')">Set to Banana</button>
+        <button onclick="clearValue()">Clear</button>
+        <button onclick="focusAutocomplete()">Focus</button>
+      </div>
 
-  function stopLoading() {
-    const loadingAc = document.getElementById('loading-autocomplete');
-    if (loadingAc) {
-      loadingAc.loading = false;
-    }
-  }
+      <div id="controlled-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;"></div>
+    </div>
 
-  function toggleDisabled() {
-    const disabledAc = document.getElementById('disabled-autocomplete');
-    if (disabledAc) {
-      disabledAc.disabled = !disabledAc.disabled;
-    }
-  }
+    <!-- 12. Event Handling -->
+    <div class="example-section">
+      <h3>12. Event Handling</h3>
+      <p>모든 이벤트를 추적합니다.</p>
+      
+      <sy-autocomplete 
+        id="event-autocomplete"
+        placeholder="Type and select to trigger events"
+        trigger="input"
+      ></sy-autocomplete>
 
-  function loadFruits() {
-    const dynamicAc = document.getElementById('dynamic-autocomplete');
-    if (dynamicAc) {
-      dynamicAc.source = fruits;
-      dynamicAc.value = '';
-    }
-  }
+      <div id="event-output" style="margin-top: 10px; padding: 10px; background: #f0f0f0;">
+        <strong>Changed Events:</strong> <span id="changed-count">0</span><br>
+        <strong>Selected Events:</strong> <span id="selected-count">0</span><br>
+        <strong>Last Value:</strong> <span id="last-value">-</span>
+      </div>
+      <button onclick="resetEventCounters()">Reset Counters</button>
+    </div>
 
-  function loadCountries() {
-    const dynamicAc = document.getElementById('dynamic-autocomplete');
-    if (dynamicAc) {
-      dynamicAc.source = countries;
-      dynamicAc.value = '';
-    }
-  }
+    <!-- 13. Dynamic Data Update -->
+    <div class="example-section">
+      <h3>13. Dynamic Data Update</h3>
+      <p>런타임에 데이터를 변경합니다.</p>
+      
+      <sy-autocomplete 
+        id="dynamic-autocomplete"
+        placeholder="Dynamic data source"
+        trigger="focus"
+      ></sy-autocomplete>
 
-  function loadColors() {
-    const dynamicAc = document.getElementById('dynamic-autocomplete');
-    if (dynamicAc) {
-      dynamicAc.source = colors;
-      dynamicAc.value = '';
-    }
-  }
+      <div style="margin-top: 10px;">
+        <button onclick="loadFruits()">Load Fruits</button>
+        <button onclick="loadCountries()">Load Countries</button>
+        <button onclick="loadColors()">Load Colors</button>
+      </div>
+    </div>
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // 1. Basic Autocomplete
-    (() => {
-      const basicAc = document.getElementById('basic-autocomplete');
-      const output = document.getElementById('basic-output');
+    <!-- 14. Empty State -->
+    <div class="example-section">
+      <h3>14. Empty State</h3>
+      <p>매칭되는 옵션이 없을 때 empty state를 표시합니다.</p>
+      
+      <sy-autocomplete 
+        id="empty-autocomplete"
+        placeholder="Type 'xyz' to see empty state"
+        trigger="input"
+      ></sy-autocomplete>
+    </div>
 
-      if (basicAc) {
-        basicAc.source = fruits;
+    <!-- JavaScript for Autocomplete Tests -->
+    <script>
+      // Sample data
+      const fruits = [
+        'Apple', 'Apricot', 'Avocado',
+        'Banana', 'Blackberry', 'Blueberry',
+        'Cherry', 'Coconut', 'Cranberry',
+        'Dragon Fruit', 'Durian',
+        'Elderberry',
+        'Fig',
+        'Grape', 'Grapefruit', 'Guava',
+        'Honeydew',
+        'Kiwi', 'Kumquat',
+        'Lemon', 'Lime', 'Lychee',
+        'Mango', 'Melon',
+        'Nectarine',
+        'Orange',
+        'Papaya', 'Passion Fruit', 'Peach', 'Pear', 'Persimmon', 'Pineapple', 'Plum', 'Pomegranate',
+        'Raspberry',
+        'Strawberry',
+        'Tangerine',
+        'Watermelon'
+      ];
 
-        basicAc.addEventListener('selected', (e) => {
-          output.innerHTML = `<strong>Selected:</strong> ${e.detail.value}`;
-        });
-      }
-    })();
+      const countries = [
+        'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia',
+        'Austria', 'Belgium', 'Brazil', 'Canada', 'Chile',
+        'China', 'Colombia', 'Denmark', 'Egypt', 'Finland',
+        'France', 'Germany', 'Greece', 'India', 'Indonesia',
+        'Ireland', 'Italy', 'Japan', 'Kenya', 'Korea',
+        'Mexico', 'Netherlands', 'New Zealand', 'Norway', 'Poland',
+        'Portugal', 'Russia', 'Singapore', 'South Africa', 'Spain',
+        'Sweden', 'Switzerland', 'Thailand', 'Turkey', 'United Kingdom',
+        'United States', 'Vietnam'
+      ];
 
-    // 2. Input Trigger Autocomplete
-    (() => {
-      const inputAc = document.getElementById('input-autocomplete');
-      const output = document.getElementById('input-output');
+      const colors = [
+        'Red', 'Orange', 'Yellow', 'Green', 'Blue',
+        'Indigo', 'Violet', 'Pink', 'Purple', 'Brown',
+        'Black', 'White', 'Gray', 'Cyan', 'Magenta'
+      ];
 
-      if (inputAc) {
-        inputAc.source = fruits;
+      // Initialize autocomplete components
+      function initializeAutocompletes() {
+        console.log('[initializeAutocompletes] Function called!');
+        
+        // 1. Basic autocomplete
+        const basicAc = document.getElementById('basic-autocomplete');
+        if (basicAc) {
+          basicAc.source = fruits;
+          basicAc.addEventListener('selected', (e) => {
+            document.getElementById('basic-output').innerHTML = 
+              `<strong>Selected:</strong> ${e.detail.value}<br><strong>Valid:</strong> ${e.detail.isValid}`;
+          });
+        }
 
-        inputAc.addEventListener('changed', (e) => {
-          output.innerHTML = `<strong>Changed:</strong> ${e.detail.value}`;
-        });
+        // 2. Input trigger autocomplete
+        const inputAc = document.getElementById('input-autocomplete');
+        if (inputAc) {
+          inputAc.source = fruits;
+          inputAc.addEventListener('changed', (e) => {
+            document.getElementById('input-output').innerHTML = 
+              `<strong>Changed:</strong> ${e.detail.value}`;
+          });
+          inputAc.addEventListener('selected', (e) => {
+            document.getElementById('input-output').innerHTML = 
+              `<strong>Selected:</strong> ${e.detail.value}`;
+          });
+        }
 
-        inputAc.addEventListener('selected', (e) => {
-          output.innerHTML = `<strong>Selected:</strong> ${e.detail.value}`;
-        });
-      }
-    })();
+        // 3. Arrow key navigation
+        const arrowAc = document.getElementById('arrow-autocomplete');
+        if (arrowAc) {
+          arrowAc.source = fruits;
+          
+          // Listen to internal active index changes
+          arrowAc.addEventListener('activeIndexChanged', (e) => {
+            document.getElementById('arrow-active').textContent = e.detail;
+          });
+          
+          arrowAc.addEventListener('selected', (e) => {
+            document.getElementById('arrow-selected').textContent = e.detail.value;
+          });
+        }
 
-    // 3. Required Validation Test
-    (() => {
-      const formrequired = document.getElementById('form-required');
-      const requiredAc = document.getElementById('required-autocomplete');
-      const resultElement = document.getElementById('required-result');
+        // 4. Debounced autocomplete
+        const debouncedAc = document.getElementById('debounced-autocomplete');
+        if (debouncedAc) {
+          debouncedAc.source = countries;
+          debouncedAc.addEventListener('changed', (e) => {
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('debounced-output').innerHTML = 
+              `<strong>Changed at ${now}:</strong> ${e.detail.value}`;
+          });
+        }
 
-      if (formrequired && requiredAc) {
-        requiredAc.source = fruits;
+        // 5. Case sensitive autocomplete
+        const caseAc = document.getElementById('case-autocomplete');
+        if (caseAc) {
+          caseAc.source = ['Apple', 'apple', 'APPLE', 'Banana', 'banana', 'BANANA'];
+          caseAc.addEventListener('selected', (e) => {
+            document.getElementById('case-output').innerHTML = 
+              `<strong>Selected (case sensitive):</strong> ${e.detail.value}`;
+          });
+        }
 
-        formrequired.addEventListener('submit', async (event) => {
-          // event.preventDefault();
-
-          const isValid = await requiredAc.reportValidity();
-          const status = await requiredAc.getStatus();
-          const value = requiredAc.value;
-
-          if (isValid) {
-            resultElement.innerHTML =
-              '<strong style="color: green;">✓ Form is valid!</strong><br>' +
-              `Value: "${value}"`;
-          } else {
-            resultElement.innerHTML =
-              '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
-              `Value: "${value}"<br>` +
-              `Status: ${status}<br>` +
-              `Message: ${requiredAc.validationMessage}`;
+        // 6. Size variants
+        ['small', 'medium', 'large'].forEach(size => {
+          const sizeAc = document.getElementById(`${size}-autocomplete`);
+          if (sizeAc) {
+            sizeAc.source = fruits.slice(0, 10);
           }
         });
 
-        formrequired.addEventListener('reset', (event) => {
-          resultElement.innerHTML = '<em>Form reset</em>';
-        });
-      }
-    })();
-
-    // 4. Custom Error Test
-    (() => {
-      const formcustom = document.getElementById('form-custom');
-      const customAc = document.getElementById('custom-autocomplete');
-      const resultElement = document.getElementById('custom-result');
-
-      if (formcustom && customAc) {
-        customAc.source = fruits;
-
-        formcustom.addEventListener('reset', (event) => {
-          //event.preventDefault();
-          customAc.clearCustomError();
-          customAc.formResetCallback();
-          resultElement.innerHTML = '<em>Custom error cleared and form reset</em>';
-        });
-
-        formcustom.addEventListener('submit', async (event) => {
-          // event.preventDefault();
-          await customAc.setCustomError();
-
-          const isValid = await customAc.reportValidity();
-          const status = await customAc.getStatus();
-
-          resultElement.innerHTML =
-            '<strong style="color: red;">✗ Custom error set!</strong><br>' +
-            `Status: ${status}<br>` +
-            `Message: ${customAc.validationMessage}`;
-        });
-      }
-    })();
-
-    // 5. Size Variants
-    (() => {
-      const sizes = ['small', 'medium', 'large'];
-      sizes.forEach(size => {
-        const sizeAc = document.getElementById(`${size}-autocomplete`);
-        if (sizeAc) {
-          sizeAc.source = fruits.slice(0, 10);
+        // 7. Loading autocomplete
+        const loadingAc = document.getElementById('loading-autocomplete');
+        if (loadingAc) {
+          loadingAc.source = fruits;
         }
-      });
-    })();
 
-    // 6. Loading State
-    (() => {
-      const loadingAc = document.getElementById('loading-autocomplete');
-      if (loadingAc) {
-        loadingAc.source = fruits;
+        // 8. Disabled autocomplete
+        const disabledAc = document.getElementById('disabled-autocomplete');
+        if (disabledAc) {
+          disabledAc.source = fruits;
+        }
+
+        // 9. Required autocomplete
+        const requiredAc = document.getElementById('required-autocomplete');
+        if (requiredAc) {
+          requiredAc.source = fruits;
+        }
+
+        // 10. Custom error autocomplete
+        const customErrorAc = document.getElementById('custom-error-autocomplete');
+        if (customErrorAc) {
+          customErrorAc.source = fruits;
+        }
+
+        // 11. Controlled autocomplete
+        const controlledAc = document.getElementById('controlled-autocomplete');
+        if (controlledAc) {
+          controlledAc.source = fruits;
+          controlledAc.addEventListener('selected', (e) => {
+            document.getElementById('controlled-output').innerHTML = 
+              `<strong>Value:</strong> ${e.detail.value}`;
+          });
+        }
+
+        // 12. Event handling autocomplete
+        let changedCount = 0;
+        let selectedCount = 0;
+        const eventAc = document.getElementById('event-autocomplete');
+        if (eventAc) {
+          eventAc.source = fruits;
+          eventAc.addEventListener('changed', (e) => {
+            changedCount++;
+            document.getElementById('changed-count').textContent = changedCount;
+            document.getElementById('last-value').textContent = e.detail.value;
+          });
+          eventAc.addEventListener('selected', (e) => {
+            selectedCount++;
+            document.getElementById('selected-count').textContent = selectedCount;
+            document.getElementById('last-value').textContent = e.detail.value;
+          });
+        }
+
+        // 13. Dynamic autocomplete
+        const dynamicAc = document.getElementById('dynamic-autocomplete');
+        if (dynamicAc) {
+          dynamicAc.source = fruits;
+        }
+
+        // 14. Empty state autocomplete
+        const emptyAc = document.getElementById('empty-autocomplete');
+        if (emptyAc) {
+          emptyAc.source = fruits;
+        }
+
+        // Form submit handler
+        const form = document.getElementById('autocomplete-form');
+        
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+           
+            const isValid = await requiredAc.checkValidity();
+            
+            if (isValid) {
+              document.getElementById('form-output').innerHTML = 
+                '<strong style="color: green;">✓ Form is valid!</strong><br>' +
+                `Value: ${requiredAc.value}`;
+            } else {
+              document.getElementById('form-output').innerHTML = 
+                '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
+                `Value: "${requiredAc.value}"<br>` +
+                `Validation Message: ${requiredAc.validationMessage}`;
+            }
+          });
+
+          form.addEventListener('reset', () => {
+            setTimeout(() => {
+              document.getElementById('form-output').innerHTML = '<em>Form reset</em>';
+            }, 0);
+          });
+        } else {
+          console.error('[Init] Form not found!');
+        }
+
+        // 10. Custom error form submit handler
+        const customErrorForm = document.getElementById('custom-error-form');
+        
+        if (customErrorForm && customErrorAc) {
+          customErrorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const isValid = await customErrorAc.checkValidity();
+            
+            if (isValid) {
+              document.getElementById('custom-error-output').innerHTML = 
+                '<strong style="color: green;">✓ Form is valid!</strong><br>' +
+                `Value: ${customErrorAc.value}`;
+            } else {
+              document.getElementById('custom-error-output').innerHTML = 
+                '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
+                `Value: "${customErrorAc.value}"<br>` +
+                `Custom Error Message: ${customErrorAc.validationMessage}`;
+            }
+          });
+        }
       }
-    })();
 
-    // 7. Disabled State
-    (() => {
-      const disabledAc = document.getElementById('disabled-autocomplete');
-      if (disabledAc) {
-        disabledAc.source = fruits;
+      // Helper functions for tests
+      function simulateLoading() {
+        const loadingAc = document.getElementById('loading-autocomplete');
+        loadingAc.loading = true;
+        setTimeout(() => {
+          loadingAc.loading = false;
+        }, 2000);
       }
-    })();
 
-    // 8. Event Handling
-    (() => {
-      const eventAc = document.getElementById('event-autocomplete');
-      if (eventAc) {
-        eventAc.source = fruits;
-
-        eventAc.addEventListener('changed', (e) => {
-          changedCount++;
-          document.getElementById('changed-count').textContent = changedCount;
-          document.getElementById('last-value').textContent = e.detail.value;
-        });
-
-        eventAc.addEventListener('selected', (e) => {
-          selectedCount++;
-          document.getElementById('selected-count').textContent = selectedCount;
-          document.getElementById('last-value').textContent = e.detail.value;
-        });
+      function stopLoading() {
+        const loadingAc = document.getElementById('loading-autocomplete');
+        loadingAc.loading = false;
       }
-    })();
 
-    // 9. Dynamic Data
-    (() => {
-      const dynamicAc = document.getElementById('dynamic-autocomplete');
-      if (dynamicAc) {
+      function toggleDisabled() {
+        const disabledAc = document.getElementById('disabled-autocomplete');
+        disabledAc.disabled = !disabledAc.disabled;
+      }
+
+      async function validateCustomError() {
+        const customErrorAc = document.getElementById('custom-error-autocomplete');
+        const isValid = await customErrorAc.checkValidity();
+
+        document.getElementById('custom-error-output').innerHTML = 
+          isValid 
+            ? '<strong style="color: green;">✓ Valid</strong>' 
+            : `<strong style="color: red;">✗ Invalid</strong><br>${customErrorAc.validationMessage}`;
+      }
+
+      function setValue(value) {
+        const controlledAc = document.getElementById('controlled-autocomplete');
+        controlledAc.value = value;
+        document.getElementById('controlled-output').innerHTML = 
+          `<strong>Value set to:</strong> ${value}`;
+      }
+
+      function clearValue() {
+        const controlledAc = document.getElementById('controlled-autocomplete');
+        controlledAc.value = '';
+        document.getElementById('controlled-output').innerHTML = 
+          '<strong>Value cleared</strong>';
+      }
+
+      function focusAutocomplete() {
+        const controlledAc = document.getElementById('controlled-autocomplete');
+        controlledAc.focus();
+      }
+
+      function resetEventCounters() {
+        document.getElementById('changed-count').textContent = '0';
+        document.getElementById('selected-count').textContent = '0';
+        document.getElementById('last-value').textContent = '-';
+      }
+
+      function loadFruits() {
+        const dynamicAc = document.getElementById('dynamic-autocomplete');
         dynamicAc.source = fruits;
+        dynamicAc.value = '';
       }
-    })();
-  });
-</script>
+
+      function loadCountries() {
+        const dynamicAc = document.getElementById('dynamic-autocomplete');
+        dynamicAc.source = countries;
+        dynamicAc.value = '';
+      }
+
+      function loadColors() {
+        const dynamicAc = document.getElementById('dynamic-autocomplete');
+        dynamicAc.source = colors;
+        dynamicAc.value = '';
+      }
+
+      // Initialize on load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeAutocompletes);
+      } else {
+        initializeAutocompletes();
+      }
+    </script>
+  </section>
+
 
   <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
@@ -829,51 +993,43 @@
     function toggleProp(elementId, propName) {
       const element = document.getElementById(elementId);
       element[propName] = !element[propName];
-      console.log(`${propName}:`, element[propName]);
     }
 
     // Collapse public methods
     async function collapseOpenAll() {
       const collapse = document.getElementById('method-collapse');
       await collapse.openAll();
-      console.log('Opened all panels');
     }
 
     async function collapseCloseAll() {
       const collapse = document.getElementById('method-collapse');
       await collapse.closeAll();
-      console.log('Closed all panels');
     }
 
     async function collapseOpenPanel(index) {
       const collapse = document.getElementById('method-collapse');
       await collapse.openPanel(index);
-      console.log(`Opened panel ${index + 1}`);
     }
 
     async function collapseClosePanel(index) {
       const collapse = document.getElementById('method-collapse');
       await collapse.closePanel(index);
-      console.log(`Closed panel ${index + 1}`);
     }
 
     // Panel public methods
     async function panelToggle(panelId) {
       const panel = document.getElementById(panelId);
       await panel.toggle();
-      console.log(`Toggled panel: ${panelId}`);
     }
 
     async function panelOpen(panelId) {
       const panel = document.getElementById(panelId);
       await panel.open();
-      console.log(`Opened panel: ${panelId}`);
     }
 
     async function panelClose(panelId) {
       const panel = document.getElementById(panelId);
       await panel.close();
-      console.log(`Closed panel: ${panelId}`);
     }
 
     // Dynamic control methods
@@ -1223,6 +1379,180 @@
       });
     </script>
 
+    <!-- Form Tests (Same pattern as textarea, input, input-number, select, checkbox) -->
+    <section>
+      <h2>Form Validation Tests</h2>
+      <div class="example-section">
+        <h3>Form Tests (Same pattern as textarea)</h3>
+        
+        <!-- Test 1: Required Field -->
+        <h4>1. Required Field Test</h4>
+        <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+          <form id="formDatepicker">
+            <sy-datepicker label="birthdate" id="formDatepickerId" name="formDatepickerName" required placeholder="Required date" style="width:100%">
+              <div slot="error">
+                <p class="datepickerErrorMessage">This field is required.</p>
+              </div>
+            </sy-datepicker>
+            <div style="margin-top: 10px;">
+              <button type="submit">Submit Form</button>
+              <button type="reset">Reset Form</button>
+            </div>
+          </form>
+          <p id="formDatepickerResult"></p>
+        </div>
+
+        <!-- Test 2: Custom Error -->
+        <h4>2. Custom Error Test</h4>
+        <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+          <form id="formCustomDatepicker">
+            <sy-datepicker label="customError" id="formCustomDatepickerId" name="formCustomDatepickerName" placeholder="Custom error datepicker" style="width:100%">
+              <div slot="error">
+                <p class="customDatepickerErrorMessage">This field has a custom error.</p>
+              </div>
+            </sy-datepicker>
+            <div style="margin-top: 10px;">
+              <button type="submit">Set Custom Error and Submit Form</button>
+              <button type="reset">Clear Custom Error and Reset Form</button>
+            </div>
+          </form>
+          <p id="formCustomDatepickerResult"></p>
+        </div>
+
+        <!-- Test 3: Original Validation Methods -->
+        <h4>3. Original Validation Methods</h4>
+        <form id="datepickerTestForm">
+          <sy-datepicker id="validationDatepicker" label="Required Field" required>
+            <div slot="error">This is a custom error message from a slot.</div>
+          </sy-datepicker>
+          <p>Status: <span id="validationDatepickerResult"></span></p>
+          <div class="flex-row">
+            <button type="button" id="datepickerCheckBtn">checkValidity()</button>
+            <button type="button" id="datepickerReportBtn">reportValidity()</button>
+            <button type="button" id="datepickerSetErrorBtn">setCustomError()</button>
+            <button type="button" id="datepickerClearErrorBtn">clearCustomError()</button>
+            <button type="reset">Reset Form</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Datepicker Form Tests
+        
+        // Test 1: Required Field
+        const formDatepicker = document.querySelector('#formDatepicker');
+        const formDatepickerElement = document.querySelector('#formDatepickerId');
+        const formDatepickerResult = document.querySelector('#formDatepickerResult');
+
+        if (formDatepicker && formDatepickerElement && formDatepickerResult) {
+          formDatepicker.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formDatepickerResult.innerHTML = '';
+
+            const isValid = await formDatepickerElement.checkValidity();
+            if (isValid) {
+              const form = e.target;
+              const formData = new FormData(form);
+              const formDataObj = Object.fromEntries(formData);
+
+              for(let obj in formDataObj) {
+                formDatepickerResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+              }
+            } else {
+              console.log('error exists');
+            }
+          });
+        }
+
+        // Test 2: Custom Error
+        const formCustomDatepicker = document.querySelector('#formCustomDatepicker');
+        const formCustomDatepickerElement = document.querySelector('#formCustomDatepickerId');
+        const formCustomDatepickerResult = document.querySelector('#formCustomDatepickerResult');
+
+        if (formCustomDatepicker && formCustomDatepickerElement && formCustomDatepickerResult) {
+          formCustomDatepicker.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formCustomDatepickerElement.setCustomError();
+            formCustomDatepickerResult.innerHTML = '';
+
+            const isValid = await formCustomDatepickerElement.checkValidity();
+            if (isValid) {
+              const form = e.target;
+              const formData = new FormData(form);
+              const formDataObj = Object.fromEntries(formData);
+
+              for(let obj in formDataObj) {
+                formCustomDatepickerResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+              }
+            } else {
+              console.log('error exists');
+            }
+          });
+
+          formCustomDatepicker.addEventListener('reset', () => {
+            formCustomDatepickerElement.clearCustomError();
+          });
+        }
+
+        // Test 3: Original Validation Methods
+        const validationDatepicker = document.querySelector("#validationDatepicker");
+        const validationDatepickerResult = document.querySelector("#validationDatepickerResult");
+
+        if (validationDatepicker && validationDatepickerResult) {
+          const updateDatepickerValidation = async () => {
+            const isValid = await validationDatepicker.checkValidity();
+            const message = validationDatepicker.validationMessage;
+            validationDatepickerResult.textContent = `isValid: ${isValid}, Message: "${message}"`;
+          };
+
+          validationDatepicker.addEventListener('selected', updateDatepickerValidation);
+          const datepickerTestForm = document.querySelector("#datepickerTestForm");
+          if (datepickerTestForm) {
+            datepickerTestForm.addEventListener('reset', () => setTimeout(updateDatepickerValidation, 0));
+          }
+
+          const datepickerCheckBtn = document.querySelector("#datepickerCheckBtn");
+          const datepickerReportBtn = document.querySelector("#datepickerReportBtn");
+          const datepickerSetErrorBtn = document.querySelector("#datepickerSetErrorBtn");
+          const datepickerClearErrorBtn = document.querySelector("#datepickerClearErrorBtn");
+
+          if (datepickerCheckBtn) {
+            datepickerCheckBtn.addEventListener("click", async () => {
+              const isValid = await validationDatepicker.checkValidity();
+              alert('checkValidity() returned: ' + isValid);
+              updateDatepickerValidation();
+            });
+          }
+
+          if (datepickerReportBtn) {
+            datepickerReportBtn.addEventListener("click", async () => {
+              const isValid = await validationDatepicker.reportValidity();
+              alert('reportValidity() returned: ' + isValid);
+              updateDatepickerValidation();
+            });
+          }
+
+          if (datepickerSetErrorBtn) {
+            datepickerSetErrorBtn.addEventListener("click", () => {
+              validationDatepicker.setCustomError();
+              updateDatepickerValidation();
+            });
+          }
+
+          if (datepickerClearErrorBtn) {
+            datepickerClearErrorBtn.addEventListener("click", () => {
+              validationDatepicker.clearCustomError();
+              updateDatepickerValidation();
+            });
+          }
+        }
+      });
+    </script>
+
+
+
     <h1>SY-COLORPICKER Component Examples</h1>
 
     <!-- Basic Color Picker -->
@@ -1369,7 +1699,6 @@
 
         textColorpicker.addEventListener('changed', (e) => {
           textResult.textContent = e.detail.value;
-          // console.log('Text colorpicker changed:', e.detail);
         });
 
         // HEX Format
@@ -1378,7 +1707,6 @@
 
         hexColorpicker.addEventListener('changed', (e) => {
           hexResult.textContent = e.detail.value;
-          // console.log('HEX colorpicker changed:', e.detail);
         });
 
         // RGB Format
@@ -1387,7 +1715,6 @@
 
         rgbColorpicker.addEventListener('changed', (e) => {
           rgbResult.textContent = e.detail.value;
-          // console.log('RGB colorpicker changed:', e.detail);
         });
 
         // HSB Format
@@ -1396,7 +1723,6 @@
 
         hsbColorpicker.addEventListener('changed', (e) => {
           hsbResult.textContent = e.detail.value;
-          // console.log('HSB colorpicker changed:', e.detail);
         });
 
         // Opacity Control
@@ -1407,7 +1733,6 @@
         opacityColorpicker.addEventListener('changed', (e) => {
           opacityResult.textContent = e.detail.value;
           opacityValue.textContent = e.detail.opacity;
-          // console.log('Opacity colorpicker changed:', e.detail);
         });
 
         // No Opacity Control
@@ -1416,7 +1741,6 @@
 
         noOpacityColorpicker.addEventListener('changed', (e) => {
           noOpacityResult.textContent = e.detail.value;
-          // console.log('No opacity colorpicker changed:', e.detail);
         });
 
         // Inline Color Picker
@@ -1427,7 +1751,6 @@
         inlineColorpicker.addEventListener('changed', (e) => {
           inlineResult.textContent = e.detail.value;
           inlineFormat.textContent = e.detail.format;
-          // console.log('Inline colorpicker changed:', e.detail);
         });
 
         // Programmatic Control
@@ -1440,7 +1763,6 @@
           programmaticResult.textContent = e.detail.value;
           programmaticFormat.textContent = e.detail.format;
           programmaticOpacity.textContent = e.detail.opacity;
-          // console.log('Programmatic colorpicker changed:', e.detail);
         });
 
         document.getElementById('set-red').addEventListener('click', () => {
@@ -2277,7 +2599,6 @@
 
         basicPagination.addEventListener('pageChanged', (e) => {
           basicResult.textContent = e.detail;
-          console.log('Basic pagination page changed:', e.detail);
         });
 
         // Total Pagination
@@ -2286,7 +2607,6 @@
 
         totalPagination.addEventListener('pageChanged', (e) => {
           totalResult.textContent = e.detail;
-          console.log('Total pagination page changed:', e.detail);
         });
 
         // Size Options Pagination
@@ -2296,12 +2616,10 @@
 
         sizeOptionsPagination.addEventListener('pageChanged', (e) => {
           sizeOptionsPage.textContent = e.detail;
-          console.log('Size options page changed:', e.detail);
         });
 
         sizeOptionsPagination.addEventListener('pageSizeChanged', (e) => {
           sizeOptionsSize.textContent = e.detail;
-          console.log('Page size changed:', e.detail);
         });
 
         // Jumper Pagination
@@ -2310,7 +2628,6 @@
 
         jumperPagination.addEventListener('pageChanged', (e) => {
           jumperResult.textContent = e.detail;
-          console.log('Jumper pagination page changed:', e.detail);
         });
 
         // Large Dataset Pagination
@@ -2319,7 +2636,6 @@
 
         largePagination.addEventListener('pageChanged', (e) => {
           largeResult.textContent = e.detail;
-          console.log('Large pagination page changed:', e.detail);
         });
 
         // Programmatic Control
@@ -2331,7 +2647,6 @@
           programmaticResult.textContent = e.detail;
           const totalPages = Math.ceil(programmaticPagination.totalItems / programmaticPagination.pageSize);
           programmaticTotal.textContent = totalPages;
-          console.log('Programmatic pagination page changed:', e.detail);
         });
 
         // Programmatic Control Buttons
@@ -2354,7 +2669,6 @@
           const newTotal = Math.floor(Math.random() * 500) + 100;
           programmaticPagination.totalItems = newTotal;
           programmaticPagination.activePage = 1;
-          console.log('Total items changed to:', newTotal);
         });
 
         document.getElementById('change-page-size').addEventListener('click', () => {
@@ -2362,7 +2676,6 @@
           const newPageSize = pageSizes[Math.floor(Math.random() * pageSizes.length)];
           programmaticPagination.pageSize = newPageSize;
           programmaticPagination.activePage = 1;
-          console.log('Page size changed to:', newPageSize);
         });
       });
     </script>
@@ -2421,6 +2734,7 @@
     </style>
 
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
+
 
     <h1>SySelect Component Examples</h1>
 
@@ -2577,6 +2891,189 @@
       });
     });
   </script>
+
+  <!-- Form Tests (Same pattern as textarea, input, input-number) -->
+  <div class="example-section">
+    <h3>Form Tests (Same pattern as textarea)</h3>
+    
+    <!-- Test 1: Required Field -->
+    <h4>1. Required Field Test</h4>
+    <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+      <form id="formSelect">
+        <sy-select label="country" id="formSelectId" name="formSelectName" required placeholder="Required selection" style="width:100%">
+          <sy-option value="usa" label="United States"></sy-option>
+          <sy-option value="korea" label="South Korea"></sy-option>
+          <sy-option value="japan" label="Japan"></sy-option>
+          <sy-option value="china" label="China"></sy-option>
+          <div slot="error">
+            <p class="textareaErrorMessage">This field is required.</p>
+          </div>
+        </sy-select>
+        <div style="margin-top: 10px;">
+          <button type="submit">Submit Form</button>
+          <button type="reset">Reset Form</button>
+        </div>
+      </form>
+      <p id="formSelectResult"></p>
+    </div>
+
+    <!-- Test 2: Custom Error -->
+    <h4>2. Custom Error Test</h4>
+    <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+      <form id="formCustomSelect">
+        <sy-select label="customError" id="formCustomSelectId" name="formCustomSelectName" placeholder="Custom error select" style="width:100%">
+          <sy-option value="option1" label="Option 1"></sy-option>
+          <sy-option value="option2" label="Option 2"></sy-option>
+          <sy-option value="option3" label="Option 3"></sy-option>
+          <div slot="error">
+            <p class="customSelectErrorMessage">This field has a custom error.</p>
+          </div>
+        </sy-select>
+        <div style="margin-top: 10px;">
+          <button type="submit">Set Custom Error and Submit Form</button>
+          <button type="reset">Clear Custom Error and Reset Form</button>
+        </div>
+      </form>
+      <p id="formCustomSelectResult"></p>
+    </div>
+
+    <!-- Test 3: Original Validation Methods -->
+    <h4>3. Original Validation Methods</h4>
+    <form id="selectTestForm">
+      <sy-select id="validationSelect" label="Required Field" required>
+        <sy-option value="val1" label="Value 1"></sy-option>
+        <sy-option value="val2" label="Value 2"></sy-option>
+        <sy-option value="val3" label="Value 3"></sy-option>
+        <div slot="error">This is a custom error message from a slot.</div>
+      </sy-select>
+      <p>Status: <span id="validationSelectResult"></span></p>
+      <div class="flex-row">
+        <button type="button" id="selectCheckBtn">checkValidity()</button>
+        <button type="button" id="selectReportBtn">reportValidity()</button>
+        <button type="button" id="selectSetErrorBtn">setCustomError()</button>
+        <button type="button" id="selectClearErrorBtn">clearCustomError()</button>
+        <button type="reset">Reset Form</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Select Form Tests
+      
+      // Test 1: Required Field
+      const formSelect = document.querySelector('#formSelect');
+      const formSelectElement = document.querySelector('#formSelectId');
+      const formSelectResult = document.querySelector('#formSelectResult');
+
+      if (formSelect && formSelectElement && formSelectResult) {
+        formSelect.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          formSelectResult.innerHTML = '';
+
+          const isValid = await formSelectElement.checkValidity();
+          if (isValid) {
+            const form = e.target;
+            const formData = new FormData(form);
+            const formDataObj = Object.fromEntries(formData);
+
+            for(let obj in formDataObj) {
+              formSelectResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+            }
+          } else {
+            console.log('error exists');
+          }
+        });
+      }
+
+      // Test 2: Custom Error
+      const formCustomSelect = document.querySelector('#formCustomSelect');
+      const formCustomSelectElement = document.querySelector('#formCustomSelectId');
+      const formCustomSelectResult = document.querySelector('#formCustomSelectResult');
+
+      if (formCustomSelect && formCustomSelectElement && formCustomSelectResult) {
+        formCustomSelect.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          formCustomSelectElement.setCustomError();
+          formCustomSelectResult.innerHTML = '';
+
+          const isValid = await formCustomSelectElement.checkValidity();
+          if (isValid) {
+            const form = e.target;
+            const formData = new FormData(form);
+            const formDataObj = Object.fromEntries(formData);
+
+            for(let obj in formDataObj) {
+              formCustomSelectResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+            }
+          } else {
+            console.log('error exists');
+          }
+        });
+
+        formCustomSelect.addEventListener('reset', () => {
+          formCustomSelectElement.clearCustomError();
+        });
+      }
+
+      // Test 3: Original Validation Methods
+      const validationSelect = document.querySelector("#validationSelect");
+      const validationSelectResult = document.querySelector("#validationSelectResult");
+
+      if (validationSelect && validationSelectResult) {
+        const updateSelectValidation = async () => {
+          const isValid = await validationSelect.checkValidity();
+          const message = validationSelect.validationMessage;
+          const status = await validationSelect.getStatus();
+          validationSelectResult.textContent = `isValid: ${isValid}, Status: ${status || 'valid'}, Message: "${message}"`;
+        };
+
+        validationSelect.addEventListener('selected', updateSelectValidation);
+        const selectTestForm = document.querySelector("#selectTestForm");
+        if (selectTestForm) {
+          selectTestForm.addEventListener('reset', () => setTimeout(updateSelectValidation, 0));
+        }
+
+        const selectCheckBtn = document.querySelector("#selectCheckBtn");
+        const selectReportBtn = document.querySelector("#selectReportBtn");
+        const selectSetErrorBtn = document.querySelector("#selectSetErrorBtn");
+        const selectClearErrorBtn = document.querySelector("#selectClearErrorBtn");
+
+        if (selectCheckBtn) {
+          selectCheckBtn.addEventListener("click", async () => {
+            const isValid = await validationSelect.checkValidity();
+            alert('checkValidity() returned: ' + isValid);
+            updateSelectValidation();
+          });
+        }
+
+        if (selectReportBtn) {
+          selectReportBtn.addEventListener("click", async () => {
+            const isValid = await validationSelect.reportValidity();
+            alert('reportValidity() returned: ' + isValid);
+            updateSelectValidation();
+          });
+        }
+
+        if (selectSetErrorBtn) {
+          selectSetErrorBtn.addEventListener("click", () => {
+            validationSelect.setCustomError();
+            updateSelectValidation();
+          });
+        }
+
+        if (selectClearErrorBtn) {
+          selectClearErrorBtn.addEventListener("click", () => {
+            validationSelect.clearCustomError();
+            updateSelectValidation();
+          });
+        }
+      }
+    });
+  </script>
+
+
+    
 
   <style>
     body {
@@ -3576,7 +4073,6 @@
     positionSelect.addEventListener('change', (e) => {
       const newPosition = e.target.value;
       popconfirm.setAttribute('position', newPosition);
-      console.log('Position 변경:', newPosition);
     });
 
     // 버튼 클릭 시 popconfirm 열기
@@ -3589,7 +4085,6 @@
 
       // setOpen 메서드 호출
       await popconfirm.setOpen();
-      console.log('Popconfirm 열림');
     });
 
     popconfirm.addEventListener('visibleChanged', (e) => {
@@ -3821,38 +4316,37 @@
           eventResult.textContent = JSON.stringify(event.detail);
         });
 
-        const formRadio = document.getElementById('formRadio');
+        const form = document.getElementById('formRadio');
         const syRadioGroupElement = document.getElementById('formRadioId');
         const resultElement = document.getElementById('formRadioResult');
 
-        formRadio.addEventListener('submit', (event) => {
-          console.log(1);
-          // event.preventDefault();
-          formValidityRadio('formRadioId', resultElement, formRadio);
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          formValidityRadio('formRadioId', resultElement, form);
         });
 
-        formRadio.addEventListener('reset', (event) => {
+        form.addEventListener('reset', (event) => {
           resultElement.innerHTML = '';
         });
     })();
 
     // Test 2: Custom Error
     (() => {
-        const formCustomRadio = document.getElementById('formCustomRadio');
+        const form = document.getElementById('formCustomRadio');
         const syRadioGroupElement = document.getElementById('formCustomRadioId');
         const resultElement = document.getElementById('formCustomRadioResult');
 
-        formCustomRadio.addEventListener('reset', (event) => {
-            // event.preventDefault();
+        form.addEventListener('reset', (event) => {
+            event.preventDefault();
             syRadioGroupElement.clearCustomError();
             syRadioGroupElement.formResetCallback();
             resultElement.innerHTML = '';
         });
 
-        formCustomRadio.addEventListener('submit', (event) => {
-          // event.preventDefault();
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
           syRadioGroupElement.setCustomError();
-          formValidityRadio('formCustomRadioId', resultElement, formCustomRadio);
+          formValidityRadio('formCustomRadioId', resultElement, form);
         });
     })();
 
@@ -4044,7 +4538,7 @@
       if (formValidation) {
         const resultEl = document.getElementById('formRadioButtonResult');
         formValidation.addEventListener('submit', (event) => {
-          //event.preventDefault();
+          event.preventDefault();
           formValidity('formRadioButtonId', resultEl, formValidation);
         });
         formValidation.addEventListener('reset', () => { resultEl.innerHTML = ''; });
@@ -4056,7 +4550,7 @@
         const syElement = document.getElementById('formCustomRadioButtonId');
         const resultEl = document.getElementById('formCustomRadioButtonResult');
         formCustom.addEventListener('submit', (event) => {
-          //event.preventDefault();
+          event.preventDefault();
           syElement.setCustomError();
           formValidity('formCustomRadioButtonId', resultEl, formCustom);
         });
@@ -4067,6 +4561,7 @@
       }
     })();
   </script>
+
 
     <h2>input-number</h2>
 
@@ -4241,7 +4736,6 @@
 
           if (elem && result) {
             const handleChanged = (e) => {
-              console.log(e.detail);
               result.textContent = `e.detail = ${JSON.stringify(e.detail)}`;
             };
 
@@ -4254,6 +4748,156 @@
         })();
       </script>
     </div>
+
+    <!-- Form Tests (Same pattern as textarea) -->
+    <div class="test-case">
+      <h3>Form Tests (Same pattern as textarea)</h3>
+      
+      <!-- Test 1: Required Field -->
+      <h4>1. Required Field Test</h4>
+      <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+        <form id="formInputNumber">
+          <sy-input-number label="age" id="formInputNumberId" name="formInputNumberName" required placeholder="Required number" style="width:100%">
+            <div slot="error">
+              <p class="textareaErrorMessage">This field is required.</p>
+            </div>
+          </sy-input-number>
+          <div style="margin-top: 10px;">
+            <button type="submit">Submit Form</button>
+            <button type="reset">Reset Form</button>
+          </div>
+        </form>
+        <p id="formInputNumberResult"></p>
+      </div>
+
+      <!-- Test 2: Custom Error -->
+      <h4>2. Custom Error Test</h4>
+      <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+        <form id="formCustomInputNumber">
+          <sy-input-number label="customError" id="formCustomInputNumberId" name="formCustomInputNumberName" placeholder="Custom error number input" style="width:100%">
+            <div slot="error">
+              <p class="customInputNumberErrorMessage">This field has a custom error.</p>
+            </div>
+          </sy-input-number>
+          <div style="margin-top: 10px;">
+            <button type="submit">Set Custom Error and Submit Form</button>
+            <button type="reset">Clear Custom Error and Reset Form</button>
+          </div>
+        </form>
+        <p id="formCustomInputNumberResult"></p>
+      </div>
+
+      <!-- Test 3: Original Validation Methods -->
+      <h4>3. Original Validation Methods</h4>
+      <form id="inputNumberTestForm">
+        <sy-input-number id="validationInputNumber" label="Required Field" required>
+          <div slot="error">This is a custom error message from a slot.</div>
+        </sy-input-number>
+        <p>Status: <span id="validationInputNumberResult"></span></p>
+        <div class="flex-row">
+          <button type="button" id="inputNumberCheckBtn">checkValidity()</button>
+          <button type="button" id="inputNumberReportBtn">reportValidity()</button>
+          <button type="button" id="inputNumberSetErrorBtn">setCustomError()</button>
+          <button type="button" id="inputNumberClearErrorBtn">clearCustomError()</button>
+          <button type="reset">Reset Form</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Input Number Form Tests
+        
+        // Test 1: Required Field
+        const formInputNumber = document.querySelector('#formInputNumber');
+        const formInputNumberElement = document.querySelector('#formInputNumberId');
+        const formInputNumberResult = document.querySelector('#formInputNumberResult');
+
+        formInputNumber.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          formInputNumberResult.innerHTML = '';
+
+          const isValid = await formInputNumberElement.checkValidity();
+          if (isValid) {
+            const form = e.target;
+            const formData = new FormData(form);
+            const formDataObj = Object.fromEntries(formData);
+
+            for(let obj in formDataObj) {
+              formInputNumberResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+            }
+          } else {
+            console.log('error exists');
+          }
+        });
+
+        // Test 2: Custom Error
+        const formCustomInputNumber = document.querySelector('#formCustomInputNumber');
+        const formCustomInputNumberElement = document.querySelector('#formCustomInputNumberId');
+        const formCustomInputNumberResult = document.querySelector('#formCustomInputNumberResult');
+
+        formCustomInputNumber.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          formCustomInputNumberElement.setCustomError();
+          formCustomInputNumberResult.innerHTML = '';
+
+          const isValid = await formCustomInputNumberElement.checkValidity();
+          if (isValid) {
+            const form = e.target;
+            const formData = new FormData(form);
+            const formDataObj = Object.fromEntries(formData);
+
+            for(let obj in formDataObj) {
+              formCustomInputNumberResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+            }
+          } else {
+            console.log('error exists');
+          }
+        });
+
+        formCustomInputNumber.addEventListener('reset', () => {
+          formCustomInputNumberElement.clearCustomError();
+        });
+
+        // Test 3: Original Validation Methods
+        const validationInputNumber = document.querySelector("#validationInputNumber");
+        const validationInputNumberResult = document.querySelector("#validationInputNumberResult");
+
+        const updateInputNumberValidation = async () => {
+          const isValid = await validationInputNumber.checkValidity();
+          const message = validationInputNumber.validationMessage;
+          const status = await validationInputNumber.getStatus();
+          validationInputNumberResult.textContent = `isValid: ${isValid}, Status: ${status || 'valid'}, Message: "${message}"`;
+        };
+
+        validationInputNumber.addEventListener('changed', updateInputNumberValidation);
+        document.querySelector("#inputNumberTestForm").addEventListener('reset', () => setTimeout(updateInputNumberValidation, 0));
+
+        document.querySelector("#inputNumberCheckBtn").addEventListener("click", async () => {
+          const isValid = await validationInputNumber.checkValidity();
+          alert('checkValidity() returned: ' + isValid);
+          updateInputNumberValidation();
+        });
+
+        document.querySelector("#inputNumberReportBtn").addEventListener("click", async () => {
+          const isValid = await validationInputNumber.reportValidity();
+          alert('reportValidity() returned: ' + isValid);
+          updateInputNumberValidation();
+        });
+
+        document.querySelector("#inputNumberSetErrorBtn").addEventListener("click", () => {
+          validationInputNumber.setCustomError();
+          updateInputNumberValidation();
+        });
+
+        document.querySelector("#inputNumberClearErrorBtn").addEventListener("click", () => {
+          validationInputNumber.clearCustomError();
+          updateInputNumberValidation();
+        });
+      });
+    </script>
+
+
     <h2>sy-switch Test Cases</h1>
 
     <h3>Variants</h3>
@@ -4268,7 +4912,7 @@
     <sy-switch size="medium" label="Medium (default)"></sy-switch>
 
 
-    <h2>Input</h2>
+   <h2>Input</h2>
   <div class="test-case flex-col">
         <h3>Variants</h3>
         <sy-input variant="text" placeholder="variant: text (default)"></sy-input>
@@ -4345,19 +4989,56 @@
         </div>
       </div>
 
-      <!-- Interactive: Form Validation -->
+      <!-- Interactive: Form Validation Tests -->
       <div class="test-case">
-        <h3>Interactive: Form Validation</h3>
-        <form id="testForm">
+        <h3>Form Tests (Same pattern as textarea)</h3>
+        
+        <!-- Test 1: Required Field -->
+        <h4>1. Required Field Test</h4>
+        <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+          <form id="formInput">
+            <sy-input label="name" id="formInputId" name="formInputName" required placeholder="Required input" style="width:100%">
+              <div slot="error">
+                <p class="textareaErrorMessage">This field is required.</p>
+              </div>
+            </sy-input>
+            <div style="margin-top: 10px;">
+              <button type="submit">Submit Form</button>
+              <button type="reset">Reset Form</button>
+            </div>
+          </form>
+          <p id="formInputResult"></p>
+        </div>
+
+        <!-- Test 2: Custom Error -->
+        <h4>2. Custom Error Test</h4>
+        <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+          <form id="formCustomInput">
+            <sy-input label="customError" id="formCustomInputId" name="formCustomInputName" placeholder="Custom error input" style="width:100%">
+              <div slot="error">
+                <p class="customInputErrorMessage">This field has a custom error.</p>
+              </div>
+            </sy-input>
+            <div style="margin-top: 10px;">
+              <button type="submit">Set Custom Error and Submit Form</button>
+              <button type="reset">Clear Custom Error and Reset Form</button>
+            </div>
+          </form>
+          <p id="formCustomInputResult"></p>
+        </div>
+
+        <!-- Test 3: Original Validation Methods -->
+        <h4>3. Original Validation Methods</h4>
+        <form id="inputTestForm">
           <sy-input id="validationInput" label="Required Field" required>
             <div slot="error">This is a custom error message from a slot.</div>
           </sy-input>
-          <p>Status: <span id="validationResult"></span></p>
+          <p>Status: <span id="validationInputResult"></span></p>
           <div class="flex-row">
-            <button type="button" id="checkBtn">checkValidity()</button>
-            <button type="button" id="reportBtn">reportValidity()</button>
-            <button type="button" id="setErrorBtn">setCustomError()</button>
-            <button type="button" id="clearErrorBtn">clearCustomError()</button>
+            <button type="button" id="inputCheckBtn">checkValidity()</button>
+            <button type="button" id="inputReportBtn">reportValidity()</button>
+            <button type="button" id="inputSetErrorBtn">setCustomError()</button>
+            <button type="button" id="inputClearErrorBtn">clearCustomError()</button>
             <button type="reset">Reset Form</button>
           </div>
         </form>
@@ -4373,15 +5054,12 @@
         const eventResult = document.querySelector("#eventResult");
 
         eventInput.addEventListener("changed", (e) => {
-          console.log('changed event:', e.detail);
           eventResult.textContent = `changed: { value: "${e.detail.value}", isValid: ${e.detail.isValid} }`;
         });
         eventInput.addEventListener("focused", () => {
-          console.log('focused event');
           eventResult.textContent = `focused`;
         });
         eventInput.addEventListener("blured", () => {
-          console.log('blured event');
           eventResult.textContent = `blured`;
         });
 
@@ -4390,148 +5068,97 @@
         document.querySelector("#focusBtn").addEventListener("click", () => methodInput.setFocus());
         document.querySelector("#blurBtn").addEventListener("click", () => methodInput.setBlur());
 
-        // --- Validation Test ---
-        const validationInput = document.querySelector("#validationInput");
-        const validationResult = document.querySelector("#validationResult");
+        // --- Form Tests (matching textarea pattern) ---
+        // Test 1: Required Field
+        const formInput = document.querySelector('#formInput');
+        const formInputElement = document.querySelector('#formInputId');
+        const formInputResult = document.querySelector('#formInputResult');
 
-        // Helper to display current validation status
-        const updateValidationStatus = async () => {
+        formInput.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          formInputResult.innerHTML = '';
+
+          const isValid = await formInputElement.checkValidity();
+          if (isValid) {
+            const form = e.target;
+            const formData = new FormData(form);
+            const formDataObj = Object.fromEntries(formData);
+
+            for(let obj in formDataObj) {
+              formInputResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+            }
+          } else {
+            console.log('error exists');
+          }
+        });
+
+        // Test 2: Custom Error
+        const formCustomInput = document.querySelector('#formCustomInput');
+        const formCustomInputElement = document.querySelector('#formCustomInputId');
+        const formCustomInputResult = document.querySelector('#formCustomInputResult');
+
+        formCustomInput.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          formCustomInputElement.setCustomError();
+          formCustomInputResult.innerHTML = '';
+
+          const isValid = await formCustomInputElement.checkValidity();
+          if (isValid) {
+            const form = e.target;
+            const formData = new FormData(form);
+            const formDataObj = Object.fromEntries(formData);
+
+            for(let obj in formDataObj) {
+              formCustomInputResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+            }
+          } else {
+            console.log('error exists');
+          }
+        });
+
+        formCustomInput.addEventListener('reset', () => {
+          formCustomInputElement.clearCustomError();
+        });
+
+        // Test 3: Original Validation Methods
+        const validationInput = document.querySelector("#validationInput");
+        const validationInputResult = document.querySelector("#validationInputResult");
+
+        const updateInputValidation = async () => {
           const isValid = await validationInput.checkValidity();
           const message = validationInput.validationMessage;
           const status = await validationInput.getStatus();
-          validationResult.textContent = `isValid: ${isValid}, Status: ${status || 'valid'}, Message: "${message}"`;
-          // console.log({ isValid, status, message, validity: validationInput.validity });
+          validationInputResult.textContent = `isValid: ${isValid}, Status: ${status || 'valid'}, Message: "${message}"`;
         };
 
-        // Update status on every input
-        validationInput.addEventListener('changed', updateValidationStatus);
-        // Also update when form is reset
-        document.querySelector("#testForm").addEventListener('reset', () => setTimeout(updateValidationStatus, 0));
+        validationInput.addEventListener('changed', updateInputValidation);
+        document.querySelector("#inputTestForm").addEventListener('reset', () => setTimeout(updateInputValidation, 0));
 
-
-        document.querySelector("#checkBtn").addEventListener("click", async () => {
+        document.querySelector("#inputCheckBtn").addEventListener("click", async () => {
           const isValid = await validationInput.checkValidity();
-          console.log('checkValidity() returned: ' + isValid);
-          updateValidationStatus();
+          alert('checkValidity() returned: ' + isValid);
+          updateInputValidation();
         });
 
-        document.querySelector("#reportBtn").addEventListener("click", async () => {
+        document.querySelector("#inputReportBtn").addEventListener("click", async () => {
           const isValid = await validationInput.reportValidity();
-          console.log('reportValidity() returned: ' + isValid);
-          updateValidationStatus();
+          alert('reportValidity() returned: ' + isValid);
+          updateInputValidation();
         });
 
-        document.querySelector("#setErrorBtn").addEventListener("click", () => {
+        document.querySelector("#inputSetErrorBtn").addEventListener("click", () => {
           validationInput.setCustomError();
-          updateValidationStatus();
+          updateInputValidation();
         });
 
-        document.querySelector("#clearErrorBtn").addEventListener("click", () => {
+        document.querySelector("#inputClearErrorBtn").addEventListener("click", () => {
           validationInput.clearCustomError();
-          updateValidationStatus();
+          updateInputValidation();
         });
-
-        // Initial status check
-        updateValidationStatus();
 
       }); // End of DOMContentLoaded listener
     </script>
 
-    <!-- Input Form Validation Tests -->
-    <h2>Input Form Validation Tests</h2>
-
-    <!-- Test 1: Required Field Validation -->
-    <h3>1. Required Field Validation</h3>
-    <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-      <form id="formInput">
-        <sy-input label="name" id="formInputId" name="formInputName" required placeholder="Required input" style="width:100%">
-          <div slot="error">
-            <p class="inputErrorMessage">This field sets a custom error message.</p>
-          </div>
-        </sy-input>
-        <div style="margin-top: 10px;">
-          <button type="submit">Submit Form</button>
-          <button type="reset">Reset Form</button>
-        </div>
-      </form>
-      <p id="formInputResult"></p>
-    </div>
-
-    <!-- Test 2: Custom Error -->
-    <h3>2. Custom Error Test</h3>
-    <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-      <form id="formCustomInput">
-        <sy-input label="customError" id="formCustomInputId" name="formCustomInputName" placeholder="Custom error input" style="width:100%">
-          <div slot="error">
-            <p class="customInputErrorMessage">This field sets a custom error message.</p>
-          </div>
-        </sy-input>
-        <div style="margin-top: 10px;">
-          <button type="submit">Set Custom Error and Submit Form</button>
-          <button type="reset">Clear Custom Error and Reset Form</button>
-        </div>
-      </form>
-      <p id="formCustomInputResult"></p>
-    </div>
-
-    <script>
-      // Test 1: Required Field Validation
-      (() => {
-          const formInput = document.getElementById('formInput');
-          const syInput1Element = document.getElementById('formInputId');
-          const resultElement = document.getElementById('formInputResult');
-
-          formInput.addEventListener('submit', (event) => {
-            //event.preventDefault();
-            formValidityInput('formInputId', resultElement, formInput);
-          });
-
-          formInput.addEventListener('reset', (event) => {
-            resultElement.innerHTML = '';
-          });
-      })();
-
-      // Test 2: Custom Error
-      (() => {
-          const formCustomInput = document.getElementById('formCustomInput');
-          const syInputElement = document.getElementById('formCustomInputId');
-          const resultElement = document.getElementById('formCustomInputResult');
-
-          formCustomInput.addEventListener('reset', (event) => {
-              //event.preventDefault();
-              syInputElement.clearCustomError();
-              syInputElement.formResetCallback();
-              resultElement.innerHTML = '';
-          });
-
-          formCustomInput.addEventListener('submit', (event) => {
-            //event.preventDefault();
-            syInputElement.setCustomError();
-            formValidityInput('formCustomInputId', resultElement, formCustomInput);
-          });
-      })();
-
-      // Common validation function for input
-      async function formValidityInput(id, resultElement, form) {
-        resultElement.innerHTML = '';
-
-        const syCheckElementValidity = await form.elements[id].checkValidity();
-        resultElement.innerHTML += 'Check Validity: ' + syCheckElementValidity + '<br/>';
-
-        if (syCheckElementValidity) {
-          resultElement.innerHTML += '<h4>Form Submitted Successfully!</h4>';
-
-          const formData = new FormData(form);
-          const formDataObj = Object.fromEntries(formData);
-
-          for(let obj in formDataObj) {
-              resultElement.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
-          }
-        } else {
-            console.log('error exists');
-        }
-      }
-    </script>
 
         <h2>Textarea</h2>
         <div class="test-case flex-col">
@@ -4652,37 +5279,37 @@
 
             // Test 1: Required Field Validation
             (() => {
-                const formTextarea = document.getElementById('formTextarea');
+                const form = document.getElementById('formTextarea');
                 const syTextarea1Element = document.getElementById('formTextareaId');
                 const resultElement = document.getElementById('formTextareaResult');
 
-                formTextarea.addEventListener('submit', (event) => {
-                  //event.preventDefault();
-                  formValidity('formTextareaId', resultElement, formTextarea);
+                form.addEventListener('submit', (event) => {
+                  event.preventDefault();
+                  formValidity('formTextareaId', resultElement, form);
                 });
 
-                formTextarea.addEventListener('reset', (event) => {
+                form.addEventListener('reset', (event) => {
                   resultElement.innerHTML = '';
                 });
             })();
 
             // Test 2: Custom Error
             (() => {
-                const formCustomTextarea = document.getElementById('formCustomTextarea');
+                const form = document.getElementById('formCustomTextarea');
                 const syTextareaElement = document.getElementById('formCustomTextareaId');
                 const resultElement = document.getElementById('formCustomTextareaResult');
 
-                formCustomTextarea.addEventListener('reset', (event) => {
-                    //event.preventDefault();
+                form.addEventListener('reset', (event) => {
+                    event.preventDefault();
                     syTextareaElement.clearCustomError();
                     syTextareaElement.formResetCallback();
                     resultElement.innerHTML = '';
                 });
 
-                formCustomTextarea.addEventListener('submit', (event) => {
-                 // event.preventDefault();
+                form.addEventListener('submit', (event) => {
+                  event.preventDefault();
                   syTextareaElement.setCustomError();
-                  formValidity('formCustomTextareaId', resultElement, formCustomTextarea);
+                  formValidity('formCustomTextareaId', resultElement, form);
                 });
             })();
 
@@ -4746,6 +5373,7 @@
             // Initial status check removed to avoid showing validation messages on load
           });
         </script>
+
 
 
     <h2>Popover</h2>
@@ -5065,24 +5693,192 @@
 
     <!-- <sy-divider></sy-divider> -->
 
-    <!-- <h2>Checkbox</h2>
-    <sy-checkbox>Default</sy-checkbox>
-    <sy-checkbox checked>Checked</sy-checkbox>
-    <sy-checkbox indeterminate>Indeterminate</sy-checkbox>
-    <sy-checkbox disabled>Disabled</sy-checkbox>
-    <sy-checkbox checked disabled>Checked & Disabled</sy-checkbox>
-    <sy-checkbox indeterminate disabled>Indeterminate & Disabled</sy-checkbox>
-    <sy-checkbox readonly>Readonly</sy-checkbox>
-    <sy-checkbox checked readonly>Checked & Readonly</sy-checkbox>
+    <h1>SyCheckbox Component Examples</h1>
 
-    <form id="checkboxForm" onsubmit="event.preventDefault();">
-      <sy-checkbox name="testCheckbox" value="option1">Option 1
-        <div slot="error">This is not valid</div>
-      </sy-checkbox>
-      <br />
-      <sy-button type="submit">Submit</sy-button>
-      <sy-button type="button" onclick="document.querySelector('#checkboxForm').reset();">Reset</sy-button>
-    </form> -->
+    <!-- Basic Examples -->
+    <div class="example-section">
+      <h3>Basic States</h3>
+      <sy-checkbox>Default</sy-checkbox>
+      <sy-checkbox checked>Checked</sy-checkbox>
+      <sy-checkbox indeterminate>Indeterminate</sy-checkbox>
+      <sy-checkbox disabled>Disabled</sy-checkbox>
+      <sy-checkbox checked disabled>Checked & Disabled</sy-checkbox>
+      <sy-checkbox indeterminate disabled>Indeterminate & Disabled</sy-checkbox>
+      <sy-checkbox readonly>Readonly</sy-checkbox>
+      <sy-checkbox checked readonly>Checked & Readonly</sy-checkbox>
+    </div>
+
+    <!-- Form Tests (Same pattern as textarea, input, input-number, select) -->
+    <div class="example-section">
+      <h3>Form Tests (Same pattern as textarea)</h3>
+      
+      <!-- Test 1: Required Field -->
+      <h4>1. Required Field Test</h4>
+      <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+        <form id="formCheckbox">
+          <sy-checkbox label="agreement" id="formCheckboxId" name="formCheckboxName" required value="agreed">
+            I agree to the terms and conditions
+            <div slot="error">
+              <p class="checkboxErrorMessage">You must agree to continue.</p>
+            </div>
+          </sy-checkbox>
+          <div style="margin-top: 10px;">
+            <button type="submit">Submit Form</button>
+            <button type="reset">Reset Form</button>
+          </div>
+        </form>
+        <p id="formCheckboxResult"></p>
+      </div>
+
+      <!-- Test 2: Custom Error -->
+      <h4>2. Custom Error Test</h4>
+      <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
+        <form id="formCustomCheckbox">
+          <sy-checkbox label="customError" id="formCustomCheckboxId" name="formCustomCheckboxName" value="checked">
+            Accept custom validation
+            <div slot="error">
+              <p class="customCheckboxErrorMessage">This field has a custom error.</p>
+            </div>
+          </sy-checkbox>
+          <div style="margin-top: 10px;">
+            <button type="submit">Set Custom Error and Submit Form</button>
+            <button type="reset">Clear Custom Error and Reset Form</button>
+          </div>
+        </form>
+        <p id="formCustomCheckboxResult"></p>
+      </div>
+
+      <!-- Test 3: Original Validation Methods -->
+      <h4>3. Original Validation Methods</h4>
+      <form id="checkboxTestForm">
+        <sy-checkbox id="validationCheckbox" required value="validated">
+          Required checkbox field
+          <div slot="error">This is a custom error message from a slot.</div>
+        </sy-checkbox>
+        <p>Status: <span id="validationCheckboxResult"></span></p>
+        <div class="flex-row">
+          <button type="button" id="checkboxCheckBtn">checkValidity()</button>
+          <button type="button" id="checkboxReportBtn">reportValidity()</button>
+          <button type="button" id="checkboxSetErrorBtn">setCustomError()</button>
+          <button type="button" id="checkboxClearErrorBtn">clearCustomError()</button>
+          <button type="reset">Reset Form</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Checkbox Form Tests
+        
+        // Test 1: Required Field
+        const formCheckbox = document.querySelector('#formCheckbox');
+        const formCheckboxElement = document.querySelector('#formCheckboxId');
+        const formCheckboxResult = document.querySelector('#formCheckboxResult');
+
+        if (formCheckbox && formCheckboxElement && formCheckboxResult) {
+          formCheckbox.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formCheckboxResult.innerHTML = '';
+
+            const isValid = await formCheckboxElement.checkValidity();
+            if (isValid) {
+              const form = e.target;
+              const formData = new FormData(form);
+              const formDataObj = Object.fromEntries(formData);
+
+              for(let obj in formDataObj) {
+                formCheckboxResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+              }
+            } else {
+              console.log('error exists');
+            }
+          });
+        }
+
+        // Test 2: Custom Error
+        const formCustomCheckbox = document.querySelector('#formCustomCheckbox');
+        const formCustomCheckboxElement = document.querySelector('#formCustomCheckboxId');
+        const formCustomCheckboxResult = document.querySelector('#formCustomCheckboxResult');
+
+        if (formCustomCheckbox && formCustomCheckboxElement && formCustomCheckboxResult) {
+          formCustomCheckbox.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formCustomCheckboxElement.setCustomError();
+            formCustomCheckboxResult.innerHTML = '';
+
+            const isValid = await formCustomCheckboxElement.checkValidity();
+            if (isValid) {
+              const form = e.target;
+              const formData = new FormData(form);
+              const formDataObj = Object.fromEntries(formData);
+
+              for(let obj in formDataObj) {
+                formCustomCheckboxResult.innerHTML += '<div>' + obj + ': ' + formDataObj[obj] + '</div>';
+              }
+            } else {
+              console.log('error exists');
+            }
+          });
+
+          formCustomCheckbox.addEventListener('reset', () => {
+            formCustomCheckboxElement.clearCustomError();
+          });
+        }
+
+        // Test 3: Original Validation Methods
+        const validationCheckbox = document.querySelector("#validationCheckbox");
+        const validationCheckboxResult = document.querySelector("#validationCheckboxResult");
+
+        if (validationCheckbox && validationCheckboxResult) {
+          const updateCheckboxValidation = async () => {
+            const isValid = await validationCheckbox.checkValidity();
+            const message = validationCheckbox.validationMessage;
+            validationCheckboxResult.textContent = `isValid: ${isValid}, Message: "${message}"`;
+          };
+
+          validationCheckbox.addEventListener('changed', updateCheckboxValidation);
+          const checkboxTestForm = document.querySelector("#checkboxTestForm");
+          if (checkboxTestForm) {
+            checkboxTestForm.addEventListener('reset', () => setTimeout(updateCheckboxValidation, 0));
+          }
+
+          const checkboxCheckBtn = document.querySelector("#checkboxCheckBtn");
+          const checkboxReportBtn = document.querySelector("#checkboxReportBtn");
+          const checkboxSetErrorBtn = document.querySelector("#checkboxSetErrorBtn");
+          const checkboxClearErrorBtn = document.querySelector("#checkboxClearErrorBtn");
+
+          if (checkboxCheckBtn) {
+            checkboxCheckBtn.addEventListener("click", async () => {
+              const isValid = await validationCheckbox.checkValidity();
+              alert('checkValidity() returned: ' + isValid);
+              updateCheckboxValidation();
+            });
+          }
+
+          if (checkboxReportBtn) {
+            checkboxReportBtn.addEventListener("click", async () => {
+              const isValid = await validationCheckbox.reportValidity();
+              alert('reportValidity() returned: ' + isValid);
+              updateCheckboxValidation();
+            });
+          }
+
+          if (checkboxSetErrorBtn) {
+            checkboxSetErrorBtn.addEventListener("click", () => {
+              validationCheckbox.setCustomError();
+              updateCheckboxValidation();
+            });
+          }
+
+          if (checkboxClearErrorBtn) {
+            checkboxClearErrorBtn.addEventListener("click", () => {
+              validationCheckbox.clearCustomError();
+              updateCheckboxValidation();
+            });
+          }
+        }
+      });
+    </script>
 
     <!-- 테스트에 사용될 Drawer 컴포넌트들 -->
     <sy-drawer id="drawer" closable open>
@@ -5435,8 +6231,6 @@
 
     // 'selected' 커스텀 이벤트를 수신합니다.
     eventBreadcrumb.addEventListener('selected', (event) => {
-      console.log('Selected Event:', event.detail);
-
       // event.detail은 클릭된 sy-breadcrumb-item 컴포넌트 인스턴스입니다.
       const clickedItem = event.detail;
 

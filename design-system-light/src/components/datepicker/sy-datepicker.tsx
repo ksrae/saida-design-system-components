@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element, h, Event, EventEmitter, Watch, Method, AttachInternals } from '@stencil/core';
+import { Component, Prop, State, Element, h, Event, EventEmitter, Watch, Method, AttachInternals, Listen } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 @Component({
@@ -150,33 +150,26 @@ watchResultChanges() {
     this.setPlaceholder();
   }
 
-// @Listen('invalid', { capture: true })
-// private handleInvalid(e: Event) {
-//   const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-//   if (hasErrorSlot) {
-//     const errorSlotElement = this.host.querySelector('[slot="error"]');
-//     const hasContent = errorSlotElement?.textContent?.trim();
-//     if (hasContent) {
-//       this.hasSlotErrorMessage = true;
-//       e.preventDefault();
-//       e.stopPropagation();
-//       this.internals?.setValidity({ customError: true }, ' ');
-//     } else {
-//       this.hasSlotErrorMessage = false;
-//     }
-//   } else {
-//     this.hasSlotErrorMessage = false;
-//     setTimeout(() => {
-//       if (!this.isValid) {
-//         const inputElement = this.host.querySelector('sy-input') as any;
-//         if (inputElement && inputElement.reportValidity) {
-//           inputElement.reportValidity();
-//         }
-//       }
-//     }, 0);
-//   }
-//   this.isValid = false;
-// }
+  @Listen('invalid', { capture: true })
+  handleInvalidEvent(e: Event) {
+    this.formSubmitted = true;
+    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
+    if (hasErrorSlot) {
+      const errorSlotElement = this.host.querySelector('[slot="error"]');
+      const hasContent = errorSlotElement?.textContent?.trim();
+      if (hasContent) {
+        this.hasSlotErrorMessage = true;
+        e.preventDefault();
+        e.stopPropagation();
+        this.internals?.setValidity({ customError: true }, ' ');
+      } else {
+        this.hasSlotErrorMessage = false;
+      }
+    } else {
+      this.hasSlotErrorMessage = false;
+    }
+    this.updateValidityState();
+  }
 
   connectedCallback() {
     document.addEventListener('click', this.handleOutsideClick, true);
@@ -352,7 +345,7 @@ get willValidate(): boolean {
       'error-container': true,
       'popup-error-container': this.hasPopupErrorComponent,
       'text-error-container': !this.hasPopupErrorComponent,
-      'hidden-error': (this.touched || this.formSubmitted) && !this.isValid
+      'visible-error': (this.touched || this.formSubmitted) && !this.isValid
     };
 
     return (

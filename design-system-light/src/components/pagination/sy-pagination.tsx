@@ -86,9 +86,11 @@ export class SyPagination {
 
   @Listen('click', { target: 'document' })
   handleOutsideClick(e: Event) {
-    e.preventDefault();
+    const target = e.target as HTMLElement;
     const selectElement = this.host.querySelector('sy-select');
-    if (selectElement) {
+    
+    // pagination 외부를 클릭한 경우에만 select를 닫음
+    if (selectElement && !this.host.contains(target)) {
       (selectElement as any).isOpen = false;
     }
   }
