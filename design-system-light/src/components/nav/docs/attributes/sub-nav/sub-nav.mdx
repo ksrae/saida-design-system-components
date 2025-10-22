@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SubNavStories from './sub-nav.stories';
+
+<Meta of={SubNavStories} />
+
+# Sub Nav
+## Definition
+Sub navigation menu may contains navigation menu items and navigation menu groups as well as other sub navs.<br/>
+To apply a sub nav, put all <b> \<sy-nav-item\> </b>  tags into <b> \<sy-nav-sub\>. </b>
+<br/>
+The title of sub nav must be configured with the title attribute.
+
+## Example
+<Canvas of={SubNavStories.Param} />
+
+<Controls of={SubNavStories.Param} />

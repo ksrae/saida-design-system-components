@@ -1,0 +1,54 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+
+import * as TreeParamStory from "./tree.stories";
+import * as TreeNodeParamStory from './tree-node.stories';
+
+<Meta of={TreeParamStory} />
+
+# Tree
+## Definition
+The Tree is a way of representing the hierarchical relationship between items.<br/>
+A item can be added, edited, removed, and expanded, moved by drag-drop.<br/><br/>
+nodes attribute is requried for setting Tree.<br/>
+The value of the nodes attribute must be structured in the form of the TreeNodes interface.
+
+```typescript
+export interface TreeNode {
+  label: string;
+  value: string;
+  icon?: string;          // icon type
+  tagMessage?: string;           // text on the tag
+  tagVariant?: "gray"| "purple" | "blue" | "green" | "cyan" | "yellow" | "orange" | "red";  // tag background color
+  checked?: boolean;      // checked as default
+  indeterminate?: boolean;  // it is for check status, do not set this value manually.
+  expanded?: boolean;     // expanded as default  
+  children?: TreeNode[];  // add child nodes
+  clickable?: boolean;    // allow clickable event,
+  editable?: boolean;   // Add editable button, editable property of sy-tree must be true
+  appendable?: boolean; // Add appendable button, editable property of sy-tree must be true
+  appendPlaceholder?: string; // placeholder text for appendable button
+  removable?: boolean;  // Add removable button, editable property of sy-tree must be true
+  fixed?: boolean;      // fix check status, user cannot check manually.
+  disabled?: boolean;   // disabled all features: checkable, clickable, editable
+}
+```
+
+
+## Example
+<Canvas of={TreeParamStory.Default} />
+
+<Controls of={TreeParamStory.Default} />
+
+# Tree Node
+## Definition
+Tree Node represents each individual element in the tree structure. <br/>
+Each Tree Node forms a hierarchical structure through parent-child relationships and can interact through various attributes. <br/>
+Tree Node can have attributes such as checkbox, click event, editability, addable child nodes, and deletability. <br/>
+Additionally, each node can have expanded/collapsed states and can be fixed so that the user cannot change the check status directly.
+
+
+
+## Example
+<Canvas of={TreeNodeParamStory.Default} />
+
+<Controls of={TreeNodeParamStory.Default} />

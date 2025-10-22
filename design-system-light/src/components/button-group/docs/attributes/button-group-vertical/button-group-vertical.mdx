@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ButtonGroupVerticalStories from './button-group-vertical.stories';
+
+<Meta of={ButtonGroupVerticalStories} />
+
+# Vertical
+## Definition
+To align buttons vertically, use the `vertical` attribute in the sy-button-group component.<br/>
+This will stack the buttons on top of each other instead of placing them side by side.<br/>
+
+<br/>
+
+## Boolean Attribute Handling
+In the source code, vertical = "" should be modified as follows
+- Set `vertical` attribute and don't put a value after it.
+```
+<sy-button-group vertical></sy-button-group>
+```
+- Alternatively, you can explicitly put true but to not apply `vertical`, just remove the attribute instead of setting value to false.
+```
+<sy-button-group vertical="true"><sy-button-group>
+```
+
+<br/>
+
+## Example
+<Canvas of={ButtonGroupVerticalStories.Param} />
+
+<Controls of={ButtonGroupVerticalStories.Param} />>
+

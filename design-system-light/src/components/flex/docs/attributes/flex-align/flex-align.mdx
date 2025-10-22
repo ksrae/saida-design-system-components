@@ -1,0 +1,31 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as FlexAlignStories from './flex-align.stories';
+
+<Meta of={FlexAlignStories} />
+
+# Flex Align
+## Definition
+The `align` attribute defines the alignment of the flex container's children along the cross axis.
+
+## Values
+- start(Default): Items are aligned at the start of the cross axis.
+- end: Items are aligned at the end of the cross axis.
+- center: Items are aligned at the center of the cross axis.
+- stretch: Items are stretched to fill the container.
+- baseLine: Items are aligned at the baseline of the cross axis.
+
+
+## Example
+<Canvas of={FlexAlignStories.Param} />
+
+<Controls of={FlexAlignStories.Param} />
+
+## Sample
+<Canvas of={FlexAlignStories.startSample} />
+<Canvas of={FlexAlignStories.endSample} />
+<Canvas of={FlexAlignStories.centerSample} />
+<Canvas of={FlexAlignStories.baselineSample} />
+<Canvas of={FlexAlignStories.stretchSample} />
+
+
+

@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PaginationParamStory from './pagination.stories';
+
+<Meta of={PaginationParamStory} />
+
+# Pagination
+## Definition
+Pagination is used to navigate through a large set of content divided into discrete pages. <br/>
+A long list can be divided into several pages by Pagination, and only one page will be loaded at a time. <br/>
+This component is commonly used in scenarios where displaying all items at once would overwhelm the user interface or degrade performance.
+
+## Example
+<Canvas of={PaginationParamStory.Default} />
+
+<Controls of={PaginationParamStory.Default} />
+
+

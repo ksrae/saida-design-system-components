@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SplitPanelHideDividerStories from './split-panel-hideDivider.stories';
+
+<Meta of={SplitPanelHideDividerStories} />
+
+# Hide Divider
+## Definition
+Disables the splits. <br/>
+Note that the position may still change as a result of resizing the host element.
+To check this, resize the modeless popup on this page.
+
+## Boolean Attribute Handling
+In the source code, disabled = "" should be modified as follows
+- Set `hideDivider` attribute and don't put a value after it.
+```
+<sy-split-panel hideDivider></sy-split-panel>
+
+```
+- Alternatively, you can explicitly set it to true, but to not apply `hideDivider`, remove the attribute instead of setting its value to false.
+```
+<sy-split-panel hideDivider="true"></sy-split-panel>
+
+```
+
+
+## Example
+<Canvas of={SplitPanelHideDividerStories.Param} />
+
+<Controls of={SplitPanelHideDividerStories.Param} />

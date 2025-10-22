@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as CollapsePanelArrowStories from './collapse-panel-arrow.stories';
+
+
+<Meta of={CollapsePanelArrowStories} />
+
+# Panel Arrow
+## Definition
+To show arrow in the front of the panel text, set `arrow` attribute. <br/>
+Default is false.
+
+## Boolean Attribute Handling
+In the source code, arrow = "" should be modified as follows
+- Set `arrow` attribute and don't put a value after it.
+```
+<sy-collapse-panel arrow></sy-collapse-panel>
+```
+
+- Alternatively, you can explicitly set it to `true`, but to not apply `arrow`, remove the attribute instead of setting its value to false.
+```
+<sy-collapse-panel arrow="true"></sy-collapse-panel>
+```
+
+## Example
+<Canvas of={CollapsePanelArrowStories.Param} />
+
+<Controls of={CollapsePanelArrowStories.Param} />

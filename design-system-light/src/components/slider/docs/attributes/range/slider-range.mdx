@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderRangeStories from './slider-range.stories';
+
+<Meta of={SliderRangeStories} />
+
+# Range
+
+## Definition
+Explicitly indicates that the slider should operate in range mode.<br/>
+While having two values in value typically implies range mode, this flag can be useful for toggling between single-value and range behavior in one component.<br/>
+The default value is <b>false</b>.
+
+## Example
+<Canvas of={SliderRangeStories.Param} />
+
+<Controls of={SliderRangeStories.Param} />
+

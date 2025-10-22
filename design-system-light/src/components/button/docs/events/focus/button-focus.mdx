@@ -1,0 +1,25 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as ButtonFocusStories from './button-focus.stories';
+
+<Meta of={ButtonFocusStories} />
+
+# Focus & Blur Function
+## Definition of Focus
+Using `setFocus()` function to set focus to the button manually.<br/>
+When `setFocus()` is called, the button gains focus.<br/>
+
+## Definition of Blur
+Using `setBlur()` function to set blur to the button manually.<br/>
+When `setBlur()` is called, button loses its focus.<br/><br/>
+
+In the example, button gains focus in 1 second and loses after 4 seconds.<br/>
+To test this clearly, this page must be activated.
+
+## Example
+<Canvas of={ButtonFocusStories.Param} />
+
+<Controls of={ButtonFocusStories.Param} />
+
+{/* ## Parameters
+<Controls of={ButtonVariantStories.Primary} /> */}

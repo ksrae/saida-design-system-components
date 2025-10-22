@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ToastLatestTopStories from './toast-latestTop.stories';
+
+<Meta of={ToastLatestTopStories} />
+
+# LatestTop
+## Definition
+Determines whether the most recent Toast message appears at the top or bottom when multiple Toast messages are displayed.
+
+## Boolean Attribute Handling
+In the source code, <b>latestTop = ""</b> should be modified as follows
+- Set `latestTop` attribute and don't put a value after it.
+```
+<sy-toast-message latestTop></sy-toast-message>
+```
+- Alternatively, you can explicitly put true,but to not apply `latestTop`, remove the attribute instead of setting its value to false.
+
+```
+<sy-toast-message latestTop="true"></sy-toast-message>
+```
+
+
+## Example
+<Canvas of={ToastLatestTopStories.Param} />
+
+<Controls of={ToastLatestTopStories.Param} />

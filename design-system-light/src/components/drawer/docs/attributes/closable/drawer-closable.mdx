@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DrawerClosableStories from './drawer-closable.stories';
+
+<Meta of={DrawerClosableStories} />
+
+# Closable
+## Definition
+Allows a close button to the drawer's header.<br/>
+This can provide an improved UX for the user to easily cancel, but it can be distracting, so it is recommended to disable this feature if the drawer contains important content that the user must see.<br/>
+Clicking this button will apply 'close' to the e.detail.event of the closed event, which is a different value than cancel or ok.
+
+## Boolean Attribute Handling
+In the source code, closable = "" should be modified as follows
+- Set "closable" attribute and don't put a value after it.
+```
+<sy-drawer closable></sy-drawer>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `closable`, remove the attribute instead of setting its value to false.
+```
+<sy-drawer closable="true"></sy-drawer>
+```
+
+
+## Example
+<Canvas of={DrawerClosableStories.Param} />
+
+<Controls of={DrawerClosableStories.Param} />

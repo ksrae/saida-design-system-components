@@ -1,1 +1,1 @@
-export * from './sy-divider';
+export * from './divider.element';

@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+
+import * as BannerParamStory from "./banner.stories";
+
+<Meta of={BannerParamStory} />
+
+# Banner Message
+Display global messages on top of the page. <br/>
+Use a banner for global, persistent, or urgent messages. Avoid for localized, non-critical information.
+## Example
+<Canvas of={BannerParamStory.Default} />
+
+<Controls of={BannerParamStory.Default} />

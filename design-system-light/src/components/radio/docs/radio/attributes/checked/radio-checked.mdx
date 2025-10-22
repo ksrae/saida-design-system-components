@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as RadioCheckedStories from './radio-checked.stories';
+
+<Meta of={RadioCheckedStories} />
+
+# Checked
+## Definition
+The checked state of the radio item.
+
+## Boolean Attribute Handling
+In the source code, <b>checked = ""</b> should be modified as follows
+- Set `checked` attribute and don't put a value after it.
+```
+<sy-radio checked></sy-radio>
+```
+- Alternatively, you can explicitly set it to true, but to not to apply `checked`, remove the attribute instead of setting its value to false.
+
+```
+<sy-radio checked="true"></sy-radio>
+```
+
+## Example
+<Canvas of={RadioCheckedStories.Param} />
+
+<Controls of={RadioCheckedStories.Param} />
+

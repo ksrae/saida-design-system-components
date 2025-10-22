@@ -27,14 +27,6 @@ export namespace Components {
           * @default 0
          */
         "debounceTime": number;
-        /**
-          * @default false
-         */
-        "disabled": boolean;
-        /**
-          * @default ''
-         */
-        "errorMessage": string;
         "getStatus": () => Promise<string>;
         /**
           * @default false
@@ -2809,14 +2801,6 @@ declare namespace LocalJSX {
           * @default 0
          */
         "debounceTime"?: number;
-        /**
-          * @default false
-         */
-        "disabled"?: boolean;
-        /**
-          * @default ''
-         */
-        "errorMessage"?: string;
         /**
           * @default false
          */

@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BadgeVariantStories from './badge-variant.stories';
+
+
+<Meta of={BadgeVariantStories} />
+
+# Variant
+## Definition
+Customize the badge color. <br/>
+The color variant is : `red`, `yellow`, `green`, `blue`, `gray`.<br/><br/>
+The default value is `red`.<br/>
+
+
+## Example
+<Canvas of={BadgeVariantStories.Param} />
+
+<Controls of={BadgeVariantStories.Param} />
+

@@ -1,0 +1,31 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as DatepickerSelectedStories from './datepicker-selected.stories';
+
+<Meta of={DatepickerSelectedStories} />
+
+# Selected Event
+## Definition
+The datepicker emits <b>selected</b> event when user select the date.<br/>
+The event has detail property with the selected date values:
+- `year`: the selected year. It will be `this year` if variant is `time`.
+- `month`: the selected month. It will be `this month` if variant is `time`. Month is always 0-indexed (0 for January, 11 for December). 
+- `day`: the selected day. It will be `today` if variant is `time`.
+- `hour`: the selected hour. It will be `current hour` if variant is `date` or `range`.
+- `minute`: the selected minute. It will be `current minute` if variant is `time` or `range`.
+- `second`: the selected second. It will be `current second` if variant is `time` or `range`.
+
+```
+event: { 
+  detail: { 
+    year, month, day, hour, minute, second 
+  }
+}
+```
+
+## Example
+<Canvas of={DatepickerSelectedStories.Param} />
+
+<Controls of={DatepickerSelectedStories.Param} />
+
+

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeSelectStories from './tree-itemSelected.stories';
+
+<Meta of={TreeSelectStories} />
+
+# ItemSelected
+## Definition
+When a node is selected, the itemSelected event is triggered. <br/>
+This event includes the value and label of the node. <br/>
+To fire this event, clickable attribute must be set.
+
+
+## Example
+<Canvas of={TreeSelectStories.Param} />
+
+<Controls of={TreeSelectStories.Param} />

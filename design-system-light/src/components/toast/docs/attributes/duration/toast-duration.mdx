@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ToastDurationStories from './toast-duration.stories';
+
+<Meta of={ToastDurationStories} />
+
+# Duration
+## Definition
+Defines the duration (in ms) for which the Toast message is displayed. <br/>
+The default value is 3000 ms (3 seconds).
+## Example
+<Canvas of={ToastDurationStories.Param} />
+
+<Controls of={ToastDurationStories.Param} />

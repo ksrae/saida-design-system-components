@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AutoCompleteLoadingStories from './autocomplete-loading.stories';
+
+
+<Meta of={AutoCompleteLoadingStories} />
+
+# Loading
+
+## Definition
+It shows a loading indicator instead of the items in the list.<br/><br/>
+While the loading attribute is set, items are not displayed in the list even if data is available.<br/><br/>
+Once the data loading is complete, remove (or set to false) the loading attribute to display the items.
+
+## Boolean Attribute Handling
+In the source code, loading = "" should be modified as follows. <br/>
+Set the <b>loading</b> attribute without assigning a value to it. <br/>
+```
+<sy-autocomplete loading></sy-autocomplete>
+```
+Alternatively, you can explicitly set it to true, but to not apply loading, just remove the attribute instead of setting its value to false.
+
+```
+<sy-autocomplete loading="true"></sy-autocomplete>
+```
+
+## Example
+<Canvas of={AutoCompleteLoadingStories.Param} />
+
+<Controls of={AutoCompleteLoadingStories.Param} />

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AvatarGroupMaxCountStories from './avatar-group-maxcount.stories';
+
+
+<Meta of={AvatarGroupMaxCountStories} />
+
+# Avatar Group Max Count
+## Definition
+Use the maxCount property to limit the number of avatars to be displayed. <br/>
+When avatars overflows, the avatar group adds an avatar in the last to indicate the number of additional members not shown. <br/>
+When users hover over the avatar, a dropdown will display a list of the additional members, providing easy access to view all participants without crowding the visual space.
+
+## Example
+<Canvas of={AvatarGroupMaxCountStories.Param} />
+
+<Controls of={AvatarGroupMaxCountStories.Param} />

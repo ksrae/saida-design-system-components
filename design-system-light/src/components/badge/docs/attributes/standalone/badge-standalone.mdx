@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BadgeStandaloneStories from './badge-standalone.stories';
+
+
+<Meta of={BadgeStandaloneStories} />
+
+# Standalone
+## Definition
+Determines whether the badge it can exist independently without being dependent on the parent element.<br/>
+<br/>If <b>standalone</b> is true, the slotted element will not be rendered.<br/>
+
+## Boolean Attribute Handling
+In the source code, standalone = "" should be modified as follows
+- Set `standalone` attribute and don't put a value after it.
+```
+<sy-badge standalone></sy-badge>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `standalone`, remove it instead of setting its value to false.
+
+```
+<sy-badge standalone="true"></sy-badge>
+```
+
+
+## Example
+<Canvas of={BadgeStandaloneStories.Param} />
+
+<Controls of={BadgeStandaloneStories.Param} />
+

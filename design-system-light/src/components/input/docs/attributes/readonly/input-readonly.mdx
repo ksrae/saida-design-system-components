@@ -1,0 +1,25 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputReadonlyStories from './input-readonly.stories';
+
+<Meta of={InputReadonlyStories} />
+
+# Readonly
+## Definition
+The read only state occurs when the input is set to read-only mode and cannot be edited by the user. <br/>
+It retains its appearance but prevents any input or changes.
+
+## Boolean Attribute Handling
+In the source code, readonly = "" should be modified as follows
+- Set `readonly` attribute and don't put a value after it.
+```
+<sy-input readonly></sy-input>
+```
+- Alternatively, you can explicitly set it to true but to not apply `readonly`, remove the attribute instead of setting its value to false.
+```
+<sy-input readonly="true"></sy-input>
+```
+
+## Example
+<Canvas of={InputReadonlyStories.Param} />
+
+<Controls of={InputReadonlyStories.Param} />

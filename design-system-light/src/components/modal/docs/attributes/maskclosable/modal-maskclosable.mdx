@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModalMaskclosableStories from "./modal-maskclosable.stories";
+
+<Meta of={ModalMaskclosableStories} />
+
+# MaskClosable
+## Definition
+Allows a mask clicking to close modal as long as the mask exists.<br/>
+Clicking the mask will apply as a `close` value of <b>e.detail.event</b> in the closed event, which is a different from the values; `cancel` or `ok`.
+
+## Boolean Attribute Handling
+In the source code, <b>maskClosable = ""</b> should be modified as follows
+- Set `maskClosable` attribute and don't put a value after it.
+```
+<sy-modal maskClosable></sy-modal>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `maskClosable`, remove the attribute instead of setting its value to false.
+```
+<sy-modal maskClosable="true"></sy-modal>
+```
+
+## Example
+<Canvas of={ModalMaskclosableStories.Param} />
+
+<Controls of={ModalMaskclosableStories.Param} />
+

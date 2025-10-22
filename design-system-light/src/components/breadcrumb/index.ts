@@ -1,2 +1,2 @@
-export * from './sy-breadcrumb';
-export * from './sy-breadcrumb-item';
+export * from './breadcrumb.element';
+export * from './breadcrumb-item.element';

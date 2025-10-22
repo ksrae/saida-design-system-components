@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as AutocompleteFocusStories from './autocomplete-focus.stories';
+
+<Meta of={AutocompleteFocusStories} />
+
+
+# Focus & Blur Function
+## Definition of Focus
+Use `setFocus()` function to set focus to the autocomplete manually.<br/>
+When `setFocus()` is called, input field has focus.<br/>
+
+## Definition of Blur
+Use the `setBlur()` function to manually set blur on the autocomplete.<br/>
+When `setBlur()` is called, the input field will lose its focus. <br/>
+If the variant is `focus` and the item list is open, the list will be closed immediately.<br/>
+
+In this example, the autocomplete gains focus after 1 second and blurs after 4 seconds. <br/>
+To test this clearly, this page must be activated.
+
+## Example
+<Canvas of={AutocompleteFocusStories.Param} />
+
+<Controls of={AutocompleteFocusStories.Param} />
+
+{/* ## Parameters
+<Controls of={ButtonVariantStories.Primary} /> */}

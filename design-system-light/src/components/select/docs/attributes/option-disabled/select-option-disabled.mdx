@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectOptionDisabledStories from './select-option-disabled.stories';
+
+<Meta of={SelectOptionDisabledStories} />
+
+# Option Disabled
+## Definition
+Disables the single option of the select.<br/>
+
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-option disabled></sy-option>
+```
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `disabled`, remove the attribute instead of setting its value to`false`.
+
+```
+<sy-option disabled="true"></sy-option>
+```
+
+## Example
+<Canvas of={SelectOptionDisabledStories.Param} />
+
+<Controls of={SelectOptionDisabledStories.Param} />
+

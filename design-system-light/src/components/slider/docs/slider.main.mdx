@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+
+import * as SliderParamStory from "./slider.stories";
+
+<Meta of={SliderParamStory} />
+
+# Slider
+## Definition
+The Slider component allows users to select a value from a range by dragging a thumb (handle) along a track.<br/>
+It provides an intuitive and interactive way to adjust numerical inputs within a predefined range, commonly used for settings like volume control, brightness adjustment, or filtering options.
+
+## Example
+<Canvas of={SliderParamStory.Default} />
+
+<Controls of={SliderParamStory.Default} />
+

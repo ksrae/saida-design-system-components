@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AutoCompleteSourceStories from './autocomplete-source.stories';
+
+
+<Meta of={AutoCompleteSourceStories} />
+
+# Source
+## Definition
+Set string array to the source. <br/><br/>
+In this example, array value `['abc', 'def', 'ghi']` is injected in source from script code.<br/>
+If no value is injected to autocomplete, empty icon is shown instead.<br/>
+
+## Example
+<Canvas of={AutoCompleteSourceStories.Param} />
+
+<Controls of={AutoCompleteSourceStories.Param} />

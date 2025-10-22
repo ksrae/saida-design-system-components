@@ -1,0 +1,48 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SkeletonRowsStories from './skeleton-rows.stories';
+
+<Meta of={SkeletonRowsStories} />
+
+# Rows
+## Definition
+This attribute is used to set the number of rows in the skeleton. <br/>
+The value of the `rows` attribute should be a number.
+
+## How Rows works on each type
+
+### Text
+A text skeleton is displayed for the number of rows.  <br/>
+If rows is less than 1, it is set to 1.
+
+### Avatar / Image
+For other cases, an avatar / image skeleton is displayed at the top-left, <br/>
+and a text skeleton is displayed for the number of rows.  <br/>
+In this case, the first two rows of the text skeleton are displayed to the right of the avatar / image skeleton, <br/>
+and the remaining rows are displayed below.  <br/>
+If rows is less than 1, only the avatar / image skeleton is displayed.
+
+### Gallary
+Gallary are displayed for the number of rows, and each row has 3 images.  <br/>
+If rows is less than 1, one row is displayed.
+
+### Button
+Buttons are displayed horizontally for the number of rows. <br/>
+If there are more rows than can be placed in one line, they will be displayed on the next line continuously. <br/>
+If rows is less than 1, a single button is displayed.
+
+### Table
+The table has as many rows as the value of rows.  <br/>
+Depending on the parent width, it has at least 2 columns and at most 6 columns.  <br/>
+If rows is less than 1, one row is generated.
+
+### Tree
+The tree has as many rows as the value of rows. <br/>
+Rows are displayed in a tree structure. <br/>
+Position of Rows are repeated every 10 rows.
+
+
+## Example
+<Canvas of={SkeletonRowsStories.Param} />
+
+<Controls of={SkeletonRowsStories.Param} />
+

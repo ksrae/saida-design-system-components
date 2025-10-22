@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as PopoverTriggerStories from './popover-trigger.stories';
+
+<Meta of={PopoverTriggerStories} />
+
+# Trigger
+## Definition
+Sets event to open the popover.<br/> 
+There are options `hover`, `click`, `focus` and `null`.<br/>
+If set to `null`, popover does not have an automatic trigger and must be controlled programmatically.<br/><br/>
+The default value is `hover`.
+
+
+## Example
+<Canvas of={PopoverTriggerStories.Param} />
+
+<Controls of={PopoverTriggerStories.Param} />
+

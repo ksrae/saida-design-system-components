@@ -1,0 +1,19 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as TooltipMaxwidth from './tooltip-maxWidth.stories';
+
+
+<Meta of={TooltipMaxwidth} />
+
+# MaxWidth
+## Definition
+Sets the `maxWidth` for the tooltip content, ensuring the tooltip doesn’t take up too much space.<br/>
+If the length of the tooltip content exceeds the `maxWidth`, it will wrap to the next line.
+
+
+## Example
+<Canvas of={TooltipMaxwidth.Param} />
+
+<Controls of={TooltipMaxwidth.Param} />
+
+

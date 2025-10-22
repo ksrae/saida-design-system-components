@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModalHidefooterStories from "./modal-hideFooter.stories";
+
+<Meta of={ModalHidefooterStories} />
+
+# Hide Footer
+## Definition
+Allows hiding the footer of the modal.<br/>
+The modal must have either the `closable` or `maskclosable` to close the modal. <br/>
+Alternatively it can be manually closed by calling the <b>setClose()</b> function.
+
+## Boolean Attribute Handling
+In the source code, <b>hideFooter = ""</b> should be modified as follows
+- Set `hideFooter` attribute and don't put a value after it.
+```
+<sy-modal hideFooter></sy-modal>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `hideFooter`, remove the attribute instead of setting its value to false.
+```
+<sy-modal hideFooter="true"></sy-modal>
+```
+
+## Example
+<Canvas of={ModalHidefooterStories.Param} />
+
+<Controls of={ModalHidefooterStories.Param} />
+

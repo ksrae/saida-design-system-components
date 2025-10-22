@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DrawerPreventCloseStories from './drawer-preventClose.stories';
+
+<Meta of={DrawerPreventCloseStories} />
+
+# PreventClose
+## Definition
+This attribute is used to prevent the drawer from closing when clicking outside of it. <br/>
+This is useful for enabling the use of functionalities outside the drawer, without closing the drawer.
+
+
+
+## Boolean Attribute Handling
+In the source code, preventClose = "" should be modified as follows
+- Set `preventClose` attribute and don't put a value after it.
+```
+<sy-drawer preventClose></sy-drawer>
+```
+- Alternatively, you can explicitly set it to true but to not apply `preventClose`, remove the attribute instead of setting its value to false.
+```
+<sy-drawer preventClose="true"></sy-drawer>
+```
+
+## Example
+<Canvas of={DrawerPreventCloseStories.Param} />
+
+<Controls of={DrawerPreventCloseStories.Param} />

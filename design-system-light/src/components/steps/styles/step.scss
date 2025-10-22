@@ -1,0 +1,331 @@
+@use "../../../style/global/font" as font;
+
+:host {
+    flex: 1;
+    width: fit-content;
+    @include font.text-style-large-regular();
+
+    /* Step */
+    .step {
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        padding: var(--spacing-xsmall);
+        gap: var(--spacing-xsmall);
+        flex: 1;
+        align-items: baseline;
+        cursor: pointer;
+        position: relative;
+        width: min-content;
+        overflow: hidden;
+
+        .step-value {
+            margin-top: 5px;
+            width: auto;
+        }
+
+        &.step-small {
+            .step-item {
+                @include font.text-style-small-regular();
+            }
+
+            .title,
+            .description {
+                @include font.text-style-base-regular();
+                word-break: normal;
+                white-space: nowrap;
+            }
+
+            .title {
+                &:after {
+                    left: 10px;
+                    top: 40px;
+                }
+            }
+
+
+        }
+
+        .description {
+            @include font.text-style-base-regular();
+            color: var(--steps-current-description-text-enabled);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .step-item {
+            border: var(--border-small) transparent;
+
+            min-width: 32px;
+        }
+
+        &.step-vertical {
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: start;
+            padding-bottom: 20px;
+        }
+
+
+        &.step-wait {
+            .step-item {
+                background-color: transparent;
+                border: var(--border-small) var(--steps-wait-icon-border-enabled);
+                color: var(--steps-wait-icon-text-enabled);
+            }
+
+            .title {
+                color: var(--steps-wait-title-text-enabled);
+            }
+
+            .description {
+                color: var(--steps-wait-description-text-enabled);
+            }
+
+        }
+
+        &.step-active {
+            cursor: auto;
+
+            .step-item {
+                border: var(--border-small) transparent;
+                color: var(--steps-current-icon-text-enabled);
+            }
+
+            .description {
+                color: var(--steps-current-description-text-enabled);
+            }
+        }
+
+        &.step-error {
+            .step-item {
+                background-color: white;
+                border: var(--border-small) var(--steps-error-icon-border-enabled);
+                color: var(--steps-error-icon-icon-enabled);
+            }
+
+            .title {
+                color: var(--steps-error-title-text-enabled);
+            }
+
+            .description {
+                color: var(--steps-error-description-text-enabled);
+            }
+        }
+
+
+        &.step-loading {
+            .step-item {
+                background-color: white;
+                color: var(--steps-process-icon-text-enabled);
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    width: var(--component-medium);
+                    height: var(--component-medium);
+                    border: var(--border-large) var(--steps-process-icon-icon-enabled);
+                    border-bottom-color: transparent;
+                    border-radius: 50%;
+                    display: inline-block;
+                    box-sizing: border-box;
+                    animation: rotation 1s linear infinite;
+                }
+            }
+
+            .description {
+                color: var(--steps-process-description-text-enabled);
+            }
+
+            @keyframes rotation {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+
+        &.step-disabled {
+            .step-item {
+                background-color: var(--steps-disabled-icon-background-enabled);
+                border: var(--border-small) var(--steps-disabled-title-border-enabled);
+                color: var(--steps-disabled-icon-text-enabled);
+            }
+
+            .title {
+                color: var(--steps-disabled-title-text-enabled);
+            }
+
+            .description {
+                color: var(--steps-disabled-description-text-enabled);
+            }
+        }
+
+        &.step-done {
+            border-color: lightgray;
+            cursor: auto;
+
+            .step-item {
+                background-color: white;
+                color: var(--steps-finished-icon-icon-enabled);
+                border: var(--border-small) var(--steps-finished-icon-border-enabled);
+            }
+
+            .title {
+                &:after {
+                    border-top: var(--border-small) var(--steps-finished-tail-border-enabled);
+                }
+
+            }
+
+            .description {
+                color: var(--steps-finished-description-text-enabled);
+            }
+        }
+
+
+        // &.step-last{
+        //     padding: var(--spacing-xsmall);
+        //     .title{
+        //         &::after {
+        //             border: none;
+        //         }
+        //     }
+        // }
+
+        &.step-clickable {
+            cursor: pointer;
+        }
+    }
+
+
+    .step-horizontal {
+        position: relative;
+        width: auto;
+        display: flex;
+        align-items: start;
+        display: flex;
+        padding-right: 20px;
+
+        &.step-small {
+            padding-right: 95px;
+
+            .step-item {
+                @include font.text-style-small-regular();
+            }
+
+            .title,
+            .description {
+                @include font.text-style-base-regular();
+            }
+
+            .title {
+                &:after {
+                    top: 10px;
+                    left: 100%;
+                }
+            }
+        }
+
+        .title {
+            position: relative;
+            display: inline-block;
+            min-height: 18px;
+            word-break: normal;
+            white-space: nowrap;
+
+            &:after {
+                content: "";
+                position: absolute;
+                top: 10px;
+                left: 100%;
+                display: block;
+                width: 9999px;
+                height: 1px;
+                border-top: 1px solid var(--steps-current-tail-border-enabled);
+                box-sizing: border-box;
+                margin-left: var(--spacing-xsmall);
+            }
+        }
+    }
+
+    .step-vertical {
+        position: relative;
+        align-items: start;
+        padding-bottom: 40px;
+        height: 100%;
+
+
+        &:after {
+            content: "";
+            position: absolute;
+            left: 16px;
+            top: 46px;
+            display: block;
+            height: 9999px;
+            width: 1px;
+            border-left: 1px solid var(--steps-current-tail-border-enabled);
+            box-sizing: border-box;
+            margin-left: var(--spacing-xsmall);
+        }
+
+        &.step-small {
+            padding-bottom: 15px;
+
+            &:after {
+                left: 12px;
+                top: 38px;
+            }
+        }
+    }
+
+    .step-item {
+        background-color: var(--steps-current-icon-background-enabled);
+        color: white;
+        min-width: var(--component-medium);
+        min-height: var(--component-medium);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        line-height: 25px;
+        box-sizing: border-box;
+    }
+
+    .step-small {
+        .step-item {
+            display: flex;
+            align-items: center;
+            min-width: var(--component-small);
+            min-height: var(--component-small);
+            box-sizing: border-box;
+        }
+        .step-value{
+            margin-top:2px;
+        }
+    }
+
+}
+
+:host(sy-step:last-child),
+:host(sy-step:nth-last-child(1)) {
+    flex: none;
+
+    .step {
+        &:last-child {
+            padding: var(--spacing-xsmall);
+        }
+
+        .title {
+            &:after {
+                border: none;
+            }
+        }
+    }
+}

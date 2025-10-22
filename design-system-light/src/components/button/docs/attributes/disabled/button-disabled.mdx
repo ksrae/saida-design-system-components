@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ButtonDisabledStories from './button-disabled.stories';
+
+<Meta of={ButtonDisabledStories} />
+
+# Disabled
+## Definition
+Use the disabled attribute to disable a button.<br/>
+If disabled attribute is set, any events will be prevented.
+
+
+## Boolean Attribute Handling
+In the source code, disabled = "" should be modified as follows
+- Enter `disabled` and do not put a value after it.
+```
+<sy-button disabled></sy-button>
+```
+- Alternatively, you can explicitly set it to true, but to not apply the `disabled` attribute, simply remove it instead of setting its value to false.
+
+```
+<sy-button disabled="true"></sy-button>
+```
+
+
+## Example
+<Canvas of={ButtonDisabledStories.Param} />
+
+<Controls of={ButtonDisabledStories.Param} />

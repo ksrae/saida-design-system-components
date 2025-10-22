@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectModeStories from './select-mode.stories';
+
+<Meta of={SelectModeStories} />
+
+# Mode
+## Definition
+The selection mode. The following four options are provided:
+
+### default
+Allows selection from available options, with only one option selectable.<br/>
+Provides a straightforward option for users to select a single item from a predefined list without the need for search functionality.
+
+### searchable
+Allows searching and selecting from available options, with only one option selectable.<br/>
+Enables users to search for and select a single item from a potentially large list of options.
+
+### multiple
+Allows searching and selecting from available options, with multiple options selectable.<br/>
+Enables users to select multiple items from a list while providing search functionality for ease of access.
+
+### tag
+Allows searching the list of options or adding a value that is not in the list, with multiple options selectable.<br/>
+Enables users to input custom text into the select component, which is then converted into tags upon pressing `Enter`, allowing for flexible selection of multiple items.
+
+## Example
+<Canvas of={SelectModeStories.Param} />
+
+<Controls of={SelectModeStories.Param} />

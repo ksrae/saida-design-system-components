@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModalCanceltextStories from "./modal-canceltext.stories";
+
+<Meta of={ModalCanceltextStories} />
+
+# CancelText
+## Definition
+Customize the text for the <b>cancel</b> button.
+HTML is allowed, so any DOM including svg can be added. <br/>
+Especially when using HTML, be aware that it doesn't go beyond the scope of the button to maintain the design.<br/>
+Additionally, because HTML is insecure, please be careful when applying it.
+
+
+
+## Example
+<Canvas of={ModalCanceltextStories.Param} />
+
+<Controls of={ModalCanceltextStories.Param} />

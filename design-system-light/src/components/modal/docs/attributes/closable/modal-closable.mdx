@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModalClosableStories from "./modal-closable.stories";
+
+<Meta of={ModalClosableStories} />
+
+# Closable
+## Definition
+Allows a close button to be placed to the right of the modal's header.<br/>
+This can improve the user experience by allowing users to easily close the modal, but it may aslo be distracting.<br/>
+Therefore, it is recommended to disable this feature if the modal contains important content that the user must see.<br/>
+Clicking this button will apply as a `close` value of <b>e.detail.event</b> in the closed event, which is a different from the values; `cancel` or `ok`.
+
+## Boolean Attribute Handling
+In the source code, closable = "" should be modified as follows
+- Set `closable` attribute and don't put a value after it.
+```
+<sy-modal closable></sy-modal>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `closable` attribute, remove the attribute instead of setting its value to false.
+```
+<sy-modal closable="true"></sy-modal>
+```
+
+## Example
+<Canvas of={ModalClosableStories.Param} />
+
+<Controls of={ModalClosableStories.Param} />
+

@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputNumberDecimalPlacesStories from './input-number-decimalPlaces.stories';
+
+<Meta of={InputNumberDecimalPlacesStories} />
+
+# Decimal Places
+## Definition
+Decimal places defines positions of the digits to the right of a decimal point. There is no limit on decimal entry without defining decimal places. <br/>
+If the value of decimal places is 0, no decimal points can be entered. In other words, decimal value are not allowed.<br/>
+If there are no decimal places and rounding is set, the behavior is the same as when decimal places is 0.
+
+## Example
+<Canvas of={InputNumberDecimalPlacesStories.Param} />
+
+<Controls of={InputNumberDecimalPlacesStories.Param} />

@@ -1,0 +1,36 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeSelectNodesStories from './tree-select-nodes.stories';
+
+<Meta of={TreeSelectNodesStories} />
+
+# Nodes
+## Definition
+Apply the nodes that make up the tree in tree-select. The nodes value must be in JSON format that matches the TreeNode interface.<br/><br/>
+
+To apply the JSON directly to the nodes property, you need to inject the value in the script.<br/>
+
+
+```html
+<sy-tree-select id="treeSelect"></sy-tree-select>
+
+<script>
+    const nodes = [
+        {
+          label: 'parent 1', 
+          value: '100', 
+          children: [
+
+          ]
+        }
+      ];
+
+    const tree = document.querySelector('sy-tree-select#treeSelect');
+    tree.nodes = nodes;   
+    </script>
+```
+
+
+## Example
+<Canvas of={TreeSelectNodesStories.Param} />
+
+<Controls of={TreeSelectNodesStories.Param} />

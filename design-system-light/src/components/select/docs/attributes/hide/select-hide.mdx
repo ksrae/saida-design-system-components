@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectHideStories from './select-hide.stories';
+
+<Meta of={SelectHideStories} />
+
+# Hide
+## Definition
+The `hide` attribute allows the user to hide selected items from the option list.<br/>
+If the <b>mode</b> attribute is set to multiple, hidden items will reappear in the option list when they are removed from the selected list.<br/>
+
+## Boolean Attribute Handling
+In the source code, <b>hide = ""</b> should be modified as follows
+- Set `hide` attribute and don't put a value after it.
+```
+<sy-select hide></sy-select>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `hide`, remove the attribute instead of setting its value to false.
+
+```
+<sy-select hide="true"></sy-select>
+```
+
+## Example
+<Canvas of={SelectHideStories.Param} />
+
+<Controls of={SelectHideStories.Param} />
+

@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ColorpickerHideOpacityStories from './colorpicker-hideOpacity.stories';
+
+
+<Meta of={ColorpickerHideOpacityStories} />
+
+# Hide Opacity
+## Definition
+Use the `hideOpacity` attribute to hide the opacity slider in a `colorpicker`. <br/>
+If hideOpacity is set, the opacity value is fixed at 1.
+
+
+## Boolean Attribute Handling
+In the source code, hideOpacity = "" should be modified as follows. <br/>
+Set the <b>hideOpacity</b> attribute without assigning a value to it. <br/>
+```
+<sy-colorpicker hideOpacity></sy-colorpicker>
+```
+Alternatively, you can explicitly set it to true, but to not apply `hideOpacity`, just remove the attribute instead of setting its value to false.
+
+```
+<sy-colorpicker hideOpacity="true"></sy-colorpicker>
+```
+
+## Example
+<Canvas of={ColorpickerHideOpacityStories.Param} />
+
+<Controls of={ColorpickerHideOpacityStories.Param} />

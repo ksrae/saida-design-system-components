@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectOptionShowTooltipStories from './select-option-showTooltip.stories';
+
+<Meta of={SelectOptionShowTooltipStories} />
+
+# Option ShowTooltip
+## Definition
+The `showTooltip` attribute is used to define visibility of the placeholder(tooltip) for the select option.
+
+## Boolean Attribute Handling
+In the source code, <b>showTooltip = ""</b> should be modified as follows
+- Set `showTooltip` attribute and don't put a value after it.
+```
+<sy-select showTooltip></sy-select>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `showTooltip`, remove the attribute instead of setting its value to false.
+
+```
+<sy-select showTooltip="true"></sy-select>
+```
+
+## Example
+<Canvas of={SelectOptionShowTooltipStories.Param} />
+
+<Controls of={SelectOptionShowTooltipStories.Param} />
+

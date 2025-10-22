@@ -1,0 +1,23 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputFocusStories from './input-focus.stories';
+
+<Meta of={InputFocusStories} />
+
+
+# Focus & Blur Function
+## Definition of Focus
+Using `setFocus()` function to set focus to the input manually.<br/>
+When `setFocus()` is called, input field has focus.<br/>
+
+## Definition of Blur
+Using `setBlur()` function to set blur to the input manually.<br/>
+When `setBlur()` is called, input field has lost its focus.<br/>
+
+In the example, Input get a focus in 1 second and blur after 4 seconds.<br/>
+To test this clearly, this page must be activated.
+
+
+## Example
+<Canvas of={InputFocusStories.Param} />
+
+<Controls of={InputFocusStories.Param} />

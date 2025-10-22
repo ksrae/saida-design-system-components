@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeNodesChangedStories from './tree-nodesChanged.stories';
+
+<Meta of={TreeNodesChangedStories} />
+
+# NodesChanged
+## Definition
+when there is any changes of a node, nodeChanged event is triggered. <br/>
+This event fires when a node is added, removed, modified, checked, or moved. <br/>
+This event emits data of all nodes.<br/><br/>
+
+In particular, this event is triggered only for drag-drop event, <br/>
+so this event should be used for handling result of drag-drop. <br/>
+This event emits the node value as a string. To use the value, parsing it with JSON.parse() function.
+
+
+## Example
+<Canvas of={TreeNodesChangedStories.Param} />
+
+<Controls of={TreeNodesChangedStories.Param} />

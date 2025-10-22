@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as TooltipPosition from './tooltip-position.stories';
+
+
+<Meta of={TooltipPosition} />
+
+# Position
+## Definition
+Tooltip can be set in 12 different positions:
+- top
+- topLeft
+- topRight
+- left
+- leftTop
+- leftBottom
+- right
+- rightTop
+- rightBottom
+- bottom: This is default.
+- bottomLeft
+- bottomRight
+
+
+## Example
+<Canvas of={TooltipPosition.Param} />
+
+<Controls of={TooltipPosition.Param} />
+
+

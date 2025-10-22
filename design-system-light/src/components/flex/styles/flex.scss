@@ -1,0 +1,219 @@
+
+:root,
+:host {
+    display: inline-flex;
+    *{
+        text-align: start;
+    }
+    
+    .flex-container {
+        display: flex;
+        box-sizing: border-box;
+        align-items: start;
+        height: auto;
+        text-align: start;
+        flex:1;
+    }
+
+    .horizontal {
+        flex-direction: row;
+    }
+    .vertical {
+        flex-direction: column;
+    }
+
+
+    .border-outline{
+        border: var(--border-small) var(--flex-container-border-enabled);
+        box-sizing: border-box;
+        gap:0px;
+    }
+    .border-inline{
+        background: var(--flex-container-border-enabled);
+        gap:1px;   
+    }
+    .border-outline.border-inline{
+        background: var(--flex-container-border-enabled);
+        gap:1px;
+        border: 1px solid transparent;
+    }
+}
+
+:root(sy-flex[direction="horizontal-reverse"]) .flex-container{
+    flex-direction: row-reverse;
+}
+:root(sy-flex[direction="vertical-reverse"]) .flex-container {
+    flex-direction: column-reverse;
+}    
+:root(sy-flex[wrap="wrap-reverse"]) .flex-container {
+    flex-wrap: wrap-reverse;
+}    
+
+/* Align */
+:host(sy-flex[align="start"]){
+    .flex-container{
+        align-items:start;
+    }
+}
+:host(sy-flex[align="center"]){
+    .flex-container{
+        align-items: center;
+    }
+}
+:host(sy-flex[align="end"]){
+    .flex-container{
+        align-items:end;
+    }
+}
+:host(sy-flex[align="baseline"]){
+    .flex-container{
+        align-items:baseline;
+    }
+}
+:host(sy-flex[align="stretch"]){
+    .flex-container{
+        align-items:stretch;
+    }
+}
+
+
+/* Justify */
+:host(sy-flex[justify="start"]){
+    .flex-container{
+        justify-content: start;
+    }
+}
+:host(sy-flex[justify="center"]){
+    .flex-container{
+        justify-content: center;
+    }
+}
+:host(sy-flex[justify="end"]){
+    .flex-container{
+        justify-content: flex-end;
+    }
+}
+:host(sy-flex[justify="space-between"]){
+    .flex-container{
+        justify-content: space-between;
+    }
+}
+// :host(sy-flex[justify="stretch"]){
+//     .flex-container{
+//         justify-content:stretch;
+//     }
+// }
+
+// :host(sy-flex[justify="stretch"]) .flex-container ::slotted(div),
+// :host(sy-flex[justify="stretch"]) .flex-container ::slotted(span){
+//     flex: 1;
+// }
+
+
+/* columngap */
+:host(sy-flex[columngap="xsmall"]){
+    .flex-container{
+        column-gap:2px;
+    }
+}
+:host(sy-flex[columngap="small"]){
+    .flex-container{
+        column-gap:4px;
+    }
+}
+
+:host(sy-flex[columngap="medium"]){
+    .flex-container{
+        column-gap:8px;
+    }
+}
+
+:host(sy-flex[columngap="large"]){
+    .flex-container{
+        column-gap:12px;
+    }
+}
+
+:host(sy-flex[columngap="xlarge"]){
+    .flex-container{
+        column-gap:16px;
+    }
+}
+
+/* rowgap */
+:host(sy-flex[rowgap="xsmall"]){
+    .flex-container{
+        row-gap:2px;
+    }
+}
+:host(sy-flex[rowgap="small"]){
+    .flex-container{
+        row-gap:4px;
+    }
+}
+
+:host(sy-flex[rowgap="medium"]){
+    .flex-container{
+        row-gap:8px;
+    }
+}
+
+:host(sy-flex[rowgap="large"]){
+    .flex-container{
+        row-gap:12px;
+    }
+}
+
+:host(sy-flex[rowgap="xlarge"]){
+    .flex-container{
+        row-gap:16px;
+    }
+}
+
+/* Padding */
+:host(sy-flex[padding="xsmall"]){
+    .flex-container{
+        padding: var(--spacing-3xsmall);
+    }
+}
+:host(sy-flex[padding="small"]){
+    .flex-container{
+        padding: var(--spacing-3xsmall);
+    }
+}
+:host(sy-flex[padding="medium"]){
+    .flex-container{
+        padding: var(--spacing-small);
+    }
+}
+:host(sy-flex[padding="large"]){
+    .flex-container{
+        padding: var(--spacing-medium);
+    }
+}
+:host(sy-flex[padding="xlarge"]){
+    .flex-container{
+        padding: var(--spacing-large);
+    }
+}
+
+
+/* Wrap */
+:host(sy-flex[wrap="wrap"]){
+    .flex-container{
+        flex-wrap: wrap;
+    }
+}
+
+:host(sy-flex[wrap="nowrap"]){
+    .flex-container{
+        flex-wrap: nowrap;
+        overflow: auto;
+    }    
+}
+
+:host(sy-flex[wrap="wrap-reverse"]){
+    .flex-container{
+        flex-wrap:wrap-reverse;
+    }    
+}

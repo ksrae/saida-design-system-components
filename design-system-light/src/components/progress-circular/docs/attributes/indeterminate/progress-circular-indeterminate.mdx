@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ProgressCircularIndeterminateParams from './progress-circular-indeterminate.stories';
+
+<Meta of={ProgressCircularIndeterminateParams} />
+
+# Indeterminate
+## Definition
+Hide / Show the text which is displayed in the center of the progress circular.
+Default Value is `false`.
+
+## Boolean Attribute Handling
+In the source code, <b>indeterminate = ""</b> should be modified as follows
+- Set `indeterminate` attribute and don't put a value after it.
+```
+<sy-progress-circular indeterminate></sy-progress-circular>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply `indeterminate` attribute, remove it instead of setting its value to `false`.
+
+```
+<sy-progress-circular indeterminate="true"></sy-progress-circular>
+```
+
+## Example
+<Canvas of={ProgressCircularIndeterminateParams.Param} />
+
+<Controls of={ProgressCircularIndeterminateParams.Param} />
+

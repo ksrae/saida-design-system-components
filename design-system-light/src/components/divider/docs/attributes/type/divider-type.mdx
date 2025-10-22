@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as DividerTypeStories from './divider-type.stories';
+
+<Meta of={DividerTypeStories} />
+
+# Type
+## Definition
+To set the orientation of divider: 
+- horizontal: Sets a horizontal line. This is default.
+- vertical: Sets a vertical line.
+
+## Example
+<Canvas of={DividerTypeStories.Param} />
+
+<Controls of={DividerTypeStories.Param} />

@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as LabelWidthStories from './label-width.stories';
+
+<Meta of={LabelWidthStories} />
+
+# Width
+## Definition
+The `width` attribute allows you to specify the width of the label in the `label` component. <br/>
+This can be set to a specific value in pixels, percentages, or other CSS units. <br/>
+
+
+## Example
+<Canvas of={LabelWidthStories.Param} />
+
+<Controls of={LabelWidthStories.Param} />

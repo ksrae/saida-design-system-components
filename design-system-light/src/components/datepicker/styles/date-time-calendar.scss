@@ -1,0 +1,30 @@
+:host {
+    .datetime-calendar-container {
+      display:flex;
+      flex-grow: 1;
+      box-sizing:border-box;
+      width: auto;
+      .calendar-footer{
+        display: flex;
+        height:37px;
+      }      
+    }
+    .time-picker-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      box-sizing: border-box;
+      width:160px;
+    }
+    .time-section{
+      box-sizing:border-box;
+      border-left: 1px solid var(--date-time-picker-calendar-container-body-border-enabled);
+    }
+		.calendar-footer {
+			display: flex;
+			justify-content: flex-end;
+			padding: var(--spacing-2xsmall) var(--spacing-xsmall);
+    		box-sizing: border-box;
+			border-top: 1px solid var(--date-time-picker-calendar-container-body-border-enabled);
+		}
+}

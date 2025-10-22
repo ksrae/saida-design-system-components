@@ -1,0 +1,19 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as CheckboxChangedStories from './checkbox-changed.stories';
+
+<Meta of={CheckboxChangedStories} />
+
+# Changed Event
+## Definition
+The checkbox emits <b>changed</b> event when user clicks the checkbox.<br/>
+The event has detail property with several values:
+- `value`: the value of the checkbox
+- `isValid`: indicates if the checkbox is valid
+- `checked`: indicates if the checkbox is checked
+- `indeterminate`: indicates if the checkbox is in indeterminate state
+
+## Example
+<Canvas of={CheckboxChangedStories.Param} />
+
+<Controls of={CheckboxChangedStories.Param} />

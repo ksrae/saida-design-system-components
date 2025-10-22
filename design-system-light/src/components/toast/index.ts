@@ -1,2 +1,2 @@
-export * from './sy-toast';
-export * from './sy-toast-item';
+export * from './toast.element';
+export * from './toast-item.element';

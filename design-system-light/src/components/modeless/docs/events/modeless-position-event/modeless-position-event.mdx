@@ -1,0 +1,25 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModelessPositionEventStories from "./modeless-position-event.stories";
+
+<Meta of={ModelessPositionEventStories} />
+
+# Position event
+## Definition
+Emit the <b>position</b> event when the modeless is moved or resized.<br/>
+
+
+```
+event: {
+  detail: {
+    top: number; // The top position of the modeless
+    left: number; // The left position of the modeless
+    width: number; // The width of the modeless
+    height: number; // The height of the modeless
+  }
+}
+```
+
+## Example
+<Canvas of={ModelessPositionEventStories.Param} />
+
+<Controls of={ModelessPositionEventStories.Param} />

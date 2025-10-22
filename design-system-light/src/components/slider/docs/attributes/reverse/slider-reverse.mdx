@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderReverseStories from './slider-reverse.stories';
+
+<Meta of={SliderReverseStories} />
+
+# Reverse
+
+## Definition
+The reverse attribute is for reversing the order of the slider's values. <br/>
+This means that the minimum value will be on the right and the maximum value will be on the left.
+
+## Boolean Attribute Handling
+In the source code, <b>reverse = ""</b> should be modified as follows
+- Set `reverse` attribute and don't put a value after it.
+```
+<sy-slider reverse></sy-slider>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `reverse`, remove the attribute instead of setting its value to false.
+
+```
+<sy-slider reverse="true"></sy-slider>
+```
+
+
+## Example
+<Canvas of={SliderReverseStories.Param} />
+
+<Controls of={SliderReverseStories.Param} />
+

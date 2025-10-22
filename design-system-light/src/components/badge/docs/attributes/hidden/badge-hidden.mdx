@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BadgeHiddenStories from './badge-hidden.stories';
+
+
+<Meta of={BadgeHiddenStories} />
+
+# Hidden
+## Definition
+Determines whether the badge is hidden. <br/>
+Even if hidden is set, the badge appears when hovering the mouse.<br/>
+
+## Boolean Attribute Handling
+In the source code, hidden = "" should be modified as follows
+- Set `hidden` attribute and don't put a value after it.
+```
+<sy-badge hidden></sy-badge>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `hidden`, remove it instead of setting value to false.
+
+```
+<sy-badge hidden="true"></sy-badge>
+```
+
+## Example
+<Canvas of={BadgeHiddenStories.Param} />
+
+<Controls of={BadgeHiddenStories.Param} />
+

@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModelessCustomButtonsStories from "./modeless-customButtons.stories";
+
+<Meta of={ModelessCustomButtonsStories} />
+
+# Custom Header
+## Definition
+Adds buttons to the modeless header using a slot.
+Use <b>slot="header"</b> to add custom buttons to the header of the modeless.
+
+## Example
+<Canvas of={ModelessCustomButtonsStories.Param} />
+
+<Controls of={ModelessCustomButtonsStories.Param} />

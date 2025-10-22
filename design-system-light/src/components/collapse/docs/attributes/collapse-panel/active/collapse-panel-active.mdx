@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as CollapsePanelActiveStories from './collapse-panel-active.stories';
+
+
+<Meta of={CollapsePanelActiveStories} />
+
+# Panel Active
+## Definition
+The panel opens with setting the `active` attribute. <br/>
+The active attribute can be applied to multiple panels. However, only one panel can have the active attribute if the collapse's accordion attribute is set. <br/>
+If multiple panels have the active attribute when the collapse's accordion attribute is set, only the last panel will be active and the other panels will be deactivated.
+
+
+## Boolean Attribute Handling
+In the source code, active = "" should be modified as follows
+- Set `active` attribute and don't put a value after it.
+```
+<sy-collapse-panel active></sy-collapse-panel>
+```
+
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `active`, remove the attribute instead of setting its value to`false`.
+```
+<sy-collapse-panel active="true"></sy-collapse-panel>
+```
+
+## Example
+<Canvas of={CollapsePanelActiveStories.Param} />
+
+<Controls of={CollapsePanelActiveStories.Param} />
+

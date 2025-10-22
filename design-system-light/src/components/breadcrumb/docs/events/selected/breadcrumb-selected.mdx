@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as BreadcrumbSelectedStories from './breadcrumb-selected.stories';
+
+<Meta of={BreadcrumbSelectedStories} />
+
+# Selected Event
+## Definition
+The breadcrumb emits `selected` event (custom event) when user clicks any breadcrumb item.<br/>
+Use <b>event.detail.target.innerText</b> to get which includes breadcrumb item value.<br/>
+
+
+## Example
+<Canvas of={BreadcrumbSelectedStories.Param} />
+
+<Controls of={BreadcrumbSelectedStories.Param} />

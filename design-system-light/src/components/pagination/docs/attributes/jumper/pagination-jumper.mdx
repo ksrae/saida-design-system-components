@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PagingationJumperStories from './pagination-jumper.stories';
+
+<Meta of={PagingationJumperStories} />
+
+# Jumper
+## Definition
+Enables users to jump directly to a specific page by entering the page number. <br/>
+Set to true to display the jumper.
+
+## Boolean Attribute Handling
+In the source code,<b>jumper = ""</b> should be modified as follows
+- Set the `jumper` attribute and don't put a value after it.
+```
+<sy-pagination jumper></sy-pagination>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `jumper`, remove the attribute instead of setting its value to false.
+```
+<sy-pagination jumper="true"></sy-pagination>
+```
+
+## Example
+<Canvas of={PagingationJumperStories.Param} />
+
+<Controls of={PagingationJumperStories.Param} />
+

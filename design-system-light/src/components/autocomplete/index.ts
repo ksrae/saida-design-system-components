@@ -1,2 +1,2 @@
-export * from './sy-autocomplete';
-export * from './sy-autocomplete-option';
+export * from './autocomplete.element';
+export * from './autocomplete-option.element';

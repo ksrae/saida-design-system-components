@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaValueStories from './textarea-value.stories';
+
+<Meta of={TextareaValueStories} />
+
+# Value
+## Definition
+Setting text value to the textarea. <br/>
+If value property exists, placeholder is hidden and valid is set to true. <br/>
+If the maximum value is greater than the length of the value, the value will be shortened to the maximum length and the rest will be discarded. <br/>
+
+
+
+## Example
+<Canvas of={TextareaValueStories.Param} />
+
+<Controls of={TextareaValueStories.Param} />

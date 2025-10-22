@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InlineMessageTriggerStories from './inline-message-trigger.stories';
+
+<Meta of={InlineMessageTriggerStories} />
+
+# Trigger
+## Definition
+The types of events that cause a inline message to show.
+
+### Click (default)
+Display the inline message when the parent element is clicked.
+
+### Focusout
+Display the inline message when the parent element loses focus. 
+The inline message will be closed when the parent elemet get focus again. <br/>
+Usually used with input fields. 
+
+## Example
+<Canvas of={InlineMessageTriggerStories.Param} />
+
+<Controls of={InlineMessageTriggerStories.Param} />

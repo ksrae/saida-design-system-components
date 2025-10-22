@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BannerShowIconStories from './banner-showIcon.stories';
+
+
+<Meta of={BannerShowIconStories} />
+
+# ShowIcon
+## Definition
+Determines whether display icon. <br/>
+If set to true, the banners of variants info, success, warning, and error will include their respective pre-defined icons, except for the <b>neutral</b> type banner message. 
+This ensures consistency within the design system. <br/>
+Default is <b>false</b>.
+
+## Boolean Attribute Handling
+In the source code, <b>showIcon = ""</b> should be modified as follows
+- Set `showIcon` attribute and don't put a value after it.
+```
+<sy-banner-messsage showIcon></sy-banner-messsage>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `showIcon`, remove the attribute instead of setting its value to false.
+
+```
+<sy-banner-messsage showIcon="true"></sy-banner-messsage>
+```
+
+## Example
+<Canvas of={BannerShowIconStories.Param} />
+
+<Controls of={BannerShowIconStories.Param} />
+

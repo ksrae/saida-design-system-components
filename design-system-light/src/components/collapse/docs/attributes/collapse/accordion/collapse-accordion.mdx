@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as CollapseAccordionStories from './collapse-accordion.stories';
+
+
+<Meta of={CollapseAccordionStories} />
+
+# Accordion
+## Definition
+Users can enable this option to expand only one panel at a time with `accordion` attribute. <br/>
+Do not set `accordion` attribute to open multiple panels.<br/><br/>
+This helps conserve space and prevents overwhelming users with too much content at once, especially when they need to focus on one section at a time.
+
+## Boolean Attribute Handling
+In the source code, <b>accordion = ""</b> should be modified as follows
+- Set `accordion` attribute and don't put a value after it.
+```
+<sy-collapse accordion></sy-collapse>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `accordion`, remove the attribute instead of setting its value to false.
+```
+<sy-collapse accordion="true"></sy-collapse>
+```
+
+## Example
+<Canvas of={CollapseAccordionStories.Param} />
+
+<Controls of={CollapseAccordionStories.Param} />
+

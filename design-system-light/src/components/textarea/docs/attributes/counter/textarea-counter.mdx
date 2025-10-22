@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaCounterStories from './textarea-counter.stories';
+
+<Meta of={TextareaCounterStories} />
+
+# Counter
+## Definition
+Showing the counter for text length of the textarea. <br/>
+Max value must be defined greater than 0. <br/>
+
+
+## Boolean Attribute Handling
+In the source code, <b>counter = ""</b> should be modified as follows
+- Set `counter` attribute and don't put a value after it.
+```
+<sy-textarea counter></sy-textarea>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `counter`, remove the attribute instead of setting its value to false.
+
+```
+<sy-textarea counter="true"></sy-textarea>
+```
+
+
+## Example
+<Canvas of={TextareaCounterStories.Param} />
+
+<Controls of={TextareaCounterStories.Param} />

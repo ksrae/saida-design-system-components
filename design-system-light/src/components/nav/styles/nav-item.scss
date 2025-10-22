@@ -1,0 +1,64 @@
+
+:root,
+:host {
+    display: block;
+    background-color: var(--nav-submenu-background-enabled);
+    li {
+      cursor: pointer;
+      list-style: none;
+      height:40px;
+      color: var(--nav-parent-text-enabled);
+      padding: var( --spacing-xsmall) var(--spacing-large);
+      border:var(--border-medium) transparent; 
+      box-sizing: border-box;
+      background-color: var(--nav-submenu-background-enabled);
+      display: inline-flex;
+      align-items: center;
+      width:100%;
+      &:focus-visible {
+        border: var(--border-medium) var(--nav-parent-border-focused) !important;       
+        outline: none !important;
+      }      
+      &.active{
+        background: var(--nav-parent-background-active);
+        color: var(--nav-parent-text-active);
+        border-right:3px solid var(--nav-parent-border-active);
+      }
+    }
+    li:hover {
+      color: var(--nav-parent-text-hover);  
+    }
+    li[disabled] {
+      cursor:auto;
+      color: var(--nav-parent-text-disabled);
+    }
+}
+
+  :host(sy-nav-item[depth="0"]){
+    li{
+      padding-left: 20px;
+      &.group-list{
+        padding-left:30px;      
+      }            
+    }
+  }
+  :host(sy-nav-item[depth="1"]){
+    li{
+      padding-left:40px;
+      &.group-list{
+        padding-left:50px;      
+      }       
+    }
+  }
+
+  /* Nav item Depth */
+@for $i from 2 through 100 { 
+  :host(sy-nav-item[depth="#{$i}"]){
+    li{
+      padding-left: 20px*$i; 
+      &.group-list{
+        padding-left: 20px*$i + 20px;      
+      }             
+    }     
+  }    
+}

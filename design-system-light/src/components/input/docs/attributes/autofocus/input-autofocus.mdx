@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputAutofocusStories from './input-autofocus.stories';
+
+<Meta of={InputAutofocusStories} />
+
+# Input
+## Definition
+This automatically focuses on an input field when a page loads or when a component is rendered. <br/>
+To test this clearly, refresh this page when this page must be activated.
+
+## Boolean Attribute Handling
+In the source code, autofocus = "" should be modified as follows
+- Set `autofocus` attribute and don't put a value after it.
+```
+<sy-input autofocus></sy-input>
+
+```
+- Alternatively, you can explicitly set it to true, but to not apply `autofocus`, remove the attribute instead of setting its value to false.
+```
+<sy-input autofocus="true"></sy-input>
+
+```
+
+## Example
+<Canvas of={InputAutofocusStories.Param} />
+
+<Controls of={InputAutofocusStories.Param} />

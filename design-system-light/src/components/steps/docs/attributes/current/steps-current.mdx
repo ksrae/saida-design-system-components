@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as StepsCurrentStories from './steps-current.stories';
+
+<Meta of={StepsCurrentStories} />
+
+# Current
+## Definition
+Set the active step that the user is on.<br/>
+The step is displayed actively interactive, indicating it’s the focus of user interaction at the moment.
+
+
+## Example
+<Canvas of={StepsCurrentStories.Param} />
+
+<Controls of={StepsCurrentStories.Param} />

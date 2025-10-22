@@ -1,0 +1,202 @@
+@use "../../../style/global/font-heading" as font-heading;
+@use "../../../style/global/animation" as animation;
+
+:root,
+:host {
+    .modal-wrapper {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        z-index: var(--z-index-modal);
+    }
+
+    .modal-wrapper.mask {
+        background: var(--backdrop-background);
+        pointer-events: auto;
+    }
+
+    .modal-wrapper--open {
+        display: flex;
+    }
+
+    .modal-container {
+        display: flex;
+        flex-direction: column;
+        background: var(--modal-content-background-enabled);
+        border-radius: var(--border-radius-small);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        position: absolute;
+        min-width: 200px;
+        pointer-events: auto;
+        cursor: auto;
+        opacity: 0;
+
+        &.hidden {
+            display: none;
+        }
+    }
+
+    .modal-header {
+        height: var(--header-medium);
+        box-sizing: border-box;
+        padding: 0 var(--spacing-small);
+        border-bottom: 1px solid var(--modal-header-border-enabled);
+        background: var(--modal-header-background-enabled);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .header-title {
+            @include font-heading.text-style-heading-6-medium();
+            display: inline-flex;
+            width: -webkit-fill-available;
+        }
+
+        .header-button-container {
+            display: flex;
+            color: var(--modal-header-icon-enabled);
+
+            &:hover {
+                color: var(--modal-header-icon-hover);
+            }
+        }
+    }
+
+    .modal-header.draggable {
+        cursor: move;
+    }
+
+    .modal-body {
+        padding: var(--spacing-small);
+        width: auto;
+        white-space: normal;
+    }
+
+    .modal-footer {
+        height: var(--header-medium);
+        padding: 0 var(--spacing-small);
+        background: var(--modal-footer-background-enabled);
+        box-sizing: border-box;
+        border-top: 1px solid var(--modal-footer-border-enabled);
+        display: flex;
+        align-items: center;
+
+        &.hidden {
+            display: none;
+        }
+    }
+
+
+    .footer-button-container {
+        display: flex;
+        gap: var(--spacing-2xsmall);
+        width: 100%;
+        justify-content: flex-end;
+        box-sizing: border-box;
+    }
+}
+
+/* Modal Dialog */
+
+:host(sy-modal[variant="modal"]) {
+    .resize-handle {
+        position: absolute;
+        z-index: 10;
+    }
+
+    .resize-handle.bottom-right {
+        position: absolute;
+        z-index: 10;
+        right: 0;
+        bottom: 0;
+        width: 15px;
+        height: 15px;
+        cursor: se-resize;
+    }
+
+    .resize-handle.bottom-left {
+        position: absolute;
+        z-index: 10;
+        left: 0;
+        bottom: 0;
+        width: 15px;
+        height: 15px;
+        cursor: sw-resize;
+    }
+
+    .resize-handle.top-right {
+        position: absolute;
+        z-index: 10;
+        right: 0;
+        top: 0;
+        width: 15px;
+        height: 15px;
+        cursor: ne-resize;
+    }
+
+    .resize-handle.top-left {
+        position: absolute;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 15px;
+        height: 15px;
+        cursor: nw-resize;
+    }
+
+    // 모달 리사이징 시 footer 위치 유지 및 body 크기 조정
+    .modal-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        flex-shrink: 0;
+        /* 헤더 크기 고정 */
+    }
+
+    .modal-body {
+        flex: 1 1 auto;
+        overflow: auto;
+        min-height: 50px;
+    }
+
+    .modal-footer {
+        flex-shrink: 0;
+        /* footer 크기 고정 */
+    }
+}
+
+
+/* Modal Animation */
+.modal-wrapper--open {
+    opacity: 1;
+    animation-name: animation;
+    animation-iteration-count: 1;
+    @include animation.animation-slow();
+
+    .modal-container {
+        opacity: 1;
+        animation-name: animation;
+        animation-iteration-count: 1;
+        @include animation.animation-slow();
+    }
+}
+
+
+@keyframes animation {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

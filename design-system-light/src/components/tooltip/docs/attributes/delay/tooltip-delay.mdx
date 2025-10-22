@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as TooltipDelayStories from './tooltip-delay.stories';
+
+<Meta of={TooltipDelayStories} />
+
+# Delay
+## Definition
+Delay in milliseconds.<br/>
+Use `opendelay` attribute to specify the delay before the tooltip appears when the event occurs.<br/>
+Use `closedelay` attribute  to set the delay before the tooltip disappears after the event. <br/><br/>
+
+Default value of `opendelay` is <b>150ms</b>.<br/>
+Default value of `closedelay` is <b>100ms</b>.<br/>
+
+
+## Example
+<Canvas of={TooltipDelayStories.Param} />
+
+<Controls of={TooltipDelayStories.Param} />
+

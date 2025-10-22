@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as MenuItemSelectedStories from './menu-itemSelected.stories';
+
+<Meta of={MenuItemSelectedStories} />
+
+# Item Selected
+## Definition
+Selecting any menu item emits <b>itemSelected</b> event.<br/><br/>
+<b>event.detail</b> includes the value of the menu item.
+
+
+## Example
+<Canvas of={MenuItemSelectedStories.Param} />
+
+<Controls of={MenuItemSelectedStories.Param} />

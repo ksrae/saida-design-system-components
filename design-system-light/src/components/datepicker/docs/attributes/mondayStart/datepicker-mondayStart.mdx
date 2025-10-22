@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DatepickerMondayStartStories from './datepicker-mondayStart.stories';
+
+
+<Meta of={DatepickerMondayStartStories} />
+
+# MondayStart
+## Definition
+The `mondayStart` attribute is used to set the first day of the week to Monday in the datepicker. By default, the week starts on Sunday, but this attribute changes it to Monday, which is useful in regions where the week traditionally starts on Monday.
+
+## Boolean Attribute Handling
+In the source code, mondayStart = "" should be modified as follows. <br/>
+Set the <b>mondayStart</b> attribute without assigning a value to it. <br/>
+```
+<sy-datepicker mondayStart></sy-datepicker>
+```
+Alternatively, you can explicitly set it to true, but to not apply mondayStart, just remove the attribute instead of setting its value to false.
+
+```
+<sy-datepicker mondayStart="true"></sy-datepicker>
+```
+
+## Example
+<Canvas of={DatepickerMondayStartStories.Param} />
+
+<Controls of={DatepickerMondayStartStories.Param} />

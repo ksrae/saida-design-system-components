@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModelessMaximumStories from "./modeless-maximum.stories";
+
+<Meta of={ModelessMaximumStories} />
+
+# Maximum
+## Definition
+Maximizes the Modeless. <br/>
+The `maximum` attribute must be set.
+
+## Boolean Attribute Handling
+In the source code, maximum = "" should be modified as follows. <br/>
+Set the <b>maximum</b> attribute without assigning a value to it. <br/>
+```
+<sy-modeless maximum></sy-modeless>
+```
+Alternatively, you can explicitly set it to true, but to not apply `maximum`, just remove the attribute instead of setting its value to false.
+
+```
+<sy-modeless maximum="true"></sy-modeless>
+```
+
+## Example
+<Canvas of={ModelessMaximumStories.Param} />
+
+<Controls of={ModelessMaximumStories.Param} />

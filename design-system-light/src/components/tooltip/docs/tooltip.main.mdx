@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+
+import * as TooltipParamStory from "./tooltip.stories";
+
+<Meta of={TooltipParamStory} />
+
+# Tooltip
+## Definition
+Tooltips display simple text for additional information of the DOM.<br/>
+The ToolTip is displayed based on the parent DOM's location. Therefore, to use ToolTip, a parent DOM is required.
+
+## Example
+<Canvas of={TooltipParamStory.Default} />
+
+<Controls of={TooltipParamStory.Default} />

@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as InputParamStory from "./input.stories";
+
+<Meta of={InputParamStory} />
+
+# Input
+## Definition
+An input is used for capturing textual input from users. <br/>
+The text input allows users to enter and edit single-line textual content into a form field.<br/><br/>
+Users can change width size of the `sy-input` size.<br/>
+The default size is 100%.<br/><br/>
+```scss
+sy-input{
+    width:300px;
+}
+```
+
+## Example
+<Canvas of={InputParamStory.Default} />
+
+<Controls of={InputParamStory.Default} />

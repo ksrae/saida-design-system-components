@@ -1,1 +1,1 @@
-export * from './sy-tag';
+export * from './tag.element';

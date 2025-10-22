@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as StepsStartIndexStories from './steps-start-index.stories';
+
+<Meta of={StepsStartIndexStories} />
+
+# Start Index
+## Definition
+By setting startIndex to change starting index of a step component. <br/>
+Useful for resuming processes or dynamically adjusting the starting step based on user actions.<br/>
+Be sure to add an offset to currentIndex as well, unless the currentIndex will be set to startIndex.
+
+
+## Example
+<Canvas of={StepsStartIndexStories.Param} />
+
+<Controls of={StepsStartIndexStories.Param} />

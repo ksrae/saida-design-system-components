@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BreadcrumbSeparatorStories from './breadcrumb-separator.stories';
+
+<Meta of={BreadcrumbSeparatorStories} />
+
+# Breadcrumb Separator
+## Definition
+Changes separator type in the breadcrumb.<br/>
+Unlike applying the separator to the <b>sy-breadcrumb-item</b> tag, applying it to the <b>sy-breadcrumb</b> tag will apply to all items within the breadcrumb. <br/>
+There are two separators provided:
+- `slash`: items are divided with `"/"`. This is the default.
+- `arrow`: items are divided with `">"`.
+
+## Example
+<Canvas of={BreadcrumbSeparatorStories.Param} />
+
+<Controls of={BreadcrumbSeparatorStories.Param} />

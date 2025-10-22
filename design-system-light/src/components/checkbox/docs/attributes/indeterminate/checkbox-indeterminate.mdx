@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as CheckboxIndeterminateStories from './checkbox-indeterminate.stories';
+
+<Meta of={CheckboxIndeterminateStories} />
+
+# Indeterminate
+## Definition
+Use the indeterminate attribute to express checkbox status between checked and unchecked. <br/>
+The indeterminate state is used to indicate that some, but not all, sub-checkboxes are selected.
+
+## Boolean Attribute Handling
+In the source code, indeterminate = "" should be modified as follows
+- Set `indeterminate` attribute and don't put a value after it.
+```
+<sy-checkbox indeterminate></sy-checkbox>
+```
+
+- Alternatively, you can explicitly set it to `true`, but to not apply the `indeterminate`, simply remove the attribute instead of setting its value to false.
+```
+<sy-checkbox indeterminate="true"></sy-checkbox>
+```
+
+## Example
+<Canvas of={CheckboxIndeterminateStories.Param} />
+
+<Controls of={CheckboxIndeterminateStories.Param} />

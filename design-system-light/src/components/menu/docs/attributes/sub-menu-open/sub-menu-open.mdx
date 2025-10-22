@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as MenuSubOpenStories from './sub-menu-open.stories';
+
+<Meta of={MenuSubOpenStories} />
+
+# Sub Menu Open
+## Definition
+Opens the sub menu when menu opens. Only applicable when parent menu is opened.<br/>
+If menu has `open` attribute, opened sub menu is opened at the same time.<br/>
+
+## Boolean Attribute Handling
+In the source code, open = "" should be modified as follows
+- Set `open` attribute and don't put a value after it.
+```
+<sy-menu-sub open></sy-menu-sub>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `open`, remove the attribute instead of setting its value to false.
+
+```
+<sy-menu-sub open="true"></sy-menu-sub>
+```
+
+## Example
+<Canvas of={MenuSubOpenStories.Param} />
+
+<Controls of={MenuSubOpenStories.Param} />

@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as NavSubOpenStories from './sub-nav-open.stories';
+
+<Meta of={NavSubOpenStories} />
+
+# Sub Nav Open
+## Definition
+Opens the sub nav when nav opens. Only applicable when parent nav is open.<br/>
+If nav has `open` attribute, sub nav is open at the same time.<br/>
+
+## Boolean Attribute Handling
+In the source code, <b>open = ""</b> should be modified as follows
+- Set `open` attribute and don't put a value after it.
+```
+<sy-nav-sub open></sy-nav-sub>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `open`, remove the attribute instead of setting its value to false.
+
+```
+<sy-nav-sub open="true"></sy-nav-sub>
+```
+
+## Example
+<Canvas of={NavSubOpenStories.Param} />
+
+<Controls of={NavSubOpenStories.Param} />
+

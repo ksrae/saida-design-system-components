@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+
+import * as TextareaParamStory from "./textarea.stories";
+
+<Meta of={TextareaParamStory} />
+
+# Textarea
+## Definition
+The textarea allows users to input and edit multi-line text. <br/>
+It provides a larger input area compared to a single-line text input field, making it suitable for scenarios where users need to enter longer-form textual content.
+
+
+## Example
+<Canvas of={TextareaParamStory.Default} />
+
+<Controls of={TextareaParamStory.Default} />

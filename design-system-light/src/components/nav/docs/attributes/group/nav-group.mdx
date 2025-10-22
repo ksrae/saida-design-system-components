@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as NavGroupStories from "./nav-group.stories";
+
+<Meta of={NavGroupStories} />
+
+# Group
+## Definition
+Sets navigation menu items(sy-nav-item) as a group. <br/>
+To apply nav group, put <b>\<sy-nav-item\></b> into <b>\<sy-nav-group\></b> tag.<br/>
+
+## Example
+<Canvas of={NavGroupStories.Param} />
+
+<Controls of={NavGroupStories.Param} />

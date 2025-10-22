@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as IconSelectedStories from './icon-selected.stories';
+
+<Meta of={IconSelectedStories} />
+
+# Selected
+## Definition
+Selected event only emits from selectable icon. Therefore to get a selected event, selectable attribute must be added.<br/>
+Returns event.detail includes the type of the selected icon.
+
+
+## Example
+<Canvas of={IconSelectedStories.Param} />
+
+<Controls of={IconSelectedStories.Param} />

@@ -1,0 +1,31 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as SpinnerHiddenStories from './spinner-hidden.stories';
+
+<Meta of={SpinnerHiddenStories} />
+
+# Hidden
+## Definition
+This hides the spinner and exposes the DOM inside the spinner. Set the hidden property to temporarily hide the spinner with the Overlay property set.<br/>
+If setting the hidden property without the overlay property, the spinner area still be preserved even if the spinner icon is hidden. <br/>
+Do not use hidden property for non overlay spinner. Instead, remove the spinner tag.
+
+
+## Boolean Attribute Handling
+In the source code, <b>hidden = ""</b> should be modified as follows
+- Set `hidden` attribute and don't put a value after it.
+```
+<sy-spinner hidden></sy-spinner>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply `hidden`, remove the attribute instead of setting its value to `false`.
+
+```
+<sy-spinner hidden="true"></sy-spinner>
+```
+
+
+## Example
+<Canvas of={SpinnerHiddenStories.Param} />
+
+<Controls of={SpinnerHiddenStories.Param} />
+

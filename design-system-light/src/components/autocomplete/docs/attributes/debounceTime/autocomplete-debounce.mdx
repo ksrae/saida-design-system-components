@@ -1,0 +1,22 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AutoCompleteDebounceStories from './autocomplete-debounce.stories';
+
+
+<Meta of={AutoCompleteDebounceStories} />
+
+# Debounce Time
+
+## Definition
+Debounce time is the amount of time it takes for searching result.<br/><br/>
+If there is a lot of data or the length of search text is long, setting the debounce time may be useful for search. Autocomplete element will not search for values during the debounce time. For example, if a debounce time is 500ms, it will search with the latest search text at 500ms once the user starts typing.<br/><br/>
+If you have little data or a short search text, you may receive faster results by not setting debounce time. If the debounce time is short or zero, autocomplete will try to search with each of the user's input. It will provide instant results but can cause performance degradation if there are many results.<br/><br/>
+Default value is 0s.<br/><br/>
+In the fields below, type `"sy"` into autocomplete component with a `Debounce time 1s`, and the result will be visible after 1 second. <br/>
+If you type `"sy"` in the `Default` state, the result will be shown immediately.
+ 
+## Example
+<Canvas of={AutoCompleteDebounceStories.Param} />
+
+<Controls of={AutoCompleteDebounceStories.Param} />
+
+

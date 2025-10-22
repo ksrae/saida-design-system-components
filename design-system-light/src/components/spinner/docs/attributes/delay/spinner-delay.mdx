@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as SpinnerDelayStories from './spinner-delay.stories';
+
+<Meta of={SpinnerDelayStories} />
+
+# Delay
+## Definition
+The `delay` attribute allows you to set a delay in milliseconds before the spinner starts animating. <br/>
+The delay can be set to any positive integer value, the default value is 0.
+
+## Example
+<Canvas of={SpinnerDelayStories.Param} />
+
+<Controls of={SpinnerDelayStories.Param} />
+

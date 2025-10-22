@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as SpinnerInlineStories from './spinner-inline.stories';
+
+<Meta of={SpinnerInlineStories} />
+
+# Inline
+## Definition
+Inline spinner is a UI element that indicates ongoing processes or loading states while being displayed alongside other content.
+
+## Boolean Attribute Handling
+In the source code, <b>inline = ""</b> should be modified as follows
+- Set `inline` attribute and don't put a value after it.
+```
+<sy-spinner inline></sy-spinner>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply `stop`, remove the attribute instead of setting its value to `false`.
+
+```
+<sy-spinner inline="true"></sy-spinner>
+```
+
+
+## Example
+<Canvas of={SpinnerInlineStories.Param} />
+
+<Controls of={SpinnerInlineStories.Param} />
+

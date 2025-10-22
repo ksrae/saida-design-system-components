@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputNumberStepStories from './input-number-step.stories';
+
+<Meta of={InputNumberStepStories} />
+
+# Step
+## Definition
+The step attribute specifies the interval between legal numbers.<br/><br/>
+Default value is 1.
+
+## Example
+<Canvas of={InputNumberStepStories.Param} />
+
+<Controls of={InputNumberStepStories.Param} />

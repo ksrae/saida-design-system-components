@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as StepDisabledStories from './step-disabled.stories';
+
+<Meta of={StepDisabledStories} />
+
+# Disabled
+## Definition
+Set the certain step disabled.<br/>
+Disabled steps cannot be clicked even when the clickable is true.<br/>
+
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-step disabled></sy-step>
+```
+- Alternatively, you can explicitly set it  to true, but to not apply the `disabled`, remove the attribute instead of setting its value to false.
+
+```
+<sy-step disabled="true"></sy-step>
+```
+
+
+## Example
+<Canvas of={StepDisabledStories.Param} />
+
+<Controls of={StepDisabledStories.Param} />

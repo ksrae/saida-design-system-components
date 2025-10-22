@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DatepickerReadonlyStories from './datepicker-readonly.stories';
+
+
+<Meta of={DatepickerReadonlyStories} />
+
+# Readonly
+## Definition
+The `readonly` attribute is used to make the datepicker input field non-editable. When this attribute is set, users cannot type in the input field, but they can still select a date using the datepicker interface. This is useful when you want to prevent manual input while still allowing date selection through the UI.
+
+## Boolean Attribute Handling
+In the source code, readonly = "" should be modified as follows. <br/>
+Set the <b>readonly</b> attribute without assigning a value to it. <br/>
+```
+<sy-datepicker readonly></sy-datepicker>
+```
+Alternatively, you can explicitly set it to true, but to not apply readonly, just remove the attribute instead of setting its value to false.
+
+```
+<sy-datepicker readonly="true"></sy-datepicker>
+```
+
+## Example
+<Canvas of={DatepickerReadonlyStories.Param} />
+
+<Controls of={DatepickerReadonlyStories.Param} />

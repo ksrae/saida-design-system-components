@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeClickableStories from './tree-clickable.stories';
+
+<Meta of={TreeClickableStories} />
+
+# Clickable
+## Definition
+This attribute allows click event to a node. <br/>
+When a node is clicked, itemSelected event is triggered.<br/>
+Even if clickable is false, the checkbox can still be checked or unchecked with clicking checkbox(not a node label).
+
+
+## Boolean Attribute Handling
+In the source code, <b>clickable = ""</b> should be modified as follows
+- Set `clickable` attribute and don't put a value after it.
+```
+<sy-tree clickable></sy-tree>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `clickable`, remove the attribute instead of setting its value to false.
+
+```
+<sy-tree clickable="true"></sy-tree>
+```
+
+
+## Example
+<Canvas of={TreeClickableStories.Param} />
+
+<Controls of={TreeClickableStories.Param} />

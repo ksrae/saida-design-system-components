@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputVariantStories from './input-variant.stories';
+
+<Meta of={InputVariantStories} />
+
+# Variant
+## Definition
+- Text(default) : It is used for capturing single-line textual input. It is suitable for collecting concise information. <br/><br/>
+
+- Password : 	It is specifically designed for capturing sensitive information such as passwords or PINs. <br/>
+Characters entered into a password input field are typically masked or hidden to protect user privacy. <br/><br/>
+
+- Search : It is optimized for capturing search queries within a search bar or search field. <br/> 
+It includes features such as auto-complete suggestions and clearable input fields to enhance the search experience.
+
+
+## Example
+<Canvas of={InputVariantStories.Param} />
+
+<Controls of={InputVariantStories.Param} />

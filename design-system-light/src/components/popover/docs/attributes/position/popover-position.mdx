@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PopoverPositionStories from './popover-position.stories';
+
+<Meta of={PopoverPositionStories} />
+
+# Position
+## Definition
+Popover can be set in 12 different positions:
+- top
+- topLeft
+- topRight
+- left
+- leftTop
+- leftBottom
+- right
+- rightTop
+- rightBottom
+- bottom: (Default)
+- bottomLeft
+- bottomRight
+
+
+## Example
+<Canvas of={PopoverPositionStories.Param} />
+
+<Controls of={PopoverPositionStories.Param} />
+

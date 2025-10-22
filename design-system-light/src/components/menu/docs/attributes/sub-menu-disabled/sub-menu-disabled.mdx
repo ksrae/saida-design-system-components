@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as MenuSubDisabledStories from './sub-menu-disabled.stories';
+
+<Meta of={MenuSubDisabledStories} />
+
+# Sub Menu Disabled
+## Definition
+Disables sub menu. Disabled sub menu will not open its children.
+
+
+## Boolean Attribute Handling
+In the source code, disabled = "" should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-menu-sub disabled></sy-menu-sub>
+```
+
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `disabled`, remove the attribute instead of setting its value to`false`.
+```
+<sy-menu-sub disabled="true"></sy-menu-sub>
+```
+
+
+## Example
+<Canvas of={MenuSubDisabledStories.Param} />
+
+<Controls of={MenuSubDisabledStories.Param} />
+
+{/* ## Parameter
+<Controls of={ButtonDisabledStories.Param} /> */}

@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputStatusStories from './input-status.stories';
+
+<Meta of={InputStatusStories} />
+
+# Status
+The `status` attribute can be used to indicate the current state of the input. It can be set to `default`, `warning`, `error`, or `success`.
+
+
+## Example
+<Canvas of={InputStatusStories.Param} />
+
+<Controls of={InputStatusStories.Param} />

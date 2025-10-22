@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PopconfirmKeyControlStories from './popconfirm-key-control.stories';
+
+<Meta of={PopconfirmKeyControlStories} />
+
+# Key Control
+## Definition
+### Focus is on `ok` or `cancel`
+Because popconfirm can focus on any button, popconfirm itself can control key events. <br/>
+In this case, the ESC, Enter, and Space keys will work without adding any script code.
+
+### Focus is on `none` or loss of focus
+To close popconfirm by keyboard input, the DOM must have a focus event.<br/>
+In this case, popconfirm doesn't have focus, which means it cannot control any key events.
+
+The example below shows how to close popconfirm by pressing the ESC key. 
+
+## Example
+<Canvas of={PopconfirmKeyControlStories.Param} />
+

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AvatarImageStories from './avatar-image.stories';
+
+
+<Meta of={AvatarImageStories} />
+
+# Avatar Image
+## Definition
+To show image, add an image link to the image attribute.<br/>
+It must be a valid link; otherwise, a image will not be displayed. <br/><br/>
+The entire image will be applied to the avatar, so larger images may appear smaller. Therefore, it is important to use an appropriately sized image. <br/>
+<b>The image takes precedence over the letter and icon props.</b>
+
+<Canvas of={AvatarImageStories.Param} />
+
+<Controls of={AvatarImageStories.Param} />

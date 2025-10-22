@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DropdownDisabledStories from './dropdown-disabled.stories';
+
+<Meta of={DropdownDisabledStories} />
+
+# Disabled
+## Definition
+Use the disabled attribute to disable the dropdown.<br/>
+If disabled attribute is set true, any events will be prevented.
+
+## Boolean Attribute Handling
+In the source code, disabled = "" should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-dropdown disabled></sy-dropdown>
+```
+
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `disabled`, remove the attribute instead of setting its value to`false`.
+```
+<sy-dropdown disabled="true"></sy-dropdown>
+```
+
+## Example
+<Canvas of={DropdownDisabledStories.Param} />
+
+<Controls of={DropdownDisabledStories.Param} />

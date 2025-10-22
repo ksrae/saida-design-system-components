@@ -1,1 +1,1 @@
-export * from './sy-banner';
+export * from './banner.element';

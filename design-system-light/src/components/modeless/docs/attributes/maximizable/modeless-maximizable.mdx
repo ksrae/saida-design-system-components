@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModelessMaximizableStories from "./modeless-maximizable.stories";
+
+<Meta of={ModelessMaximizableStories} />
+
+# Maximizable
+## Definition
+Determines the visibility of the <b>Maximum</b> button.<br/>
+Even if there is no maximum button on the modeless, it can be maximized by using the `setMaximum()` function or by adding the `maximum` attribute.
+
+## Boolean Attribute Handling
+In the source code, maximizable = "" should be modified as follows. <br/>
+Set the <b>maximizable</b> attribute without assigning a value to it. <br/>
+```
+<sy-modeless maximizable></sy-modeless>
+```
+Alternatively, you can explicitly set it to true, but to not apply `maximizable`, just remove the attribute instead of setting its value to false.
+
+```
+<sy-modeless maximizable="true"></sy-modeless>
+```
+
+## Example
+<Canvas of={ModelessMaximizableStories.Param} />
+
+<Controls of={ModelessMaximizableStories.Param} />

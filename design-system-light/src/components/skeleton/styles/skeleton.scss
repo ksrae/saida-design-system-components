@@ -1,0 +1,173 @@
+:host {
+    display: block;
+    width: 100%;
+  }
+
+  .skeleton-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: var(--spacing-medium);
+
+    &.align-center {
+      align-items: center; 
+      justify-content: center;
+    }
+  }
+
+  .skeleton-item {
+    background: var(--skeleton-background-enabled);
+    border-radius: var(--spacing-3xsmall);
+  }
+
+  .skeleton-animated {
+    // background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, #f0f0f0 25%, #e1e1e1 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+  }
+
+  @keyframes skeleton {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .skeleton-text {
+    height: 16px;
+    width: 100%;
+  }
+
+  .skeleton-avatar {
+    border-radius: 50%;
+    min-width: var(--component-large);
+    min-height: var(--component-large);
+    margin-bottom: auto;
+  }
+
+  .skeleton-image {
+    min-width: var(--component-large);
+    min-height: var(--component-large);
+    margin-bottom: auto;    
+  }
+
+  .skeleton-image.large {
+    min-width: 100px;
+    min-height: 100px;
+  }
+
+  .skeleton-button {
+    width: 120px;
+    border-radius: var(--border-radius-small);
+    height: var(--component-medium);
+    border-radius: 4px;
+    display: inline-block;
+    gap:var(--spacing-xsmall);
+  }
+
+  .skeleton-table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .skeleton-table td {
+    padding: var(--spacing-xsmall);
+    border: 1px solid var(--skeleton-border-enabled);
+  }
+
+  .skeleton-table-cell {
+    height: 16px;
+    width: 100%;
+    border-radius: var(--border-radius-xsmall);
+    margin-bottom: 0px;
+  }
+
+  .skeleton-with-avatar,
+  .skeleton-with-image {
+    display: flex;
+    width: 100%;
+  }
+
+  .skeleton-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+    gap: var(--spacing-small);
+    
+    /* Add this for vertical alignment when only 1 row */
+    &.vertical-center {
+      display: flex;
+      align-items: center;
+    }
+    
+    /* Make the text take full height in vertical center mode */
+    &.vertical-center .skeleton-text {
+      width: 100%;
+    }
+  }
+
+  .skeleton-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap:var(--spacing-medium);
+  }
+
+  .skeleton-gallary-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap:var(--spacing-medium);
+  }
+
+  .skeleton-gallary-row {
+    display: flex;
+    justify-content: space-between;
+    gap:var(--spacing-medium);
+  }
+
+  .skeleton-gallary-item {
+    width: 22%;
+    aspect-ratio: 1 / 1;
+    min-height: 60px;
+    flex:1;
+  }
+
+  .skeleton-tree-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    gap:var(--spacing-medium);
+  }
+
+  .skeleton-tree-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .skeleton-tree-indent {
+    height: 16px;
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  .skeleton-tree-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  :host(sy-skeleton[disabled]){
+    .skeleton-item{
+      background-color: var(--background-subtlest);
+    }
+  }
+  

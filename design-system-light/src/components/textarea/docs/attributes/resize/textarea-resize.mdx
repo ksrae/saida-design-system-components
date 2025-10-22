@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaResizeStories from './textarea-resize.stories';
+
+<Meta of={TextareaResizeStories} />
+
+# Resize
+## Definition
+Text area can be resized by user based on the following value of the resize property:
+- none: not allowing resize.
+- horizontal: only horizontal resizing is available.
+- vertical: only vertical resizing is available.
+- both: both horizontal and vertical resizing are available.
+
+Default value is 'none'.
+
+
+
+## Example
+<Canvas of={TextareaResizeStories.Param} />
+
+<Controls of={TextareaResizeStories.Param} />

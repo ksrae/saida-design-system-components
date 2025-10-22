@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ProgressCircularHideTextParams from './progress-circular-hideText.stories';
+
+<Meta of={ProgressCircularHideTextParams} />
+
+# Hide Text
+## Definition
+Hide / Show the text which is displayed in the center of the progress circular.
+Default Value is `false`.
+
+## Boolean Attribute Handling
+In the source code, <b>hideText = ""</b> should be modified as follows
+- Set `hideText` attribute and don't put a value after it.
+```
+<sy-progress-circular hideText></sy-progress-circular>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply `hideText` attribute, remove it instead of setting its value to `false`.
+
+```
+<sy-progress-circular hideText="true"></sy-progress-circular>
+```
+
+## Example
+<Canvas of={ProgressCircularHideTextParams.Param} />
+
+<Controls of={ProgressCircularHideTextParams.Param} />
+

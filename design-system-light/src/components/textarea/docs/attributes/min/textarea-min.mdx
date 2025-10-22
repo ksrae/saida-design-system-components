@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaMinStories from './textarea-min.stories';
+
+<Meta of={TextareaMinStories} />
+
+# Min
+## Definition
+Setting minimum text length for the textarea. <br/>
+Only enter positive integer values, otherwise minimum value is set to default. <br/>
+Valid of the textarea is false when text length is less than the minimum value. <br/>
+The default is 0. <br/>
+
+
+
+## Example
+<Canvas of={TextareaMinStories.Param} />
+
+<Controls of={TextareaMinStories.Param} />

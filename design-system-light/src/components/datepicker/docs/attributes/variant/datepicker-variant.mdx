@@ -1,0 +1,23 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DatepickerVariantStories from './datepicker-variant.stories';
+
+
+<Meta of={DatepickerVariantStories} />
+
+# Variant
+## Definition
+The `variant` attribute is used to select among different datepicker types, such as a simple date picker, a date and time picker, a range picker, or a time picker. <br/>
+ 
+
+## Values
+- `date`: Displays a date picker.
+- `datetime`: Displays a date and time picker.
+- `range`: Displays a date range picker.
+- `time`: Displays a time picker.
+
+'date' | 'datetime' | 'range' | 'time'
+
+## Example
+<Canvas of={DatepickerVariantStories.Param} />
+
+<Controls of={DatepickerVariantStories.Param} />

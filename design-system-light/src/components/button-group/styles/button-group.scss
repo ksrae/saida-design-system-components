@@ -1,0 +1,61 @@
+
+:root,
+:host {
+    display: inline-flex;
+   .button-group {
+         display: inline-flex;
+         justify-content: flex-start;
+    }
+
+    .button-group--vertical {
+        flex-direction: column;
+    }
+}
+// :host(sy-button-group[variant="primary"]){
+//     background-color: var(--button-primary-background-enabled);
+//     border-radius: var(--border-radius-medium);
+// }
+// :host(sy-button-group[variant="secondary"]){
+//     background-color: var(--button-secondary-background-enabled);
+//     box-shadow: 0 0 0 2px  var(--button-secondary-border-enabled) inset;
+//     border-radius: var(--border-radius-medium);
+// }
+// :host(sy-button-group[variant="default"]){
+//     background-color: var(--button-default-background-enabled);
+//     box-shadow: 0 0 0 2px  var(--button-default-border-enabled) inset;
+//     border-radius: var(--border-radius-medium);
+// }
+
+
+/* focus visible */
+:host(sy-button-group) .button-group > ::slotted(sy-button:focus-within){
+    z-index:2;
+}
+
+
+/* Horizontal */
+:host(sy-button-group) .button-group > ::slotted(sy-button){
+    margin: 0;
+    margin-left:-1px;
+}
+:host(sy-button-group) .button-group > ::slotted(sy-button:first-child){
+    margin-left:0px;
+}
+
+:host(sy-button-group) .button-group > ::slotted(sy-button:hover){
+    z-index:2;
+}
+
+/* Vertical */
+:host(sy-button-group[vertical]) .button-group > ::slotted(sy-button){
+    margin: 0; /* Reset margin */
+    margin-top:-1px; 
+}
+
+:host(sy-button-group[vertical]) .button-group > ::slotted(sy-button:first-child){
+    margin-top:0px; 
+}
+
+:host(sy-button-group[vertical]) .button-group > ::slotted(sy-button:hover){
+    z-index:2;
+}

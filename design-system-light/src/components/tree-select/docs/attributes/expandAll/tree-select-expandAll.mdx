@@ -1,0 +1,25 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeSelectExpandAllStories from './tree-select-expandAll.stories';
+
+<Meta of={TreeSelectExpandAllStories} />
+
+# ExpandAll
+## Definition
+The `expandAll` attribute is a boolean value that determines if all nodes in the tree are expanded or collapsed.
+
+## Boolean Attribute Handling
+In the source code, <b>expandAll = ""</b> should be modified as follows
+- Set `expandAll` attribute and don't put a value after it.
+```
+<sy-tree-select expandAll></sy-tree-select>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `expandAll`, remove the attribute instead of setting its value to false.
+
+```
+<sy-tree-select expandAll="true"></sy-tree-select>
+```
+
+## Example
+<Canvas of={TreeSelectExpandAllStories.Param} />
+
+<Controls of={TreeSelectExpandAllStories.Param} />

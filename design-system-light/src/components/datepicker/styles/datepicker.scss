@@ -1,0 +1,144 @@
+:host {
+  display: inline-flex;
+
+  .container {
+    display: flex;
+    align-items: center;
+
+    .input-group {
+      display: flex;
+      position: relative;
+      gap: var(--spacing-3xsmall);
+      sy-icon {
+        color: var(--date-time-picker-calendar-container-header-icon-enabled);
+      }            
+    }
+  }
+
+  .range-visible {
+    height: 32px;
+    display: flex;
+    box-sizing: border-box;
+
+    .input-group {
+      border: var(--border-small) var(--input-form-field-border-enabled);
+      background-color: var(--input-form-field-background-enabled);
+      border-radius: var(--border-radius-medium);
+      height: 32px;
+      display: flex;
+      box-sizing: border-box;
+      gap: initial;
+
+      &:hover {
+        color: var(--input-form-field-text-hover);
+        border: var(--border-small) var(--input-form-field-border-hover);
+        background-color: var(--input-form-field-background-hover);
+      }
+
+      &.input--focused {
+        border: var(--border-small) var(--focus-outline);
+        outline: var(--border-small) var(--focus-outline);
+      }
+
+      &.focus-start {
+        position: relative;
+
+        &:after {
+          content: "";
+          display: flex;
+          position: absolute;
+          border-bottom: 2px solid var(--focus-outline);
+          bottom: 0px;
+          left: 7px;
+          width: 80px;
+          height: 12px;
+          transition: all var(--ease-in-out) var(--normal-duration);
+        }
+      }
+
+      &.focus-end {
+        position: relative;
+
+        &:after {
+          content: "";
+          display: flex;
+          position: absolute;
+          border-bottom: 2px solid var(--focus-outline);
+          bottom: 0px;
+          left: 134px;
+          width: 80px;
+          height: 5px;
+          transition: all var(--ease-in-out) var(--normal-duration);
+        }
+      }
+    }
+
+  }
+
+  /* 단일 입력 필드를 위한 기본 너비 */
+  // .container.range-hidden {
+  //   width: 220px; /* input 너비 + padding + 버튼 너비를 고려한 값 */
+  // }
+
+  /* 시작과 종료 입력 필드 모두 표시될 때의 너비 */
+  // .container.range-visible {
+  //   width: 460px; /* 두 input 너비 + padding + 버튼 너비 + 간격을 고려한 값 */
+  // }
+
+  .date-input {
+    flex-grow: 1;
+    width: 200px;
+    /* 입력 필드의 기본 너비 설정 */
+    border: none;
+    outline: none;
+  }
+
+  button {
+    margin-left: -20px;
+  }
+}
+
+:host(sy-datepicker[variant="range"][disabled]){
+  .input-group{
+    background-color: var(--date-time-picker-input-field-background-disabled);
+    border:var(--border-small) var(--date-time-picker-input-field-border-disabled);
+    color:var(--date-time-picker-input-field-text-disabled);
+    &:hover{
+      border:var(--border-small) var(--date-time-picker-input-field-border-disabled);
+    }    
+  }
+}
+
+:host(sy-datepicker[variant="range"][readonly]){
+  .input-group{
+    background-color: var(--date-time-picker-input-field-background-readonly);
+    border:var(--border-small) var(--date-time-picker-input-field-border-readonly);
+    color:var(--date-time-picker-input-field-text-readonly);
+    &:hover{
+      border:var(--border-small) var(--date-time-picker-input-field-border-readonly);
+    }    
+  }
+}
+
+/* Input size */
+:host(sy-datepicker[variant="range"]){
+    sy-input{
+      display: flex;
+      align-items: center;
+      width:125px;
+  }
+}
+:host(sy-datepicker[mode="day"]),
+:host(sy-datepicker[mode="month"]),
+:host(sy-datepicker[mode="year"]){
+    sy-input{
+      width:125px;
+  }
+}
+
+:host(sy-datepicker[variant="datetime"]),
+:host(sy-datepicker[variant="time"]){
+    sy-input{
+      width:190px;
+  }
+}

@@ -1,0 +1,19 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as GlobalHeaderSlotActionParamStory from "./global-header-slotAction.stories";
+
+<Meta of={GlobalHeaderSlotActionParamStory} />
+
+# Slot Actions
+## Definition
+Use <b>slot="actions"</b> to add action area to the header.
+Can include icons or text-based actions.<br/>
+<i>It is recommended that the actions buttons be placed in the following order from left to right.</i><br/>
+- Search
+- Other
+- Help 
+- Notifications  
+- Account
+## Example
+<Canvas of={GlobalHeaderSlotActionParamStory.Param} />
+
+<Controls of={GlobalHeaderSlotActionParamStory.Param} />

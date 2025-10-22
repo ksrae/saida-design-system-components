@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as TabActiveStories from './tab-group-active.stories';
+
+<Meta of={TabActiveStories} />
+
+# Active
+## Definition
+Active one of the tab.<br/>
+Active must be index number of the tab. Index number begins from 0. So, Set 0 to select the first tab.<br/>
+If active number is bigger than total count of tabs. No tab is activated.<br/><br/>
+The default value is 0.
+
+
+
+## Example
+<Canvas of={TabActiveStories.Param} />
+
+<Controls of={TabActiveStories.Param} />
+

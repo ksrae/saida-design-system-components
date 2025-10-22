@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ButtonSizeStories from './button-size.stories';
+
+<Meta of={ButtonSizeStories} />
+
+# Size
+## Definition
+Sets size of the button. <br/>
+There are three types: `small` , `medium`, and `large`<br/><br/>
+The default value is `medium`.<br/>
+
+## Example
+<Canvas of={ButtonSizeStories.Param} />
+
+<Controls of={ButtonSizeStories.Param} />

@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ColorpickerReadonlyStories from './colorpicker-readonly.stories';
+
+
+<Meta of={ColorpickerReadonlyStories} />
+
+# Readonly
+## Definition
+Use the `readonly` attribute to make a `colorpicker` non-editable. <br/>
+If readonly is set, the user cannot change the color value.
+
+## Boolean Attribute Handling
+In the source code, readonly = "" should be modified as follows. <br/>
+Set the <b>readonly</b> attribute without assigning a value to it. <br/>
+```
+<sy-colorpicker readonly></sy-colorpicker>
+```
+Alternatively, you can explicitly set it to true, but to not apply `readonly`, just remove the attribute instead of setting its value to false.
+
+```
+<sy-colorpicker readonly="true"></sy-colorpicker>
+```
+
+## Example
+<Canvas of={ColorpickerReadonlyStories.Param} />
+
+<Controls of={ColorpickerReadonlyStories.Param} />

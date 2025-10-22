@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AvatarTooltipContentStories from './avatar-tooltip-content.stories';
+
+
+<Meta of={AvatarTooltipContentStories} />
+
+# Avatar Tooltip Content
+## Definition
+This option defines the text that appears as a tooltip when hovering over the avatar.<br/>
+If not explicitly defined, the full name(text) of the avatar is provided as the tooltip content.
+
+## Example
+<Canvas of={AvatarTooltipContentStories.Param} />
+
+<Controls of={AvatarTooltipContentStories.Param} />
+

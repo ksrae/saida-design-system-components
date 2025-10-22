@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeSelectedValueStories from './tree-selectedValue.stories';
+
+<Meta of={TreeSelectedValueStories} />
+
+# Selected Value
+## Definition
+Sets a pre-selected tree item. <br/>
+To pre-select tree item, `clickable` attribute must be set.<br/>
+The values of the tree items must be unique. <br/>
+The `selectedValue` attribute is not case-sensitive (or case-insensitive), meaning 'abc' and 'ABC' values are considered equal, not unique. <br/>
+Only one tree item can be defined.
+
+## Example
+<Canvas of={TreeSelectedValueStories.Param} />
+
+<Controls of={TreeSelectedValueStories.Param} />

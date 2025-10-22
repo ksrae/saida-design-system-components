@@ -1,0 +1,29 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BadgeDotStories from './badge-dot.stories';
+
+
+<Meta of={BadgeDotStories} />
+
+# Dot
+## Definition
+The dot prop changes a badge into a small dot. <br/>
+This can be used as a notification that something has changed without giving a count.<br/>
+
+## Boolean Attribute Handling
+In the source code, dot = "" should be modified as follows
+- Set `dot` attribute and don't put a value after it.
+```
+<sy-badge dot></sy-badge>
+```
+- Alternatively, you can explicitly set `dot` to true, but to not apply the `dot`, simply remove the attribute instead of setting its value to false.
+
+```
+<sy-badge dot="true"></sy-badge>
+```
+
+
+## Example
+<Canvas of={BadgeDotStories.Param} />
+
+<Controls of={BadgeDotStories.Param} />
+

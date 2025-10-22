@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModalEnableModalMaximizeStories from "./modal-enableModalMaximize.stories";
+
+<Meta of={ModalEnableModalMaximizeStories} />
+
+# EnableModalMaximize
+## Definition
+Enable the maximize button in the modal header.<br/>
+This button allows the user to maximize the modal to full screen.<br/><br/>
+If the modal is already maximized, the button will be changed to a restore button.<br/>
+Clicking the restore button will restore the modal to its original size.<br/>
+
+
+## Boolean Attribute Handling
+In the source code, enableModalMaximize = "" should be modified as follows
+- Set `enableModalMaximize` attribute and don't put a value after it.
+```
+<sy-modal enableModalMaximize></sy-modal>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `enableModalMaximize` attribute, remove the attribute instead of setting its value to false.
+```
+<sy-modal enableModalMaximize="true"></sy-modal>
+```
+
+## Example
+<Canvas of={ModalEnableModalMaximizeStories.Param} />
+
+<Controls of={ModalEnableModalMaximizeStories.Param} />
+

@@ -1,1 +1,1 @@
-export * from './sy-empty';
+export * from './empty.element';

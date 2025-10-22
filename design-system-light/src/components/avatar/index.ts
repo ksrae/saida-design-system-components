@@ -1,1 +1,2 @@
-export * from './sy-avatar';
+export * from './avatar.element';
+export * from './avatar-group.element';

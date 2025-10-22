@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SplitPanelChangedStories from './split-panel-changed.stories';
+
+<Meta of={SplitPanelChangedStories} />
+
+# HorizontalChanged & VerticalChanged
+## Definition
+Events are emitted differently based on the type.
+- When the type is horizontal, the <b>horizontalChanged</b> event is emitted. event.detail includes <b>leftRatio</b> and <b>rightRatio</b>.
+- When the type is vertical, the <b>verticalChanged</b> event is emitted. event.detail includes <b>topRatio</b> and <b>bottomRatio</b>.
+
+## Example
+<Canvas of={SplitPanelChangedStories.Param} />
+
+<Controls of={SplitPanelChangedStories.Param} />

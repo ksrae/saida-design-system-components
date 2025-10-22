@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PopconfirmTriggerStories from './popconfirm-trigger.stories';
+
+<Meta of={PopconfirmTriggerStories} />
+
+# Trigger
+## Definition
+There are options `click`, and `none`.<br/>
+If set to `none`, it will not be triggered. <br/>
+To open the popconfirm, use the `setOpen` method.<br/><br/>
+Default value is `click`.<br/><br/>
+
+## Example
+<Canvas of={PopconfirmTriggerStories.Param} />
+
+<Controls of={PopconfirmTriggerStories.Param} />
+

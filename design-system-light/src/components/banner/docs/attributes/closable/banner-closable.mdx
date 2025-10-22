@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BannerClosableStories from './banner-closable.stories';
+
+
+<Meta of={BannerClosableStories} />
+
+# Closable
+## Definition
+Refers to a component that specifically offers a close action (e.g., a close button) for the user to manually remove or hide it.<br/>
+
+## Boolean Attribute Handling
+In the source code, <b>closable = ""</b> should be modified as follows
+- Set `closable` attribute and don't put a value after it.
+```
+<sy-banner-messsage closable></sy-banner-messsage>
+```
+- Alternatively, you can explicitly set it to true, but to not apply the `closable`, simply remove it instead of setting its value to false.
+
+```
+<sy-banner-messsage closable="true"></sy-banner-messsage>
+```
+
+## Example
+<Canvas of={BannerClosableStories.Param} />
+
+<Controls of={BannerClosableStories.Param} />
+

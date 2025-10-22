@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeExpandChangedStories from './tree-expandChanged.stories';
+
+<Meta of={TreeExpandChangedStories} />
+
+# ExpandChanged
+## Definition
+When a node is expanded or collapsed, the expandChanged event is triggered. <br/>
+This event includes the value, label, and expanded of the node. <br/>
+To fire this event, expandable attribute must be set.
+
+
+## Example
+<Canvas of={TreeExpandChangedStories.Param} />
+
+<Controls of={TreeExpandChangedStories.Param} />

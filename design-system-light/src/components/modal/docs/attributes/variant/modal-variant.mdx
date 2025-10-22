@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModalVariantStories from "./modal-variant.stories";
+
+<Meta of={ModalVariantStories} />
+
+# Variant
+The difference between Modal and Dialog is primarily in the way they interact with features. <br/>
+While Modal makes it impossible for users to do anything else until they complete the task, Dialog is typically used to provide information to the user or to guide them to perform simple tasks.
+
+## Modal
+- Maximization: Modal supports maximization. If EnableModalMaximize is true, the header displays the Maximize button.
+- draggable: Modal supports drag function.
+- Resizable: Modal supports resizing.
+
+
+## Dialog
+- Maximization: Dialog does not support maximization.
+- draggable: Modal does not support drag function.
+- Resizable: Modal does not support resizing.
+
+
+## Example
+<Canvas of={ModalVariantStories.Param} />
+
+<Controls of={ModalVariantStories.Param} />
+

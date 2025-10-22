@@ -1,0 +1,19 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PopoverKeyControlStories from './popover-key-control.stories';
+
+<Meta of={PopoverKeyControlStories} />
+
+# Key Control
+## Definition
+To close popover by keyboard input, the DOM must have a focus event. Some DOMs don't have a focus event itself, like <b>div</b>.<br/>
+In this case, add tabindex attribute on the tag or use `focus()` function.<br/><br/>
+The example shows shut popover by pressing the <b>ESC key</b>.<br/>
+It is recommended to set the popover's trigger to click to apply a key event. This will enable the DOM to naturally have focus and be ready to retrieve key events when a user clicks on any DOM that can focus to make the popover visible.
+
+
+## Example
+<Canvas of={PopoverKeyControlStories.Param} />
+
+<Controls of={PopoverKeyControlStories.Param} />
+

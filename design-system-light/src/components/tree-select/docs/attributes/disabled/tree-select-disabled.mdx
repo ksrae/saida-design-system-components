@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TreeSelectDisabledStories from './tree-select-disabled.stories';
+
+<Meta of={TreeSelectDisabledStories} />
+
+# Disabled
+## Definition
+Use the `disabled` attribute to disable a tree select.<br/>
+If `disabled` attribute is set, any events will be prevented.
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-tree-select disabled></sy-tree-select>
+```
+- Alternatively, you can explicitly set it  to true, but to not apply the `disabled`, remove the attribute instead of setting its value to false.
+
+```
+<sy-tree-select disabled="true"></sy-tree-select>
+```
+
+## Example
+<Canvas of={TreeSelectDisabledStories.Param} />
+
+<Controls of={TreeSelectDisabledStories.Param} />

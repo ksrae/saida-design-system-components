@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as TabClosableStories from './tab-closable.stories';
+
+<Meta of={TabClosableStories} />
+
+# Closable
+## Definition
+Adds a close icon to the tab. <br/>
+Tabs that are not set to closeable cannot be closed.<br/>
+It must be set for each tab.<br/><br/>
+The default value is false.
+
+## Boolean Attribute Handling
+In the source code, <b>closable = ""</b> should be modified as follows
+- Set `closable` attribute and don't put a value after it.
+```
+<sy-tab closable></sy-tab>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `closable`, remove the attribute instead of setting its value to false.
+
+```
+<sy-tab closable="true"></sy-tab>
+```
+
+## Example
+<Canvas of={TabClosableStories.Param} />
+
+<Controls of={TabClosableStories.Param} />
+

@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DatepickerModeStories from './datepicker-mode.stories';
+
+
+<Meta of={DatepickerModeStories} />
+
+# Mode
+## Definition
+The Mode Attribute sets the shape of the DatePicker's calendar.
+If mode is 'year', the calendar will display the year calendar.
+
+## values
+- `year`: Displays the year calendar.
+- `month`: Displays the month calendar.
+- `day`: Displays the day calendar.
+
+
+## Example
+<Canvas of={DatepickerModeStories.Param} />
+
+<Controls of={DatepickerModeStories.Param} />

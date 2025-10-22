@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PopoverDelayStories from './popover-delay.stories';
+
+<Meta of={PopoverDelayStories} />
+
+# Delay
+## Definition
+Delay in milliseconds.<br/>
+Use <b>opendelay</b> attribute to set delay before popover is shown on the event.<br/>
+Use <b>closedelay</b> attribute to set delay before hidden on the event. <br/><br/>
+Default value of opendelay is <b>150ms</b>.<br/>
+Default value of closedelay is <b>100ms</b>.<br/>
+
+
+## Example
+<Canvas of={PopoverDelayStories.Param} />
+
+<Controls of={PopoverDelayStories.Param} />
+

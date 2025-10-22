@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PagingationActivePageStories from './pagination-activePage.stories';
+
+<Meta of={PagingationActivePageStories} />
+
+# Active Page
+## Definition
+Indicates the currently active page in the pagination component.<br/>
+This allows programmatic control over which page is displayed.<br/><br/>
+The default value is <b>1</b>.
+
+## Example
+<Canvas of={PagingationActivePageStories.Param} />
+
+<Controls of={PagingationActivePageStories.Param} />
+

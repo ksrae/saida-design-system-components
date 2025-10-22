@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderHideTrackFillStories from './slider-hideTrackFill.stories';
+
+<Meta of={SliderHideTrackFillStories} />
+
+# HideTrackFill
+## Definition
+Whether the track should show a filled area. True highlights selected range, false shows only the track. 
+
+## Boolean Attribute Handling
+In the source code, <b>hideTrackFill = ""</b> should be modified as follows
+- Set `hideTrackFill` attribute and don't put a value after it.
+```
+<sy-slider hideTrackFill></sy-slider>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `hideTrackFill`, remove the attribute instead of setting its value to false.
+
+```
+<sy-slider hideTrackFill="true"></sy-slider>
+```
+
+
+## Example
+<Canvas of={SliderHideTrackFillStories.Param} />
+
+<Controls of={SliderHideTrackFillStories.Param} />
+

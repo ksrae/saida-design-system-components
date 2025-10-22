@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaRowsStories from './textarea-rows.stories';
+
+<Meta of={TextareaRowsStories} />
+
+# Rows
+## Definition
+The number of rows of the textarea to display by default. <br/>
+Only enter positive integer values, otherwise the value is set to default. <br/>
+The default value is 4. 
+
+
+
+## Example
+<Canvas of={TextareaRowsStories.Param} />
+
+<Controls of={TextareaRowsStories.Param} />

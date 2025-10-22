@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectSelectedStories from './select-selected.stories';
+
+<Meta of={SelectSelectedStories} />
+
+# Selected
+## Definition
+This event fires when item is selected / unselected. event.detail contains label and value of the selected item.<br/>
+If variant attribute is set to multiple, `event.detail` contains array of label and value of all selected items.(Use `selectedOptions` array)<br/>
+If there is no selected item, empty array is stored in `event.detail`.<br/>
+Check the console if you want to see the `event.detail` object.
+
+
+## Example
+<Canvas of={SelectSelectedStories.Param} />
+
+<Controls of={SelectSelectedStories.Param} />
+

@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as RadioDisabledStories from './radio-disabled.stories';
+
+<Meta of={RadioDisabledStories} />
+
+# Disabled
+## Definition
+Disables the radio so that it cannot be interacted with.
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-radio disabled></sy-radio>
+```
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `disabled`, remove the attribute instead of setting its value to`false`.
+
+```
+<sy-radio disabled="true"></sy-radio>
+```
+
+## Example
+<Canvas of={RadioDisabledStories.Param} />
+
+<Controls of={RadioDisabledStories.Param} />
+

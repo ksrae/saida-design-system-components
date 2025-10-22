@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DatepickerDateNamesStories from './datepicker-dateNames.stories';
+
+
+<Meta of={DatepickerDateNamesStories} />
+
+# DateNames
+## Definition
+The `dateNames` attribute allows you to customize the names of the days and months displayed in the datepicker. This is particularly useful for localization or when you want to use custom names instead of the default ones.
+
+## Usage
+The first 7 values are for the days of the week, starting from Sunday.<br/>
+It is written as a string separated by commas, and each value represents the name of the corresponding day or month. For example, 'Datenames="Sunday, Monday, Tuesday, Wednesday, Wednesday, Thursday, Friday, Saturday"' can be set.
+<br/>
+Default value is `Su,Mo,Tu,We,Th,Fr,Sa`
+
+## Example
+<Canvas of={DatepickerDateNamesStories.Param} />
+
+<Controls of={DatepickerDateNamesStories.Param} />

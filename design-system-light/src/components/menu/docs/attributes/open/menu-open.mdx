@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as MenuOpenStories from './menu-open.stories';
+
+<Meta of={MenuOpenStories} />
+
+# Open
+## Definition
+Determines whether the menu is visible without any events.<br/>
+If set true, the menu will be displayed by default.
+
+## Boolean Attribute Handling
+In the source code, open = "" should be modified as follows
+- Set `open` attribute and don't put a value after it.
+```
+<sy-menu-item open></sy-menu-item>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `open` attribute, remove it instead of setting its value to false.
+```
+<sy-menu-item open="true"></sy-menu-item>
+```
+
+## Example
+<Canvas of={MenuOpenStories.Param} />
+
+<Controls of={MenuOpenStories.Param} />

@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as IconSelectableStories from './icon-selectable.stories';
+
+
+<Meta of={IconSelectableStories} />
+
+# Selectable
+## Definition
+If the `selectable` attribute is set, icon is available to click. <br/>
+When the icon is clicked, a selected event will be emitted with its type included in e.detail.<br/>
+For more details, please refer to the selected event.
+
+## Boolean Attribute Handling
+In the source code, selectable = "" should be modified as follows
+- Set `selectable` attribute and don't put a value after it.
+```
+<sy-icon selectable></sy-icon>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `selectable`, remove the attribute instead of setting its value to false.
+```
+<sy-icon selectable="true"></sy-icon>
+```
+
+## Example
+<Canvas of={IconSelectableStories.Param} />
+
+<Controls of={IconSelectableStories.Param} />

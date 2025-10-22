@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+
+import * as SkeletonParamStory from "./skeleton.stories";
+
+<Meta of={SkeletonParamStory} />
+
+# Skeleton
+## Definition
+Skeleton elements are used to represent a loading state. 
+They are used to provide a temporary visual representation of the content while the actual content is still loading. 
+Skeletons are typically used for images, text, and other media elements.
+
+## Example
+<Canvas of={SkeletonParamStory.Default} />
+
+<Controls of={SkeletonParamStory.Default} />

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputNumberValueStories from './input-number-value.stories';
+
+<Meta of={InputNumberValueStories} />
+
+# Value
+## Definition
+Sets default value to input-number.<br/>
+You can set any number, including greater than the maximum number and less than the minimum number.<br/>
+However, valid will be false and the value will be set to legal value on blur event.
+
+
+## Example
+<Canvas of={InputNumberValueStories.Param} />
+
+<Controls of={InputNumberValueStories.Param} />

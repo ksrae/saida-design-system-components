@@ -1,1 +1,1 @@
-export * from './sy-pagination';
+export * from './pagination.element';

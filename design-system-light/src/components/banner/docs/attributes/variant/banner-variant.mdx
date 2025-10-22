@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BannerVariantStories from './banner-variant.stories';
+
+
+<Meta of={BannerVariantStories} />
+
+# Variant
+## Definition
+There are 5 banner message variant: `info`, `neutral`, `warning`, `error`, `success`.<br/>
+Default is <b>info</b>.
+
+## Example
+<Canvas of={BannerVariantStories.Param} />
+
+<Controls of={BannerVariantStories.Param} />
+

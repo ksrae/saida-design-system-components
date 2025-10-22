@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SubMenuStories from './sub-menu.stories';
+
+<Meta of={SubMenuStories} />
+
+# Sub Menu
+## Definition
+Sub menu may contains menu items and menu groups as well as other sub menus.<br/>
+To apply sub menu, put all \<sy-menu-item\> tags into \<sy-menu-sub\>.<br/><br/>
+The title of sub menu must be configured with the title attribute.
+
+
+## Example
+<Canvas of={SubMenuStories.Param} />
+
+<Controls of={SubMenuStories.Param} />

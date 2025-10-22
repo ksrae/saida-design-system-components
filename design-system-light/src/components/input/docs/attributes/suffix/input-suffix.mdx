@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputSuffixStories from './input-suffix.stories';
+
+<Meta of={InputSuffixStories} />
+
+# Suffix
+## Definition
+To set the suffix icon with slot, add `slot="suffix"` attribute on the tag. <br/>
+This is useful to add suffix icon on the input field.<br/>
+However, If the input type is <b>password</b> or <b>search</b>, default icon will be set instead of suffix.
+
+## Example
+<Canvas of={InputSuffixStories.Param} />
+
+<Controls of={InputSuffixStories.Param} />

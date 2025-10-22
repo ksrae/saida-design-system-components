@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderValueStories from './slider-value.stories';
+
+<Meta of={SliderValueStories} />
+
+# Value 
+
+## Definition
+Set the default value of the slider.(not a range slider).
+Default value is <b>0</b>.<br/>
+If you want to get the current value of the slider after user interaction, you can use the <b>change</b> event.<br/>
+
+
+## Default
+<Canvas of={SliderValueStories.Default} />
+
+<Controls of={SliderValueStories.Default} />
+

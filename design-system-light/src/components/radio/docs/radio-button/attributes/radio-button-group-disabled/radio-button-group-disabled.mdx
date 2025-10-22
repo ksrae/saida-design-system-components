@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as RadioButtonGroupDisabledStories from './radio-button-group-disabled.stories';
+
+
+<Meta of={RadioButtonGroupDisabledStories} />
+
+# Group Disabled
+## Definition
+Disables all radio buttons of the radio group.
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-radio-group disabled></sy-radio-group>
+```
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `disabled`, remove the attribute instead of setting its value to`false`.
+
+```
+<sy-radio-group disabled="true"></sy-radio-group>
+```
+
+## Example
+<Canvas of={RadioButtonGroupDisabledStories.Param} />
+
+<Controls of={RadioButtonGroupDisabledStories.Param} />
+

@@ -1,1 +1,1 @@
-export * from './sy-textarea';
+export * from './textarea.element';

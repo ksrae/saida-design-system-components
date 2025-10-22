@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as CheckboxReadonlyStories from './checkbox-readonly.stories';
+
+<Meta of={CheckboxReadonlyStories} />
+
+# Readonly
+## Definition
+Use the `readonly` attribute to set the checkbox readonly state.<br/>
+It makes the checkbox not mutable, meaning the user can not edit the control.
+## Boolean Attribute Handling
+In the source code, <b>readonly = ""</b> should be modified as follows
+- Set `readonly` attribute and don't put a value after it.
+```
+<sy-checkbox readonly></sy-checkbox>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `readonly`, remove the attribute instead of setting its value to false.
+```
+<sy-checkbox readonly="true"></sy-checkbox>
+```
+
+## Example
+<Canvas of={CheckboxReadonlyStories.Param} />
+
+<Controls of={CheckboxReadonlyStories.Param} />

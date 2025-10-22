@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as LabelForStories from './label-for.stories';
+
+<Meta of={LabelForStories} />
+
+# For
+## Definition
+The `for` attribute associates a label with a specific form element by matching the label's `for` attribute with the form element's `id`. <br/>
+This enhances accessibility by allowing screen readers to identify the relationship between the label and the form element, improving user experience for those relying on assistive technologies. <br/>
+It is particularly useful for form elements like input fields, checkboxes, and radio buttons, ensuring that users can easily understand which label corresponds to which form element.
+
+
+## Example
+<Canvas of={LabelForStories.Param} />
+
+<Controls of={LabelForStories.Param} />

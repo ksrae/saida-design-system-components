@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputMaxStories from './input-max.stories';
+
+<Meta of={InputMaxStories} />
+
+# Max
+## Definition
+This specifies the maximum number of characters allowed in the input field. <br/>
+Default value is `Number.MAX_SAFE_INTEGER`.
+
+## Example
+<Canvas of={InputMaxStories.Param} />
+
+<Controls of={InputMaxStories.Param} />

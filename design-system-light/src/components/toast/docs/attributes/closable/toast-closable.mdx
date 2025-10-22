@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ToastClosableStories from './toast-closable.stories';
+
+<Meta of={ToastClosableStories} />
+
+# Closable
+## Definition
+Determines the visibility of the <b>x button</b> that allows closing the Toast message.
+
+## Boolean Attribute Handling
+In the source code, <b>closable = ""</b> should be modified as follows
+- Set `closable` attribute and don't put a value after it.
+
+```
+<sy-toast-message closable></sy-toast-message>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `closable` attribute, remove it instead of setting its value to false.
+
+```
+<sy-toast-message closable="true"></sy-toast-message>
+```
+
+
+## Example
+<Canvas of={ToastClosableStories.Param} />
+
+<Controls of={ToastClosableStories.Param} />

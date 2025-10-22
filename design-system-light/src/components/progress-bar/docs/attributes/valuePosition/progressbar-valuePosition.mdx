@@ -1,0 +1,22 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as ProgressPositionParams from './progressbar-valuePosition.stories';
+
+<Meta of={ProgressPositionParams} />
+
+
+# Value Position
+## Definition
+Determines the position of the value within the bar.
+- <b>progress-left</b>: The value is located on the left side of the progress.
+- <b>progress-center</b>: The value is located in the center of the progress. The `valuePosition` is set to progress-left if there is a lack of space.
+- <b>progress-right</b>: The value is located on the right side of the progress. The `valuePosition` is set to progress-left if there is a lack of space.
+- <b>left</b>: The value is located on the left side of the element.
+- <b>center</b>: The value is located in the center of the element.
+- <b>right</b>: The value is located on the right side of the element. <br/>
+
+
+## Example
+<Canvas of={ProgressPositionParams.Param} />
+
+<Controls of={ProgressPositionParams.Param} />

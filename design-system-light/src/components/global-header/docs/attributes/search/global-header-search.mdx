@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as GlobalHeaderSearchParamStory from "./global-header-search.stories";
+
+<Meta of={GlobalHeaderSearchParamStory} />
+
+# Search
+## Definition
+The search component is a text input field that allows users to enter search queries. 
+It is typically used in the header of a web application to provide a quick and easy way for users to find content or information.
+
+## Boolean Attribute Handling
+In the source code, search = "" should be modified as follows
+- Enter `search` and do not put a value after it.
+```
+<sy-button search></sy-button>
+```
+- Alternatively, you can explicitly set it to true, but to not apply the `search` attribute, simply remove it instead of setting its value to false.
+
+```
+<sy-button search="true"></sy-button>
+```
+
+## Example
+<Canvas of={GlobalHeaderSearchParamStory.Param} />
+
+<Controls of={GlobalHeaderSearchParamStory.Param} />

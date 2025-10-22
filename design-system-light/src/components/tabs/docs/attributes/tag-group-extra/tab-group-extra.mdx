@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TabGroupExtraStories from './tab-group-extra.stories';
+
+<Meta of={TabGroupExtraStories} />
+
+# Group Extra
+It is possible to set buttons or icons on the right side of the tabs. <br/>
+To do this, The buttons or icons must be included in the `extra` slot. <br/>
+
+
+
+## Example
+<Canvas of={TabGroupExtraStories.Param} />
+
+<Controls of={TabGroupExtraStories.Param} />
+

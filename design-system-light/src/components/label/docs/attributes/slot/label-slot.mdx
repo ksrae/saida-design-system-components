@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as LabelSlotStories from './label-slot.stories';
+
+<Meta of={LabelSlotStories} />
+
+# Slot
+## Definition
+The `slot` attribute allows you to define a custom slot for the label component. <br/>
+This enables you to insert custom content or components within the label, providing flexibility in how the label is rendered and what it contains.
+
+
+
+
+## Example
+<Canvas of={LabelSlotStories.Param} />
+
+<Controls of={LabelSlotStories.Param} />

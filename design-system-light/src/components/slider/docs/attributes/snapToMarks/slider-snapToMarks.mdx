@@ -1,0 +1,22 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderSnapToMarksStories from './slider-snapToMarks.stories';
+
+<Meta of={SliderSnapToMarksStories} />
+
+# SnapToMarks
+
+## Definition
+Set <b>snapToMarks</b> to `true` to snap the slider to the nearest mark when the user releases the slider handle.<br/>
+This helps to restrict the slider to the defined marks.
+The custom marks are defined by the <b>marks</b> property.
+
+## Default
+<Canvas of={SliderSnapToMarksStories.Default} />
+
+<Controls of={SliderSnapToMarksStories.Default} />
+
+## Range
+
+<Canvas of={SliderSnapToMarksStories.Range} />
+
+<Controls of={SliderSnapToMarksStories.Range} />

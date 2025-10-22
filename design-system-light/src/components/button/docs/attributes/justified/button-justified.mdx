@@ -1,0 +1,25 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ButtonJustifiedStories from './button-justified.stories';
+
+<Meta of={ButtonJustifiedStories} />
+
+# Justified
+## Definition
+This will force the button to fit the width of its parent. Use it if necessary, depending on the page design.
+
+## Boolean Attribute Handling
+In the source code, justified = "" should be modified as follows
+- Set the justified attribute without assigning a value to it.
+```
+<sy-button justified></sy-button>
+```
+- Alternatively, you can explicitly set it to true, but to not apply the `justified` attribute, simply remove it instead of setting its value to false.
+
+```
+<sy-button justified="true"></sy-button>
+```
+
+## Example
+<Canvas of={ButtonJustifiedStories.Param} />
+
+<Controls of={ButtonJustifiedStories.Param} />

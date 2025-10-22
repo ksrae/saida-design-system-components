@@ -1,0 +1,18 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as MenuPositionStories from './menu-position.stories';
+
+<Meta of={MenuPositionStories} />
+
+# Position
+## Definition
+Menu can be set in 4 different positions:
+- topLeft
+- topRight
+- bottomLeft: This is default.
+- bottomRight
+
+
+## Example
+<Canvas of={MenuPositionStories.Param} />
+
+<Controls of={MenuPositionStories.Param} />

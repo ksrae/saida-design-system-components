@@ -1,1 +1,1 @@
-export * from './sy-input';
+export * from './input.element';

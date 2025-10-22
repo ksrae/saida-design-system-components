@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputSizeStories from './input-size.stories';
+
+<Meta of={InputSizeStories} />
+
+# Size
+Sets size of the input. <br/>
+There are three types: `small`, `medium`, and `large`<br/><br/>
+The default value is `medium`.<br/>
+
+
+## Example
+<Canvas of={InputSizeStories.Param} />
+
+<Controls of={InputSizeStories.Param} />

@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderChangeEventStories from './slider-changed.stories';
+
+<Meta of={SliderChangeEventStories} />
+
+# Change
+
+## Definition
+The slider component emits a <b>change</b> event when the user change the value(or rangevalue) of the slider.<br/>
+The <b>change</b> events are emitted when the user's dragging the slider handle, clicking on the slider track, or using the keyboard to change the value.
+
+## Default
+Use <b>e.detail.value</b> to get the changed value of the slider.
+
+<Canvas of={SliderChangeEventStories.Default} />
+
+
+## Range 
+Use <b>e.detail.min</b> and <b>e.detail.max</b> to get the changed range value of the slider.
+
+<Canvas of={SliderChangeEventStories.Range} />

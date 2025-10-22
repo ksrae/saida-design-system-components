@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectDefaultValueStories from './select-defaultValue.stories';
+
+<Meta of={SelectDefaultValueStories} />
+
+# DefaultValue
+## Definition
+Sets the items that are preselected for <b>Select</b>.<br/>
+The `defaultValue` must be a string value.<br/>
+To set multiple items in `defaultValue`, they should be separated by commas or defined as an array if writing in script.<br/>
+Ensure that initial values are appropriate and relevant to the context of use, providing users with meaningful defaults.
+## Example
+<Canvas of={SelectDefaultValueStories.Param} />
+
+<Controls of={SelectDefaultValueStories.Param} />
+

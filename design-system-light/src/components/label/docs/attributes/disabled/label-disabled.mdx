@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as LabelDisabledStories from './label-disabled.stories';
+
+<Meta of={LabelDisabledStories} />
+
+# Disabled
+## Definition
+The `disabled` attribute indicates that a form field is not editable and cannot be interacted with by the user. <br/>
+
+
+## Boolean Attribute Handling
+In the source code, disabled = "" should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-label disabled></sy-label>
+
+```
+- Alternatively, you can explicitly set it to true, but to not apply `disabled`, remove the attribute instead of setting its value to false.
+```
+<sy-label disabled="true"></sy-label>
+
+```
+
+
+## Position
+
+## Example
+<Canvas of={LabelDisabledStories.Param} />
+
+<Controls of={LabelDisabledStories.Param} />

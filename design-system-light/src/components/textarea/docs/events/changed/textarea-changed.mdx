@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaChangedStories from './textarea-changed.stories';
+
+<Meta of={TextareaChangedStories} />
+
+# Changed Event
+## Definition
+The textarea has changed event when a user types any text on the textarea.<br/>
+The event emits Custom Event.<br/>
+Use <b>event.detail.value, event.detail.length and event.detail.status</b> to get which includes value and length.<br/>
+
+
+
+## Example
+<Canvas of={TextareaChangedStories.Param} />
+
+<Controls of={TextareaChangedStories.Param} />

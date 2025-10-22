@@ -1,0 +1,21 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as FlexPaddingStories from './flex-padding.stories';
+
+<Meta of={FlexPaddingStories} />
+
+# Flex Padding
+## Definition
+The `padding` attribute defines the space between the flex container's children.
+
+## Values
+- xsmall: 4px
+- small: 8px
+- medium: 16px
+- large: 24px
+- xlarge: 32px
+
+
+## Example
+<Canvas of={FlexPaddingStories.Param} />
+
+<Controls of={FlexPaddingStories.Param} />

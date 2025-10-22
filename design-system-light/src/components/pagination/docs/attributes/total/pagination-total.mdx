@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PagingationTotalStories from './pagination-total.stories';
+
+<Meta of={PagingationTotalStories} />
+
+# Show Total
+## Definition
+Shows the total number or range of items available across all pages.<br/>
+This provides users with an understanding of the size of the data set.
+
+## Boolean Attribute Handling
+In the source code, <b>total = ""</b> should be modified as follows
+- Set `total` attribute and don't put a value after it.
+```
+<sy-pagination total></sy-pagination>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `total` attribute, remove it instead of setting its value to false.
+```
+<sy-pagination total="true"></sy-pagination>
+```
+
+## Example
+<Canvas of={PagingationTotalStories.Param} />
+
+<Controls of={PagingationTotalStories.Param} />
+

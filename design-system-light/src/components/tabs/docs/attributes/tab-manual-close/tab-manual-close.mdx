@@ -1,0 +1,33 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as TabManualCloseStories from './tab-manual-close.stories';
+
+<Meta of={TabManualCloseStories} />
+
+# Manual Close
+Tabs with the `manualClose` property cannot be closed by clicking the close icon.<br/>
+However, the closed event is still fired when the close icon is clicked.<br/>
+Calling `closeTab()` function to close this tab.<br/><br/>
+This is useful confirmation via a modal before closing the tab.<br/>
+This property only works with tabs that have closable property.<br/><br/>
+The default value is <b>false</b>.
+
+
+## Boolean Attribute Handling
+In the source code, <b>manualClose = ""</b> should be modified as follows
+- Set `manualClose` attribute and don't put a value after it.
+```
+<sy-tab manualClose></sy-tab>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `manualClose`,remove the attribute instead of setting its value to false.
+
+```
+<sy-tab manualClose="true"></sy-tab>
+```
+
+
+## Example
+<Canvas of={TabManualCloseStories.Param} />
+
+<Controls of={TabManualCloseStories.Param} />
+

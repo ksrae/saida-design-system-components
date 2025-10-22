@@ -1,0 +1,31 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as LabelRequiredStories from './label-required.stories';
+
+<Meta of={LabelRequiredStories} />
+
+# Required
+## Definition
+The `required` attribute indicates that a form field must be filled out before submitting the form. <br/>
+This is commonly used in forms to ensure that users provide necessary information before proceeding. <br/>
+
+
+## Boolean Attribute Handling
+In the source code, required = "" should be modified as follows
+- Set `required` attribute and don't put a value after it.
+```
+<sy-label required></sy-label>
+
+```
+- Alternatively, you can explicitly set it to true, but to not apply `required`, remove the attribute instead of setting its value to false.
+```
+<sy-label required="true"></sy-label>
+
+```
+
+
+## Position
+
+## Example
+<Canvas of={LabelRequiredStories.Param} />
+
+<Controls of={LabelRequiredStories.Param} />

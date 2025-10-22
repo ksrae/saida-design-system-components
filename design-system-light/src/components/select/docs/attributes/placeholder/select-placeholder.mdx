@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectPlaceholderStories from './select-placeholder.stories';
+
+<Meta of={SelectPlaceholderStories} />
+
+# Placeholder
+## Definition
+Shows a placeholder text if there is no selection in the select. <br/>
+The placeholder is hidden if any option is selected. <br/>
+It provides users with guidance or context regarding the purpose of the select field.
+
+## Example
+<Canvas of={SelectPlaceholderStories.Param} />
+
+<Controls of={SelectPlaceholderStories.Param} />
+

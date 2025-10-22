@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as StepsTypeStories from './steps-type.stories';
+
+<Meta of={StepsTypeStories} />
+
+# Type
+## Definition
+The direction of the steps.<br/>
+The default value is 'horizontal', suitable for processes that are naturally linear and sequential.<br/>
+Other option is 'vertical', which is suitable for processes that require more detailed descriptions or additional content within each step.
+
+
+## Example
+<Canvas of={StepsTypeStories.Param} />
+
+<Controls of={StepsTypeStories.Param} />

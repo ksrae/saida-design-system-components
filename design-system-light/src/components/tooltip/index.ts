@@ -1,1 +1,1 @@
-export * from './sy-tooltip';
+export * from './tooltip.element';

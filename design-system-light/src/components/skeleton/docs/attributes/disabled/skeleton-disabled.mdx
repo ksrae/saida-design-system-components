@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SkeletonDisabledStories from './skeleton-disabled.stories';
+
+<Meta of={SkeletonDisabledStories} />
+
+# Disabled
+## Definition
+This attribute is used to disable the skeleton animation.<br/>
+When the attribute is set to true, the skeleton will not be animated.
+
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-skeleton disabled></sy-skeleton>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `disabled`, remove the attribute instaed of setting its value to false.
+
+```
+<sy-skeleton disabled="true"></sy-skeleton>
+```
+
+## Example
+<Canvas of={SkeletonDisabledStories.Param} />
+
+<Controls of={SkeletonDisabledStories.Param} />
+

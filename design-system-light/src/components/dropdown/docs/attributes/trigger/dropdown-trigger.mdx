@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DropdownTriggerStories from './dropdown-trigger.stories';
+
+<Meta of={DropdownTriggerStories} />
+
+# Trigger
+## Definition
+Sets the dropdown trigger mode.<br/> 
+There are two options `hover`, and `click`.<br/><br/>
+The default value is `click`.<br/>
+
+## Example
+<Canvas of={DropdownTriggerStories.Param} />
+
+<Controls of={DropdownTriggerStories.Param} />

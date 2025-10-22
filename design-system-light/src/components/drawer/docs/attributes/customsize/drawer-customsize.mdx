@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DrawerCustomSizeStories from './drawer-customsize.stories';
+
+<Meta of={DrawerCustomSizeStories} />
+
+# CustomSize
+## Definition
+When the size property is 'custom', any size outside of the predefined sizes can be set to customSize. <br/>
+Only numbers or numeric values are allowed, and the size must be defined in 'px' units; no other units are permitted.
+
+## Example
+<Canvas of={DrawerCustomSizeStories.Param} />
+
+<Controls of={DrawerCustomSizeStories.Param} />

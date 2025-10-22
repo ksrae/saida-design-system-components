@@ -1,0 +1,30 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as AvatarClickableStories from './avatar-clickable.stories';
+
+
+<Meta of={AvatarClickableStories} />
+
+# Avatar Clickable
+## Definition
+Determines whether the avatar is clickable or not.<br/>
+A <b>selected</b> events will be fired. <br/>
+Default value is false.
+
+
+## Boolean Attribute Handling
+In the source code, clickable = "" should be modified as follows
+- Set <b>clickable</b> attribute and don't put a value after it.
+```
+<sy-avatar clickable></sy-avatar>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply <b>clickable</b>, remove the attribute instead of setting its value to `false`.
+
+```
+<sy-avatar clickable="true"></sy-avatar>
+```
+
+
+## Example
+<Canvas of={AvatarClickableStories.Param} />
+
+<Controls of={AvatarClickableStories.Param} />

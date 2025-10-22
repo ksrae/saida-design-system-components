@@ -1,0 +1,37 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as DatepickerFormatStories from './datepicker-format.stories';
+
+
+<Meta of={DatepickerFormatStories} />
+
+# Format
+## Definition
+Defines the input and output format for the input tag.
+The value must be entered as defined; otherwise, it will reset to the previous value.
+Note that the format is case-sensitive.
+
+### Year
+The year must be entered as yyyy, and it must be in lowercase.
+- yyyy: It is a four-digit year format.
+
+### Month
+- MM: It is a two-digit month format. It must be in uppercase.
+
+### Day
+- dd: It is a two-digit day format.
+
+### Hour
+- hh: It is a two-digit hour format. It must be in lowercase.
+
+### Minute
+- mm: It is a two-digit minute format. It must be in lowercase.
+
+### Second
+- ss: It is a two-digit second format. It must be in lowercase.
+
+
+
+## Example
+<Canvas of={DatepickerFormatStories.Param} />
+
+<Controls of={DatepickerFormatStories.Param} />

@@ -1,4 +1,3 @@
-export * from './sy-radio-group';
-export * from './sy-radio-button';
-export * from './sy-radio';
-
+export * from './radio-button.element';
+export * from './radio-group.element';
+export * from './radio.element';

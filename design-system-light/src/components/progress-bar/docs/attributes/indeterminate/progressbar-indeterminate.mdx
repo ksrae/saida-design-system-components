@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as ProgressIndeterminatearams from './progressbar-indeterminate.stories';
+
+<Meta of={ProgressIndeterminatearams} />
+
+# Indeterminate
+## Definition
+Looping animation for unlimited duration. <br/>
+
+## Boolean Attribute Handling
+In the source code, <b>indeterminate = ""</b> should be modified as follows
+- Set `indeterminate` attribute and don't put a value after it.
+```
+<sy-progress-bar indeterminate></sy-progress-bar>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply `indeterminate` attribute, remove it instead of setting its value to `false`.
+
+```
+<sy-progress-bar indeterminate="true"></sy-progress-bar>
+```
+
+## Example
+<Canvas of={ProgressIndeterminatearams.Param} />
+
+<Controls of={ProgressIndeterminatearams.Param} />
+

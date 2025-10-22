@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as CollapsePanelDisabledStories from './collapse-panel-disabled.stories';
+
+
+<Meta of={CollapsePanelDisabledStories} />
+
+# Panel Disabled
+## Definition
+Use the `disabled` attribute to disable the panel.
+Disabled attribute prevents other attributes or events.<br/>
+For example, if `disabled` attribute is set, the panel does not open by `active` attribute.<br/>
+
+## Boolean Attribute Handling
+In the source code, disabled = "" should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-collapse-panel disabled></sy-collapse-panel>
+```
+
+- Alternatively, you can explicitly set it  to `true`, but to not apply the `disabled`, remove the attribute instead of setting its value to`false`.
+```
+<sy-collapse-panel disabled="true"></sy-collapse-panel>
+```
+
+## Example
+<Canvas of={CollapsePanelDisabledStories.Param} />
+
+<Controls of={CollapsePanelDisabledStories.Param} />

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SelectInputChangedStories from './select-inputChanged.stories';
+
+<Meta of={SelectInputChangedStories} />
+
+# InputChanged
+## Definition
+This event fires when input any words in the select.<br/>
+To input value to select, mode attribute must not be 'default'
+
+
+## Example
+<Canvas of={SelectInputChangedStories.Param} />
+
+<Controls of={SelectInputChangedStories.Param} />
+

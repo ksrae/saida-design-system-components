@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BadgeValueStories from './badge-value.stories';
+
+
+<Meta of={BadgeValueStories} />
+
+# Value
+## Definition
+Number to show in badge.<br/>
+Only integers are allowed. The decimal numbers will be ignored.
+
+## Example
+<Canvas of={BadgeValueStories.Param} />
+
+<Controls of={BadgeValueStories.Param} />
+

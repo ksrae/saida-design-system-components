@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputRequiredStories from './input-required.stories';
+
+<Meta of={InputRequiredStories} />
+
+# Required
+## Definition
+This clarify that the input value is mandatory. <br/>
+At the same time, the required indicator, the form of an asterisk '*', will be added next to the label of the required field. <br/>
+The validation for the `required` attribute only works when the `input` is inside a form.
+
+## Boolean Attribute Handling
+In the source code, required = "" should be modified as follows
+- Set `required` attribute and don't put a value after it.
+```
+<sy-input required></sy-input>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `required` attribute, remove it instead of setting its value to false.
+```
+<sy-input required="true"></sy-input>
+```
+
+## Example
+<Canvas of={InputRequiredStories.Param} />
+
+<Controls of={InputRequiredStories.Param} />

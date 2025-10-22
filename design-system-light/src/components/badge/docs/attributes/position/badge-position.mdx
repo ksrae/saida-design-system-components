@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls } from '@storybook/blocks';
+import * as BadgePositionStories from './badge-position.stories';
+
+<Meta of={BadgePositionStories} />
+
+# Position
+## Definition
+Set the badge position
+- `topLeft`
+- `topRight` (Default)
+- `bottomLeft`
+- `bottomRight` 
+
+## Example
+<Canvas of={BadgePositionStories.Param} />
+
+<Controls of={BadgePositionStories.Param} />

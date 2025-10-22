@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PagingationPageSizeStories from './pagination-pageSize.stories';
+
+<Meta of={PagingationPageSizeStories} />
+
+# Page Size
+## Definition
+Defines the number of items displayed per page.<br/><br/>
+The default value is <b>10</b>.
+
+## Example
+<Canvas of={PagingationPageSizeStories.Param} />
+
+<Controls of={PagingationPageSizeStories.Param} />
+

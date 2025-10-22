@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputChangedStories from './input-changed.stories';
+
+<Meta of={InputChangedStories} />
+
+# Changed
+## Definition
+The `changed` event emits when after blur event of the input. <br/><br/>
+<b>event.detail</b> has value and valid status.<br/>
+- event.detail.value: value of the input.
+- event.detail.status: valid status of the input.
+
+## Example
+<Canvas of={InputChangedStories.Param} />
+
+<Controls of={InputChangedStories.Param} />

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/blocks";
+import * as ModelessUpdateOptionStories from "./modeless-updateOption.stories";
+
+<Meta of={ModelessUpdateOptionStories} />
+
+# UpdateOption
+## Definition
+The function of the Modeless group that updates the option of the modeless.
+A unique <b>id</b> and <b>new option value</b> must be provided.
+Each time you change the option control, <b>click the button</b> below the example to see the updated modeless.
+
+
+## Example
+<Canvas of={ModelessUpdateOptionStories.Param} />
+
+<Controls of={ModelessUpdateOptionStories.Param} />

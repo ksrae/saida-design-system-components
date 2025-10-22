@@ -1,1 +1,1 @@
-export * from './sy-popover';
+export * from './popover.element';

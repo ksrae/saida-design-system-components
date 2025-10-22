@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaBorderlessStories from './textarea-borderless.stories';
+
+<Meta of={TextareaBorderlessStories} />
+
+# Bordlerless
+## Definition
+Remove border of the textarea.
+
+
+## Boolean Attribute Handling
+In the source code, <b>borderless = ""</b> should be modified as follows
+- Set `borderless` attribute and don't put a value after it.
+```
+<sy-textarea borderless></sy-textarea>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `borderless`, remove the attribute instead of setting its value to false.
+```
+<sy-textarea borderless="true"></sy-textarea>
+```
+
+
+## Example
+<Canvas of={TextareaBorderlessStories.Param} />
+
+<Controls of={TextareaBorderlessStories.Param} />

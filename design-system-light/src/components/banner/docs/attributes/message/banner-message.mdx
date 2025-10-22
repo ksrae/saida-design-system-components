@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BannerMessageStories from './banner-message.stories';
+
+
+<Meta of={BannerMessageStories} />
+
+# Message
+## Definition
+The main content of the banner message.<br/>
+If no text is entered, message will not be displayed.
+
+## Example
+<Canvas of={BannerMessageStories.Param} />
+
+<Controls of={BannerMessageStories.Param} />
+

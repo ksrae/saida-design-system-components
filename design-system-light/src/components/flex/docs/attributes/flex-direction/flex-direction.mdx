@@ -1,0 +1,19 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as FlexDirectionStories from './flex-direction.stories';
+
+<Meta of={FlexDirectionStories} />
+
+# Flex Direction 
+## Definition
+The `direction` attribute defines the direction of the flex container's children.
+
+## Values
+- horizontal: When the type is horizontal, if the flex item does not have a width assigned, the default is flex: 1.
+- vertical: When the type is vertical, if the flex item does not have a height assigned, the default is flex: 1.
+- horizontal-reverse: Same as horizontal, but the flex-direction is column-reverse.
+- vertical-reverse: Same as vertical, but the flex-direction is row-reverse.
+
+## Example
+<Canvas of={FlexDirectionStories.Param} />
+
+<Controls of={FlexDirectionStories.Param} />

@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as TextareaDisabledStories from './textarea-disabled.stories';
+
+<Meta of={TextareaDisabledStories} />
+
+# Disabled
+## Definition
+Use the disabled attribute to disable a textarea.<br/>
+If disabled attribute is set true, any events will be prevented.
+
+
+## Boolean Attribute Handling
+In the source code, <b>disabled = ""</b> should be modified as follows
+- Set `disabled` attribute and don't put a value after it.
+```
+<sy-textarea disabled></sy-textarea>
+```
+- Alternatively, you can explicitly set `disabled` to true, but to not apply the `disabled`, remove the attribute instead of setting its value to false.
+
+```
+<sy-textarea disabled="true"></sy-textarea>
+```
+
+
+## Example
+<Canvas of={TextareaDisabledStories.Param} />
+
+<Controls of={TextareaDisabledStories.Param} />

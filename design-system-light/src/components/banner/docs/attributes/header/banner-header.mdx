@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as BannerHeaderStories from './banner-header.stories';
+
+
+<Meta of={BannerHeaderStories} />
+
+# Header
+## Definition
+Enter a header title for the banner message. <br/>
+If no text is entered, header message will not be used.
+
+## Example
+<Canvas of={BannerHeaderStories.Param} />
+
+<Controls of={BannerHeaderStories.Param} />
+

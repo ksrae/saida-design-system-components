@@ -1,0 +1,34 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as SliderVerticalStories from './slider-vertical.stories';
+
+<Meta of={SliderVerticalStories} />
+
+# Vertical 
+
+## Definition
+Set the default value of the slider.(not a range slider).
+Default value is <b>0</b>.<br/>
+If you want to get the current value of the slider after user interaction, you can use the <b>change</b> event.<br/>
+
+
+Use set <b>vertical</b> attribute to `true` to render the slider vertically.
+
+
+## Boolean Attribute Handling
+In the source code, <b>vertical = ""</b> should be modified as follows
+- Set `vertical` attribute and don't put a value after it.
+```
+<sy-slider vertical></sy-slider>
+```
+- Alternatively, you can explicitly set it to true, but to not apply `vertical`, remove the attribute instead of setting its value to false.
+
+```
+<sy-slider vertical="true"></sy-slider>
+```
+
+
+## Default
+<Canvas of={SliderVerticalStories.Default} />
+
+<Controls of={SliderVerticalStories.Default} />
+

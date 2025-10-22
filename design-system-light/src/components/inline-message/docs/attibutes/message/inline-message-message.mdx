@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InlineMessageMsgStories from './inline-message-message.stories';
+
+<Meta of={InlineMessageMsgStories} />
+
+# Message 
+## Definition
+The content or text of the inline message.<br/>
+If the message exceeds the maximum width of the inline message, it will wrap to the next line.
+
+## Example
+<Canvas of={InlineMessageMsgStories.Param} />
+
+<Controls of={InlineMessageMsgStories.Param} />

@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as ColorpickerChangedStories from './colorpicker-changed.stories';
+
+
+<Meta of={ColorpickerChangedStories} />
+
+# Changed
+## Definition
+The `changed` event is emitted when the color value of the color picker changes.<br/>
+This event allows users to respond to changes in the selected color.
+
+## Example
+<Canvas of={ColorpickerChangedStories.Param} />
+
+<Controls of={ColorpickerChangedStories.Param} />

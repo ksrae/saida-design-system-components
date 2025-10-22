@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputBorderlessStories from './input-borderless.stories';
+
+<Meta of={InputBorderlessStories} />
+
+# Borderless
+## Definition
+Instead of the bordered appearance, the input blends seamlessly with its surrounding elements, creating a cleaner and more minimalistic design aesthetic.
+
+## Boolean Attribute Handling
+In the source code, borderless = "" should be modified as follows
+- Set `borderless` attribute and don't put a value after it.
+```
+<sy-input borderless></sy-input>
+
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `borderless`, remove the attribute instead of setting its value to false.
+
+```
+<sy-input borderless="true"></sy-input>
+```
+
+## Example
+<Canvas of={InputBorderlessStories.Param} />
+
+<Controls of={InputBorderlessStories.Param} />

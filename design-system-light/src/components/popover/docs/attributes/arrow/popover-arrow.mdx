@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as PopoverArrowStories from './popover-arrow.stories';
+
+<Meta of={PopoverArrowStories} />
+
+# Arrow
+## Definition
+Add an arrow to your popup with the `arrow` attribute. <br/>
+Arrow point will be at the center of the popover.
+
+## Boolean Attribute Handling
+In the source code, <b>arrow = ""</b> should be modified as follows
+- Set `arrow` attribute and don't put a value after it.
+```
+<sy-popover arrow></sy-popover>
+```
+- Alternatively, you can explicitly set it to `true`, but to not apply `arrow`, remove the attribute instead of setting its value to false.
+
+```
+<sy-popover arrow="true"></sy-popover>
+```
+
+## Example
+<Canvas of={PopoverArrowStories.Param} />
+
+<Controls of={PopoverArrowStories.Param} />
+

@@ -1,0 +1,26 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InlineMessageOpenStories from './inline-message-open.stories';
+
+<Meta of={InlineMessageOpenStories} />
+
+# Open 
+## Definition
+Use open props to set the state of the inline message. <br/>
+If open props are set, the inline message will open.
+
+## Boolean Attribute Handling
+In the source code, open = "" should be modified as follows
+- Set `open` attribute and don't put a value after it.
+```
+<sy-inline-message open></sy-inline-message>
+```
+
+- Alternatively, you can explicitly set it to true, but to not apply `open` attribute, remove it instead of setting its value to false.
+```
+<sy-inline-message open="true"></sy-inline-message>
+```
+
+## Example
+<Canvas of={InlineMessageOpenStories.Param} />
+
+<Controls of={InlineMessageOpenStories.Param} />

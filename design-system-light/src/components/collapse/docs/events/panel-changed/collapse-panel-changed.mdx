@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+
+import * as CollapsePanelChangedStories from './collapse-panel-changed.stories';
+
+<Meta of={CollapsePanelChangedStories} />
+
+# Changed Event
+## Definition
+The collapse emits <b>changed</b> event when user clicks the panel.<br/>
+The event has detail which contains the panel itself.
+```
+event: {
+  detail: this
+}
+```
+
+## Example
+<Canvas of={CollapsePanelChangedStories.Param} />
+
+<Controls of={CollapsePanelChangedStories.Param} />

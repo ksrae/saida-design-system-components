@@ -1,0 +1,27 @@
+import { Canvas, Meta, Controls, Story } from '@storybook/blocks';
+import * as InputClearableStories from './input-clearable.stories';
+
+<Meta of={InputClearableStories} />
+
+# Clearable
+## Definition
+It adds a clear button within the input field, allowing users to quickly clear the entered text with a single click.<br/>
+There must be at least 1 character in the input field to see clearable button.
+
+
+## Boolean Attribute Handling
+In the source code, clearable = "" should be modified as follows
+- Set `clearable` attribute and don't put a value after it.
+```
+<sy-input clearable></sy-input>
+```
+
+- Alternatively, you can explicitly set it to true but to not apply `clearable` attribute, remove it instead of setting its value to false.
+```
+<sy-input clearable="true"></sy-input>
+```
+
+## Example
+<Canvas of={InputClearableStories.Param} />
+
+<Controls of={InputClearableStories.Param} />
