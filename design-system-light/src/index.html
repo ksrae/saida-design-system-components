@@ -51,6 +51,286 @@
 
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
+   <!-- Test 1: Basic Steps with Current Index Control -->
+    <div class="test-section">
+        <h2>1. Basic Steps - Current Index Control</h2>
+        <sy-steps id="basic-steps" current="1">
+            <sy-step description="회원가입 진행">가입하기</sy-step>
+            <sy-step description="이메일 확인">인증하기</sy-step>
+            <sy-step description="프로필 작성">정보입력</sy-step>
+            <sy-step description="가입 완료">완료</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="changeBasicCurrent(0)">Step 1</button>
+            <button onclick="changeBasicCurrent(1)">Step 2</button>
+            <button onclick="changeBasicCurrent(2)">Step 3</button>
+            <button onclick="changeBasicCurrent(3)">Step 4</button>
+            <button onclick="changeBasicCurrent(4)">Complete</button>
+            <div class="status-info">Current: <span id="basic-current">1</span></div>
+        </div>
+    </div>
+
+    <!-- Test 2: Clickable Steps -->
+    <div class="test-section">
+        <h2>2. Clickable Steps</h2>
+        <sy-steps id="clickable-steps" clickable>
+            <sy-step>First Step</sy-step>
+            <sy-step>Second Step</sy-step>
+            <sy-step>Third Step</sy-step>
+            <sy-step>Fourth Step</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="toggleClickable()">Toggle Clickable</button>
+            <div class="status-info">
+                Clickable: <span id="clickable-status">true</span><br>
+                Last clicked: <span id="clicked-step">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 3: Complete Status -->
+    <div class="test-section">
+        <h2>3. Complete Status Test</h2>
+        <sy-steps id="complete-steps" current="2">
+            <sy-step>Step 1</sy-step>
+            <sy-step>Step 2</sy-step>
+            <sy-step>Step 3</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="toggleComplete()">Toggle Complete</button>
+            <div class="status-info">Complete: <span id="complete-status">false</span></div>
+        </div>
+    </div>
+
+    <!-- Test 4: Vertical Type -->
+    <div class="test-section">
+        <h2>4. Vertical Steps</h2>
+        <div class="vertical-container">
+            <sy-steps id="vertical-steps" type="vertical" clickable>
+                <sy-step description="Select campaign settings">Create ad campaign</sy-step>
+                <sy-step description="Create an ad group">Create ad group</sy-step>
+                <sy-step description="Create an ad">Create ad</sy-step>
+            </sy-steps>
+            <div class="controls">
+                <button onclick="toggleVertical()">Toggle Type</button>
+                <div class="status-info">Type: <span id="vertical-type">vertical</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 5: Size Test -->
+    <div class="test-section">
+        <h2>5. Size Test</h2>
+        <sy-steps id="size-steps" size="small">
+            <sy-step>Mini Step 1</sy-step>
+            <sy-step>Mini Step 2</sy-step>
+            <sy-step>Mini Step 3</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="toggleSize()">Toggle Size</button>
+            <div class="status-info">Size: <span id="size-status">small</span></div>
+        </div>
+    </div>
+
+    <!-- Test 6: Start Index -->
+    <div class="test-section">
+        <h2>6. Start Index Test</h2>
+        <sy-steps id="start-index-steps" current="5" start-index="5">
+            <sy-step>Step 5</sy-step>
+            <sy-step>Step 6</sy-step>
+            <sy-step>Step 7</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="changeStartIndex(0)">Start at 0</button>
+            <button onclick="changeStartIndex(5)">Start at 5</button>
+            <button onclick="changeStartIndex(6)">Start at 6</button>
+            <button onclick="changeStartIndex(8)">Complete</button>
+            <div class="status-info">Start Index: <span id="start-index">5</span></div>
+        </div>
+    </div>
+
+    <!-- Test 7: Individual Step Status -->
+    <div class="test-section">
+        <h2>7. Individual Step Status</h2>
+        <sy-steps id="status-steps" current="1">
+            <sy-step id="step1" status="finish">Finished Step</sy-step>
+            <sy-step id="step2" status="error">Error Step</sy-step>
+            <sy-step id="step3" status="current">Current Step</sy-step>
+            <sy-step id="step4" status="wait">Waiting Step</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="changeStepStatus('step1')">Toggle Step 1 Status</button>
+            <button onclick="changeStepStatus('step2')">Toggle Step 2 Status</button>
+            <button onclick="changeStepStatus('step3')">Toggle Step 3 Status</button>
+            <button onclick="changeStepStatus('step4')">Toggle Step 4 Status</button>
+        </div>
+    </div>
+
+    <!-- Test 8: Disabled & Loading -->
+    <div class="test-section">
+        <h2>8. Disabled & Loading States</h2>
+        <sy-steps id="state-steps" clickable>
+            <sy-step id="normal-step">Normal Step</sy-step>
+            <sy-step id="disabled-step" disabled>Disabled Step</sy-step>
+            <sy-step id="loading-step" loading>Loading Step</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="toggleDisabled()">Toggle Disabled</button>
+            <button onclick="toggleLoading()">Toggle Loading</button>
+        </div>
+    </div>
+
+    <!-- Test 9: Complex Scenario -->
+    <div class="test-section">
+        <h2>9. Complex Scenario - All Features</h2>
+        <sy-steps id="complex-steps" clickable type="horizontal" size="medium">
+            <sy-step description="Setup your account">Account Setup</sy-step>
+            <sy-step description="Configure preferences" loading>Preferences</sy-step>
+            <sy-step description="Review and confirm" disabled>Review</sy-step>
+            <sy-step status="error" description="Something went wrong">Complete</sy-step>
+        </sy-steps>
+        <div class="controls">
+            <button onclick="runComplexTest()">Run Complex Test</button>
+            <div class="status-info" id="complex-info">Click "Run Complex Test" to see all features in action</div>
+        </div>
+    </div>
+
+    <script>
+        // Test 1: Basic Current Control
+        function changeBasicCurrent(index) {
+            const steps = document.getElementById('basic-steps');
+            steps.current = index;
+            document.getElementById('basic-current').textContent = index;
+        }
+
+        // Test 2: Clickable Toggle
+        function toggleClickable() {
+            const steps = document.getElementById('clickable-steps');
+            steps.clickable = !steps.clickable;
+            document.getElementById('clickable-status').textContent = steps.clickable;
+        }
+
+        // Clickable steps event listener
+        document.getElementById('clickable-steps').addEventListener('selected', (e) => {
+            console.log('Step selected:', e.detail);
+            document.getElementById('clicked-step').textContent = `Index: ${e.detail.index}`;
+            e.target.current = e.detail.index;
+        });
+
+        // Test 3: Complete Toggle
+        function toggleComplete() {
+            const steps = document.getElementById('complete-steps');
+            steps.complete = !steps.complete;
+            document.getElementById('complete-status').textContent = steps.complete;
+        }
+
+        // Test 4: Vertical Toggle
+        function toggleVertical() {
+            const steps = document.getElementById('vertical-steps');
+            steps.type = steps.type === 'vertical' ? 'horizontal' : 'vertical';
+            document.getElementById('vertical-type').textContent = steps.type;
+        }
+
+        // Test 5: Size Toggle
+        function toggleSize() {
+            const steps = document.getElementById('size-steps');
+            steps.size = steps.size === 'small' ? 'medium' : 'small';
+            document.getElementById('size-status').textContent = steps.size;
+        }
+
+        // Test 6: Start Index
+        function changeStartIndex(index) {
+            const steps = document.getElementById('start-index-steps');
+            steps.startIndex = index;
+            steps.current = index; // Reset current to start index
+            document.getElementById('start-index').textContent = index;
+        }
+
+        // Test 7: Step Status
+        const statusOptions = ['none', 'finish', 'current', 'wait', 'error'];
+        function changeStepStatus(stepId) {
+            const step = document.getElementById(stepId);
+            const currentStatus = step.status || 'none';
+            const currentIndex = statusOptions.indexOf(currentStatus);
+            const nextIndex = (currentIndex + 1) % statusOptions.length;
+            step.status = statusOptions[nextIndex];
+        }
+
+        // Test 8: Disabled & Loading
+        function toggleDisabled() {
+            const step = document.getElementById('disabled-step');
+            step.disabled = !step.disabled;
+        }
+
+        function toggleLoading() {
+            const step = document.getElementById('loading-step');
+            step.loading = !step.loading;
+        }
+
+        // Test 9: Complex Test
+        async function runComplexTest() {
+            const steps = document.getElementById('complex-steps');
+            const info = document.getElementById('complex-info');
+
+            // Test sequence
+            info.innerHTML = 'Starting test sequence...<br>';
+
+            // Test 1: Change current
+            for (let i = 0; i < 4; i++) {
+                steps.current = i;
+                info.innerHTML += `Current step: ${i}<br>`;
+                await sleep(1000);
+            }
+
+            // Test 2: Toggle complete
+            steps.complete = true;
+            info.innerHTML += 'All steps completed!<br>';
+            await sleep(1500);
+
+            steps.complete = false;
+            info.innerHTML += 'Complete status removed<br>';
+            await sleep(1000);
+
+            // Test 3: Change type and size
+            steps.type = 'vertical';
+            steps.size = 'small';
+            info.innerHTML += 'Changed to vertical small<br>';
+            await sleep(1500);
+
+            steps.type = 'horizontal';
+            steps.size = 'medium';
+            info.innerHTML += 'Back to horizontal medium<br>';
+
+            // Test 4: Disable clickable
+            steps.clickable = false;
+            info.innerHTML += 'Clickable disabled<br>';
+            await sleep(1000);
+
+            steps.clickable = true;
+            info.innerHTML += 'Test complete! Clickable re-enabled<br>';
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Add event listeners to all clickable steps
+        document.addEventListener('DOMContentLoaded', () => {
+            // Log all step events
+            const allSteps = document.querySelectorAll('sy-steps');
+            allSteps.forEach((steps, index) => {
+                steps.addEventListener('selected', (e) => {
+                    console.log(`Steps ${index} - Step selected:`, e.detail);
+                });
+            });
+
+            // Also log for vertical steps specifically
+            document.getElementById('vertical-steps').addEventListener('selected', (e) => {
+                e.target.current = e.detail.index;
+            });
+        });
+    </script>
+
   <!-- ==================== Autocomplete Component Test ==================== -->
   <section>
     <h1>Autocomplete Component Test</h1>
@@ -59,8 +339,8 @@
     <div class="example-section">
       <h3>1. Basic Autocomplete (focus trigger)</h3>
       <p>Focus 시 전체 목록을 표시하는 기본 autocomplete입니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="basic-autocomplete"
         placeholder="Select a fruit"
         trigger="focus"
@@ -73,8 +353,8 @@
     <div class="example-section">
       <h3>2. Input Trigger Autocomplete (default)</h3>
       <p>입력 시작 시 목록이 표시됩니다. 필터링이 자동으로 적용됩니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="input-autocomplete"
         placeholder="Type to search fruits"
         trigger="input"
@@ -87,8 +367,8 @@
     <div class="example-section">
       <h3>3. Arrow Key Navigation</h3>
       <p>입력 후 <strong>Arrow Up/Down</strong> 키로 옵션을 탐색하고 <strong>Enter</strong>로 선택하세요.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="arrow-autocomplete"
         placeholder="Type 'a' then use arrow keys"
         trigger="input"
@@ -104,8 +384,8 @@
     <div class="example-section">
       <h3>4. Debounced Autocomplete</h3>
       <p>500ms debounce가 적용되어 입력이 멈춘 후 필터링됩니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="debounced-autocomplete"
         placeholder="Type quickly to see debounce"
         trigger="input"
@@ -119,8 +399,8 @@
     <div class="example-section">
       <h3>5. Case Sensitive Autocomplete</h3>
       <p>대소문자를 구분하여 필터링합니다. (case-sensitive="true")</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="case-autocomplete"
         placeholder="Try 'apple', 'Apple', or 'APPLE'"
         trigger="input"
@@ -133,10 +413,10 @@
     <!-- 6. Size Variants -->
     <div class="example-section">
       <h3>6. Size Variants</h3>
-      
+
       <div style="margin-bottom: 15px;">
         <label><strong>Small:</strong></label>
-        <sy-autocomplete 
+        <sy-autocomplete
           id="small-autocomplete"
           placeholder="Small size"
           size="small"
@@ -146,7 +426,7 @@
 
       <div style="margin-bottom: 15px;">
         <label><strong>Medium (default):</strong></label>
-        <sy-autocomplete 
+        <sy-autocomplete
           id="medium-autocomplete"
           placeholder="Medium size"
           size="medium"
@@ -156,7 +436,7 @@
 
       <div>
         <label><strong>Large:</strong></label>
-        <sy-autocomplete 
+        <sy-autocomplete
           id="large-autocomplete"
           placeholder="Large size"
           size="large"
@@ -169,8 +449,8 @@
     <div class="example-section">
       <h3>7. Loading State</h3>
       <p>로딩 상태를 시뮬레이션합니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="loading-autocomplete"
         placeholder="Click button to simulate loading"
         trigger="focus"
@@ -183,8 +463,8 @@
     <!-- 8. Disabled State -->
     <div class="example-section">
       <h3>8. Disabled State</h3>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="disabled-autocomplete"
         placeholder="This is disabled"
         disabled="true"
@@ -198,9 +478,9 @@
     <div class="example-section">
       <h3>9. Required & Validation</h3>
       <p>Form validation이 적용됩니다.</p>
-      
+
       <form id="autocomplete-form">
-        <sy-autocomplete 
+        <sy-autocomplete
           id="required-autocomplete"
           placeholder="Required field"
           required="true"
@@ -212,8 +492,8 @@
         </sy-autocomplete>
 
         <div style="margin-top: 10px;">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             style="background: #e74c3c; font-weight: bold;">
             ⚠️ SUBMIT FORM (Required Test)
           </button>
@@ -228,9 +508,9 @@
     <div class="example-section">
       <h3>10. Custom Error Message (Slot-based)</h3>
       <p>Slot을 통해 커스텀 에러 메시지를 표시합니다. (textarea, input과 동일한 방식)</p>
-      
+
       <form id="custom-error-form" novalidate>
-        <sy-autocomplete 
+        <sy-autocomplete
           id="custom-error-autocomplete"
           placeholder="Type something and submit without selecting"
           required
@@ -254,8 +534,8 @@
     <div class="example-section">
       <h3>11. Programmatic Control</h3>
       <p>JavaScript로 값을 제어합니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="controlled-autocomplete"
         placeholder="Programmatically controlled"
         trigger="input"
@@ -275,8 +555,8 @@
     <div class="example-section">
       <h3>12. Event Handling</h3>
       <p>모든 이벤트를 추적합니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="event-autocomplete"
         placeholder="Type and select to trigger events"
         trigger="input"
@@ -294,8 +574,8 @@
     <div class="example-section">
       <h3>13. Dynamic Data Update</h3>
       <p>런타임에 데이터를 변경합니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="dynamic-autocomplete"
         placeholder="Dynamic data source"
         trigger="focus"
@@ -312,8 +592,8 @@
     <div class="example-section">
       <h3>14. Empty State</h3>
       <p>매칭되는 옵션이 없을 때 empty state를 표시합니다.</p>
-      
-      <sy-autocomplete 
+
+      <sy-autocomplete
         id="empty-autocomplete"
         placeholder="Type 'xyz' to see empty state"
         trigger="input"
@@ -365,13 +645,13 @@
       // Initialize autocomplete components
       function initializeAutocompletes() {
         console.log('[initializeAutocompletes] Function called!');
-        
+
         // 1. Basic autocomplete
         const basicAc = document.getElementById('basic-autocomplete');
         if (basicAc) {
           basicAc.source = fruits;
           basicAc.addEventListener('selected', (e) => {
-            document.getElementById('basic-output').innerHTML = 
+            document.getElementById('basic-output').innerHTML =
               `<strong>Selected:</strong> ${e.detail.value}<br><strong>Valid:</strong> ${e.detail.isValid}`;
           });
         }
@@ -381,11 +661,11 @@
         if (inputAc) {
           inputAc.source = fruits;
           inputAc.addEventListener('changed', (e) => {
-            document.getElementById('input-output').innerHTML = 
+            document.getElementById('input-output').innerHTML =
               `<strong>Changed:</strong> ${e.detail.value}`;
           });
           inputAc.addEventListener('selected', (e) => {
-            document.getElementById('input-output').innerHTML = 
+            document.getElementById('input-output').innerHTML =
               `<strong>Selected:</strong> ${e.detail.value}`;
           });
         }
@@ -394,12 +674,12 @@
         const arrowAc = document.getElementById('arrow-autocomplete');
         if (arrowAc) {
           arrowAc.source = fruits;
-          
+
           // Listen to internal active index changes
           arrowAc.addEventListener('activeIndexChanged', (e) => {
             document.getElementById('arrow-active').textContent = e.detail;
           });
-          
+
           arrowAc.addEventListener('selected', (e) => {
             document.getElementById('arrow-selected').textContent = e.detail.value;
           });
@@ -411,7 +691,7 @@
           debouncedAc.source = countries;
           debouncedAc.addEventListener('changed', (e) => {
             const now = new Date().toLocaleTimeString();
-            document.getElementById('debounced-output').innerHTML = 
+            document.getElementById('debounced-output').innerHTML =
               `<strong>Changed at ${now}:</strong> ${e.detail.value}`;
           });
         }
@@ -421,7 +701,7 @@
         if (caseAc) {
           caseAc.source = ['Apple', 'apple', 'APPLE', 'Banana', 'banana', 'BANANA'];
           caseAc.addEventListener('selected', (e) => {
-            document.getElementById('case-output').innerHTML = 
+            document.getElementById('case-output').innerHTML =
               `<strong>Selected (case sensitive):</strong> ${e.detail.value}`;
           });
         }
@@ -463,7 +743,7 @@
         if (controlledAc) {
           controlledAc.source = fruits;
           controlledAc.addEventListener('selected', (e) => {
-            document.getElementById('controlled-output').innerHTML = 
+            document.getElementById('controlled-output').innerHTML =
               `<strong>Value:</strong> ${e.detail.value}`;
           });
         }
@@ -500,19 +780,19 @@
 
         // Form submit handler
         const form = document.getElementById('autocomplete-form');
-        
+
         if (form) {
           form.addEventListener('submit', async (e) => {
             e.preventDefault();
-           
+
             const isValid = await requiredAc.checkValidity();
-            
+
             if (isValid) {
-              document.getElementById('form-output').innerHTML = 
+              document.getElementById('form-output').innerHTML =
                 '<strong style="color: green;">✓ Form is valid!</strong><br>' +
                 `Value: ${requiredAc.value}`;
             } else {
-              document.getElementById('form-output').innerHTML = 
+              document.getElementById('form-output').innerHTML =
                 '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
                 `Value: "${requiredAc.value}"<br>` +
                 `Validation Message: ${requiredAc.validationMessage}`;
@@ -530,19 +810,19 @@
 
         // 10. Custom error form submit handler
         const customErrorForm = document.getElementById('custom-error-form');
-        
+
         if (customErrorForm && customErrorAc) {
           customErrorForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const isValid = await customErrorAc.checkValidity();
-            
+
             if (isValid) {
-              document.getElementById('custom-error-output').innerHTML = 
+              document.getElementById('custom-error-output').innerHTML =
                 '<strong style="color: green;">✓ Form is valid!</strong><br>' +
                 `Value: ${customErrorAc.value}`;
             } else {
-              document.getElementById('custom-error-output').innerHTML = 
+              document.getElementById('custom-error-output').innerHTML =
                 '<strong style="color: red;">✗ Form is invalid!</strong><br>' +
                 `Value: "${customErrorAc.value}"<br>` +
                 `Custom Error Message: ${customErrorAc.validationMessage}`;
@@ -574,23 +854,23 @@
         const customErrorAc = document.getElementById('custom-error-autocomplete');
         const isValid = await customErrorAc.checkValidity();
 
-        document.getElementById('custom-error-output').innerHTML = 
-          isValid 
-            ? '<strong style="color: green;">✓ Valid</strong>' 
+        document.getElementById('custom-error-output').innerHTML =
+          isValid
+            ? '<strong style="color: green;">✓ Valid</strong>'
             : `<strong style="color: red;">✗ Invalid</strong><br>${customErrorAc.validationMessage}`;
       }
 
       function setValue(value) {
         const controlledAc = document.getElementById('controlled-autocomplete');
         controlledAc.value = value;
-        document.getElementById('controlled-output').innerHTML = 
+        document.getElementById('controlled-output').innerHTML =
           `<strong>Value set to:</strong> ${value}`;
       }
 
       function clearValue() {
         const controlledAc = document.getElementById('controlled-autocomplete');
         controlledAc.value = '';
-        document.getElementById('controlled-output').innerHTML = 
+        document.getElementById('controlled-output').innerHTML =
           '<strong>Value cleared</strong>';
       }
 
@@ -1385,7 +1665,7 @@
       <h2>Form Validation Tests</h2>
       <div class="example-section">
         <h3>Form Tests (Same pattern as textarea)</h3>
-        
+
         <!-- Test 1: Required Field -->
         <h4>1. Required Field Test</h4>
         <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
@@ -1441,7 +1721,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // Datepicker Form Tests
-        
+
         // Test 1: Required Field
         const formDatepicker = document.querySelector('#formDatepicker');
         const formDatepickerElement = document.querySelector('#formDatepickerId');
@@ -2896,7 +3176,7 @@
   <!-- Form Tests (Same pattern as textarea, input, input-number) -->
   <div class="example-section">
     <h3>Form Tests (Same pattern as textarea)</h3>
-    
+
     <!-- Test 1: Required Field -->
     <h4>1. Required Field Test</h4>
     <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
@@ -2961,7 +3241,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Select Form Tests
-      
+
       // Test 1: Required Field
       const formSelect = document.querySelector('#formSelect');
       const formSelectElement = document.querySelector('#formSelectId');
@@ -3074,7 +3354,7 @@
   </script>
 
 
-    
+
 
   <style>
     body {
@@ -4753,7 +5033,7 @@
     <!-- Form Tests (Same pattern as textarea) -->
     <div class="test-case">
       <h3>Form Tests (Same pattern as textarea)</h3>
-      
+
       <!-- Test 1: Required Field -->
       <h4>1. Required Field Test</h4>
       <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
@@ -4808,7 +5088,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // Input Number Form Tests
-        
+
         // Test 1: Required Field
         const formInputNumber = document.querySelector('#formInputNumber');
         const formInputNumberElement = document.querySelector('#formInputNumberId');
@@ -4993,7 +5273,7 @@
       <!-- Interactive: Form Validation Tests -->
       <div class="test-case">
         <h3>Form Tests (Same pattern as textarea)</h3>
-        
+
         <!-- Test 1: Required Field -->
         <h4>1. Required Field Test</h4>
         <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
@@ -5712,7 +5992,7 @@
     <!-- Form Tests (Same pattern as textarea, input, input-number, select) -->
     <div class="example-section">
       <h3>Form Tests (Same pattern as textarea)</h3>
-      
+
       <!-- Test 1: Required Field -->
       <h4>1. Required Field Test</h4>
       <div style="width:400px; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
@@ -5770,7 +6050,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // Checkbox Form Tests
-        
+
         // Test 1: Required Field
         const formCheckbox = document.querySelector('#formCheckbox');
         const formCheckboxElement = document.querySelector('#formCheckboxId');

@@ -1615,6 +1615,86 @@ export namespace Components {
          */
         "type": 'horizontal' | 'vertical';
     }
+    interface SyStep {
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default 0
+         */
+        "current": number;
+        /**
+          * @default "none"
+         */
+        "currentStatus": "finish" | "current" | "wait" | "error" | "none";
+        /**
+          * @default ""
+         */
+        "description": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 0
+         */
+        "index": number;
+        /**
+          * @default false
+         */
+        "lastStep": boolean;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default "none"
+         */
+        "parentStatus": "finish" | "current" | "wait" | "error" | "none";
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium";
+        /**
+          * @default false
+         */
+        "small": boolean;
+        /**
+          * @default "none"
+         */
+        "status": "finish" | "current" | "wait" | "error" | "none";
+        /**
+          * @default "horizontal"
+         */
+        "type": "horizontal" | "vertical";
+    }
+    interface SySteps {
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default false
+         */
+        "complete": boolean;
+        /**
+          * @default 0
+         */
+        "current": number;
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium";
+        /**
+          * @default 0
+         */
+        "startIndex": number;
+        /**
+          * @default "horizontal"
+         */
+        "type": "horizontal" | "vertical";
+    }
     interface SySwitch {
         /**
           * @default false
@@ -2671,6 +2751,18 @@ declare global {
         prototype: HTMLSySplitPanelElement;
         new (): HTMLSySplitPanelElement;
     };
+    interface HTMLSyStepElement extends Components.SyStep, HTMLStencilElement {
+    }
+    var HTMLSyStepElement: {
+        prototype: HTMLSyStepElement;
+        new (): HTMLSyStepElement;
+    };
+    interface HTMLSyStepsElement extends Components.SySteps, HTMLStencilElement {
+    }
+    var HTMLSyStepsElement: {
+        prototype: HTMLSyStepsElement;
+        new (): HTMLSyStepsElement;
+    };
     interface HTMLSySwitchElementEventMap {
         "changed": boolean;
     }
@@ -2815,6 +2907,8 @@ declare global {
         "sy-slider": HTMLSySliderElement;
         "sy-spinner": HTMLSySpinnerElement;
         "sy-split-panel": HTMLSySplitPanelElement;
+        "sy-step": HTMLSyStepElement;
+        "sy-steps": HTMLSyStepsElement;
         "sy-switch": HTMLSySwitchElement;
         "sy-tag": HTMLSyTagElement;
         "sy-textarea": HTMLSyTextareaElement;
@@ -4389,6 +4483,86 @@ declare namespace LocalJSX {
          */
         "type"?: 'horizontal' | 'vertical';
     }
+    interface SyStep {
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default 0
+         */
+        "current"?: number;
+        /**
+          * @default "none"
+         */
+        "currentStatus"?: "finish" | "current" | "wait" | "error" | "none";
+        /**
+          * @default ""
+         */
+        "description"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 0
+         */
+        "index"?: number;
+        /**
+          * @default false
+         */
+        "lastStep"?: boolean;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default "none"
+         */
+        "parentStatus"?: "finish" | "current" | "wait" | "error" | "none";
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium";
+        /**
+          * @default false
+         */
+        "small"?: boolean;
+        /**
+          * @default "none"
+         */
+        "status"?: "finish" | "current" | "wait" | "error" | "none";
+        /**
+          * @default "horizontal"
+         */
+        "type"?: "horizontal" | "vertical";
+    }
+    interface SySteps {
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default false
+         */
+        "complete"?: boolean;
+        /**
+          * @default 0
+         */
+        "current"?: number;
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium";
+        /**
+          * @default 0
+         */
+        "startIndex"?: number;
+        /**
+          * @default "horizontal"
+         */
+        "type"?: "horizontal" | "vertical";
+    }
     interface SySwitch {
         /**
           * @default false
@@ -4683,6 +4857,8 @@ declare namespace LocalJSX {
         "sy-slider": SySlider;
         "sy-spinner": SySpinner;
         "sy-split-panel": SySplitPanel;
+        "sy-step": SyStep;
+        "sy-steps": SySteps;
         "sy-switch": SySwitch;
         "sy-tag": SyTag;
         "sy-textarea": SyTextarea;
@@ -4778,6 +4954,8 @@ declare module "@stencil/core" {
             "sy-slider": LocalJSX.SySlider & JSXBase.HTMLAttributes<HTMLSySliderElement>;
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
+            "sy-step": LocalJSX.SyStep & JSXBase.HTMLAttributes<HTMLSyStepElement>;
+            "sy-steps": LocalJSX.SySteps & JSXBase.HTMLAttributes<HTMLSyStepsElement>;
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
