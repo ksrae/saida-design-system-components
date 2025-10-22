@@ -51,6 +51,304 @@
 
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
+<!-- TABS COMPONENT TEST -->
+<section id="tabs-examples">
+  <h1>Tabs Component Examples</h1>
+
+  <style>
+    .tabs-example {
+      margin-bottom: 40px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .tabs-controls {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+    .tabs-controls button {
+      margin-right: 10px;
+    }
+    .event-log {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      min-height: 30px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+  </style>
+
+  <!-- Basic Tabs -->
+  <div class="tabs-example">
+    <h3>Basic Tabs (Line Type)</h3>
+    <sy-tab-group id="basicTabs" active="0" type="line" size="medium">
+      <div slot="tabs">
+        <sy-tab tabkey="tab1">Tab 1</sy-tab>
+        <sy-tab tabkey="tab2">Tab 2</sy-tab>
+        <sy-tab tabkey="tab3">Tab 3</sy-tab>
+      </div>
+      <div slot="contents">
+        <sy-tab-content name="tab1">
+          <h4>Content 1</h4>
+          <p>This is the content for Tab 1</p>
+        </sy-tab-content>
+        <sy-tab-content name="tab2">
+          <h4>Content 2</h4>
+          <p>This is the content for Tab 2</p>
+        </sy-tab-content>
+        <sy-tab-content name="tab3">
+          <h4>Content 3</h4>
+          <p>This is the content for Tab 3</p>
+        </sy-tab-content>
+      </div>
+    </sy-tab-group>
+    <div class="event-log" id="basicTabsLog">Events will appear here...</div>
+  </div>
+
+  <!-- Card Type Tabs with Closable -->
+  <div class="tabs-example">
+    <h3>Card Type with Closable Tabs</h3>
+    <sy-tab-group id="cardTabs" active="0" type="card" size="large" padding="medium">
+      <div slot="tabs">
+        <sy-tab tabkey="card1" closable>Card Tab 1</sy-tab>
+        <sy-tab tabkey="card2" closable>Card Tab 2</sy-tab>
+        <sy-tab tabkey="card3" closable>Card Tab 3</sy-tab>
+        <sy-tab tabkey="card4">Card Tab 4 (Not Closable)</sy-tab>
+      </div>
+      <div slot="contents">
+        <sy-tab-content name="card1">
+          <h4>Card Content 1</h4>
+          <p>This tab can be closed</p>
+        </sy-tab-content>
+        <sy-tab-content name="card2">
+          <h4>Card Content 2</h4>
+          <p>This tab can be closed</p>
+        </sy-tab-content>
+        <sy-tab-content name="card3">
+          <h4>Card Content 3</h4>
+          <p>This tab can be closed</p>
+        </sy-tab-content>
+        <sy-tab-content name="card4">
+          <h4>Card Content 4</h4>
+          <p>This tab cannot be closed</p>
+        </sy-tab-content>
+      </div>
+    </sy-tab-group>
+    <div class="event-log" id="cardTabsLog">Events will appear here...</div>
+  </div>
+
+  <!-- Disabled Tabs -->
+  <div class="tabs-example">
+    <h3>Tabs with Disabled States</h3>
+    <div class="tabs-controls">
+      <button onclick="toggleTabGroupDisabled()">Toggle TabGroup Disabled</button>
+      <button onclick="toggleTab2Disabled()">Toggle Tab 2 Disabled</button>
+    </div>
+    <sy-tab-group id="disabledTabs" active="0">
+      <div slot="tabs">
+        <sy-tab tabkey="dis1">Tab 1</sy-tab>
+        <sy-tab tabkey="dis2" id="disabledTab2">Tab 2</sy-tab>
+        <sy-tab tabkey="dis3">Tab 3</sy-tab>
+      </div>
+      <div slot="contents">
+        <sy-tab-content name="dis1">Content 1</sy-tab-content>
+        <sy-tab-content name="dis2">Content 2 (Can be disabled)</sy-tab-content>
+        <sy-tab-content name="dis3">Content 3</sy-tab-content>
+      </div>
+    </sy-tab-group>
+    <div class="event-log" id="disabledTabsLog">Events will appear here...</div>
+  </div>
+
+  <!-- Draggable Tabs -->
+  <div class="tabs-example">
+    <h3>Draggable Tabs</h3>
+    <sy-tab-group id="draggableTabs" active="0" draggable>
+      <div slot="tabs">
+        <sy-tab tabkey="drag1">Drag Tab 1</sy-tab>
+        <sy-tab tabkey="drag2">Drag Tab 2</sy-tab>
+        <sy-tab tabkey="drag3">Drag Tab 3</sy-tab>
+        <sy-tab tabkey="drag4">Drag Tab 4</sy-tab>
+      </div>
+      <div slot="contents">
+        <sy-tab-content name="drag1">Content 1 - Drag tabs to reorder</sy-tab-content>
+        <sy-tab-content name="drag2">Content 2 - Drag tabs to reorder</sy-tab-content>
+        <sy-tab-content name="drag3">Content 3 - Drag tabs to reorder</sy-tab-content>
+        <sy-tab-content name="drag4">Content 4 - Drag tabs to reorder</sy-tab-content>
+      </div>
+    </sy-tab-group>
+    <div class="event-log" id="draggableTabsLog">Events will appear here...</div>
+  </div>
+
+  <!-- Overflow Tabs -->
+  <div class="tabs-example">
+    <h3>Overflow Tabs (Many Tabs)</h3>
+    <div style="width: 500px; border: 1px solid #999; padding: 10px;">
+      <sy-tab-group id="overflowTabs" active="0">
+        <div slot="tabs">
+          <sy-tab tabkey="over1">Overflow Tab 1</sy-tab>
+          <sy-tab tabkey="over2">Overflow Tab 2</sy-tab>
+          <sy-tab tabkey="over3">Overflow Tab 3</sy-tab>
+          <sy-tab tabkey="over4">Overflow Tab 4</sy-tab>
+          <sy-tab tabkey="over5">Overflow Tab 5</sy-tab>
+          <sy-tab tabkey="over6">Overflow Tab 6</sy-tab>
+          <sy-tab tabkey="over7">Overflow Tab 7</sy-tab>
+          <sy-tab tabkey="over8">Overflow Tab 8</sy-tab>
+        </div>
+        <div slot="contents">
+          <sy-tab-content name="over1">Content 1</sy-tab-content>
+          <sy-tab-content name="over2">Content 2</sy-tab-content>
+          <sy-tab-content name="over3">Content 3</sy-tab-content>
+          <sy-tab-content name="over4">Content 4</sy-tab-content>
+          <sy-tab-content name="over5">Content 5</sy-tab-content>
+          <sy-tab-content name="over6">Content 6</sy-tab-content>
+          <sy-tab-content name="over7">Content 7</sy-tab-content>
+          <sy-tab-content name="over8">Content 8</sy-tab-content>
+        </div>
+        <div slot="extra">
+          <button>Extra Button</button>
+        </div>
+      </sy-tab-group>
+    </div>
+    <div class="event-log" id="overflowTabsLog">Events will appear here...</div>
+  </div>
+
+  <!-- Different Positions -->
+  <div class="tabs-example">
+    <h3>Different Positions</h3>
+    <div class="tabs-controls">
+      <button onclick="changePosition('top')">Top</button>
+      <button onclick="changePosition('bottom')">Bottom</button>
+      <button onclick="changePosition('left')">Left</button>
+      <button onclick="changePosition('right')">Right</button>
+    </div>
+    <sy-tab-group id="positionTabs" active="0" position="top">
+      <div slot="tabs">
+        <sy-tab tabkey="pos1">Position Tab 1</sy-tab>
+        <sy-tab tabkey="pos2">Position Tab 2</sy-tab>
+        <sy-tab tabkey="pos3">Position Tab 3</sy-tab>
+      </div>
+      <div slot="contents">
+        <sy-tab-content name="pos1">Content 1</sy-tab-content>
+        <sy-tab-content name="pos2">Content 2</sy-tab-content>
+        <sy-tab-content name="pos3">Content 3</sy-tab-content>
+      </div>
+    </sy-tab-group>
+  </div>
+
+  <!-- Programmatic Control -->
+  <div class="tabs-example">
+    <h3>Programmatic Control</h3>
+    <div class="tabs-controls">
+      <button onclick="setActiveTab(0)">Set Active Tab 1</button>
+      <button onclick="setActiveTab(1)">Set Active Tab 2</button>
+      <button onclick="setActiveTab(2)">Set Active Tab 3</button>
+      <button onclick="closeTabProgrammatically('prog2')">Close Tab 2</button>
+    </div>
+    <sy-tab-group id="programmaticTabs" active="0">
+      <div slot="tabs">
+        <sy-tab tabkey="prog1" closable>Prog Tab 1</sy-tab>
+        <sy-tab tabkey="prog2" closable>Prog Tab 2</sy-tab>
+        <sy-tab tabkey="prog3" closable>Prog Tab 3</sy-tab>
+      </div>
+      <div slot="contents">
+        <sy-tab-content name="prog1">Content 1</sy-tab-content>
+        <sy-tab-content name="prog2">Content 2</sy-tab-content>
+        <sy-tab-content name="prog3">Content 3</sy-tab-content>
+      </div>
+    </sy-tab-group>
+    <div class="event-log" id="programmaticTabsLog">Events will appear here...</div>
+  </div>
+
+  <script>
+    // Event logging helper
+    function logEvent(logId, message) {
+      const log = document.getElementById(logId);
+      if (log) {
+        const time = new Date().toLocaleTimeString();
+        log.innerHTML = `[${time}] ${message}<br>` + log.innerHTML;
+      }
+    }
+
+    // Basic tabs events
+    const basicTabs = document.getElementById('basicTabs');
+    basicTabs.addEventListener('selected', (e) => {
+      logEvent('basicTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
+    });
+
+    // Card tabs events
+    const cardTabs = document.getElementById('cardTabs');
+    cardTabs.addEventListener('selected', (e) => {
+      logEvent('cardTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
+    });
+    cardTabs.addEventListener('closed', (e) => {
+      logEvent('cardTabsLog', `Closed: ${JSON.stringify(e.detail)}`);
+    });
+
+    // Disabled tabs events
+    const disabledTabs = document.getElementById('disabledTabs');
+    disabledTabs.addEventListener('selected', (e) => {
+      logEvent('disabledTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
+    });
+
+    function toggleTabGroupDisabled() {
+      disabledTabs.disabled = !disabledTabs.disabled;
+      logEvent('disabledTabsLog', `TabGroup disabled: ${disabledTabs.disabled}`);
+    }
+
+    function toggleTab2Disabled() {
+      const tab2 = document.getElementById('disabledTab2');
+      tab2.disabled = !tab2.disabled;
+      logEvent('disabledTabsLog', `Tab 2 disabled: ${tab2.disabled}`);
+    }
+
+    // Draggable tabs events
+    const draggableTabs = document.getElementById('draggableTabs');
+    draggableTabs.addEventListener('selected', (e) => {
+      logEvent('draggableTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
+    });
+    draggableTabs.addEventListener('ordered', (e) => {
+      const order = e.detail.map(tab => tab.tabkey).join(', ');
+      logEvent('draggableTabsLog', `Reordered: [${order}]`);
+    });
+
+    // Overflow tabs events
+    const overflowTabs = document.getElementById('overflowTabs');
+    overflowTabs.addEventListener('selected', (e) => {
+      logEvent('overflowTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
+    });
+
+    // Position tabs
+    function changePosition(position) {
+      const positionTabs = document.getElementById('positionTabs');
+      positionTabs.position = position;
+    }
+
+    // Programmatic control
+    const programmaticTabs = document.getElementById('programmaticTabs');
+    programmaticTabs.addEventListener('selected', (e) => {
+      logEvent('programmaticTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
+    });
+    programmaticTabs.addEventListener('closed', (e) => {
+      logEvent('programmaticTabsLog', `Closed: ${JSON.stringify(e.detail)}`);
+    });
+
+    function setActiveTab(index) {
+      programmaticTabs.active = index;
+      logEvent('programmaticTabsLog', `Programmatically set active tab to: ${index}`);
+    }
+
+    function closeTabProgrammatically(tabkey) {
+      programmaticTabs.closeTab(tabkey);
+      logEvent('programmaticTabsLog', `Programmatically closed tab: ${tabkey}`);
+    }
+  </script>
+</section>
+
   <h2>Label Component Tests</h2>
 
   <!-- Test 1: 기본 라벨 -->
@@ -2705,118 +3003,145 @@
       </script>
     </section>
 
-    <!-- MENU COMPONENT EXAMPLES (from Lit storybook converted to static examples) -->
-    <section id="menu-examples">
-      <h1>Menu Component Examples</h1>
+<!-- MENU COMPONENT EXAMPLES (from Lit storybook converted to static examples) -->
+<section id="menu-examples">
+  <h1>Menu Component Examples</h1>
 
-      <div class="example-section">
-        <h3>Main Complex Menu</h3>
-        <div style="position: relative; margin-left:1080px; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
-          <span>Menu</span>
-          <sy-menu id="menuMain" position="bottomLeft" trigger="hover">
-            <sy-menu-sub title="sub menu">
-              <sy-menu-group title="Group">
-                <sy-menu-item value="2">Item2</sy-menu-item>
-                <sy-menu-item value="3">Item3</sy-menu-item>
-                <sy-menu-sub title="sub menu 2">
-                  <sy-menu-item value="22">Item22</sy-menu-item>
-                  <sy-menu-item value="23">Item23</sy-menu-item>
-                </sy-menu-sub>
-              </sy-menu-group>
-              <sy-menu-item value="4">Item4</sy-menu-item>
-            </sy-menu-sub>
-            <sy-menu-sub title='sub menu with icon <sy-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z"></path></svg></sy-icon>'>
-              <sy-menu-item value="6">Item6</sy-menu-item>
-              <sy-menu-item value="7">Item7</sy-menu-item>
-            </sy-menu-sub>
-            <sy-menu-item value="1">Item1</sy-menu-item>
-            <sy-menu-item value="5">Item5</sy-menu-item>
-          </sy-menu>
-        </div>
-        <p id="menuMainResult"></p>
-      </div>
-
-      <div class="example-section">
-        <h3>Checkable Menu</h3>
-        <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
-          <span>Menu</span>
-          <sy-menu id="menuCheckable" trigger="click" checkable>
-            <sy-menu-item value="1">Item1</sy-menu-item>
+  <div class="example-section">
+    <h3>Main Complex Menu (Non-checkable)</h3>
+    <div style="position: relative; margin-left:1080px; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+      <span>Menu</span>
+      <sy-menu id="menuMain" position="bottomLeft" trigger="hover">
+        <sy-menu-sub title="sub menu">
+          <sy-menu-group title="Group">
             <sy-menu-item value="2">Item2</sy-menu-item>
-          </sy-menu>
-        </div>
-        <p id="menuCheckableResult"></p>
-      </div>
+            <sy-menu-item value="3">Item3</sy-menu-item>
+            <sy-menu-sub title="sub menu 2">
+              <sy-menu-item value="22">Item22</sy-menu-item>
+              <sy-menu-item value="23">Item23</sy-menu-item>
+            </sy-menu-sub>
+          </sy-menu-group>
+          <sy-menu-item value="4">Item4</sy-menu-item>
+        </sy-menu-sub>
+        <sy-menu-sub title='sub menu with icon <sy-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z"></path></svg></sy-icon>'>
+          <sy-menu-item value="6">Item6</sy-menu-item>
+          <sy-menu-item value="7">Item7</sy-menu-item>
+        </sy-menu-sub>
+        <sy-menu-item value="1">Item1</sy-menu-item>
+        <sy-menu-item value="5">Item5</sy-menu-item>
+      </sy-menu>
+    </div>
+    <p id="menuMainResult"></p>
+  </div>
 
-      <div class="example-section">
-        <h3>Open / Opened Event Demo</h3>
-        <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
-          <span>Menu</span>
-          <sy-menu id="menuOpenedDemo">
-            <sy-menu-item value="1">Item1</sy-menu-item>
-            <sy-menu-item value="2">Item2</sy-menu-item>
-          </sy-menu>
-        </div>
-        <p id="menuOpenedDemoResult"></p>
-      </div>
+  <div class="example-section">
+    <h3>Checkable Menu</h3>
+    <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+      <span>Menu</span>
+      <sy-menu id="menuCheckable" trigger="click" checkable>
+        <sy-menu-item value="1">Item1</sy-menu-item>
+        <sy-menu-item value="2">Item2</sy-menu-item>
+      </sy-menu>
+    </div>
+    <p id="menuCheckableResult"></p>
+  </div>
 
-      <div class="example-section">
-        <h3>Item Selected / Checked Events</h3>
+  <div class="example-section">
+    <h3>Open / Opened Event Demo</h3>
+    <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+      <span>Menu</span>
+      <sy-menu id="menuOpenedDemo" trigger="hover">
+        <sy-menu-item value="1">Item1</sy-menu-item>
+        <sy-menu-item value="2">Item2</sy-menu-item>
+      </sy-menu>
+    </div>
+    <p id="menuOpenedDemoResult"></p>
+  </div>
+
+  <div class="example-section">
+    <h3>Item Selected (Non-checkable) / Checked (Checkable) Events</h3>
+    <div style="display: flex; gap: 20px;">
+      <div>
+        <h4>Non-checkable Menu</h4>
         <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
-          <span>Menu</span>
-          <sy-menu id="menuEvents" checkable>
+          <span>Select Menu</span>
+          <sy-menu id="menuSelect" trigger="hover">
             <sy-menu-item value="a">Item A</sy-menu-item>
             <sy-menu-item value="b">Item B</sy-menu-item>
+            <sy-menu-item value="c">Item C</sy-menu-item>
           </sy-menu>
         </div>
-        <p id="menuEventsResult"></p>
+        <p id="menuSelectResult"></p>
       </div>
 
-      <script>
-        (function(){
-          const main = document.querySelector('#menuMain');
-          const mainResult = document.querySelector('#menuMainResult');
-          if(main) {
-            main.addEventListener('itemSelected', (e) => {
-              mainResult.textContent = 'selected: ' + JSON.stringify(e.detail);
-            });
-            main.addEventListener('itemChecked', (e) => {
-              mainResult.textContent = 'checked: ' + JSON.stringify(e.detail);
-            });
-            main.addEventListener('opened', (e) => {
-              mainResult.textContent = 'opened: ' + JSON.stringify(e.detail);
-            });
-          }
+      <div>
+        <h4>Checkable Menu</h4>
+        <div style="position: relative; padding: 4px 8px; width: fit-content; height: 32px; border: 1px solid rgba(0 0 0 / 0.24); display:flex; align-items:center; justify-content:center; border-radius:3px; box-sizing:border-box; cursor:pointer;">
+          <span>Check Menu</span>
+          <sy-menu id="menuCheck" trigger="click" checkable>
+            <sy-menu-item value="x">Item X</sy-menu-item>
+            <sy-menu-item value="y">Item Y</sy-menu-item>
+            <sy-menu-item value="z">Item Z</sy-menu-item>
+          </sy-menu>
+        </div>
+        <p id="menuCheckResult"></p>
+      </div>
+    </div>
+  </div>
 
-          const check = document.querySelector('#menuCheckable');
-          const checkResult = document.querySelector('#menuCheckableResult');
-          if(check) {
-            check.addEventListener('itemChecked', (e) => {
-              checkResult.textContent = 'itemChecked: ' + JSON.stringify(e.detail);
-            });
-          }
+  <script>
+    (function(){
+      // Main menu - non-checkable, should fire itemSelected
+      const main = document.querySelector('#menuMain');
+      const mainResult = document.querySelector('#menuMainResult');
+      if(main) {
+        main.addEventListener('itemSelected', (e) => {
+          mainResult.textContent = 'selected: ' + JSON.stringify(e.detail);
+        });
+        main.addEventListener('opened', (e) => {
+          mainResult.textContent = 'opened: ' + JSON.stringify(e.detail);
+        });
+      }
 
-          const opened = document.querySelector('#menuOpenedDemo');
-          const openedResult = document.querySelector('#menuOpenedDemoResult');
-          if(opened) {
-            opened.addEventListener('opened', (e) => {
-              openedResult.textContent = e.detail ? 'Menu opened' : 'Menu closed';
-            });
-          }
+      // Checkable menu - should fire itemChecked
+      const checkableMenu = document.querySelector('#menuCheckable');
+      const checkableResult = document.querySelector('#menuCheckableResult');
+      if(checkableMenu) {
+        checkableMenu.addEventListener('itemChecked', (e) => {
+          checkableResult.textContent = 'itemChecked: ' + JSON.stringify(e.detail);
+        });
+      }
 
-          const eventsMenu = document.querySelector('#menuEvents');
-          const eventsResult = document.querySelector('#menuEventsResult');
-          if(eventsMenu) {
-            eventsMenu.addEventListener('itemSelected', (e) => {
-              eventsResult.textContent = 'selected: ' + JSON.stringify(e.detail);
-            });
-            eventsMenu.addEventListener('itemChecked', (e) => {
-              eventsResult.textContent = 'checked: ' + JSON.stringify(e.detail);
-            });
-          }
-        })();
-      </script>
-    </section>
+      // Opened event demo
+      const opened = document.querySelector('#menuOpenedDemo');
+      const openedResult = document.querySelector('#menuOpenedDemoResult');
+      if(opened) {
+        opened.addEventListener('opened', (e) => {
+          openedResult.textContent = e.detail ? 'Menu opened' : 'Menu closed';
+        });
+      }
+
+      // Separate select and check menus for clear testing
+      // Non-checkable menu - itemSelected
+      const selectMenu = document.querySelector('#menuSelect');
+      const selectResult = document.querySelector('#menuSelectResult');
+      if(selectMenu) {
+        selectMenu.addEventListener('itemSelected', (e) => {
+          selectResult.textContent = 'itemSelected: ' + JSON.stringify(e.detail) + ' (menu closed)';
+        });
+      }
+
+      // Checkable menu - itemChecked
+      const checkMenu = document.querySelector('#menuCheck');
+      const checkMenuResult = document.querySelector('#menuCheckResult');  // 변수명 변경
+      if(checkMenu) {
+        checkMenu.addEventListener('itemChecked', (e) => {
+          checkMenuResult.textContent = 'itemChecked: ' + JSON.stringify(e.detail) + ' (menu stays open)';
+        });
+      }
+    })();
+  </script>
+</section>
 
     <hr style="margin: 30px 0; border: 1px solid #e0e0e0;">
 

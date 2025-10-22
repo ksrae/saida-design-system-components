@@ -1752,6 +1752,94 @@ export namespace Components {
          */
         "size": 'small' | 'medium';
     }
+    interface SyTab {
+        /**
+          * @default false
+         */
+        "active": boolean;
+        /**
+          * @default false
+         */
+        "closable": boolean;
+        /**
+          * @default false
+         */
+        "currentDisabledStatus": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "inHeader": boolean;
+        "index": number;
+        /**
+          * @default false
+         */
+        "manualClose": boolean;
+        /**
+          * @default false
+         */
+        "parentDisabled": boolean;
+        /**
+          * @default "top"
+         */
+        "position": "top" | "bottom" | "left" | "right";
+        "setClose": (isForce?: boolean) => Promise<void>;
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium" | "large";
+        "tabkey": string;
+        /**
+          * @default "line"
+         */
+        "type": "card" | "line";
+    }
+    interface SyTabContent {
+        /**
+          * @default false
+         */
+        "active": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "name": string;
+    }
+    interface SyTabGroup {
+        "active"?: number;
+        /**
+          * @default 'left'
+         */
+        "align": 'center' | 'left';
+        "closeTab": (name: string) => Promise<void>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "draggable": boolean;
+        /**
+          * @default "none"
+         */
+        "padding": "small" | "medium" | "large" | 'none';
+        /**
+          * @default "top"
+         */
+        "position": "top" | "bottom" | "left" | "right";
+        /**
+          * @default "medium"
+         */
+        "size": "small" | "medium" | "large";
+        /**
+          * @default "line"
+         */
+        "type": "card" | "line";
+    }
     interface SyTag {
         /**
           * @default false
@@ -2043,6 +2131,14 @@ export interface SyInputNumberCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyInputNumberElement;
 }
+export interface SyMenuCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyMenuElement;
+}
+export interface SyMenuItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyMenuItemElement;
+}
 export interface SyModelessCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyModelessElement;
@@ -2086,6 +2182,14 @@ export interface SySplitPanelCustomEvent<T> extends CustomEvent<T> {
 export interface SySwitchCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSySwitchElement;
+}
+export interface SyTabCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTabElement;
+}
+export interface SyTabGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTabGroupElement;
 }
 export interface SyTagCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2480,7 +2584,20 @@ declare global {
         prototype: HTMLSyLabelElement;
         new (): HTMLSyLabelElement;
     };
+    interface HTMLSyMenuElementEventMap {
+        "opened": boolean;
+        "itemSelected": any;
+        "itemChecked": any;
+    }
     interface HTMLSyMenuElement extends Components.SyMenu, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyMenuElementEventMap>(type: K, listener: (this: HTMLSyMenuElement, ev: SyMenuCustomEvent<HTMLSyMenuElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyMenuElementEventMap>(type: K, listener: (this: HTMLSyMenuElement, ev: SyMenuCustomEvent<HTMLSyMenuElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLSyMenuElement: {
         prototype: HTMLSyMenuElement;
@@ -2492,7 +2609,19 @@ declare global {
         prototype: HTMLSyMenuGroupElement;
         new (): HTMLSyMenuGroupElement;
     };
+    interface HTMLSyMenuItemElementEventMap {
+        "itemSelected": { value: string; label: string };
+        "itemChecked": { value: string; label: string; checked: boolean };
+    }
     interface HTMLSyMenuItemElement extends Components.SyMenuItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyMenuItemElementEventMap>(type: K, listener: (this: HTMLSyMenuItemElement, ev: SyMenuItemCustomEvent<HTMLSyMenuItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyMenuItemElementEventMap>(type: K, listener: (this: HTMLSyMenuItemElement, ev: SyMenuItemCustomEvent<HTMLSyMenuItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLSyMenuItemElement: {
         prototype: HTMLSyMenuItemElement;
@@ -2816,6 +2945,49 @@ declare global {
         prototype: HTMLSySwitchElement;
         new (): HTMLSySwitchElement;
     };
+    interface HTMLSyTabElementEventMap {
+        "selected": any;
+        "closed": any;
+    }
+    interface HTMLSyTabElement extends Components.SyTab, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTabElementEventMap>(type: K, listener: (this: HTMLSyTabElement, ev: SyTabCustomEvent<HTMLSyTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTabElementEventMap>(type: K, listener: (this: HTMLSyTabElement, ev: SyTabCustomEvent<HTMLSyTabElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTabElement: {
+        prototype: HTMLSyTabElement;
+        new (): HTMLSyTabElement;
+    };
+    interface HTMLSyTabContentElement extends Components.SyTabContent, HTMLStencilElement {
+    }
+    var HTMLSyTabContentElement: {
+        prototype: HTMLSyTabContentElement;
+        new (): HTMLSyTabContentElement;
+    };
+    interface HTMLSyTabGroupElementEventMap {
+        "selected": any;
+        "closed": any;
+        "ordered": HTMLSyTabElement[];
+    }
+    interface HTMLSyTabGroupElement extends Components.SyTabGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTabGroupElementEventMap>(type: K, listener: (this: HTMLSyTabGroupElement, ev: SyTabGroupCustomEvent<HTMLSyTabGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTabGroupElementEventMap>(type: K, listener: (this: HTMLSyTabGroupElement, ev: SyTabGroupCustomEvent<HTMLSyTabGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTabGroupElement: {
+        prototype: HTMLSyTabGroupElement;
+        new (): HTMLSyTabGroupElement;
+    };
     interface HTMLSyTagElementEventMap {
         "selected": { tag: HTMLSyTagElement };
         "removed": { tag: HTMLSyTagElement };
@@ -2947,6 +3119,9 @@ declare global {
         "sy-step": HTMLSyStepElement;
         "sy-steps": HTMLSyStepsElement;
         "sy-switch": HTMLSySwitchElement;
+        "sy-tab": HTMLSyTabElement;
+        "sy-tab-content": HTMLSyTabContentElement;
+        "sy-tab-group": HTMLSyTabGroupElement;
         "sy-tag": HTMLSyTagElement;
         "sy-textarea": HTMLSyTextareaElement;
         "sy-timepicker": HTMLSyTimepickerElement;
@@ -3782,6 +3957,9 @@ declare namespace LocalJSX {
           * @default false
          */
         "disabled"?: boolean;
+        "onItemChecked"?: (event: SyMenuCustomEvent<any>) => void;
+        "onItemSelected"?: (event: SyMenuCustomEvent<any>) => void;
+        "onOpened"?: (event: SyMenuCustomEvent<boolean>) => void;
         /**
           * @default false
          */
@@ -3810,6 +3988,8 @@ declare namespace LocalJSX {
           * @default false
          */
         "disabled"?: boolean;
+        "onItemChecked"?: (event: SyMenuItemCustomEvent<{ value: string; label: string; checked: boolean }>) => void;
+        "onItemSelected"?: (event: SyMenuItemCustomEvent<{ value: string; label: string }>) => void;
         /**
           * @default false
          */
@@ -4658,6 +4838,97 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium';
     }
+    interface SyTab {
+        /**
+          * @default false
+         */
+        "active"?: boolean;
+        /**
+          * @default false
+         */
+        "closable"?: boolean;
+        /**
+          * @default false
+         */
+        "currentDisabledStatus"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "inHeader"?: boolean;
+        "index": number;
+        /**
+          * @default false
+         */
+        "manualClose"?: boolean;
+        "onClosed"?: (event: SyTabCustomEvent<any>) => void;
+        "onSelected"?: (event: SyTabCustomEvent<any>) => void;
+        /**
+          * @default false
+         */
+        "parentDisabled"?: boolean;
+        /**
+          * @default "top"
+         */
+        "position"?: "top" | "bottom" | "left" | "right";
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium" | "large";
+        "tabkey": string;
+        /**
+          * @default "line"
+         */
+        "type"?: "card" | "line";
+    }
+    interface SyTabContent {
+        /**
+          * @default false
+         */
+        "active"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "name": string;
+    }
+    interface SyTabGroup {
+        "active"?: number;
+        /**
+          * @default 'left'
+         */
+        "align"?: 'center' | 'left';
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "draggable"?: boolean;
+        "onClosed"?: (event: SyTabGroupCustomEvent<any>) => void;
+        "onOrdered"?: (event: SyTabGroupCustomEvent<HTMLSyTabElement[]>) => void;
+        "onSelected"?: (event: SyTabGroupCustomEvent<any>) => void;
+        /**
+          * @default "none"
+         */
+        "padding"?: "small" | "medium" | "large" | 'none';
+        /**
+          * @default "top"
+         */
+        "position"?: "top" | "bottom" | "left" | "right";
+        /**
+          * @default "medium"
+         */
+        "size"?: "small" | "medium" | "large";
+        /**
+          * @default "line"
+         */
+        "type"?: "card" | "line";
+    }
     interface SyTag {
         /**
           * @default false
@@ -4928,6 +5199,9 @@ declare namespace LocalJSX {
         "sy-step": SyStep;
         "sy-steps": SySteps;
         "sy-switch": SySwitch;
+        "sy-tab": SyTab;
+        "sy-tab-content": SyTabContent;
+        "sy-tab-group": SyTabGroup;
         "sy-tag": SyTag;
         "sy-textarea": SyTextarea;
         "sy-timepicker": SyTimepicker;
@@ -5026,6 +5300,9 @@ declare module "@stencil/core" {
             "sy-step": LocalJSX.SyStep & JSXBase.HTMLAttributes<HTMLSyStepElement>;
             "sy-steps": LocalJSX.SySteps & JSXBase.HTMLAttributes<HTMLSyStepsElement>;
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
+            "sy-tab": LocalJSX.SyTab & JSXBase.HTMLAttributes<HTMLSyTabElement>;
+            "sy-tab-content": LocalJSX.SyTabContent & JSXBase.HTMLAttributes<HTMLSyTabContentElement>;
+            "sy-tab-group": LocalJSX.SyTabGroup & JSXBase.HTMLAttributes<HTMLSyTabGroupElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
             "sy-timepicker": LocalJSX.SyTimepicker & JSXBase.HTMLAttributes<HTMLSyTimepickerElement>;

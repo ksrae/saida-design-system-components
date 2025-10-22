@@ -1,4 +1,5 @@
-import { Component, Prop, State, h, Element, Watch } from '@stencil/core';
+// sy-menu-item.tsx
+import { Component, Prop, State, h, Element, Watch, Event, EventEmitter } from '@stencil/core';
 
 @Component({
   tag: 'sy-menu-item',
@@ -12,29 +13,48 @@ export class SyMenuItem {
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop() value: string = '';
   @Prop({ reflect: true, mutable: true }) select: boolean = false;
-
   @Prop({ reflect: true, mutable: true }) selectable: boolean = false;
   @Prop({ reflect: true, mutable: true }) checkable: boolean = false;
+
   @State() checked: boolean = false;
   @State() private sanitizedSlotContent: string = '';
 
+  @Event({ bubbles: true, composed: true }) itemSelected!: EventEmitter<{ value: string; label: string }>;
+  @Event({ bubbles: true, composed: true }) itemChecked!: EventEmitter<{ value: string; label: string; checked: boolean }>;
+
+  private observer?: MutationObserver;
+
   componentWillLoad() {
-    // keep initial state in sync
     this.selectable = !!this.checkable;
-    // initialize slot text before first render to avoid extra re-renders
-    this.handleSlotChange();
+    this.updateSlotContent();
+  }
+
+  componentDidLoad() {
+    this.observeSlotChanges();
+  }
+
+  disconnectedCallback() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  private observeSlotChanges() {
+    this.observer = new MutationObserver(() => {
+      this.updateSlotContent();
+    });
+
+    this.observer.observe(this.host, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
   }
 
   @Watch('checkable')
   watchCheckable() {
-    // when parent sets checkable, ensure selectable follows
     this.selectable = !!this.checkable;
   }
-
-  // componentDidLoad removed to prevent setting state after first render
-
-  // keep behavior: when checkable changes externally, ensure selectable sync
-  // Stencil doesn't provide updated(changedProperties) directly; consumers should set props appropriately
 
   private sanitizeHtml(content: string): string {
     if (!content) return '';
@@ -43,105 +63,96 @@ export class SyMenuItem {
     return tempDiv.innerText.trim();
   }
 
-  private handleSlotChange = () => {
-    const slot = this.host.querySelector('slot');
-    const assignedNodes = (slot as HTMLSlotElement | null)?.assignedNodes() || [];
-
-    let text = assignedNodes
-      .filter(node => node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE)
-      .map(node => node.textContent)
-      .join('');
-
+  private updateSlotContent() {
+    const text = this.getTextContent();
     this.sanitizedSlotContent = this.sanitizeHtml(text || '');
-  };
+  }
+
+  private getTextContent(): string {
+    if (this.checkable) {
+      const checkbox = this.host.querySelector('sy-checkbox');
+      return checkbox ? checkbox.textContent || '' : this.host.textContent || '';
+    }
+    return this.host.textContent || '';
+  }
 
   private onClick = (e: Event) => {
-    const ev = e as MouseEvent & { target: HTMLElement };
     e.preventDefault();
-    
+    e.stopPropagation();
+
     if (this.disabled) return;
 
-    const clickedElement = ev.target as HTMLElement;
-    const liElement = this.host.querySelector('li');
-    const slotElement = this.host.querySelector('slot');
+    const clickedElement = e.target as HTMLElement;
 
-    const slotNodes = (slotElement as HTMLSlotElement | null)?.assignedNodes() || [];
-    const isInsideSlot = slotNodes.some(node => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        return (node as Element).contains(clickedElement);
-      }
-      return false;
-    });
-
-    if (isInsideSlot && clickedElement !== liElement) {
+    // 체크박스가 아닌 다른 내부 컴포넌트 클릭은 무시
+    if (clickedElement !== (this.host as Element) &&
+        clickedElement.tagName &&
+        clickedElement.tagName.startsWith('SY-') &&
+        clickedElement.tagName !== 'SY-CHECKBOX') {
       return;
     }
 
     if (this.checkable) {
+      // checkable인 경우 체크 상태 토글
       this.checked = !this.checked;
-      this.select = !this.select;
-      this.setCheckedEvent();
+      this.select = this.checked;
+      this.emitCheckedEvent();
     } else {
+      // checkable이 아닌 경우 선택
       this.select = true;
-      this.setSelectedEvent();
+      this.emitSelectedEvent();
     }
-    
-    // DO NOT stopPropagation - let it bubble to document
   };
 
-  // checkbox emits changed handled in original lit code; we keep a placeholder
-  private handleCheckbox = (e: Event) => {
+  private handleCheckboxChange = (e: Event) => {
     e.preventDefault();
     e.stopPropagation();
+    // 체크박스 변경은 onClick에서 처리
   };
 
-  private getSlotValueText(): string {
-    const slot = this.host.querySelector('slot');
-    const assignedNodes = (slot as HTMLSlotElement | null)?.assignedNodes() || [];
-    return assignedNodes
-      .filter(node => node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE)
-      .map(node => node.textContent)
-      .join('');
+  private emitSelectedEvent() {
+    const label = this.getTextContent();
+    this.itemSelected.emit({
+      value: this.value || label.trim(),
+      label: label.trim()
+    });
   }
 
-  private setSelectedEvent() {
-    const slotValue = this.getSlotValueText();
-    this.host.dispatchEvent(new CustomEvent('itemSelected', {
-      detail: { value: this.value, label: slotValue },
-      bubbles: true,
-      composed: true,
-    }));
-  }
-
-  private setCheckedEvent() {
-    const slotValue = this.getSlotValueText();
-    this.host.dispatchEvent(new CustomEvent('itemChecked', {
-      detail: { value: this.value, label: slotValue, checked: this.checked },
-      bubbles: true,
-      composed: true,
-    }));
+  private emitCheckedEvent() {
+    const label = this.getTextContent();
+    this.itemChecked.emit({
+      value: this.value || label.trim(),
+      label: label.trim(),
+      checked: this.checked
+    });
   }
 
   render() {
-    console.log('[MENU-ITEM render] checkable:', this.checkable, 'checked:', this.checked);
     const liClass = {
+      'menu-item': true,
       'menu-item--selected': this.selectable && this.select,
+      'menu-item--disabled': this.disabled,
+      'menu-item--checkable': this.checkable
     };
 
     return (
       <li
-        tabIndex={0}
-        class={Object.keys(liClass).filter(k => (liClass as any)[k]).join(' ')}
+        tabIndex={this.disabled ? -1 : 0}
+        class={liClass}
         aria-disabled={this.disabled ? 'true' : 'false'}
         onClick={this.onClick}
         title={this.sanitizedSlotContent}
       >
         {this.checkable ? (
-          <sy-checkbox checked={this.checked} onChanged={this.handleCheckbox}>
-            <slot onSlotchange={this.handleSlotChange}></slot>
+          <sy-checkbox
+            checked={this.checked}
+            disabled={this.disabled}
+            onChanged={this.handleCheckboxChange}
+          >
+            <slot />
           </sy-checkbox>
         ) : (
-          <slot onSlotchange={this.handleSlotChange}></slot>
+          <slot />
         )}
       </li>
     );

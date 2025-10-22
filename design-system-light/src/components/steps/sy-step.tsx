@@ -74,7 +74,7 @@ export class SyStep {
     }
   }
 
-  private handleClick = (e: any) => {
+  private handleClick = (_e: any) => {
     if (this.clickable && !this.disabled) {
       this.host.dispatchEvent(
         new CustomEvent("selected", {

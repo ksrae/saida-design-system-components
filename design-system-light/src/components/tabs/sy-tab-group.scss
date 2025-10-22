@@ -1,0 +1,645 @@
+@use "../../assets/style/global/font" as font;
+
+
+/* Added token */
+:root,
+:host {
+    --tabs-navigation-list-background-hover: rgba(255 255 255 / 0.07);
+    --tabs-navigation-list-background-selected: var(--color-white-alpha-14);
+    --tabs-navigation-closable-icon-enabled: var(--color-white-alpha-42);
+    --tabs-navigation-closable-icon-hover: var(--color-white-alpha-97);
+    --tabs-navigation-closable-icon-selected: var(--color-white-alpha-42);
+}
+
+/* Tab */
+:root,
+:host {
+    display: inline-block;
+    user-select: none;
+    border-bottom: var(--border-medium) transparent;
+    width: 100%;
+    height: 100%;
+}
+
+
+.tabs {
+    overflow: hidden;
+    position: relative;
+}
+
+.menu-visible {
+    display: block;
+}
+
+.menu-hidden {
+    display: none;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+
+:host(sy-tab-group[disabled]) {
+    .tab-group-container {
+        .tabs {
+            cursor: auto;
+        }
+
+        .tab-more {
+            cursor: auto;
+            color: var(--tabs-line-list-icon-disabled);
+        }
+
+        .extra-area {
+            sy-button {
+                cursor: auto;
+            }
+        }
+    }
+}
+
+/* Type Line */
+
+:host(sy-tab-group[type="line"][position="top"]) ::slotted(sy-tab),
+:host(sy-tab-group[type="line"][position="bottom"]) ::slotted(sy-tab) {
+    border-bottom: none;
+}
+
+:host(sy-tab-group[type="line"][position="left"]) ::slotted(sy-tab),
+:host(sy-tab-group[type="line"][position="right"]) ::slotted(sy-tab) {
+    margin-right: 0px;
+    width: 100%;
+}
+
+
+:host(sy-tab-group[type="line"]) ::slotted(sy-tab[active]) {
+    color: var(--tabs-line-list-text-selected);
+}
+
+:host(sy-tab-group) ::slotted(sy-tab:hover),
+:host(sy-tab-group[type="line"]) ::slotted(sy-tab:hover) {
+    color: var(--tabs-line-list-text-hover);
+}
+
+
+/* Type Card */
+:host(sy-tab-group[type="card"]) ::slotted(sy-tab) {
+    border: 0px;
+}
+
+:host(sy-tab-group[type="card"][position="top"]) ::slotted(sy-tab),
+:host(sy-tab-group[type="card"][position="bottom"]) ::slotted(sy-tab) {
+    border-bottom: none;
+}
+
+:host(sy-tab-group[type="card"][position="left"]) ::slotted(sy-tab),
+:host(sy-tab-group[type="card"][position="right"]) ::slotted(sy-tab) {
+    margin-right: 0px;
+    width: 100%;
+}
+
+/* Type Navigation */
+:host(sy-tab-group[type="navigation"]) ::slotted(sy-tab) {
+    color: var(--tabs-navigation-list-text-enabled);
+    margin: 0px;
+    border: none !important;
+
+    &:after {
+        border: none !important;
+        height: 0px;
+    }
+}
+
+:host(sy-tab-group[type="navigation"]) ::slotted(sy-tab:hover) {
+    background: var(--tabs-navigation-list-background-hover);
+    color: var(--tabs-navigation-list-text-hover);
+}
+
+:host(sy-tab-group[type="navigation"]) ::slotted(sy-tab[disabled]:hover) {
+    background: var(--tabs-navigation-listgroup-background-enabled);
+    color: var(--tabs-navigation-list-text-hover);
+}
+
+:host(sy-tab-group[type="navigation"]) ::slotted(sy-tab[active]) {
+    border-bottom: none !important;
+    border: 0px;
+    background-color: var(--tabs-navigation-list-background-selected);
+    color: var(--tabs-navigation-list-text-selected);
+    border: none;
+
+    &:after {
+        border-bottom: none;
+    }
+}
+
+:host(sy-tab-group[type="navigation"]) {
+    .navigation {
+        .tab-group-container {
+            background-color: var(--tabs-navigation-listgroup-background-enabled);
+
+            &:after {
+                border-bottom: none;
+            }
+        }
+
+        .tab-more {
+            color: var(--tabs-navigation-list-icon-enabled);
+            background-color: none;
+            width: auto;
+        }
+    }
+}
+
+:host(sy-tab-group[type="navigation"][disabled]) ::slotted(sy-tab) {
+    .tab-more {
+        color: var(--tabs-navigation-list-icon-disabled);
+    }
+}
+
+:host(sy-tab-group[type="navigation"][disabled]) ::slotted(sy-tab:hover) {
+    background: var(--tabs-navigation-listgroup-background-enabled);
+}
+
+
+/* Top layout */
+.top-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .tab-group-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+
+        &.align-center {
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        &:after {
+            display: flex;
+            position: absolute;
+            right: 0;
+            left: 0;
+            bottom: 0px;
+            border-bottom: var(--border-small) var(--tabs-card-list-border-enabeld);
+            content: "";
+        }
+
+        &.tab-padding-none {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        &.tab-padding-small {
+            padding-left: var(--spacing-xsmall);
+            padding-right: var(--spacing-xsmall);
+        }
+
+        &.tab-padding-medium {
+            padding-left: var(--spacing-small);
+            padding-right: var(--spacing-small);
+        }
+
+        &.tab-padding-large {
+            padding-left: var(--spacing-medium);
+            padding-right: var(--spacing-medium);
+        }
+    }
+
+    .contents {
+        margin: 0px;
+        // padding: var(--spacing-xsmall);
+        overflow: auto;
+        flex: 1;
+    }
+
+    .tab-more {
+        position: relative;
+        display: flex;
+        align-items: center;
+        box-shadow: -3px 0px 3px -3px var(--tabs-line-shadow-border-enabled);
+        box-sizing: border-box;
+    }
+
+    // 새로 추가된 부분
+    ::slotted([slot="tabs"]) {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.tabs.top ::slotted(sy-tab[active]:focus-visible) {
+    &:after {
+        left: -1px;
+        width: calc(100% + 2px);
+
+    }
+}
+
+
+.tabs.top ::slotted(sy-tab:first-child) {
+    margin-left: 0px !important;
+}
+
+.tab-group-container {
+    .extra-area {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: -3px 0px 3px -3px var(--tabs-line-shadow-border-enabled);
+        box-sizing: border-box;
+    }
+
+    .overflow-menu-button {
+        button:hover {
+            background-color: none;
+        }
+    }
+}
+
+/* Bottom layout */
+
+.bottom-layout {
+    display: flex;
+    flex-direction: column-reverse;
+    height: 100%;
+
+    .tab-group-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &.align-center {
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            align-items: center;
+        }
+
+        &:after {
+            display: flex;
+            position: absolute;
+            right: 0;
+            left: 0;
+            top: 0px;
+            border-top: var(--border-small) var(--tabs-card-list-border-enabeld);
+            content: "";
+        }
+
+        // 새로 추가된 부분
+        ::slotted([slot="tabs"]) {
+            display: flex;
+            align-items: center;
+        }
+
+        &.tab-padding-none {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        &.tab-padding-small {
+            padding-left: var(--spacing-xsmall);
+            padding-right: var(--spacing-xsmall);
+        }
+
+        &.tab-padding-medium {
+            padding-left: var(--spacing-small);
+            padding-right: var(--spacing-small);
+        }
+
+        &.tab-padding-large {
+            padding-left: var(--spacing-medium);
+            padding-right: var(--spacing-medium);
+        }
+    }
+
+    .contents {
+        margin: 0px;
+        // padding: var(--spacing-xsmall);
+        flex: 1;
+        overflow: auto;
+    }
+
+    .tab-more {
+        position: relative;
+        display: flex;
+        align-items: center;
+        box-shadow: -3px 0px 3px -3px var(--tabs-line-shadow-border-enabled);
+        z-index: 2;
+    }
+}
+
+.tabs.bottom ::slotted(sy-tab:first-child) {
+    margin-left: 0px !important;
+}
+
+
+/* left layout */
+
+.left-layout {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+
+    .tabs {
+        flex-shrink: 0;
+    }
+}
+
+.tabs.left ::slotted(sy-tab) {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-left: 0px;
+}
+
+.left-layout {
+    .tab-group-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+
+        // .tabs{
+        //     position: relative;
+        //     display: flex;
+        //     flex-direction: column;
+        // }
+        // 새로 추가된 부분
+        ::slotted([slot="tabs"]) {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        &.align-center {
+            align-items: center;
+        }
+
+        &:after {
+            display: flex;
+            position: absolute;
+            height: 100%;
+            top: 0px;
+            right: 0px;
+            border-right: var(--border-small) var(--tabs-card-list-border-enabeld);
+            content: "";
+        }
+
+        &.tab-padding-none {
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        &.tab-padding-small {
+            padding-top: var(--spacing-xsmall);
+            padding-bottom: var(--spacing-xsmall);
+        }
+
+        &.tab-padding-medium {
+            padding-top: var(--spacing-small);
+            padding-bottom: var(--spacing-small);
+        }
+
+        &.tab-padding-large {
+            padding-top: var(--spacing-medium);
+            padding-bottom: var(--spacing-medium);
+        }
+    }
+
+    .contents {
+        margin: 0px;
+        // padding: var(--spacing-xsmall);
+        flex: 1;
+        overflow: auto;
+    }
+
+    .tab-more {
+        box-shadow: 0px -3px 3px -3px var(--tabs-line-shadow-border-enabled);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+    }
+}
+
+
+/* right layout */
+
+.right-layout {
+    display: flex;
+    flex-direction: row-reverse;
+    height: 100%;
+
+    .tabs {
+        flex-shrink: 0;
+    }
+}
+
+.tabs.right ::slotted(sy-tab) {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-left: 0px;
+}
+
+.right-layout {
+    .tab-group-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+
+        .tabs {
+            display: flex;
+            flex-direction: column;
+        }
+
+        &.align-center {
+            align-items: center;
+        }
+
+        &:after {
+            display: flex;
+            position: absolute;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            border-left: var(--border-small) var(--tabs-card-list-border-enabeld);
+            content: "";
+        }
+
+        &.tab-padding-none {
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        &.tab-padding-small {
+            padding-top: var(--spacing-xsmall);
+            padding-bottom: var(--spacing-xsmall);
+        }
+
+        &.tab-padding-medium {
+            padding-top: var(--spacing-small);
+            padding-bottom: var(--spacing-small);
+        }
+
+        &.tab-padding-large {
+            padding-top: var(--spacing-medium);
+            padding-bottom: var(--spacing-medium);
+        }
+    }
+
+    .contents {
+        margin: 0px;
+        // padding: var(--spacing-xsmall);
+        flex: 1;
+        overflow: auto;
+    }
+
+    .tab-more {
+        box-shadow: 0px -3px 3px -3px var(--tabs-line-shadow-border-enabled);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+    }
+}
+
+
+:host(sy-tab-group[align="center"]) ::slotted(sy-tab-content) {
+    text-align: left;
+}
+
+/* Vertical tab  */
+:host(sy-tab-group[position="left"]) ::slotted(sy-tab),
+:host(sy-tab-group[position="right"]) ::slotted(sy-tab) {
+    max-width: 150px;
+}
+
+
+/* Size  */
+:host(sy-tab-group) ::slotted(sy-tab) {
+    .tab-more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        z-index: 2;
+    }
+}
+
+:host(sy-tab-group[size="small"]) ::slotted(sy-tab) {
+    // height: var(--component-large);
+    height: auto;
+    @include font.text-style-small-regular;
+}
+
+:host(sy-tab-group[size="small"]) {
+    .tab-more {
+        height: var(--header-small);
+        padding: 0 var(--spacing-small);
+    }
+}
+
+:host(sy-tab-group[size="small"]) ::slotted(sy-tab[slot="extra"]) {
+    height: var(--component-large);
+    padding: 0 var(--spacing-small);
+}
+
+
+:host(sy-tab-group[size="medium"]) ::slotted(sy-tab) {
+    // height: var(--header-xlarge);
+    height: auto;
+    @include font.text-style-base-regular;
+}
+
+:host(sy-tab-group) ::slotted(sy-tab[slot="extra"]),
+:host(sy-tab-group[size="medium"]) ::slotted(sy-tab[slot="extra"]) {
+    width: var(--header-xlarge);
+    height: var(--header-xlarge);
+}
+
+:host(sy-tab-group),
+:host(sy-tab-group[size="medium"]) {
+    .tab-more {
+        height: var(--header-medium);
+        padding: 0 var(--spacing-medium);
+    }
+}
+
+:host(sy-tab-group[size="large"]) ::slotted(sy-tab) {
+    // height: var(--header-xxlarge);
+    height: auto;
+    @include font.text-style-large-regular;
+}
+
+:host(sy-tab-group[size="large"]) {
+    .tab-more {
+        padding: 0 var(--spacing-large);
+        height: var(--header-large);
+    }
+}
+
+:host(sy-tab-group[size="large"]) ::slotted(sy-tab[slot="extra"]) {
+    padding: 0 var(--spacing-large);
+    height: var(--component-xxlarge);
+}
+
+/* disabled */
+:host(sy-tab-group[disabled]) ::slotted(sy-tab) {
+    cursor: auto;
+}
+
+/* Hide Part */
+// :host{
+//     &::part(tab-group):after{
+//         border-bottom:none !important;
+//     }
+// }
+
+
+
+/* Size */
+:host(sy-tab-group[size="small"]) {
+
+    .top-layout,
+    .bottom-layout {
+        .tab-group-container {
+            height: 36px;
+        }
+    }
+}
+
+:host(sy-tab-group[size="medium"]) {
+
+    .top-layout,
+    .bottom-layout {
+        .tab-group-container {
+            height: 44px;
+        }
+    }
+}
+
+:host(sy-tab-group[size="large"]) {
+
+    .top-layout,
+    .bottom-layout {
+        .tab-group-container {
+            height: 52px;
+        }
+    }
+}
