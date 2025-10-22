@@ -14,6 +14,7 @@ export class SyMenu {
 	private isMouseOverParent = false;
 	private openTimer: any;
 	private closeTimer: any;
+	private closeTimerIds: Set<any> = new Set(); // Track all active close timers
 	private parentDom: any;
 	private isDropdown = false;
 	private DISPLAY_INTERVAL = 5;
@@ -25,6 +26,7 @@ export class SyMenu {
 	private mouseY!: number;
 	private isUpdatingOpenState = false; // Guard to prevent infinite loops
 	private suppressOpen = false; // Prevent immediate reopen after closing
+	private isRemoving = false; // Guard to prevent multiple removeMenu calls
 
 	@Prop({ reflect: true, mutable: true }) open: boolean = false;
 	@Prop({ reflect: true }) checkable: boolean = false;
@@ -60,8 +62,7 @@ export class SyMenu {
 		this.setCheckableAllItems();
 		this.addEvent();
 
-		// forward child events
-		this.host.addEventListener('itemSelected', this.itemSelectedEvent as EventListener);
+		// Don't add itemSelected listener - handleDocumentClick handles menu closing
 		this.host.addEventListener('itemChecked', this.itemCheckedEvent as EventListener);
 	}
 
@@ -78,7 +79,6 @@ export class SyMenu {
 		}
 
 		// remove forwarded listeners
-		this.host.removeEventListener('itemSelected', this.itemSelectedEvent as EventListener);
 		this.host.removeEventListener('itemChecked', this.itemCheckedEvent as EventListener);
 	}
 
@@ -108,18 +108,17 @@ export class SyMenu {
 
 	@Watch('open')
 	watchOpen(newVal: boolean) {
-		if (this.isUpdatingOpenState) {
-			return;
-		}
+		if (this.isUpdatingOpenState) return;
+		if (this.suppressOpen && newVal) return;
 		
 		if (!this.isDropdown) {
 			if (newVal) {
+				this.isRemoving = false;
 				this.appendToRoot();
 			} else {
 				this.removeMenu();
 			}
-		} 
-
+		}
 	}
 
 	private setDropdown() {
@@ -169,84 +168,83 @@ export class SyMenu {
 	}
 
 	private appendToRoot() {
-		// don't reopen immediately after a selection closed the menu
-		if (this.suppressOpen) {
-			console.log('[MENU appendToRoot] suppressed open due to recent selection');
-			return;
-		}
+		if (this.suppressOpen) return;
+		
+		this.isRemoving = false;
+		
 		if (this.host.parentNode !== document.body) {
-			// Remove any existing listener first to prevent duplicates
 			document.removeEventListener('click', this.handleDocumentClick);
 			
-			// Clear any pending timers
-			if (this.openTimer) clearTimeout(this.openTimer);
-			
-			this.openTimer = setTimeout(() => {
-				document.body.appendChild(this.host);
-				
-				// Set open state with guard to prevent infinite loop
-				this.isUpdatingOpenState = true;
-				this.open = true;
-				this.addedToBody = true;
-				this.isUpdatingOpenState = false;
-				
-				this.updateMenuPosition();
-				
-				// For click trigger, add listener on next tick to avoid immediate closure
-				if (this.trigger === 'click') {
+		if (this.openTimer) clearTimeout(this.openTimer);
+		
+	this.openTimer = setTimeout(() => {
+		document.body.appendChild(this.host);
+		this.addedToBody = true;
+		
+		// Set open=true with guard
+		this.isUpdatingOpenState = true;
+		this.open = true;
+		this.isUpdatingOpenState = false;
+		
+		// Clear display:none
+		this.host.style.display = '';
+		
+		this.updateMenuPosition();				if (this.trigger === 'click') {
 					setTimeout(() => {
 						document.addEventListener('click', this.handleDocumentClick, { once: false });
 					}, 100);
 				} else {
-					// For other triggers, add immediately
 					setTimeout(() => {
 						document.addEventListener('click', this.handleDocumentClick);
 					}, 0);
 				}
 			}, this.opendelay);
-		} 
+		}
 	}
 
 	private removeMenu() {
-		console.log('[MENU removeMenu] Called. addedToBody:', this.addedToBody, 'in body:', document.body.contains(this.host));
-		
-		try {
-			// Clear any pending timers
-			if (this.openTimer) clearTimeout(this.openTimer);
-			if (this.closeTimer) clearTimeout(this.closeTimer);
-			
-			// Remove document click listener when closing menu
-			document.removeEventListener('click', this.handleDocumentClick);
-			
-			// Set open state FIRST before moving
-			this.isUpdatingOpenState = true;
-			this.open = false;
-			this.isUpdatingOpenState = false;
-			
-			// Check if menu is actually in body, not just the flag
-			if (document.body.contains(this.host)) {
-				try {
-					// Move back to original parent instead of just removing
-					if (this.parentDom && this.host.parentNode === document.body) {
-						document.body.removeChild(this.host);
-						this.parentDom.appendChild(this.host);
-						console.log('[MENU removeMenu] Moved back to parent');
-					} else if (this.parentDom) {
-						// Menu is somewhere else, still move to parent
-						this.host.remove();
-						this.parentDom.appendChild(this.host);
-						console.log('[MENU removeMenu] Removed and moved back to parent');
-					}
-				} catch (e) {
-					console.error('[MENU removeMenu] Error removing from body:', e);
-				}
-			}
-			
-			this.addedToBody = false;
-		} catch (err: any) {
-			console.error('[MENU removeMenu] Error:', err);
-			// ignore
+		console.log('[removeMenu] START');
+		if (this.isRemoving) {
+			console.log('[removeMenu] BLOCKED');
+			return;
 		}
+		this.isRemoving = true;
+		
+		// Clear all timers
+		if (this.openTimer) {
+			clearTimeout(this.openTimer);
+			this.openTimer = null;
+		}
+		if (this.closeTimer) {
+			clearTimeout(this.closeTimer);
+			this.closeTimer = null;
+		}
+		this.closeTimerIds.forEach(id => clearTimeout(id));
+		this.closeTimerIds.clear();
+		
+		// Remove listener
+		document.removeEventListener('click', this.handleDocumentClick);
+		
+		// Update state FIRST with guard
+		console.log('[removeMenu] Setting open=false');
+		this.isUpdatingOpenState = true;
+		this.open = false;
+		this.host.removeAttribute('open');
+		this.isUpdatingOpenState = false;
+		
+		// Then FORCE hide with display:none (this overrides CSS even if [open] attr exists)
+		console.log('[removeMenu] Setting display:none - computed before:', window.getComputedStyle(this.host).display);
+		this.host.style.display = 'none';
+		console.log('[removeMenu] Setting display:none - computed after:', window.getComputedStyle(this.host).display);
+		
+		this.addedToBody = false;
+		
+		// Reset guard
+		setTimeout(() => {
+			this.isRemoving = false;
+		}, 100);
+		
+		console.log('[removeMenu] DONE');
 	}
 
 	private removeAllPopover() {
@@ -286,13 +284,26 @@ export class SyMenu {
 
 	@Method()
 	async delayedMenuClose() {
-		if (this.closeTimer) clearTimeout(this.closeTimer);
-		this.closeTimer = setTimeout(() => {
-			if (!this.isMouseOverParent) {
+		if (this.isRemoving) return;
+		
+		if (this.closeTimer) {
+			clearTimeout(this.closeTimer);
+			this.closeTimerIds.delete(this.closeTimer);
+		}
+		
+		const timerId = setTimeout(() => {
+			this.closeTimerIds.delete(timerId);
+			
+			if (!this.open) return;
+			
+			if (!this.isMouseOverParent && !this.isRemoving) {
 				this.removeMenu();
 				this.removeAllPopover();
-			} 
+			}
 		}, this.closedelay);
+		
+		this.closeTimer = timerId;
+		this.closeTimerIds.add(timerId);
 
 		this.host.dispatchEvent(new CustomEvent('opened', {
 			detail: false,
@@ -332,27 +343,27 @@ export class SyMenu {
 	};
 
 	private parentClick = (event: any) => {
+		const clickedMenuItem = event.target?.closest('sy-menu-item');
+		if (clickedMenuItem && this.host.contains(clickedMenuItem)) return;
+		
 		event.preventDefault();
 		event.stopPropagation();
-		if (this.disabled) { return; }
+		if (this.disabled) return;
+		if (this.suppressOpen) return;
 		
 		if (this.open) {
 			this.removeMenu();
-
 			this.host.dispatchEvent(new CustomEvent('opened', {
 				detail: false,
 				bubbles: true,
 				composed: true,
 			}));
 		} else {
-			// Close all other open menus before opening this one
 			this.removeAllMenus();
 			if (this.closeTimer) clearTimeout(this.closeTimer);
 			
-			// Wait a bit to ensure other menus are closed before opening this one
 			setTimeout(() => {
 				this.appendToRoot();
-
 				this.host.dispatchEvent(new CustomEvent('opened', {
 					detail: true,
 					bubbles: true,
@@ -377,22 +388,42 @@ export class SyMenu {
 		this.updateMenuPosition();
 	};
 
-	private handleDocumentClick = (event: any) => {	
-		// Don't close if clicking on parent element (the trigger)
-		const isParent = this.parentDom?.contains(event.target as Node);
+	private handleDocumentClick = (event: any) => {
+		if (this.isRemoving) return;
 		
-		if (isParent) {
+		const clickedMenuItem = event.target?.closest('sy-menu-item');
+		if (clickedMenuItem && this.host.contains(clickedMenuItem)) {
+			console.log('[handleDocumentClick] Item clicked - immediate close');
+			
+			// Set suppressOpen FIRST
+			this.suppressOpen = true;
+			this.isMouseOverParent = false;
+			
+			// Clear ALL timers
+			if (this.closeTimer) clearTimeout(this.closeTimer);
+			if (this.openTimer) {
+				clearTimeout(this.openTimer);
+				this.openTimer = null;
+			}
+			this.closeTimerIds.forEach(id => clearTimeout(id));
+			this.closeTimerIds.clear();
+			
+			// Close
+			this.removeMenu();
+			
+			setTimeout(() => { 
+				this.suppressOpen = false;
+			}, 300);
 			return;
 		}
 		
+		const isParent = this.parentDom?.contains(event.target as Node);
+		if (isParent) return;
+		
 		const isInMenu = this.host.contains(event.target as Node);
-
 		if (!isInMenu) {
 			this.removeMenu();
-		} 
-		// else {
-		// 	console.log('[MENU handleDocumentClick] Clicked inside menu, keeping open');
-		// }
+		}
 	};
 
 	private updateMenuPosition(e?: any) {
@@ -478,36 +509,38 @@ export class SyMenu {
 	// dropdown calls this function for setting selectable to all items.
 	@Method()
 	async setSelectableAllItems() {
-				const items = Array.from(this.host.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
-				if (items.length) {
-					items.forEach((item) => item.selectable = true);
-				}
+		const ul = this.host.querySelector('ul');
+		if (!ul) return;
+		const items = Array.from(ul.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
+		if (items.length) {
+			items.forEach((item) => item.selectable = true);
+		}
 	}
 
 	// dropdown calls this function for clear selected to all items.
 	@Method()
 	async clearSelectedItem() {
-				const itemsClear = Array.from(this.host.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
-				if (itemsClear.length) {
-					itemsClear.forEach((item) => item.select = false);
-				}
+		const ul = this.host.querySelector('ul');
+		if (!ul) return;
+		const itemsClear = Array.from(ul.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
+		if (itemsClear.length) {
+			itemsClear.forEach((item) => item.select = false);
+		}
 	}
 
 	private setCheckableAllItems() {
-				const itemsCheck = Array.from(this.host.children).filter((item): item is HTMLSyMenuItemElement => (item as HTMLElement).tagName.toLowerCase() === 'sy-menu-item');
-				if (itemsCheck.length) {
-			itemsCheck.forEach((item) => item.checkable = this.checkable);
-			}
+		const ul = this.host.querySelector('ul');
+		if (!ul) return;
+		const itemsCheck = Array.from(ul.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
+		if (itemsCheck.length) {
+			itemsCheck.forEach((item) => {
+				item.checkable = this.checkable;
+			});
+		}
 	}
 
-	private itemSelectedEvent = (_e: any) => {
-		// Menu item selected - close immediately
-		console.log('itemSelectedEvent: closing menu');
-		// prevent immediate reopen by parent handlers
-		this.suppressOpen = true;
-		setTimeout(() => { this.suppressOpen = false; }, 200);
-		this.removeMenu();
-	};
+	// itemSelectedEvent removed - handleDocumentClick handles all menu closing
+	
 	private itemCheckedEvent = (_e: any) => {
 		// placeholder for future behavior
 	};

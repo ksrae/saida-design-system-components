@@ -58,6 +58,7 @@ export class SyMenuItem {
   private onClick = (e: Event) => {
     const ev = e as MouseEvent & { target: HTMLElement };
     e.preventDefault();
+    
     if (this.disabled) return;
 
     const clickedElement = ev.target as HTMLElement;
@@ -73,22 +74,19 @@ export class SyMenuItem {
     });
 
     if (isInsideSlot && clickedElement !== liElement) {
-      e.stopPropagation();
       return;
     }
 
     if (this.checkable) {
       this.checked = !this.checked;
       this.select = !this.select;
-      // prevent native click from bubbling to parent triggers
-      ev.stopPropagation();
       this.setCheckedEvent();
     } else {
       this.select = true;
-      // prevent native click from bubbling to parent triggers
-      ev.stopPropagation();
       this.setSelectedEvent();
     }
+    
+    // DO NOT stopPropagation - let it bubble to document
   };
 
   // checkbox emits changed handled in original lit code; we keep a placeholder
