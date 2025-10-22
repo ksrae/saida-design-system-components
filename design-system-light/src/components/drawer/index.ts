@@ -1,1 +1,1 @@
-export * from './drawer.element';
+export * from './sy-drawer';

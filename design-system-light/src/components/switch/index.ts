@@ -1,1 +1,1 @@
-export * from './switch.element';
+export * from './sy-switch';

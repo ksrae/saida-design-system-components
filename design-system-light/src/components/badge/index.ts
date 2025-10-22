@@ -1,1 +1,1 @@
-export * from './badge.element';
+export * from './sy-badge';

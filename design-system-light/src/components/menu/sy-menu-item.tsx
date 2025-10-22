@@ -80,9 +80,13 @@ export class SyMenuItem {
     if (this.checkable) {
       this.checked = !this.checked;
       this.select = !this.select;
+      // prevent native click from bubbling to parent triggers
+      ev.stopPropagation();
       this.setCheckedEvent();
     } else {
       this.select = true;
+      // prevent native click from bubbling to parent triggers
+      ev.stopPropagation();
       this.setSelectedEvent();
     }
   };
@@ -121,6 +125,7 @@ export class SyMenuItem {
   }
 
   render() {
+    console.log('[MENU-ITEM render] checkable:', this.checkable, 'checked:', this.checked);
     const liClass = {
       'menu-item--selected': this.selectable && this.select,
     };
@@ -134,7 +139,9 @@ export class SyMenuItem {
         title={this.sanitizedSlotContent}
       >
         {this.checkable ? (
-          <sy-checkbox checked={this.checked} onChanged={this.handleCheckbox}><slot onSlotchange={this.handleSlotChange}></slot></sy-checkbox>
+          <sy-checkbox checked={this.checked} onChanged={this.handleCheckbox}>
+            <slot onSlotchange={this.handleSlotChange}></slot>
+          </sy-checkbox>
         ) : (
           <slot onSlotchange={this.handleSlotChange}></slot>
         )}

@@ -1,1 +1,1 @@
-export * from './inline-message.element';
+export * from './sy-inline-message';

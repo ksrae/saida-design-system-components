@@ -1,1 +1,1 @@
-export * from './popconfirm.element';
+export * from './sy-popconfirm';

@@ -1,1 +1,1 @@
-export * from './icon.element';
+export * from './sy-icon';

@@ -1,4 +1,4 @@
-export * from './nav-group.element';
-export * from './nav-item.element';
-export * from './nav-sub.element';
-export * from './nav.element';
+export { SyNav } from './sy-nav';
+export { SyNavItem } from './sy-nav-item';
+export { SyNavSub } from './sy-nav-sub';
+export { SyNavGroup } from './sy-nav-group';

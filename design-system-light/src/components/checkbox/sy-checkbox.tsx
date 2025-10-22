@@ -19,7 +19,7 @@ export class SyCheckbox {
   @Prop() titleText = '';
   @Prop() name = '';
   @Prop({ mutable: true, reflect: true }) checked = false;
-  @Prop({ reflect: true }) disabled = false;
+  @Prop({ reflect: true, mutable: true }) disabled = false;
   @Prop({ mutable: true, reflect: true }) indeterminate = false;
   @Prop({ reflect: true }) readonly = false;
   @Prop() required = false;
@@ -65,6 +65,11 @@ export class SyCheckbox {
   }
 
   // Lifecycle Methods
+  componentWillLoad() {
+    // Initialize state before first render to avoid extra re-renders
+    this.renderIndeterminate = this.indeterminate;
+    this.isValid = !(this.required && !this.checked && !this.indeterminate);
+  }
   connectedCallback() {
     if (this.hostElement.attachInternals && !this.internals) {
       this.internals = this.hostElement.attachInternals();
@@ -75,10 +80,6 @@ export class SyCheckbox {
   disconnectedCallback() {
     this.formSubmitListenerRemover();
     this.hostElement.removeEventListener('keydown', this.handleKeydown);
-  }
-  componentDidLoad() {
-    this.renderIndeterminate = this.indeterminate;
-    this.isValid = !(this.required && !this.checked && !this.indeterminate);
   }
   componentDidRender() {
     if (this.inputEl) {

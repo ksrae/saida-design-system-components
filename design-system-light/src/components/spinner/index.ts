@@ -1,1 +1,1 @@
-export * from './spinner.element';
+export * from './sy-spinner';

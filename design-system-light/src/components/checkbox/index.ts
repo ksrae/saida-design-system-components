@@ -1,1 +1,1 @@
-export * from './checkbox.element';
+export * from './sy-checkbox';

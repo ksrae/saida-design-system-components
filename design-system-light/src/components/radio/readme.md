@@ -49,13 +49,13 @@ Type: `Promise<void>`
 
 
 
-### `getStatus() => Promise<"" | "custom" | "valueMissing">`
+### `getStatus() => Promise<"" | "valueMissing" | "custom">`
 
 
 
 #### Returns
 
-Type: `Promise<"" | "custom" | "valueMissing">`
+Type: `Promise<"" | "valueMissing" | "custom">`
 
 
 

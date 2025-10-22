@@ -1,1 +1,1 @@
-export * from './modal.element';
+export * from './sy-modal';

@@ -1,1 +1,1 @@
-export * from './button-group.element';
+export * from './sy-button-group';

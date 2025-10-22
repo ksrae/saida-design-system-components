@@ -1,1 +1,1 @@
-export * from './split-panel.element';
+export * from './sy-split-panel';
