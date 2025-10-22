@@ -810,6 +810,36 @@ export namespace Components {
          */
         "value": string | number;
     }
+    interface SyLabel {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "htmlFor": string;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default 'right'
+         */
+        "requiredPosition": 'left' | 'right';
+        /**
+          * @default ''
+         */
+        "value": string;
+        /**
+          * @default 'left'
+         */
+        "valuePosition": 'left' | 'right';
+        /**
+          * @default ''
+         */
+        "width": string;
+    }
     interface SyMenu {
         /**
           * @default false
@@ -2444,6 +2474,12 @@ declare global {
         prototype: HTMLSyInputNumberElement;
         new (): HTMLSyInputNumberElement;
     };
+    interface HTMLSyLabelElement extends Components.SyLabel, HTMLStencilElement {
+    }
+    var HTMLSyLabelElement: {
+        prototype: HTMLSyLabelElement;
+        new (): HTMLSyLabelElement;
+    };
     interface HTMLSyMenuElement extends Components.SyMenu, HTMLStencilElement {
     }
     var HTMLSyMenuElement: {
@@ -2881,6 +2917,7 @@ declare global {
         "sy-inline-message": HTMLSyInlineMessageElement;
         "sy-input": HTMLSyInputElement;
         "sy-input-number": HTMLSyInputNumberElement;
+        "sy-label": HTMLSyLabelElement;
         "sy-menu": HTMLSyMenuElement;
         "sy-menu-group": HTMLSyMenuGroupElement;
         "sy-menu-item": HTMLSyMenuItemElement;
@@ -3701,6 +3738,36 @@ declare namespace LocalJSX {
           * @default ''
          */
         "value"?: string | number;
+    }
+    interface SyLabel {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "htmlFor"?: string;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 'right'
+         */
+        "requiredPosition"?: 'left' | 'right';
+        /**
+          * @default ''
+         */
+        "value"?: string;
+        /**
+          * @default 'left'
+         */
+        "valuePosition"?: 'left' | 'right';
+        /**
+          * @default ''
+         */
+        "width"?: string;
     }
     interface SyMenu {
         /**
@@ -4831,6 +4898,7 @@ declare namespace LocalJSX {
         "sy-inline-message": SyInlineMessage;
         "sy-input": SyInput;
         "sy-input-number": SyInputNumber;
+        "sy-label": SyLabel;
         "sy-menu": SyMenu;
         "sy-menu-group": SyMenuGroup;
         "sy-menu-item": SyMenuItem;
@@ -4904,6 +4972,7 @@ declare module "@stencil/core" {
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
+            "sy-label": LocalJSX.SyLabel & JSXBase.HTMLAttributes<HTMLSyLabelElement>;
             "sy-menu": LocalJSX.SyMenu & JSXBase.HTMLAttributes<HTMLSyMenuElement>;
             "sy-menu-group": LocalJSX.SyMenuGroup & JSXBase.HTMLAttributes<HTMLSyMenuGroupElement>;
             "sy-menu-item": LocalJSX.SyMenuItem & JSXBase.HTMLAttributes<HTMLSyMenuItemElement>;

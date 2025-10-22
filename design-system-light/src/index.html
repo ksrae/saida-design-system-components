@@ -51,6 +51,101 @@
 
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
+  <h2>Label Component Tests</h2>
+
+  <!-- Test 1: 기본 라벨 -->
+  <div style="margin: 20px;">
+    <h3>1. Basic Label with Input</h3>
+    <sy-label value="Username" required>
+      <sy-input placeholder="Enter username"></sy-input>
+    </sy-label>
+  </div>
+
+  <!-- Test 2: 명시적 for 속성 -->
+  <div style="margin: 20px;">
+    <h3>2. Explicit For Attribute</h3>
+    <sy-label value="Email" for="email-input" required></sy-label>
+    <sy-input id="email-input" placeholder="Enter email"></sy-input>
+  </div>
+
+  <!-- Test 3: Required 위치 테스트 -->
+  <div style="margin: 20px;">
+    <h3>3. Required Position Left</h3>
+    <sy-label value="Password" required required-position="left">
+      <sy-input type="password" placeholder="Enter password"></sy-input>
+    </sy-label>
+  </div>
+
+  <!-- Test 4: Value 위치 테스트 -->
+  <div style="margin: 20px;">
+    <h3>4. Value Position Right</h3>
+    <sy-label value="Age" value-position="right" width="200">
+      <sy-input-number min="0" max="100"></sy-input-number>
+    </sy-label>
+  </div>
+
+  <!-- Test 5: Disabled 상태 -->
+  <div style="margin: 20px;">
+    <h3>5. Disabled Label</h3>
+    <sy-label value="Disabled Field" disabled>
+      <sy-input placeholder="This is disabled"></sy-input>
+    </sy-label>
+  </div>
+
+  <!-- Test 6: Width 설정 -->
+  <div style="margin: 20px;">
+    <h3>6. Custom Width</h3>
+    <sy-label value="Fixed Width" width="300px">
+      <sy-input placeholder="300px width label"></sy-input>
+    </sy-label>
+  </div>
+
+  <!-- Test 7: 다양한 컴포넌트와 함께 -->
+  <div style="margin: 20px;">
+    <h3>7. With Different Components</h3>
+    <div style="margin-bottom: 10px;">
+      <sy-label value="Select Option" required>
+        <sy-select>
+          <option>Option 1</option>
+          <option>Option 2</option>
+        </sy-select>
+      </sy-label>
+    </div>
+    <div style="margin-bottom: 10px;">
+      <sy-label value="Comments">
+        <sy-textarea rows="4"></sy-textarea>
+      </sy-label>
+    </div>
+    <div style="margin-bottom: 10px;">
+      <sy-label value="Agree to terms">
+        <sy-checkbox></sy-checkbox>
+      </sy-label>
+    </div>
+  </div>
+
+  <script>
+    // Test: 동적 속성 변경
+    setTimeout(() => {
+      const label = document.querySelector('sy-label');
+      if (label) {
+        console.log('Toggling required state...');
+        label.required = !label.required;
+      }
+    }, 3000);
+
+    // Test: Width 변경
+    setTimeout(() => {
+      const labels = document.querySelectorAll('sy-label');
+      if (labels[5]) {
+        console.log('Changing width...');
+        labels[5].width = '400px';
+      }
+    }, 5000);
+  </script>
+
+
+
+
    <!-- Test 1: Basic Steps with Current Index Control -->
     <div class="test-section">
         <h2>1. Basic Steps - Current Index Control</h2>
