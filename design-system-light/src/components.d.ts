@@ -599,6 +599,28 @@ export namespace Components {
          */
         "size": 'small' | 'medium' | 'large' | 'custom';
     }
+    interface SyDropdown {
+        /**
+          * @default false
+         */
+        "borderless": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'bottomLeft'
+         */
+        "position": 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'medium'
+         */
+        "size": 'small' | 'medium' | 'large';
+        /**
+          * @default 'click'
+         */
+        "trigger": 'hover' | 'click';
+    }
     interface SyEmpty {
         /**
           * Empty 컴포넌트에 표시될 설명 텍스트입니다. Lit의
@@ -799,6 +821,10 @@ export namespace Components {
           * @default 'right'
          */
         "direction": 'left' | 'right';
+        /**
+          * @default false
+         */
+        "disabled": boolean;
         /**
           * @default false
          */
@@ -2254,6 +2280,12 @@ declare global {
         prototype: HTMLSyDrawerElement;
         new (): HTMLSyDrawerElement;
     };
+    interface HTMLSyDropdownElement extends Components.SyDropdown, HTMLStencilElement {
+    }
+    var HTMLSyDropdownElement: {
+        prototype: HTMLSyDropdownElement;
+        new (): HTMLSyDropdownElement;
+    };
     interface HTMLSyEmptyElement extends Components.SyEmpty, HTMLStencilElement {
     }
     var HTMLSyEmptyElement: {
@@ -2751,6 +2783,7 @@ declare global {
         "sy-datepicker": HTMLSyDatepickerElement;
         "sy-divider": HTMLSyDividerElement;
         "sy-drawer": HTMLSyDrawerElement;
+        "sy-dropdown": HTMLSyDropdownElement;
         "sy-empty": HTMLSyEmptyElement;
         "sy-icon": HTMLSyIconElement;
         "sy-inline-message": HTMLSyInlineMessageElement;
@@ -3373,6 +3406,28 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium' | 'large' | 'custom';
     }
+    interface SyDropdown {
+        /**
+          * @default false
+         */
+        "borderless"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 'bottomLeft'
+         */
+        "position"?: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        /**
+          * @default 'medium'
+         */
+        "size"?: 'small' | 'medium' | 'large';
+        /**
+          * @default 'click'
+         */
+        "trigger"?: 'hover' | 'click';
+    }
     interface SyEmpty {
         /**
           * Empty 컴포넌트에 표시될 설명 텍스트입니다. Lit의
@@ -3562,6 +3617,10 @@ declare namespace LocalJSX {
           * @default 'right'
          */
         "direction"?: 'left' | 'right';
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
         /**
           * @default false
          */
@@ -4592,6 +4651,7 @@ declare namespace LocalJSX {
         "sy-datepicker": SyDatepicker;
         "sy-divider": SyDivider;
         "sy-drawer": SyDrawer;
+        "sy-dropdown": SyDropdown;
         "sy-empty": SyEmpty;
         "sy-icon": SyIcon;
         "sy-inline-message": SyInlineMessage;
@@ -4662,6 +4722,7 @@ declare module "@stencil/core" {
             "sy-datepicker": LocalJSX.SyDatepicker & JSXBase.HTMLAttributes<HTMLSyDatepickerElement>;
             "sy-divider": LocalJSX.SyDivider & JSXBase.HTMLAttributes<HTMLSyDividerElement>;
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
+            "sy-dropdown": LocalJSX.SyDropdown & JSXBase.HTMLAttributes<HTMLSyDropdownElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;

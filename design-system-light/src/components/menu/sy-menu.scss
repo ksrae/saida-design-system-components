@@ -14,12 +14,23 @@
     box-shadow: var(--box-shadow);
     @include font.text-style-base-regular;
     border-radius: var(--border-radius-medium);
+
+    // 닫힐 때 transition 방지
+    &.closing {
+        transition: none !important;
+        animation: none !important;
+    }
 }
 
 :host([open]) {
-    /* hide 속성이 true일 때 숨김 처리 */
     display: block;
+
+    // 인라인 스타일로 display: none이 설정되면 우선권 부여
+    &[style*="display: none"] {
+        display: none !important;
+    }
 }
+
 
 a ul {
     list-style-type: none;

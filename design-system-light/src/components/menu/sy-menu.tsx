@@ -110,7 +110,7 @@ export class SyMenu {
 	watchOpen(newVal: boolean) {
 		if (this.isUpdatingOpenState) return;
 		if (this.suppressOpen && newVal) return;
-		
+
 		if (!this.isDropdown) {
 			if (newVal) {
 				this.isRemoving = false;
@@ -167,85 +167,90 @@ export class SyMenu {
 		}
 	}
 
-	private appendToRoot() {
-		if (this.suppressOpen) return;
-		
-		this.isRemoving = false;
-		
-		if (this.host.parentNode !== document.body) {
-			document.removeEventListener('click', this.handleDocumentClick);
-			
-		if (this.openTimer) clearTimeout(this.openTimer);
-		
-	this.openTimer = setTimeout(() => {
-		document.body.appendChild(this.host);
-		this.addedToBody = true;
-		
-		// Set open=true with guard
-		this.isUpdatingOpenState = true;
-		this.open = true;
-		this.isUpdatingOpenState = false;
-		
-		// Clear display:none
-		this.host.style.display = '';
-		
-		this.updateMenuPosition();				if (this.trigger === 'click') {
-					setTimeout(() => {
-						document.addEventListener('click', this.handleDocumentClick, { once: false });
-					}, 100);
-				} else {
-					setTimeout(() => {
-						document.addEventListener('click', this.handleDocumentClick);
-					}, 0);
-				}
-			}, this.opendelay);
-		}
-	}
+  private appendToRoot() {
+      if (this.suppressOpen) return;
 
-	private removeMenu() {
-		console.log('[removeMenu] START');
-		if (this.isRemoving) {
-			console.log('[removeMenu] BLOCKED');
-			return;
-		}
-		this.isRemoving = true;
-		
-		// Clear all timers
-		if (this.openTimer) {
-			clearTimeout(this.openTimer);
-			this.openTimer = null;
-		}
-		if (this.closeTimer) {
-			clearTimeout(this.closeTimer);
-			this.closeTimer = null;
-		}
-		this.closeTimerIds.forEach(id => clearTimeout(id));
-		this.closeTimerIds.clear();
-		
-		// Remove listener
-		document.removeEventListener('click', this.handleDocumentClick);
-		
-		// Update state FIRST with guard
-		console.log('[removeMenu] Setting open=false');
-		this.isUpdatingOpenState = true;
-		this.open = false;
-		this.host.removeAttribute('open');
-		this.isUpdatingOpenState = false;
-		
-		// Then FORCE hide with display:none (this overrides CSS even if [open] attr exists)
-		console.log('[removeMenu] Setting display:none - computed before:', window.getComputedStyle(this.host).display);
-		this.host.style.display = 'none';
-		console.log('[removeMenu] Setting display:none - computed after:', window.getComputedStyle(this.host).display);
-		
-		this.addedToBody = false;
-		
-		// Reset guard
-		setTimeout(() => {
-			this.isRemoving = false;
-		}, 100);
-		
-		console.log('[removeMenu] DONE');
-	}
+      this.isRemoving = false;
+
+      if (this.host.parentNode !== document.body) {
+          document.removeEventListener('click', this.handleDocumentClick);
+
+          if (this.openTimer) clearTimeout(this.openTimer);
+
+          this.openTimer = setTimeout(() => {
+              document.body.appendChild(this.host);
+              this.addedToBody = true;
+
+              // Remove any inline display style
+              this.host.style.removeProperty('display');
+
+              // Set open=true with guard
+              this.isUpdatingOpenState = true;
+              this.open = true;
+              this.isUpdatingOpenState = false;
+
+              this.updateMenuPosition();
+
+              if (this.trigger === 'click') {
+                  setTimeout(() => {
+                      document.addEventListener('click', this.handleDocumentClick, { once: false });
+                  }, 100);
+              } else {
+                  setTimeout(() => {
+                      document.addEventListener('click', this.handleDocumentClick);
+                  }, 0);
+              }
+          }, this.opendelay);
+      }
+  }
+
+  private removeMenu() {
+      console.log('[removeMenu] START');
+      if (this.isRemoving) {
+          console.log('[removeMenu] BLOCKED');
+          return;
+      }
+      this.isRemoving = true;
+
+      // Clear all timers
+      if (this.openTimer) {
+          clearTimeout(this.openTimer);
+          this.openTimer = null;
+      }
+      if (this.closeTimer) {
+          clearTimeout(this.closeTimer);
+          this.closeTimer = null;
+      }
+      this.closeTimerIds.forEach(id => clearTimeout(id));
+      this.closeTimerIds.clear();
+
+      // Remove listener
+      document.removeEventListener('click', this.handleDocumentClick);
+
+      // Add closing class to prevent transitions
+      this.host.classList.add('closing');
+
+      // 1. Remove open attribute FIRST
+      this.host.removeAttribute('open');
+
+      // 2. Then immediately set display none with important
+      this.host.style.setProperty('display', 'none', 'important');
+
+      // 3. Update internal state
+      this.isUpdatingOpenState = true;
+      this.open = false;
+      this.isUpdatingOpenState = false;
+
+      this.addedToBody = false;
+
+      // Reset guard and remove closing class
+      setTimeout(() => {
+          this.isRemoving = false;
+          this.host.classList.remove('closing');
+      }, 100);
+
+      console.log('[removeMenu] DONE');
+  }
 
 	private removeAllPopover() {
 				const popover = (document.querySelector('sy-popover') as unknown) as HTMLSyPopoverElement | null;
@@ -272,7 +277,7 @@ export class SyMenu {
 	private removeAllMenus() {
 		// Find all sy-menu elements that are direct children of body
 		const menusInBody = Array.from(document.body.children).filter(el => el.tagName.toLowerCase() === 'sy-menu') as HTMLSyMenuElement[];
-		
+
 		menusInBody.forEach(menu => {
 			// Don't close the current menu
 			if (menu !== this.host) {
@@ -285,23 +290,23 @@ export class SyMenu {
 	@Method()
 	async delayedMenuClose() {
 		if (this.isRemoving) return;
-		
+
 		if (this.closeTimer) {
 			clearTimeout(this.closeTimer);
 			this.closeTimerIds.delete(this.closeTimer);
 		}
-		
+
 		const timerId = setTimeout(() => {
 			this.closeTimerIds.delete(timerId);
-			
+
 			if (!this.open) return;
-			
+
 			if (!this.isMouseOverParent && !this.isRemoving) {
 				this.removeMenu();
 				this.removeAllPopover();
 			}
 		}, this.closedelay);
-		
+
 		this.closeTimer = timerId;
 		this.closeTimerIds.add(timerId);
 
@@ -345,12 +350,12 @@ export class SyMenu {
 	private parentClick = (event: any) => {
 		const clickedMenuItem = event.target?.closest('sy-menu-item');
 		if (clickedMenuItem && this.host.contains(clickedMenuItem)) return;
-		
+
 		event.preventDefault();
 		event.stopPropagation();
 		if (this.disabled) return;
 		if (this.suppressOpen) return;
-		
+
 		if (this.open) {
 			this.removeMenu();
 			this.host.dispatchEvent(new CustomEvent('opened', {
@@ -361,7 +366,7 @@ export class SyMenu {
 		} else {
 			this.removeAllMenus();
 			if (this.closeTimer) clearTimeout(this.closeTimer);
-			
+
 			setTimeout(() => {
 				this.appendToRoot();
 				this.host.dispatchEvent(new CustomEvent('opened', {
@@ -390,15 +395,15 @@ export class SyMenu {
 
 	private handleDocumentClick = (event: any) => {
 		if (this.isRemoving) return;
-		
+
 		const clickedMenuItem = event.target?.closest('sy-menu-item');
 		if (clickedMenuItem && this.host.contains(clickedMenuItem)) {
 			console.log('[handleDocumentClick] Item clicked - immediate close');
-			
+
 			// Set suppressOpen FIRST
 			this.suppressOpen = true;
 			this.isMouseOverParent = false;
-			
+
 			// Clear ALL timers
 			if (this.closeTimer) clearTimeout(this.closeTimer);
 			if (this.openTimer) {
@@ -407,19 +412,19 @@ export class SyMenu {
 			}
 			this.closeTimerIds.forEach(id => clearTimeout(id));
 			this.closeTimerIds.clear();
-			
+
 			// Close
 			this.removeMenu();
-			
-			setTimeout(() => { 
+
+			setTimeout(() => {
 				this.suppressOpen = false;
 			}, 300);
 			return;
 		}
-		
+
 		const isParent = this.parentDom?.contains(event.target as Node);
 		if (isParent) return;
-		
+
 		const isInMenu = this.host.contains(event.target as Node);
 		if (!isInMenu) {
 			this.removeMenu();
@@ -540,7 +545,7 @@ export class SyMenu {
 	}
 
 	// itemSelectedEvent removed - handleDocumentClick handles all menu closing
-	
+
 	private itemCheckedEvent = (_e: any) => {
 		// placeholder for future behavior
 	};
