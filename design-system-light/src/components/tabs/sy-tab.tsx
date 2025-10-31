@@ -1,4 +1,5 @@
 import { Component, Prop, h, Element, Event, EventEmitter, Watch, Method } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 @Component({
   tag: 'sy-tab',
@@ -16,13 +17,13 @@ export class SyTab {
 
   // State에서 Prop으로 변경된 부분들
   @Prop({ mutable: true }) active = false;
-  @Prop({ mutable: true }) parentDisabled = false;
-  @Prop({ mutable: true }) currentDisabledStatus = false;
+  @Prop({ mutable: true, attribute: 'parentDisabled' }) parentDisabled = false;
+  @Prop({ mutable: true, attribute: 'currentDisabledStatus' }) currentDisabledStatus = false;
   @Prop({ mutable: true }) index!: number;
   @Prop({ mutable: true }) type: "card" | "line" = "line";
   @Prop({ mutable: true }) size: "small" | "medium" | "large" = "medium";
   @Prop({ mutable: true }) position: "top" | "bottom" | "left" | "right" = "top";
-  @Prop({ mutable: true }) inHeader: boolean = false;
+  @Prop({ mutable: true, attribute: 'inHeader' }) inHeader: boolean = false;
 
   @Event() selected!: EventEmitter<any>;
   @Event() closed!: EventEmitter<any>;
@@ -32,6 +33,12 @@ export class SyTab {
   componentDidLoad() {
     this.currentDisabledStatus = this.disabled;
     this.setEnabled();
+  }
+
+  componentwWillLoad() {
+    this.parentDisabled = fnAssignPropFromAlias(this.host, 'parent-disabled') ?? this.parentDisabled;
+    this.currentDisabledStatus = fnAssignPropFromAlias(this.host, 'current-disabled-status') ?? this.currentDisabledStatus;
+    this.inHeader = fnAssignPropFromAlias(this.host, 'in-header') ?? this.inHeader;
   }
 
   @Watch('active')

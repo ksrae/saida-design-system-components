@@ -1,4 +1,5 @@
 import { Component, Prop, State, h, Element, Watch } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 @Component({
   tag: 'sy-label',
@@ -11,7 +12,7 @@ export class SyLabel {
 
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop({ reflect: true }) required: boolean = false;
-  @Prop({ reflect: true }) requiredPosition: 'left' | 'right' = 'right';
+  @Prop({ reflect: true, attribute: 'requiredPosition', mutable: true }) requiredPosition: 'left' | 'right' = 'right';
   @Prop({ attribute: 'for' }) htmlFor: string = '';
   @Prop() value: string = '';
   @Prop() valuePosition: 'left' | 'right' = 'left';
@@ -24,6 +25,8 @@ export class SyLabel {
   private resizeObserver: ResizeObserver | null = null;
 
   componentWillLoad() {
+    this.requiredPosition = fnAssignPropFromAlias(this.host, 'required-position') ?? this.requiredPosition;
+
     // width 초기 설정
     if (this.width && this.width.length) {
       this.labelWidth = this.getSizeValue(this.width);
