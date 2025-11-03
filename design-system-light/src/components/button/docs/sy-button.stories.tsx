@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { SyButtonProps, Button } from './sy-button.main';
 import { clearElements } from '../../clear-element';
 

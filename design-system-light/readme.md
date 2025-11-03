@@ -109,3 +109,39 @@ export default App;
 ```
 
 Check out this [Live Demo](https://stackblitz.com/edit/vitejs-vite-b6zuds?file=src%2FApp.tsx).
+
+## Troubleshooting
+
+### Storybook Dependency Conflicts (ERESOLVE Error)
+
+When installing or updating dependencies, you may encounter an `npm error ERESOLVE` related to Storybook. This typically happens when different Storybook packages in your `package.json` require conflicting versions of the core `storybook` package.
+
+The recommended solution is to upgrade all Storybook-related packages to the latest stable version.
+
+1.  **Run the Storybook upgrade command:**
+
+    ```bash
+    npx storybook@latest upgrade
+    ```
+
+    This command will attempt to automatically update all `@storybook/...` packages in your `package.json` to compatible versions.
+
+2.  **Re-run the upgrade command and reinstall dependencies:**
+
+    *   After simplifying `main.ts`, run the upgrade command again:
+        ```bash
+        npx storybook@latest upgrade
+        ```
+    *   Once it succeeds, clear your old dependencies and reinstall everything cleanly:
+        ```bash
+        # For macOS/Linux
+        rm -rf node_modules package-lock.json
+
+        # For Windows (PowerShell)
+        Remove-Item -Recurse -Force node_modules, package-lock.json
+        ```
+        ```bash
+        npm install
+        ```
+
+This process will resolve the dependency conflicts and ensure your Storybook setup is consistent and up-to-date.

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { SyButtonProps, ButtonClick } from '../sy-button.main';
 /* import buttonMeta from '../sy-button.main.stories'; */
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { SyBreadcrumbItemprops, BreadCrumbItem } from './sy-breadcrumb.main';
 import { clearElements } from '../../clear-element';
 

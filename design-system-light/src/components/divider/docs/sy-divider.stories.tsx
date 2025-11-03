@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { SyDividerProps, Divider } from './sy-divider.main';
 import { clearElements } from '../../clear-element';
 
