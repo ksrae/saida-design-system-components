@@ -8,6 +8,7 @@
     "www",
     "**/*.stories.tsx",
     "**/*.stories.ts",
-    "**/docs/**/*"
+    "**/docs/**/*",
+    "src/stories"
   ]
 }

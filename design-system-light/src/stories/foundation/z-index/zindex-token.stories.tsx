@@ -1,0 +1,35 @@
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
+import { zIndexTable } from './zindex-token';
+
+const zIndexTokens: string[] = [
+  "--z-index-1000",
+  "--z-index-900",
+  "--z-index-800",
+  "--z-index-700",
+  "--z-index-600",
+  "--z-index-500",
+  "--z-index-400",
+  "--z-index-300",
+  "--z-index-200",
+  "--z-index-100",
+  "--z-index-none"
+];
+
+type CustomArgs = { tokenLists?: string[] };
+ 
+const spacingTokenMeta: Meta = {
+  title: 'Foundation/Z-Index',
+  tags: ['false'],
+  render: (args) => {
+   return zIndexTable(args.tokenLists);
+  }
+};
+
+export default spacingTokenMeta;
+type Story = StoryObj<CustomArgs>;
+ 
+export const Default: Story = {
+  args: {
+    tokenLists: zIndexTokens
+  },
+};

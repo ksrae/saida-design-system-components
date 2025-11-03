@@ -12,17 +12,19 @@ export class SyTabGroup {
   @Prop({ mutable: true }) active?: number;
   @Prop({ reflect: true }) align: 'center' | 'left' = 'left';
   @Prop() disabled = false;
-  @Prop() draggable = false;
+  @Prop({ attribute: 'draggable' }) isdraggable = false;
   @Prop({ reflect: true }) position: "top" | "bottom" | "left" | "right" = "top";
   @Prop({ reflect: true }) type: "card" | "line" = "line";
   @Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";
   @Prop() padding: "small" | "medium" | "large" | 'none' = "none";
 
   @State() dragover: boolean = false;
-  @State() private tabMoreAreaSize: number = 0;
+  @State() private tabMoreAreaSize: number = 48;
   @State() private tabExtraAreaSize: number = 0;
-  @State() private latestActiveIndex: number | undefined;
   @State() private overflowTabs: HTMLSyTabElement[] = [];
+
+  private latestActiveIndex: number | undefined;
+  private resizeObserver?: ResizeObserver;
 
   @Event() selected!: EventEmitter<any>;
   @Event() closed!: EventEmitter<any>;
@@ -61,19 +63,34 @@ export class SyTabGroup {
   componentDidLoad() {
     this.isUpdateComplete = true;
 
-    if (this.draggable && !this.disabled) {
+    if (this.isdraggable && !this.disabled) {
       this.enableDragAndDrop();
     }
 
     this.setTabs();
     this.setActive(this.active);
-    this.updateOverflowTabs();
+    
+    // Add resize observer to handle parent size changes
+    requestAnimationFrame(() => {
+      this.updateParentRect();
+      this.updateOverflowTabs();
+    });
 
-    // this.tabMoreArea = this.host.querySelector('.tab-more') as HTMLDivElement;
+    // Observe parent element resize
+    if (this.host.parentElement) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateParentRect();
+        this.updateOverflowTabs();
+      });
+      this.resizeObserver.observe(this.host.parentElement);
+    }
   }
 
   disconnectedCallback() {
-    // Cleanup if needed
+    // Cleanup resize observer
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
   @Watch('disabled')
@@ -97,10 +114,10 @@ export class SyTabGroup {
     }
   }
 
-  @Watch('draggable')
+  @Watch('isdraggable')
   watchDraggable() {
     if (this.isUpdateComplete) {
-      if (this.draggable && !this.disabled) {
+      if (this.isdraggable && !this.disabled) {
         this.enableDragAndDrop();
       } else {
         this.disableDragAndDrop();
@@ -139,40 +156,50 @@ export class SyTabGroup {
       disabled: this.disabled
     };
 
-    return (
-      <div>
-        <div class={tabClasses}>
-          <slot name="tabs" />
-        </div>
-        <div class="extra-area">
-          <slot name="extra" />
-        </div>
-        {this.overflowTabs.length ? (
-          <div
-            class={menuClasses}
-            onMouseEnter={this.handleOverflowMenuButtonClick.bind(this)}
+    return [
+      <div class={tabClasses}>
+        <slot name="tabs" />
+      </div>,
+      <div class="extra-area">
+        <slot name="extra" />
+      </div>,
+      this.overflowTabs.length ? (
+        <div
+          class={menuClasses}
+          onMouseEnter={this.handleOverflowMenuButtonClick.bind(this)}
+        >
+          <sy-icon size="medium">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+              <path fill="currentColor" d="M544 320C544 346.5 522.5 368 496 368C469.5 368 448 346.5 448 320C448 293.5 469.5 272 496 272C522.5 272 544 293.5 544 320zM368 320C368 346.5 346.5 368 320 368C293.5 368 272 346.5 272 320C272 293.5 293.5 272 320 272C346.5 272 368 293.5 368 320zM144 368C117.5 368 96 346.5 96 320C96 293.5 117.5 272 144 272C170.5 272 192 293.5 192 320C192 346.5 170.5 368 144 368z"/>
+            </svg>
+          </sy-icon>
+          <sy-menu
+            disabled={this.disabled}
+            position="bottomRight"
+            id="tab-overflow-menu"
+            onItemSelected={this.handleMenuSelect.bind(this)}
           >
-            <sy-icon size="medium">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                <path fill="currentColor" d="M544 320C544 346.5 522.5 368 496 368C469.5 368 448 346.5 448 320C448 293.5 469.5 272 496 272C522.5 272 544 293.5 544 320zM368 320C368 346.5 346.5 368 320 368C293.5 368 272 346.5 272 320C272 293.5 293.5 272 320 272C346.5 272 368 293.5 368 320zM144 368C117.5 368 96 346.5 96 320C96 293.5 117.5 272 144 272C170.5 272 192 293.5 192 320C192 346.5 170.5 368 144 368z"/>
-              </svg>
-            </sy-icon>
-            <sy-menu
-              disabled={this.disabled}
-              position="bottomRight"
-              id="tab-overflow-menu"
-              onItemSelected={this.handleMenuSelect.bind(this)}
-            >
-              {this.overflowTabs.map(tab => (
+            {this.overflowTabs.map(tab => {
+              const slotContent = this.getTabSlotContent(tab);
+              return (
                 <sy-menu-item value={tab.tabkey}>
-                  {tab.innerHTML}
+                  {slotContent.map(node => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                      // Element 노드는 outerHTML 사용
+                      return <span innerHTML={(node as Element).outerHTML}></span>;
+                    } else if (node.nodeType === Node.TEXT_NODE) {
+                      // 텍스트 노드는 textContent 사용
+                      return node.textContent;
+                    }
+                    return null;
+                  })}
                 </sy-menu-item>
-              ))}
-            </sy-menu>
-          </div>
-        ) : null}
-      </div>
-    );
+              );
+            })}
+          </sy-menu>
+        </div>
+      ) : null
+    ];
   }
 
   render() {
@@ -225,6 +252,22 @@ export class SyTabGroup {
     if(contentContainer) {
       return Array.from(contentContainer.querySelectorAll('sy-tab-content')) as HTMLSyTabContentElement[];
     } else return [];
+  }
+
+  /**
+   * sy-tab의 실제 표시 컨텐츠(slot 내용)만 추출
+   */
+  private getTabSlotContent(tab: HTMLSyTabElement): Node[] {
+    // sy-tab의 직접 자식 노드들을 가져옴 (이것이 slot에 들어가는 내용)
+    const slotContent: Node[] = [];
+    for (let i = 0; i < tab.childNodes.length; i++) {
+      const node = tab.childNodes[i];
+      // 텍스트 노드이거나 Element 노드인 경우만 추가
+      if (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.ELEMENT_NODE) {
+        slotContent.push(node.cloneNode(true));
+      }
+    }
+    return slotContent;
   }
 
   private updateParentRect() {
@@ -321,11 +364,12 @@ private updateOverflowTabs() {
     tab.style.display = 'flex';
   });
 
+  // tab-more 크기를 48px로 하드코딩
   this.tabMoreAreaSize = 48;
 
   requestAnimationFrame(() => {
     try {
-      // light DOM에서 extra-area 찾기 - this.host.querySelector 사용
+      // light DOM에서 extra-area 찾기
       const tabExtraArea = this.host.querySelector(".extra-area") as HTMLElement;
       const tabExtraRect = tabExtraArea?.getBoundingClientRect();
       this.tabExtraAreaSize = tabExtraRect ?
@@ -334,14 +378,10 @@ private updateOverflowTabs() {
           tabExtraRect.height
         : 0;
 
-      // tab-group-container의 크기를 기준으로 계산
-      const containerElement = this.host.querySelector('.tab-group-container') || this.host;
-      const containerRect = containerElement.getBoundingClientRect();
-
       // 사용 가능한 총 공간 계산
       const availableSpace = (this.position === 'top' || this.position === 'bottom') ?
-        containerRect.width - this.tabExtraAreaSize - this.tabMoreAreaSize :
-        containerRect.height - this.tabExtraAreaSize - this.tabMoreAreaSize;
+        (this.parentRect as any).width - this.tabExtraAreaSize - this.tabMoreAreaSize :
+        (this.parentRect as any).height - this.tabExtraAreaSize - this.tabMoreAreaSize;
 
       let accumulatedWidth = 0;
       let overflowIndex = -1;
@@ -355,12 +395,12 @@ private updateOverflowTabs() {
 
         const styles = window.getComputedStyle(tab);
         const margin = (this.position === 'top' || this.position === 'bottom') ?
-          parseFloat(styles.marginLeft) + parseFloat(styles.marginRight) :
-          parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
+          parseFloat(styles.marginRight) :
+          parseFloat(styles.marginBottom);
 
         const totalWidth = tabWidth + margin;
 
-        if (accumulatedWidth + totalWidth > availableSpace && i > 0) { // 최소 1개는 보여야 함
+        if (accumulatedWidth + totalWidth > availableSpace) {
           overflowIndex = i;
           break;
         } else {

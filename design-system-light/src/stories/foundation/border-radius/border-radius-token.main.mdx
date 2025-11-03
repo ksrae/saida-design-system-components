@@ -1,0 +1,33 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+
+import * as BorderRadiusTokenStories from "./border-radius-token.stories";
+
+<Meta of={BorderRadiusTokenStories} />
+
+# Border radius
+## Definition
+The border radius refers to the roundedness of corners on elements such as buttons, cards, or containers. <br/>
+It determeines how sharp or curved the corner appear.<br/><br/>
+The Radius of the component is already applied.<br/>
+It is impossible to modify the radius that is already applied.<br/>
+Radius can be applied to both design and development in a new layout or flex-box.<br/>
+
+## Values
+<b>--border-radius-small:</b> This is default.<br/>
+<b>--border-radius-small:</b> Used for small components like small buttons.<br/>
+<b>--border-radius-medium:</b> Used for large components.<br/>
+<b>--border-radius-large:</b> Used for layout, flex, modal.<br/>
+<b>--border-radius-full:</b> Used for this token when you need a circle.
+
+
+## Usage
+The spacing token can be used as a CSS variables:
+<Source code={`
+  .class-name {
+    border-radius: var(--border-radius-medium);
+}
+`} />
+
+## Values
+<Canvas of={BorderRadiusTokenStories.Default} sourceState="none"/>
+

@@ -1,0 +1,51 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+
+import * as MenuStories from "./sy-menu.stories";
+import * as MenuItemStories from "./sy-menu-item.stories";
+import * as MenuSubStories from "./sy-menu-sub.stories";
+import * as MenuGroupStories from './sy-menu-group.stories';
+
+<Meta of={MenuStories} />
+
+# Menu
+## Definition
+Menu displays menu-items by trigger: `click`, `hover`, or `contentmenu`.<br/>
+Menu provides several tags: <b>menu-sub, menu-item, menu-group</b>.
+
+- `menu-item`: displays value that a user is defined. It emits selected event when is clicked.
+- `menu-sub`: opends new menu-box and displays menu-items that belongs to.
+- `menu-group`: displays menu-items that belongs to menu-group as a children in the menu-box.
+
+## Example
+<Canvas of={MenuStories.Default} />
+
+<Controls of={MenuStories.Default} />
+
+# Menu Item
+## Definition
+Menu Item represents a single item in a menu. It can be selected, disabled, or made checkable.
+
+## Example
+<Canvas of={MenuItemStories.Default} />
+
+<Controls of={MenuItemStories.Default} />
+
+# Menu Sub
+## Definition
+Menu Sub creates a submenu that can contain additional menu items. Submenus can be nested for hierarchical navigation.
+
+## Example
+<Canvas of={MenuSubStories.Default} />
+
+<Controls of={MenuSubStories.Default} />
+
+# Menu Group
+## Definition
+Menu Group organizes menu items into labeled sections within a menu.
+
+
+## Examples
+<Canvas of={MenuGroupStories.Default} />
+
+<Controls of={MenuGroupStories.Default} />
+

@@ -19,7 +19,7 @@ export interface SyNavGroupProps {
 export class SyNavGroup {
   @Element() host!: HTMLSyNavGroupElement;
 
-  @Prop() title: string = '';
+  @Prop({ attribute: 'title' }) navGroupTitle: string = '';
   @Prop({ reflect: true, mutable: true }) depth: number = 0;
 
   connectedCallback() {
@@ -75,9 +75,9 @@ export class SyNavGroup {
       <div>
         <div 
           class="group-title"
-          title={this.sanitizeHtml(this.title)}
+          title={this.sanitizeHtml(this.navGroupTitle)}
         >
-          <span innerHTML={this.title}></span>
+          <span innerHTML={this.navGroupTitle}></span>
         </div>
         <div class="group-content">
           <slot></slot>

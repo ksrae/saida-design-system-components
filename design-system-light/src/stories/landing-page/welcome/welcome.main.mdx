@@ -1,0 +1,215 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks"; 
+
+import LogoImg from "../assets/synopsys.png";
+import LogoSynergy from "../assets/synergy-logo.svg";
+import LogoSynergyDark from "../assets/synergy-logo-dark.svg";
+
+import Confluence from "../assets/confluence.png";
+import Figma from "../assets/figmaLogo.png";
+import Step2 from "../assets/step2.png";
+import Step22 from "../assets/step2-2.png";
+import Step3 from "../assets/step3.png";
+
+import * as WelcomeStories from "./welcome.stories";
+
+<Meta of={WelcomeStories} />
+
+<div className="story-control">
+  <Canvas of={WelcomeStories.Welcome} />
+</div>
+
+
+<img src={LogoSynergy} alt="Synergy Design System" width="350" className="sy-logo sy-logo-light"/>
+<img src={LogoSynergyDark} alt="Synergy Design System" width="350" className="sy-logo sy-logo-dark"/>
+<br/>
+
+<div className="loading-text">
+Synergy embodies the idea of collaboration and unity among diverse teams.<br/>
+It highlights the power of synergy, where collective efforts lead to innovative and cohesive design solutions.
+This name emphasizes teamwork, consistency, and a shared vision, creating a strong foundation for a design system that enhances user experience across all products.
+</div>
+
+## Vision
+To foster a collaborative design environment that unifies diverse teams, creating a seamless user experience across all products.
+
+## Value
+<b>Collaboration</b>: Emphasizing teamwork and shared goals.<br/>
+<b>Consistency</b>: Delivering a cohesive look and feel across all platforms.<br/>
+<b>Innovation</b>: Encouraging creative solutions through collective input.
+
+## Principles
+<b>User-Centric Design</b>: Prioritizing user needs in every design decision.<br/>
+<b>Data-Driven Approach</b>: Utilizing data insights to guide design choices.<br/>
+<b>Continuous Improvement</b>: Regularly refining designs based on feedback and emerging trends.<br/>
+
+<div className="sb-section">
+
+    <div className="sb-section-item">
+      <a href="https://jiradocs.internal.synopsys.com/display/SynopsysDesignSystem/Design+System+Introduction"
+          target="_blank"><img src={Confluence} alt="Confluence page" /></a>
+    
+        <h2 className="sb-section-item-heading">Our confluence page</h2>
+        <p className="sb-section-item-paragraph">Visit our confluence page</p>
+        <a
+          href="https://jiradocs.internal.synopsys.com/display/SynopsysDesignSystem/Design+System+Introduction"
+          target="_blank"
+        ><u>Link</u></a>
+    </div>
+
+    <div className="sb-section-item">
+      <a
+          href="https://www.figma.com/files/1149426230099199382/project/203056447/3.-Design?fuid=1086587058743639627"
+          target="_blank"
+        >
+      <img src={Figma} alt="Confluence page" />
+      </a>
+    
+        <h2 className="sb-section-item-heading">Figma Design Kit</h2>
+        <p className="sb-section-item-paragraph">Data Continuum Figma Design kit for designers</p>
+        <a
+          href="https://www.figma.com/files/1149426230099199382/project/203056447/3.-Design?fuid=1086587058743639627"
+          target="_blank"
+        ><u>Link</u></a>
+    </div>
+</div>
+
+# Installation Guide
+
+## Prerequisites
+
+Before you begin, ensure you have:
+- A Synopsys account
+- npm installed on your system
+- Appropriate access permissions
+
+## Installation Steps
+
+### Step 0: Request Access
+Email **Vijayabhaskar Katta** (kattav@synopsys.com) and CC dc-uiux-support@synopsys.com with the following details:
+
+
+<div className="register-form">
+- Repositry: dc-npm
+- Group: dc-core-team
+- Username: [Your Name]
+- Email: [Your Company Email]
+</div>
+
+### Step 1: Access JFrog Artifactory
+1. Navigate to JFrog Artifactory: https://us01-artifactory.internal.synopsys.com/ui/repos/tree/General/dc-npm
+2. Log in using your Synopsys account
+3. Select the **dc-npm** repository
+
+### Step 2: Generate Token
+1. Click **Set me Up** in the upper right corner
+2. Navigate to the Configure Tab
+3. Enter your password
+4. Click "Generate Token & Create Instructions"
+
+<img src={Step2} alt="Jfrog page" />
+<img src={Step22} alt="Jfrog page" />
+
+### Step 3: Configure .npmrc
+1. Copy the **Edit.npmrc(Scoped)** content
+2. Set scope as **@dc**
+3. Create or update your .npmrc file:
+   - For Mac users: Located in your USER root folder
+   - For Windows users: Located at %USERPROFILE%/.npmrc
+   - Paste the copied content into this file
+
+**Note**: If you encounter npm configuration errors, please run <b>npm config fix</b>.<br/>
+**Note**: After initial configuration, you won't need to repeat this process for future downloads.<br/>
+
+<img src={Step3} alt="Jfrog page" />
+
+### Step 4: Install Dependencies
+Run the following command:
+```bash
+npm i @dc/design-system-core
+```
+
+### Step 5: Verify Installation
+Check your package.json file. You should see @dc/design-system-core in the dependencies:
+```json
+{
+    "dependencies": {
+        "@dc/design-system-core": "[installed version]"
+    }
+}
+```
+
+#### Version Management
+- By default, the latest version will be installed
+- To install a specific version, use:
+
+  ```bash
+  npm install @dc/design-system-core [desired_version]
+  ```
+
+## Support
+For any issues or questions, please contact:
+- Email: dc-uiux-support@synopsys.com
+
+
+
+<style>
+  { `
+    .story-control {
+      display: none !important;
+    }
+    .sy-logo{
+      margin-top:50px;
+    }
+    .sy-theme-light .sy-logo-light{
+      display:inline-block;
+    }
+    .sy-theme-light .sy-logo-dark{
+      display:none;
+    }
+    .sy-theme-dark .sy-logo-light{
+      display:none;
+    }
+    .sy-theme-dark .sy-logo-dark{
+      display:inline-block;
+    }    
+    .sb-section {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+
+    img {
+      object-fit: cover;
+    }
+
+    .sb-section-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 100px;
+    }
+
+    .sb-section-item-heading {
+      padding-top: 20px !important;
+      padding-bottom: 5px !important;
+      margin: 0 !important;
+    }
+    .sb-section-item-paragraph {
+      margin: 0;
+      padding-bottom: 10px;
+    }
+    .register-form {
+      border-radius: 0.5rem;
+      border: 2px solid #e1e1e1;
+    }
+
+    h2.css-wzniqs {
+      border: none;
+    }
+
+    `
+  }
+</style>
+
+

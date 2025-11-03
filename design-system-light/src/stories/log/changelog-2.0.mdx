@@ -1,0 +1,147 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Log/2.0" />
+
+# v2.0.9
+## Updates
+### Tree
+- Icon and label alignment
+- item expanded not working 
+- Specific tree node doesn't expand bug fix
+
+### Modal
+- radio-group component does not work in the modal body bug fix
+- type text to input field in modeless component bug fix
+- autocomplete option not displaying bug fix
+
+
+### Tab
+- specific height and give rest height to tab-content
+
+
+# v2.0.7
+## Updates
+### Tree
+- updated data reset when click outside the input 
+- In edit mode, input and nodes are getting greyed out. 
+- input clicking not expand tree. 
+- enables switching with a disabled node. 
+
+### Textarea
+- change font family of sy-textArea 
+
+# v2.0.6
+## Updates
+### Tooltip
+- Tooltip does not disappear in the modal 
+- remove when parent is removed 
+
+### Tree
+- updated data reset when click outside the input 
+
+### Textarea
+- Clear icon overlaps with scrollbar 
+
+# v2.0.5
+## Updates
+### Tree
+- Remove tooltip remains after removing node 
+- Set different placeholder on each level 
+- On click of action icons like remove and add seems to trigger node click and gets highlighted. 
+- Expand tree by clicking node label 
+
+### Select
+- Selected option is coming on top of the dropdown twice 
+- Provide a way to add tooltip on the select options 
+
+# v2.0.3
+## Updates
+### Input
+- changed event is fired when clear icon is clicked.
+
+
+### Tree
+- manualRemove Attribute has been added. 
+- removeNode function has been added.<br/>
+If manualRemove is set, when itemRemoved event is fired, the event returns node value but it does not remove the node.<br/>
+A developer can add modal or any notification at this moment.<br/>
+If user select to remove, remove the node manually, using removeNode function. 
+
+
+### Inline message 
+- fix bug when using focusout trigger in the inline message.
+
+
+# v2.0.2
+## Updates
+### Tab
+- Max- width of `<sy-tab>` has been removed which means length of the tab can be expanded as much as length of its slot.<br/>
+- Developers can also control its size with adding style. But changing any other style may affacts its feature or style.
+
+```
+<sy-tab style="width:100px;">tab 1</sy-tab>
+```
+
+### Tree
+- "itemRemoved" event will be fired, when a tree node is removed by user clicking remove-icon.
+
+
+### Tooltip
+- itemSelected event files once only at clicking an item. 
+- linefeed is necessary Fixed
+- content allows special characters such as \n for newline, \t for tab.
+- HTML are not allowed. It will be shown as plain text.   
+- text is not wrapped Fixed
+- content will be wrapped by tooltip size.
+- Default width of the tooltip is 200px. 
+
+
+### Step
+- Enhance style: Distinguish enable/disable clearly
+
+### Button
+- Resolve the issue of the text line in the button.
+
+
+### Icons - New icons added
+- share-nodes
+- circle
+- clock
+- rotate-right
+- rotate
+
+
+# v2.0.1
+## Updates
+### Step
+- Fixed an issue where only the number of steps specified by 'step' stayed active when a startindex was set, preventing any steps beyond that from activating. <br/>
+Modified so the defined 'step' count remains active even with a startindex set.
+
+- sy-steps and sy-step must be composed as 1-depth and should not be placed in a 2-depth hierarchy.<br/>
+However, if composed within Angulars invisible DOM (e.g., `<ng-container>`), it was actually 1-depth but not displayed correctly. 
+
+### Dropdown
+- does not show on the modal fixed<br/>
+zIndex has been reorganized.
+
+### Tab
+- tab scroll overflow error
+
+### Font
+- Limit the scope of root font style to Synergy components only
+
+# v2.0
+
+## New Features
+- [Avatar](/docs/avatar-overview--docs)
+- [Badge](/docs/badge-overview--docs)
+- [Banner message](/docs/bannermessage-overview--docs)
+- [Drawer](/docs/drawer-overview--docs)
+- [Inline message](/docs/inlinemessage-overview--docs)
+- [Modeless](/docs/modeless-overview--docs)
+- [Navigation menu](/docs/navigationmenu-overview--docs)
+- [Split Panel](/docs/splitpanel-overview--docs)
+- [Toast message](/docs/toastmessage-overview--docs)
+- [Tooltip](/docs/tooltip-overview--docs)
+- [TreeSelect](/docs/treeselect-overview--docs)
+

@@ -1,0 +1,187 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Log/4.0" />
+
+
+# v4.0
+## Braking Changes
+### Common
+- To apply similar Naming rules to all Components, some Component's Property Naming has been modified. It may not apply to the rule, such as `disabled` that is traditionally used.
+- To apply similar Naming rules to all Components, some Component's Event Naming has been modified . It may not apply to the rule, such as `click` that is traditionally used.
+- The overall capacity is reduced by 50%, providing faster loading speed and more optimized performance.
+
+### Tree shaking
+- All components can now be tree shaking. Unused components are not included in the bundle unless they are imported.
+- All components can now be imported individually. For example, you can use it like `import { inputComponent } from '@dc/design-system-core/input';`.
+
+
+### Form
+- Some components have been improved those features to support `Form`.
+- For more detailed information, refer to [Form Component Documentation] (/docs/form-overview--docs).
+
+
+### Icon
+- Icon can now apply SVG. These are applied tat using the SVG tags directly or using the 'path' property to load external SVG files.
+- It is required to set CORS, to load an external SVG file. If CORS is not set, the icon may not appear.
+
+
+## New Features
+A new component has been added.
+
+### [datepicker](/docs/datepicker-overview--docs)
+This is a component that can choose a date. You can choose a date in the form of a calendar.
+Depending on the variant, it can be used as TimePicker, RangePicker.
+
+### [colorpicker](/docs/colorpicker-overview--docs)
+It is a component that can choose a color. A color palette is provided so that the user can choose a color.
+
+
+### [globalheader](/docs/globalheader-overview--docs)
+The global header component is used to display a consistent header across the application.
+
+### [label](/docs/label-overview--docs)
+`Label` component provides the ability to display text labels in Form elements.
+`Label` component that can be used with `INPUT, TEXTAREA, SELECT, and more`.
+
+### [progress circular](/docs/progresscircular-overview--docs)
+The progress circular component is used to indicate the progress of a task in a circular format.
+
+### [slider](/docs/slider-overview--docs)
+The slider component allows users to select a value from a range by sliding a handle along a track.
+It is useful for selecting values such as volume, brightness, or any other continuous value.
+
+
+
+## Updates
+
+### [banner](/docs/banner-overview--docs)
+- The `title` property has been **renamed** to `header`.  
+- The `icon` property has been **renamed** to `showIcon`.  
+- **Example:**  
+  `<sy-banner-messsage header="Banner Title" showIcon></sy-banner-messsage>`
+
+### [drawer](/docs/drawer-overview--docs)
+- `opened` property has been **renamed** to `open`.
+- `onOpened` event has been **renamed** to `opened`.
+- `onClosed` event has been **renamed** to `closed`.
+
+
+### [inline-message](/docs/inline-message-overview--docs)
+- `opened` property has been **renamed** to `open`.
+- `icon` property has been **renamed** to `showIcon`.
+
+### [input](/docs/input-overview--docs)
+- The `focused` event has been added.
+- The existing `blurred` event has been **renamed** to `blured`.
+- The validation of the input is affected by the validation of the form.
+- The validation of the input is applied after the user enters any value or Form Submit.
+- `status` sets the state of the input in the UI, regardless of the validation of the input. However, if the validation of the input fails, `status` is set to 'error'.
+
+
+### [input-number](/docs/input-number-overview--docs)
+- The `focused` event has been added.
+- The existing `blurred` event has been **renamed** to `blured`.
+- The validation of the input-number is affected by the validation of the form.
+- The validation of the input-number is applied after the user enters any value or Form Submit.
+- `status` sets the state of the input-number in the UI, regardless of the validation of the input. However, if the validation of the input fails, `status` is set to 'error'.
+
+
+### [icon](/docs/icon-overview--docs)
+- `filled` and `type` property has been **deprecated**. All icons must be used with SVG or `path` property.
+- It is possible to load external SVG through the `path` property. For example, `<sy-icon path="path/to/icon.svg"></sy-icon>` is available. The `path` allows urls only; not a local file path.
+Icons can now directly use SVG code. For example, `<sy-icon><svg>...</svg>></sy-icon>` is available.
+
+### [menu](/docs/menu-overview--docs)
+- `opened` property has been **renamed** to `open`.
+- `selected` property has been **renamed** to `select`.
+- `icon` property has been **deprecated** from `<sy-menu-group>`. User can attach icon directly in the `title` property with `<sy-icon>`.
+- `icon` property has been **deprecated** from `<sy-menu-sub>`. User can attach icon directly in the `title` property with `<sy-icon>`.
+- menu-item does not closed while controlling the HTML elements on the menu-item.
+
+### [modal](/docs/modal-overview--docs)
+- `opened` property has been **renamed** to `open`.
+- `triggerOpened()` function has been **renamed** to `setOpen()`.
+- `triggerClosed()` function has been **renamed** to `setClose()`.
+- `triggerCalceled()` function has been **renamed** to `setCancel()`.
+- `triggerOk()` function has been **renamed** to `setOk()`.
+- `triggerMaximized()` function has been **renamed** to `setMaximum()`.
+
+
+### [modeless](/docs/modeless-overview--docs)
+- `opened` property has been **renamed** to `open`.
+- `maximized` property has been **renamed** to `maximum`.
+- `minimized` property has been **renamed** to `minimum`.
+- `triggerOpened()` function has been **renamed** to `setOpen()`.
+- `triggerClosed()` function has been **renamed** to `setClose()`.
+- `triggerMaximized()` function has been **renamed** to `setMaximum()`.
+- `triggerMinimized()` function has been **renamed** to `setMinimum()`.
+- `triggerRestored()` function has been **renamed** to `setRestore()`.
+- The Emit value of the `status` event has changed. `detail: {id?: string, status: string}`
+- The Emit value of the `position` event has changed. `detail: {id?: string, position: {left, top, width, height}}`
+
+### [navigationMenu](/docs/navigationmenu-overview--docs)
+- `icon` property has been **deprecated** from `<sy-nav-group>`. A User can attach icon directly in the `title` property with `<sy-icon>`.
+- `icon` property has been **deprecated** from `<sy-nav-sub>`. A User can attach icon directly in the `title` property with `<sy-icon>`.
+
+
+### [progressCircular](/docs/progresscircular-overview--docs)
+- `indeterminate` attribute has been **added**. It allows the progress circular indicating that the progress is ongoing.
+
+### [select](/docs/select-overview--docs)
+- The `focused` event has been added.
+- The `readonly` property has been **added**.  
+- The existing `blurred` event has been **renamed** to `blured`.
+- The validation of the select is affected by the validation of the form.
+- The validation of the select is applied after the user select any option or Form Submit.
+- The `detail` value of the `selected` event has changed. `detail: {selectedOptions: {value: string, label?: string}, isValid: boolean, status: '' | 'valueMissing' | 'custom'}`
+
+
+### [slider](/docs/slider-overview--docs)
+- The `change` event has been **renamed** to `changed`.
+
+
+### [tab](/docs/tab-overview--docs)
+- The `key` attribute of `sy-tab` has been **renamed** to `tabkey` as shown below:  
+```html
+<sy-tab-group active="0" align="left" position="top" type="line" size="medium" padding="medium">
+  <div slot="tabs">
+    <sy-tab tabkey="a1">Tab1</sy-tab>
+    <sy-tab tabkey="a2">Tab2</sy-tab>
+    <sy-tab tabkey="a3">Tab3</sy-tab>
+  </div>
+  <div slot="contents">
+    <sy-tab-content name="a1">Content for Tab 1</sy-tab-content>
+    <sy-tab-content name="a2">Content for Tab 2</sy-tab-content>
+    <sy-tab-content name="a3">Content for Tab 3</sy-tab-content>
+  </div>
+</sy-tab-group>
+```
+
+- The `triggerClosed()` function has been **renamed** to `setClose()`.
+
+### [tag](/docs/tag-overview--docs)
+- The `readonly` property has been **added**.  
+
+
+### [textarea](/docs/textarea-overview--docs)
+- The existing `blurred` event has been **renamed** to `blured`.
+
+
+### [tooltip](/docs/tooltip-overview--docs)
+- `opened` property has been **renamed** to `open`.
+- `arrow` property has been **removed**. Arrow is visible as default.
+- `hideArrow` property has been **added** to control visbility of the arrow.
+
+
+### [tree](/docs/tree-overview--docs)
+- `iconFilled` has been **deprecated** from `<sy-tree-item>`. A User can attach icon directly in the `label` property with `<sy-icon>`. 
+- `icon` has been **deprecated** from `<sy-tree-item>`. A User can attach icon directly in the `label` property with `<sy-icon>`.
+
+### [tree-select](/docs/treeselect-overview--docs)
+- `error` property has been **renamed** to `status`.
+- The `readonly` property has been **added**.  
+- The `status` property can be set to 'error' or 'default'.
+
+
+
+

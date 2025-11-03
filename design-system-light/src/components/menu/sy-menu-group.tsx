@@ -9,7 +9,7 @@ import { Component, Prop, h, Element } from '@stencil/core';
 export class SyMenuGroup {
   @Element() host!: HTMLSyMenuGroupElement;
 
-  @Prop() title: string = '';
+  @Prop({ attribute: 'title'}) menuGroupTitle: string = '';
 
   private sanitizeHtml(content: string): string {
     if (!content) return '';
@@ -21,7 +21,7 @@ export class SyMenuGroup {
   render() {
     return (
       <div>
-        <div class="group-title" title={this.sanitizeHtml(this.title)} innerHTML={this.title}></div>
+        <div class="group-title" title={this.sanitizeHtml(this.menuGroupTitle)} innerHTML={this.menuGroupTitle}></div>
         <div class="group-content">
           <slot></slot>
         </div>

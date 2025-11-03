@@ -1,0 +1,23 @@
+import { Canvas, Meta, Controls, Story } from "@storybook/addon-docs/blocks";
+
+import * as ModalParamStory from "./sy-modal.stories";
+
+<Meta of={ModalParamStory} />
+
+# Modal
+## Definition
+A modal is a element that displays in front of all other elements, forcing users to interact with the modal to return to the main content.<br/>
+Normally the modal has a mask which blocks interaction from other elements.<br/>
+Our modal element supports various following features to cover vary environment conditions:
+
+- Modifying content of header, body, and even footer. Any text including html tags are acceptable.
+- Editing text of buttons of the footer.
+- Displaying close button on header.
+- Closing by the mask clicks.
+- Fixing Width.
+
+
+## Example
+<Canvas of={ModalParamStory.Default} />
+
+<Controls of={ModalParamStory.Default} />

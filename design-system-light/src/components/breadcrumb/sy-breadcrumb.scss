@@ -49,7 +49,7 @@
 }
 
 :host(sy-breadcrumb-item:last-child) {
-    .breadcrumb--item slot {
+    .breadcrumb--item {
         cursor: pointer;
     }
 }

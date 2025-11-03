@@ -46,8 +46,928 @@
       button:hover {
         background: #2980b9;
       }
+
+      .tree-result {
+        margin-top: 10px;
+        padding: 10px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        min-height: 30px;
+        color: #555;
+      }
+
+      .tree-controls {
+        margin: 10px 0;
+      }
+
+      .tree-controls label {
+        margin-right: 15px;
+      }
     </style>
 
+<!-- TREE-SELECT COMPONENT TEST -->
+<section id="tree-select-examples">
+  <h1>Tree Select Component Examples</h1>
+
+  <!-- Basic Tree Select -->
+  <div class="example-section">
+    <h3>Basic Tree Select (Nodes)</h3>
+    <sy-tree-select id="treeSelectNodes"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' }, 
+                  { label: 'leaf2', value: '10011' }, 
+                  { label: 'leaf3', value: '10012' }  
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ] 
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeSelectNodes');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Checkable Tree Select -->
+  <div class="example-section">
+    <h3>Checkable Tree Select</h3>
+    <sy-tree-select id="treeSelectCheckable" checkable expandAll></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', checked: true, children: [
+                  { label: 'leaf1', value: '10010' }, 
+                  { label: 'leaf2', value: '10011' }, 
+                  { label: 'leaf3', value: '10012' }  
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ] 
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeSelectCheckable');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+
+</section>
+
+<!-- TREE COMPONENT TEST -->
+<section id="tree-examples">
+  <h1>Tree Component Examples</h1>
+
+  <!-- Basic Tree -->
+  <div class="example-section">
+    <h3>Basic Tree</h3>
+    <sy-tree id="treeBasic" expandAll></sy-tree>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeBasic');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Checkable Tree -->
+  <div class="example-section">
+    <h3>Checkable Tree</h3>
+    <sy-tree id="treeCheckable" checkable expandAll></sy-tree>
+    <div class="tree-result" id="treeCheckableResult">Select items to see checked values</div>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeCheckable');
+        const result = document.querySelector('#treeCheckableResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('itemChecked', (e) => {
+            result.textContent = 'Item checked: ' + JSON.stringify(e.detail);
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Clickable Tree -->
+  <div class="example-section">
+    <h3>Clickable Tree</h3>
+    <sy-tree id="treeClickable" clickable expandAll></sy-tree>
+    <div class="tree-result" id="treeClickableResult">No item selected</div>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeClickable');
+        const result = document.querySelector('#treeClickableResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('itemSelected', (e) => {
+            result.textContent = 'Item "' + e.detail.label + '" is clicked';
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Draggable Tree -->
+  <div class="example-section">
+    <h3>Draggable Tree</h3>
+    <sy-tree id="treeDraggable" draggable expandAll></sy-tree>
+    <div class="tree-result" id="treeDraggableResult">Drag and drop items to reorder</div>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'parent 1', value: '100' },
+          { label: 'parent 2', value: '200' },
+          { label: 'parent 3', value: '300' },
+          { label: 'parent 4', value: '400' },
+        ];
+        const tree = document.querySelector('#treeDraggable');
+        const result = document.querySelector('#treeDraggableResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('nodesChanged', (e) => {
+            result.textContent = 'Tree structure changed';
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Editable Tree -->
+  <div class="example-section">
+    <h3>Editable Tree</h3>
+    <sy-tree id="treeEditable" editable expandAll></sy-tree>
+    <div class="tree-result" id="treeEditableResult">Hover over items to see edit/add/remove buttons</div>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeEditable');
+        const result = document.querySelector('#treeEditableResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('itemAdded', (e) => {
+            result.textContent = 'Item Added: ' + JSON.stringify(e.detail);
+          });
+          tree.addEventListener('itemRemoved', (e) => {
+            result.textContent = 'Item Removed: ' + JSON.stringify(e.detail);
+          });
+          tree.addEventListener('itemEdited', (e) => {
+            result.textContent = 'Item Edited: ' + JSON.stringify(e.detail);
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Expandable Tree -->
+  <div class="example-section">
+    <h3>Expandable Tree</h3>
+    <sy-tree id="treeExpandable" expandable></sy-tree>
+    <div class="tree-result" id="treeExpandableResult">Click expand icons to open/close nodes</div>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            expanded: true,
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'parent 1-0-1', children: [
+                    { label: 'leaf1', value: '10010' },
+                    { label: 'leaf2', value: '10011' },
+                    { label: 'leaf3', value: '10012' }
+                  ]}
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeExpandable');
+        const result = document.querySelector('#treeExpandableResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('expandChanged', (e) => {
+            result.textContent = 'Expand changed: ' + JSON.stringify(e.detail);
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Expand All Tree -->
+  <div class="example-section">
+    <h3>Expand All Tree</h3>
+    <sy-tree id="treeExpandAll" expandAll expandable></sy-tree>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeExpandAll');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Tree with Line -->
+  <div class="example-section">
+    <h3>Tree with Line</h3>
+    <sy-tree id="treeLine" line expandable></sy-tree>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeLine');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Manual Add Tree -->
+  <div class="example-section">
+    <h3>Manual Add Tree</h3>
+    <sy-tree id="treeManualAdd" editable manualAdd expandAll></sy-tree>
+    <div class="tree-result" id="treeManualAddResult">Click add button on items, then click "Manual Add" below</div>
+    <sy-button id="treeManualAddButton">Manual Add</sy-button>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeManualAdd');
+        const result = document.querySelector('#treeManualAddResult');
+        const manualAddButton = document.querySelector('#treeManualAddButton');
+        
+        let addNode = null;
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('itemAdded', (e) => {
+            result.textContent = 'Click "Manual Add" to add item: ' + JSON.stringify(e.detail);
+            addNode = e.detail;
+          });
+        }
+        
+        if (manualAddButton) {
+          manualAddButton.addEventListener('click', () => {
+            if (addNode && tree) {
+              tree.manualAddChildNode(addNode.parentValue, addNode.childLabel, addNode.childValue);
+              result.textContent = 'Item Added: ' + JSON.stringify(addNode);
+              addNode = null;
+            } else {
+              result.textContent = 'No manual item selected';
+            }
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Manual Remove Tree -->
+  <div class="example-section">
+    <h3>Manual Remove Tree</h3>
+    <sy-tree id="treeManualRemove" editable manualRemove expandAll></sy-tree>
+    <div class="tree-result" id="treeManualRemoveResult">Click remove button on items, then click "Manual Remove" below</div>
+    <sy-button id="treeManualRemoveButton">Manual Remove</sy-button>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeManualRemove');
+        const result = document.querySelector('#treeManualRemoveResult');
+        const manualRemoveButton = document.querySelector('#treeManualRemoveButton');
+        
+        let removeNode = null;
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('itemRemoved', (e) => {
+            result.textContent = 'Click "Manual Remove" to remove item: ' + JSON.stringify(e.detail);
+            removeNode = e.detail;
+          });
+        }
+        
+        if (manualRemoveButton) {
+          manualRemoveButton.addEventListener('click', () => {
+            if (removeNode && tree) {
+              tree.manualRemoveNode(removeNode.value);
+              result.textContent = 'Item Removed: ' + JSON.stringify(removeNode);
+              removeNode = null;
+            } else {
+              result.textContent = 'No manual item selected';
+            }
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Tree with Icons and Tags -->
+  <div class="example-section">
+    <h3>Tree with Icons and Tags</h3>
+    <sy-tree id="treeNodes" expandAll></sy-tree>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M224 96C206.3 96 192 110.3 192 128L192 384C192 401.7 206.3 416 224 416L416 416C433.7 416 448 401.7 448 384L448 128C448 110.3 433.7 96 416 96L224 96zM416 48C460.2 48 496 83.8 496 128L496 384C496 428.2 460.2 464 416 464L224 464C179.8 464 144 428.2 144 384L144 128C144 83.8 179.8 48 224 48L416 48zM384 272C384 267.6 387.6 264 392 264L408 264C412.4 264 416 267.6 416 272L416 328C416 332.4 412.4 336 408 336L392 336C387.6 336 384 332.4 384 328L384 272zM224 272C224 267.6 227.6 264 232 264L248 264C252.4 264 256 267.6 256 272L256 328C256 332.4 252.4 336 248 336L232 336C227.6 336 224 332.4 224 328L224 272zM280 312C275.6 312 272 315.6 272 320C272 324.4 275.6 328 280 328L360 328C364.4 328 368 324.4 368 320C368 315.6 364.4 312 360 312L280 312z"/></svg>',
+            tagMessage: 'tag',
+            tagVariant: 'blue',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011', tagMessage: 'new', tagVariant: 'green' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020', tagMessage: 'hot', tagVariant: 'red' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeNodes');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Tree with Node Width -->
+  <div class="example-section">
+    <h3>Tree with Node Width (150px)</h3>
+    <sy-tree id="treeNodeWidth" expandAll nodeWidth="150"></sy-tree>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 111111111111111111111111111111111111111111',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-00000000000000000000000000000000000',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeNodeWidth');
+        if (tree) {
+          tree.nodeWidth = 200;
+          tree.nodes = nodes;
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Tree with Selected Value -->
+  <div class="example-section">
+    <h3>Tree with Selected Value (10011)</h3>
+    <sy-tree id="treeSelectedValue" clickable selectedValue="10011"></sy-tree>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              {
+                label: 'parent 1-0',
+                value: '1001',
+                children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              {
+                label: 'parent 1-1',
+                value: '1002',
+                children: [{ label: 'leaf4', value: '10020' }]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeSelectedValue');
+        if (tree) tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Tree Nodes Changed Event -->
+  <div class="example-section">
+    <h3>Tree Nodes Changed Event</h3>
+    <sy-tree id="treeNodesChanged" expandAll checkable draggable></sy-tree>
+    <div class="tree-result" id="treeNodesChangedResult">Interact with the tree to see changes</div>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'parent 1',
+            value: '100',
+            children: [
+              { label: 'child 1', value: '1001' },
+              { label: 'child 2', value: '1002' },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeNodesChanged');
+        const result = document.querySelector('#treeNodesChangedResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('nodesChanged', (e) => {
+            result.innerHTML = '<pre>' + JSON.stringify(e.detail, null, 2) + '</pre>';
+          });
+        }
+      })();
+    </script>
+  </div>
+
+  <!-- Combined Features Tree -->
+  <div class="example-section">
+    <h3>Combined Features (Checkable + Clickable + Editable + Draggable + Expandable)</h3>
+    <sy-tree id="treeCombined" checkable clickable editable draggable expandable></sy-tree>
+    <div class="tree-result" id="treeCombinedResult">All features enabled</div>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'Root Node',
+            value: '1',
+            expanded: true,
+            children: [
+              {
+                label: 'Category A',
+                value: '2',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M192 96L192 352L448 352L448 96L192 96zM144 96C144 69.5 165.5 48 192 48L448 48C474.5 48 496 69.5 496 96L496 352C496 378.5 474.5 400 448 400L192 400C165.5 400 144 378.5 144 352L144 96zM64 176C64 162.7 74.7 152 88 152C101.3 152 112 162.7 112 176L112 464C112 490.5 133.5 512 160 512L448 512C461.3 512 472 522.7 472 536C472 549.3 461.3 560 448 560L160 560C106.1 560 64 517.9 64 464L64 176z"/></svg>',
+                tagMessage: 'New',
+                tagVariant: 'green',
+                children: [
+                  { label: 'Item 1', value: '3', disabled: false },
+                  { label: 'Item 2', value: '4', checked: true },
+                  { label: 'Item 3', value: '5' }
+                ]
+              },
+              {
+                label: 'Category B',
+                value: '6',
+                tagMessage: 'Hot',
+                tagVariant: 'red',
+                children: [
+                  { label: 'Item 4', value: '7' },
+                  { label: 'Item 5', value: '8', fixed: true, checked: true }
+                ]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeCombined');
+        const result = document.querySelector('#treeCombinedResult');
+        if (tree) {
+          tree.nodes = nodes;
+          tree.addEventListener('itemSelected', (e) => {
+            result.textContent = 'Selected: ' + e.detail.label;
+          });
+          tree.addEventListener('itemChecked', (e) => {
+            result.textContent = 'Checked: ' + e.detail.label + ' = ' + e.detail.checked;
+          });
+          tree.addEventListener('nodesChanged', (e) => {
+            console.log('Nodes changed:', e.detail);
+          });
+        }
+      })();
+    </script>
+  </div>
+</section>
+
+<!-- DROPDOWN COMPONENT TEST -->
+<section id="dropdown-examples">
+  <h1>Dropdown Component Examples</h1>
+
+  
+  <!-- Basic Dropdown -->
+  <div class="dropdown-example">
+    <h3>Basic Dropdown</h3>
+    <sy-dropdown id="basicDropdown" position="bottomLeft" trigger="hover" size="medium">
+      <span slot="title">Select Action</span>
+      <sy-menu>
+        <sy-menu-item value="edit">Edit</sy-menu-item>
+        <sy-menu-item value="delete">Delete</sy-menu-item>
+        <sy-menu-item value="copy">Copy</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+    <div id="basicDropdownLog" class="event-log">Event log will appear here...</div>
+  </div>
+
+  <!-- Dropdown Sizes -->
+  <div class="dropdown-example">
+    <h3>Dropdown Sizes</h3>
+    <sy-dropdown size="small">
+      <span slot="title">Small</span>
+      <sy-menu>
+        <sy-menu-item value="option1">Option 1</sy-menu-item>
+        <sy-menu-item value="option2">Option 2</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+    <sy-dropdown size="medium">
+      <span slot="title">Medium</span>
+      <sy-menu>
+        <sy-menu-item value="option1">Option 1</sy-menu-item>
+        <sy-menu-item value="option2">Option 2</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+    <sy-dropdown size="large">
+      <span slot="title">Large</span>
+      <sy-menu>
+        <sy-menu-item value="option1">Option 1</sy-menu-item>
+        <sy-menu-item value="option2">Option 2</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+  </div>
+
+  <!-- Dropdown Positions -->
+  <div class="dropdown-example">
+    <h3>Dropdown Positions</h3>
+    <p style="margin-bottom: 20px; color: #666;">Hover over each dropdown to see the menu position</p>
+    <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; padding: 100px 50px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <span style="font-size: 12px; color: #666;">Top Left</span>
+        <sy-dropdown position="topLeft" trigger="hover">
+          <span slot="title">Top Left</span>
+          <sy-menu>
+            <sy-menu-item value="option1">Option 1</sy-menu-item>
+            <sy-menu-item value="option2">Option 2</sy-menu-item>
+            <sy-menu-item value="option3">Option 3</sy-menu-item>
+          </sy-menu>
+        </sy-dropdown>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <span style="font-size: 12px; color: #666;">Top Right</span>
+        <sy-dropdown position="topRight" trigger="hover">
+          <span slot="title">Top Right</span>
+          <sy-menu>
+            <sy-menu-item value="option1">Option 1</sy-menu-item>
+            <sy-menu-item value="option2">Option 2</sy-menu-item>
+            <sy-menu-item value="option3">Option 3</sy-menu-item>
+          </sy-menu>
+        </sy-dropdown>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <span style="font-size: 12px; color: #666;">Bottom Left</span>
+        <sy-dropdown position="bottomLeft" trigger="hover">
+          <span slot="title">Bottom Left</span>
+          <sy-menu>
+            <sy-menu-item value="option1">Option 1</sy-menu-item>
+            <sy-menu-item value="option2">Option 2</sy-menu-item>
+            <sy-menu-item value="option3">Option 3</sy-menu-item>
+          </sy-menu>
+        </sy-dropdown>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <span style="font-size: 12px; color: #666;">Bottom Right</span>
+        <sy-dropdown position="bottomRight" trigger="hover">
+          <span slot="title">Bottom Right</span>
+          <sy-menu>
+            <sy-menu-item value="option1">Option 1</sy-menu-item>
+            <sy-menu-item value="option2">Option 2</sy-menu-item>
+            <sy-menu-item value="option3">Option 3</sy-menu-item>
+          </sy-menu>
+        </sy-dropdown>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Triggers -->
+  <div class="dropdown-example">
+    <h3>Dropdown Triggers</h3>
+    <div style="display: flex; gap: 20px;">
+      <sy-dropdown trigger="click">
+        <span slot="title">Click Trigger</span>
+        <sy-menu>
+          <sy-menu-item value="option1">Option 1</sy-menu-item>
+          <sy-menu-item value="option2">Option 2</sy-menu-item>
+        </sy-menu>
+      </sy-dropdown>
+      <sy-dropdown trigger="hover">
+        <span slot="title">Hover Trigger</span>
+        <sy-menu>
+          <sy-menu-item value="option1">Option 1</sy-menu-item>
+          <sy-menu-item value="option2">Option 2</sy-menu-item>
+        </sy-menu>
+      </sy-dropdown>
+    </div>
+  </div>
+
+  <!-- Borderless Dropdown -->
+  <div class="dropdown-example">
+    <h3>Borderless Dropdown</h3>
+    <sy-dropdown borderless>
+      <span slot="title">Borderless</span>
+      <sy-menu>
+        <sy-menu-item value="option1">Option 1</sy-menu-item>
+        <sy-menu-item value="option2">Option 2</sy-menu-item>
+        <sy-menu-item value="option3">Option 3</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+  </div>
+
+  <!-- Disabled Dropdown -->
+  <div class="dropdown-example">
+    <h3>Disabled Dropdown</h3>
+    <sy-dropdown disabled>
+      <span slot="title">Disabled Dropdown</span>
+      <sy-menu>
+        <sy-menu-item value="option1">Option 1</sy-menu-item>
+        <sy-menu-item value="option2">Option 2</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+  </div>
+
+  <!-- Dropdown with Dividers -->
+  <div class="dropdown-example">
+    <h3>Dropdown with Dividers</h3>
+    <sy-dropdown>
+      <span slot="title">Menu with Dividers</span>
+      <sy-menu>
+        <sy-menu-item value="new">New File</sy-menu-item>
+        <sy-menu-item value="open">Open</sy-menu-item>
+        <sy-divider></sy-divider>
+        <sy-menu-item value="save">Save</sy-menu-item>
+        <sy-menu-item value="saveas">Save As</sy-menu-item>
+        <sy-divider></sy-divider>
+        <sy-menu-item value="exit">Exit</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+  </div>
+
+  <!-- Programmatic Control -->
+  <div class="dropdown-example">
+    <h3>Programmatic Control</h3>
+    <div class="dropdown-controls">
+      <button onclick="toggleDropdownDisabled()">Toggle Disabled</button>
+      <button onclick="changeDropdownPosition()">Change Position</button>
+      <button onclick="changeDropdownSize()">Change Size</button>
+      <button onclick="changeDropdownTrigger()">Change Trigger</button>
+    </div>
+    <sy-dropdown id="programmaticDropdown" position="bottomLeft" trigger="click" size="medium">
+      <span slot="title">Controlled Dropdown</span>
+      <sy-menu>
+        <sy-menu-item value="action1">Action 1</sy-menu-item>
+        <sy-menu-item value="action2">Action 2</sy-menu-item>
+        <sy-menu-item value="action3">Action 3</sy-menu-item>
+      </sy-menu>
+    </sy-dropdown>
+    <div id="programmaticDropdownLog" class="event-log">Event log will appear here...</div>
+  </div>
+
+  <script>
+    // Basic Dropdown Event Listener
+    const basicDropdown = document.getElementById('basicDropdown');
+    const basicDropdownLog = document.getElementById('basicDropdownLog');
+    
+    basicDropdown.addEventListener('selected', (e) => {
+      basicDropdownLog.textContent = `Selected: ${e.detail.value} at ${new Date().toLocaleTimeString()}`;
+    });
+
+    // Programmatic Control Functions
+    const programmaticDropdown = document.getElementById('programmaticDropdown');
+    const programmaticDropdownLog = document.getElementById('programmaticDropdownLog');
+
+    programmaticDropdown.addEventListener('selected', (e) => {
+      programmaticDropdownLog.textContent = `Selected: ${e.detail.value} at ${new Date().toLocaleTimeString()}`;
+    });
+
+    function toggleDropdownDisabled() {
+      programmaticDropdown.disabled = !programmaticDropdown.disabled;
+      programmaticDropdownLog.textContent = `Disabled: ${programmaticDropdown.disabled}`;
+    }
+
+    let positions = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
+    let currentPositionIndex = 2;
+    function changeDropdownPosition() {
+      currentPositionIndex = (currentPositionIndex + 1) % positions.length;
+      programmaticDropdown.position = positions[currentPositionIndex];
+      programmaticDropdownLog.textContent = `Position changed to: ${positions[currentPositionIndex]}`;
+    }
+
+    let sizes = ['small', 'medium', 'large'];
+    let currentSizeIndex = 1;
+    function changeDropdownSize() {
+      currentSizeIndex = (currentSizeIndex + 1) % sizes.length;
+      programmaticDropdown.size = sizes[currentSizeIndex];
+      programmaticDropdownLog.textContent = `Size changed to: ${sizes[currentSizeIndex]}`;
+    }
+
+    let triggers = ['click', 'hover'];
+    let currentTriggerIndex = 0;
+    function changeDropdownTrigger() {
+      currentTriggerIndex = (currentTriggerIndex + 1) % triggers.length;
+      programmaticDropdown.trigger = triggers[currentTriggerIndex];
+      programmaticDropdownLog.textContent = `Trigger changed to: ${triggers[currentTriggerIndex]}`;
+    }
+  </script>
+</section>
 
     <hr style="margin: 50px 0; border: 2px solid #e0e0e0;">
 
@@ -186,36 +1106,32 @@
 
   <!-- Overflow Tabs -->
   <div class="tabs-example">
-    <h3>Overflow Tabs (Many Tabs)</h3>
-    <div style="width: 500px; border: 1px solid #999; padding: 10px;">
-      <sy-tab-group id="overflowTabs" active="0">
-        <div slot="tabs">
-          <sy-tab tabkey="over1">Overflow Tab 1</sy-tab>
-          <sy-tab tabkey="over2">Overflow Tab 2</sy-tab>
-          <sy-tab tabkey="over3">Overflow Tab 3</sy-tab>
-          <sy-tab tabkey="over4">Overflow Tab 4</sy-tab>
-          <sy-tab tabkey="over5">Overflow Tab 5</sy-tab>
-          <sy-tab tabkey="over6">Overflow Tab 6</sy-tab>
-          <sy-tab tabkey="over7">Overflow Tab 7</sy-tab>
-          <sy-tab tabkey="over8">Overflow Tab 8</sy-tab>
-        </div>
-        <div slot="contents">
-          <sy-tab-content name="over1">Content 1</sy-tab-content>
-          <sy-tab-content name="over2">Content 2</sy-tab-content>
-          <sy-tab-content name="over3">Content 3</sy-tab-content>
-          <sy-tab-content name="over4">Content 4</sy-tab-content>
-          <sy-tab-content name="over5">Content 5</sy-tab-content>
-          <sy-tab-content name="over6">Content 6</sy-tab-content>
-          <sy-tab-content name="over7">Content 7</sy-tab-content>
-          <sy-tab-content name="over8">Content 8</sy-tab-content>
-        </div>
-        <div slot="extra">
-          <button>Extra Button</button>
-        </div>
-      </sy-tab-group>
+    <h3>Extra Items</h3>
+<div class="tab-group-wrapper" style="height:250px;width:300px;">
+  <sy-tab-group>
+    <div slot="tabs">
+      <sy-tab tabkey="t1">tab1</sy-tab>
+      <sy-tab tabkey="t2">tab2</sy-tab>
+      <sy-tab tabkey="t3">tab3</sy-tab>
+      <sy-tab tabkey="t4">tab4</sy-tab>
+      <sy-tab tabkey="t5">tab5</sy-tab>
     </div>
-    <div class="event-log" id="overflowTabsLog">Events will appear here...</div>
-  </div>
+      
+    <sy-tab slot="extra">
+      <sy-icon size="medium"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M344 120C344 106.7 333.3 96 320 96C306.7 96 296 106.7 296 120L296 296L120 296C106.7 296 96 306.7 96 320C96 333.3 106.7 344 120 344L296 344L296 520C296 533.3 306.7 544 320 544C333.3 544 344 533.3 344 520L344 344L520 344C533.3 344 544 333.3 544 320C544 306.7 533.3 296 520 296L344 296L344 120z"/></svg></sy-icon>
+    </sy-tab>
+
+    <div slot="contents">
+      <sy-tab-content name="t1">This is tab1</sy-tab-content>
+      <sy-tab-content name="t2">This is tab2</sy-tab-content>
+      <sy-tab-content name="t3">This is tab3</sy-tab-content>
+      <sy-tab-content name="t4">This is tab4</sy-tab-content>
+      <sy-tab-content name="t5">This is tab5</sy-tab-content>
+    </div>
+  </sy-tab-group>
+</div>
+
+
 
   <!-- Different Positions -->
   <div class="tabs-example">
@@ -314,12 +1230,6 @@
     draggableTabs.addEventListener('ordered', (e) => {
       const order = e.detail.map(tab => tab.tabkey).join(', ');
       logEvent('draggableTabsLog', `Reordered: [${order}]`);
-    });
-
-    // Overflow tabs events
-    const overflowTabs = document.getElementById('overflowTabs');
-    overflowTabs.addEventListener('selected', (e) => {
-      logEvent('overflowTabsLog', `Selected: ${JSON.stringify(e.detail)}`);
     });
 
     // Position tabs
@@ -6263,15 +7173,24 @@
         <sy-avatar text="Clara" tooltipContent="Clara Smith"></sy-avatar>
         <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Icon User"></sy-avatar>
         <sy-avatar letter="DK" tooltipContent="Dana King"></sy-avatar>
-  </sy-avatar-group>
-  <p id="groupBasicResult">groupBasic result: (none)</p>
+      </sy-avatar-group>
+      <p id="groupBasicResult">groupBasic result: (none)</p>
 
+  <h3>Avatar Group - grid</h3>
+  <sy-avatar-group id="groupGrid" clickable maxCount="5" size="medium" variant="grid">
+    <sy-avatar image="/assets/test.png" tooltipContent="Alice"></sy-avatar>
+    <sy-avatar letter="BJ" tooltipContent="Bob Jones"></sy-avatar>
+    <sy-avatar text="Clara" tooltipContent="Clara Smith"></sy-avatar>
+    <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Icon User"></sy-avatar>
+    <sy-avatar letter="DK" tooltipContent="Dana King"></sy-avatar>
+  </sy-avatar-group>
+  
       <h3>Avatar Group - overflow (+N)</h3>
       <sy-avatar-group id="groupOverflow" clickable maxCount="3" size="medium" variant="stack">
         <sy-avatar image="/assets/test.png" tooltipContent="Alice"></sy-avatar>
         <sy-avatar letter="BJ" tooltipContent="Bob Jones"></sy-avatar>
         <sy-avatar text="Clara" tooltipContent="Clara Smith"></sy-avatar>
-        <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Icon User"></sy-avatar>
+        <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Home"></sy-avatar>
         <sy-avatar letter="DK" tooltipContent="Dana King"></sy-avatar>
         <sy-avatar text="Evan" tooltipContent="Evan Lee"></sy-avatar>
   </sy-avatar-group>
@@ -6390,6 +7309,11 @@
       <sy-icon size="xxlarge">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M320 64C306.7 64 296 74.7 296 88L296 97.7C214.6 109.3 152 179.4 152 264L152 278.5C152 316.2 142 353.2 123 385.8L101.1 423.2C97.8 429 96 435.5 96 442.2C96 463.1 112.9 480 133.8 480L506.2 480C527.1 480 544 463.1 544 442.2C544 435.5 542.2 428.9 538.9 423.2L517 385.7C498 353.1 488 316.1 488 278.4L488 263.9C488 179.3 425.4 109.2 344 97.6L344 87.9C344 74.6 333.3 63.9 320 63.9zM488.4 432L151.5 432L164.4 409.9C187.7 370 200 324.6 200 278.5L200 264C200 197.7 253.7 144 320 144C386.3 144 440 197.7 440 264L440 278.5C440 324.7 452.3 370 475.5 409.9L488.4 432zM252.1 528C262 556 288.7 576 320 576C351.3 576 378 556 387.9 528L252.1 528z"/></svg>
       </sy-icon>
+    </sy-badge>
+
+    <h3>With button</h3>
+    <sy-badge value="1">
+      <sy-button variant="default">Button</sy-button>
     </sy-badge>
 
     <!-- <sy-divider></sy-divider> -->
@@ -6666,16 +7590,12 @@
     <sy-icon id="selectableIcon" size="large" selectable>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M568.4 196.5C563.9 207 550 206.3 543.5 196.9C515.7 156.9 477.4 124.7 432.5 104.3C422.1 99.6 418.8 86 428.4 79.7C443.4 69.8 461.4 64 480.7 64C533.3 64 575.9 106.6 575.9 159.2C575.9 172.4 573.2 185 568.3 196.5zM96.5 196.9C90 206.3 76 207 71.6 196.5C66.7 185 64 172.4 64 159.2C64 106.6 106.6 64 159.2 64C178.5 64 196.5 69.8 211.5 79.7C221.1 86 217.8 99.6 207.4 104.3C162.6 124.7 124.3 156.9 96.4 196.9zM454.2 531.4C416.8 559.4 370.3 576 320 576C269.7 576 223.2 559.4 185.9 531.4L150.6 566.6C138.1 579.1 117.8 579.1 105.3 566.6C92.8 554.1 92.8 533.8 105.3 521.3L140.5 486.1C112.6 448.8 96 402.3 96 352C96 228.3 196.3 128 320 128C443.7 128 544 228.3 544 352C544 402.3 527.4 448.8 499.4 486.2L534.6 521.4C547.1 533.9 547.1 554.2 534.6 566.7C522.1 579.2 501.8 579.2 489.3 566.7L454.1 531.5zM344 248C344 234.7 333.3 224 320 224C306.7 224 296 234.7 296 248L296 352C296 358.4 298.5 364.5 303 369L359 425C368.4 434.4 383.6 434.4 392.9 425C402.2 415.6 402.3 400.4 392.9 391.1L343.9 342.1L343.9 248z"/></svg>
     </sy-icon>
-    <sy-button id="iconChange">click</sy-button>
+
     <p id="selectableIconResult"></p>
     <script>
       const selectableIcon = document.getElementById('selectableIcon');
       const result = document.getElementById('selectableIconResult');
-      const btnIcon = document.getElementById('iconChange');
 
-      btnIcon.addEventListener('click', (e) => {
-        selectableIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M320 64C306.7 64 296 74.7 296 88L296 97.7C214.6 109.3 152 179.4 152 264L152 278.5C152 316.2 142 353.2 123 385.8L101.1 423.2C97.8 429 96 435.5 96 442.2C96 463.1 112.9 480 133.8 480L506.2 480C527.1 480 544 463.1 544 442.2C544 435.5 542.2 428.9 538.9 423.2L517 385.7C498 353.1 488 316.1 488 278.4L488 263.9C488 179.3 425.4 109.2 344 97.6L344 87.9C344 74.6 333.3 63.9 320 63.9zM488.4 432L151.5 432L164.4 409.9C187.7 370 200 324.6 200 278.5L200 264C200 197.7 253.7 144 320 144C386.3 144 440 197.7 440 264L440 278.5C440 324.7 452.3 370 475.5 409.9L488.4 432zM252.1 528C262 556 288.7 576 320 576C351.3 576 378 556 387.9 528L252.1 528z"/></svg>';
-      });
       selectableIcon.addEventListener('selected', (event) => {
         result.textContent = `Icon Selected`;
       });

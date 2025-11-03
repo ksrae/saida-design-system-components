@@ -8,5 +8,5 @@
  * to consume components of this package as outlined in the `README.md`.
  */
 
+// Export utility functions and constants
 // export { format } from './utils/utils';
-export type * from './components.d.ts';

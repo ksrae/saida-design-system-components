@@ -1,0 +1,134 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Log/3.0" />
+
+# v3.0.5
+### Input number 
+- fixed a bug where updating the value of the input number component did not update the UI and the user's previous input remained.
+
+
+### Layout 
+- fixed a bug where the width of the sider was not being set in the layout component.
+
+
+### Pagination
+- Change color of selected text when disabled
+
+### Radio
+- Added radio vertical type
+
+```
+<sy-radio-group position="vertical">
+...
+</sy-radio-group>
+```
+
+
+### Steps 
+- Fixed the bug of wrong alignment in the vertical type in case the space is inserted in the title of the step item
+
+
+### Nav item 
+- Fixed nav item disabled not working when nav is not disabled
+
+
+### Theme
+- Token overrides due to the use of the wrong theme without following the guide
+- Synergy components can only be used when declaring sy-theme in body tag.
+(In the token file, delete :root & :host and only apply sy-theme)
+
+
+# v3.0.4
+### Input
+- width size doesn't change bug fix.
+
+# v3.0.3
+### Tree
+- Fix alignment among tree items which has children and others which are leaves.
+
+
+# v3.0.2
+### Icon - new Icons added
+- duotone_Run monitor
+- duotone_Visualization
+- duotone_FC shell
+- duotone_Code editor
+
+# v3.0.1
+### Textarea
+- Placeholder - color of the placeholder text has been changed from black color to gray color.
+
+# v3.0
+## Breaking Changes
+
+### Theme 
+[default light/dark theme - refer to the storybook](/docs/theme-guide--docs)
+
+### Style Guide
+[HighCharts Style guide - refer to the storybook](/docs/styleguide-highchart-overview--high-chart-main)
+
+## New components
+- [Card](/docs/card-overview--docs)
+- [Flex](/docs/flex-overview--docs)
+- [Layout](/docs/layout-overview--docs)
+- [Button Group](/docs/buttongroup-overview--docs)
+- [Skeleton](/docs/skeleton-overview--docs)
+- [Typography](/docs/foundation-typography--docs)
+
+
+## Compatibility
+
+### Tab
+
+There is a significant change to the tab component of the Version 3.0.0.<br/>
+This change was for improving functionality for easier use of tabs and to enhance extensibility for various tab applications.<br/>
+Please note that versions after 3.0.0 are not compatible with the structure of previous 2.x.x versions.<br/>
+- Each sy-tab no longer applies slot=title. Instead, you should set slot=tabs on the parent container that holds the sy-tabs.
+- To use sy-tab-content, it is requried to define a parent container and set "slot=contents"
+
+**ASIS**
+```
+<sy-tab-group>
+    <sy-tab slot="title" key="t1" ?closable=${args.closable}>tab1</sy-tab>
+    <sy-tab slot="title" key="t2" ?closable=${args.closable}>tab2</sy-tab>
+
+    <sy-tab-content name="t1">This is tab1</sy-tab-content>
+    <sy-tab-content name="t2">This is tab2</sy-tab-content>
+</sy-tab-group>
+```
+
+**TOBE**
+```
+<sy-tab-group>
+  <div slot="tabs">
+    <sy-tab key="t1" ?closable=${args.closable}>tab1</sy-tab>
+    <sy-tab key="t2" ?closable=${args.closable}>tab2</sy-tab>
+  </div>
+  <div slot="contents">
+    <sy-tab-content name="t1">This is tab1</sy-tab-content>
+    <sy-tab-content name="t2">This is tab2</sy-tab-content>
+  </div>
+</sy-tab-group>
+```
+
+**Note**: type="navigation" in tab group is deprecated. (It will be delivered as a global header in MVP4)
+
+
+### Theme
+
+
+This version introduced the default light/dark theme, and you must add some style classes according to the below guidelines.
+
+[Theme Guide - Docs ⋅ Storybook](/docs/theme-guide--docs)
+
+**ASIS**
+```
+<body>
+</body>
+```
+
+**TOBE**
+```
+<body class="sy-theme sy-theme-light sy-appname">
+</body>
+```

@@ -1,44 +1,26 @@
-// sy-button-group 컴포넌트 자체의 스타일
+
+:root,
 :host {
     display: inline-flex;
+   .button-group {
+         display: inline-flex;
+         justify-content: flex-start;
+    }
+
+    .button-group--vertical {
+        flex-direction: column;
+    }
 }
 
-// sy-button-group 내부의 .button-group div 스타일
-.button-group {
-    display: inline-flex;
-    justify-content: flex-start;
+/* focus visible */
+:host(sy-button-group) .button-group > sy-button:focus-within{
+    z-index:2;
 }
 
-.button-group--vertical {
-    flex-direction: column;
-}
 
-/*
- * ===================================================================
- * 핵심 수정: ::slotted()을 일반 자식 선택자로 변경
- * scoped: true 설정 덕분에 Stencil이 이 규칙들을 자동으로 캡슐화해줍니다.
- * ===================================================================
- */
-
-/* 모든 자식 sy-button에 대한 기본 z-index 처리 */
-.button-group > sy-button {
-    position: relative;
-    z-index: 1;
+/* Horizontal */
+:host(sy-button-group) .button-group > sy-button{
+    margin: 0;
+    margin-left:-1px;
 }
-
-/* 포커스 또는 호버 시 z-index를 높여 다른 버튼 위로 올라오게 함 */
-.button-group > sy-button:hover,
-.button-group > sy-button:focus-within {
-    z-index: 2;
-}
-
-/* --- Horizontal Group --- */
-// :host의 속성을 직접 참조하여 수평/수직 상태를 구분합니다.
-:host(:not([vertical])) .button-group > sy-button:not(:first-child) {
-    margin-left: -1px;
-}
-
-/* --- Vertical Group --- */
-:host([vertical]) .button-group > sy-button:not(:first-child) {
-    margin-top: -1px;
-}
+/* Spacing is handled by each `sy-button` when grouped. */

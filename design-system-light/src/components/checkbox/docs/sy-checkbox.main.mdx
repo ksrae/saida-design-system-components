@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './sy-checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+# Checkbox
+
+## Definition
+A checkbox is a component that allows users to toggle between two states: <b>checked</b> and <b>unchecked</b>.<br/>
+This allows users to select one or more options from a selection list. This is commonly used in forms, settings, and other interfaces where users need to make selections.<br/>
+
+## Example
+
+<Canvas of={CheckboxStories.Default} />
+<Controls of={CheckboxStories.Default} />

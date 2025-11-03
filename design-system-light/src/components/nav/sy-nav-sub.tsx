@@ -26,7 +26,7 @@ const NAVITEM = 'SY-NAV-ITEM';
 export class SyNavSub {
   @Element() host!: HTMLSyNavSubElement;
 
-  @Prop() title: string = '';
+  @Prop({ attribute: 'title' }) navSubTitle: string = '';
   @Prop() value: string = '';
   @Prop({ mutable: true }) open: boolean = false;
   @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
@@ -252,10 +252,10 @@ export class SyNavSub {
         <div
           class={titleClasses}
           tabIndex={0}
-          title={this.sanitizeHtml(this.title)}
+          title={this.sanitizeHtml(this.navSubTitle)}
           onClick={this.toggleOnClick}
         >
-          <span class="title" innerHTML={this.title}></span>
+          <span class="title" innerHTML={this.navSubTitle}></span>
           
           {toggleIconSvg && (
             <span class="toggle-icon">

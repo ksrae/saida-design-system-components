@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as BreadcrumbStories from './sy-breadcrumb.stories';
+import * as BreadcrumbItemStories from './sy-breadcrumb-item.stories';
+
+<Meta of={BreadcrumbStories} />
+
+# Breadcrumb
+
+## Definition
+A breadcrumb is a navigational element to indicate the current page's location within a hierarchy of content.<br/>
+It consists of a series of links or text labels separated by a visual delimiter, such as chevron or slashes.<br/>
+Breadcrumbs are placed near the top of the page or interface and provide users with a trail of links representing the path they took to arrive at the current page.
+
+## Example
+<Canvas of={BreadcrumbStories.Default} />
+<Controls of={BreadcrumbStories.Default} />
+
+# Breadcrumb Item 
+<Canvas of={BreadcrumbItemStories.Default} />
+<Controls of={BreadcrumbItemStories.Default} />

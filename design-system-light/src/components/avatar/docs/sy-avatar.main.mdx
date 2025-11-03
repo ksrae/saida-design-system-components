@@ -1,0 +1,25 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './sy-avatar.stories';
+import * as AvatarGroupStories from './sy-avatar-group.stories';
+
+<Meta of={AvatarStories} />
+
+# Avatar
+
+## Definition
+Avatar components are intended to represent a person or an object.<br/> 
+By default, the two characters from the user's name will be shown.<br/>
+You can personalize avatars by adding custom icons, initials, and images.
+
+## Example
+<Canvas of={AvatarStories.Default} />
+<Controls of={AvatarStories.Default} />
+
+
+# Avatar Group 
+## Definition
+Avatar Group renders its children as a stack by default. Use the maxCount prop to limit the number of avatars.
+
+## Example
+<Canvas of={AvatarGroupStories.Default} />
+<Controls of={AvatarGroupStories.Default} />

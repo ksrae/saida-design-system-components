@@ -8,7 +8,7 @@ export const config: Config = {
     sass({
     })
   ],
-  sourceMap: false, 
+  sourceMap: false,
   globalStyle: 'src/assets/style/global.scss',
   outputTargets: [
     {
@@ -26,7 +26,7 @@ export const config: Config = {
       copy: [
         {
           src: '../custom-elements',
-          dest: 'components',
+          dest: 'dist/components',
           warn: true,
         },
       ],

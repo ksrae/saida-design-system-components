@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@stencil/storybook-plugin';
+import type { Meta, StoryObj } from '@storybook/web-components';
 import { h } from '@stencil/core';
 import { SyButtonProps, ButtonSlot } from '../../sy-button.main';
-import buttonMeta from '../../sy-button.main.stories';
+import buttonMeta from '../../sy-button.stories';
 
 const meta: Meta<SyButtonProps> = {
   title: 'Button/Attributes/Slot',

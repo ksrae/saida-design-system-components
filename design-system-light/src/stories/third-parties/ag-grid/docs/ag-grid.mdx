@@ -1,0 +1,30 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+
+import * as AgGridStories from "./ag-grid.stories";
+
+<Meta of={AgGridStories} />
+
+# Ag Grid Style Wrapper
+The style wrapper for ag-grid.<br/>
+We created a sy-gird theme using synergy styles and tokens on ag-grid.<br/>
+Our theme name of ag-grid is "ag-theme-sygrid".<br/>
+If you apply light or dark theme, You can add "ag-grid-light" or "ag-grid-dark" with "ag-theme-sygrid".<br/><br/>
+Basically, please do not modify the color applied to "ag-theme-sygrid".<br/>
+If you would like to apply a special color to the Ag-Grid column, please refer to the page below.<br/>
+<a href="https://www.ag-grid.com/react-data-grid/theming-css/" target="_blank">Customising the grid with CSS</a>
+
+
+
+<b>Light Theme</b>
+```
+<div id="myGrid" class="ag-theme-sygrid"></div>
+```
+
+<b>Dark Theme</b>
+```
+<div id="myGrid" class="ag-theme-sygrid-dark"></div>
+```
+
+<Canvas of={AgGridStories.Default}/>
+
+

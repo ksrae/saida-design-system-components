@@ -15,7 +15,7 @@ export class SyMenuSub {
 
   @Prop() disabled: boolean = false;
   @Prop({ mutable: true }) open: boolean = false;
-  @Prop() title: string = '';
+  @Prop({ attribute: 'title' }) menuSubTitle: string = '';
 
   // queries
   // private get submenuTitle(): HTMLElement | null {
@@ -131,10 +131,10 @@ export class SyMenuSub {
           tabindex={0}
           class={{ 'submenu-title': true, 'active': this.innerOpen } as any}
           onClick={this.toggleOnClick}
-          title={this.sanitizeHtml(this.title)}
+          title={this.sanitizeHtml(this.menuSubTitle)}
         >
           <div class="menu-title">
-            <span class="title" innerHTML={this.title}></span>
+            <span class="title" innerHTML={this.menuSubTitle}></span>
           </div>
           <sy-icon size="medium" class="submenu-open">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M433.5 303C442.9 312.4 442.9 327.6 433.5 336.9L273.5 497C264.1 506.4 248.9 506.4 239.6 497C230.3 487.6 230.2 472.4 239.6 463.1L382.6 320.1L239.6 177.1C230.2 167.7 230.2 152.5 239.6 143.2C249 133.9 264.2 133.8 273.5 143.2L433.5 303.2z"/></svg>

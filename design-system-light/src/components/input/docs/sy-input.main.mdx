@@ -1,0 +1,24 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as InputStories from "./sy-input.stories";
+
+<Meta of={InputStories} />
+
+# Input
+## Definition
+Input component provides a text input field with various features including validation, labels, prefix/suffix slots, and multiple variants. <br />
+It supports form association, custom validation, and accessibility features. <br />
+The component can be configured with different sizes, statuses, and visual styles.
+
+Users can change width size of the `sy-input` size.<br/>
+The default size is 100%.<br/><br/>
+```scss
+sy-input{
+    width:300px;
+}
+```
+
+## Example
+
+<Canvas of={InputStories.Default} />
+
+<Controls of={InputStories.Default} />

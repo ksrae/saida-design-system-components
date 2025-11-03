@@ -1,0 +1,170 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+
+import * as ChartColorGuideStories from "./chart-color-guide.stories";
+import Chartoverviewlight from "./chart-overview-light.svg";
+import Chartoverviewdark from "./chart-overview-dark.svg";
+
+<Meta of={ChartColorGuideStories} />
+
+# High Chart Color Guide
+The color token below will be automatically filled according to the high chart rule.<br/>
+(Status color should be applied directly if necessary.)<br/>
+You can add below tokens non-highchart.
+
+<b>Color Token (_highchart-token.scss)</b>
+
+```
+@use './foundation/color-primitives';
+
+/* charts */
+:root,
+:host,
+.highcharts-light {
+    /* Light */
+    /* color */
+    --charts-annotation-0: #3d99f566;
+    --charts-annotation-1: #72b5f866;
+    --charts-annotation-2: #9eccfa66;
+    --charts-annotation-3: #92e3e366;
+    --charts-annotation-4: #96e0b466;
+    --charts-annotation-5: #cbe1a666;
+
+    /* Background */
+    --charts-background-color: var(--white);
+
+    /* Highlight */
+    --charts-highlight-10: var(--color-blue-50);
+    --charts-highlight-20: var(--color-blue-200);
+    --charts-highlight-60: var(--color-blue-400);
+    --charts-highlight-80: var(--color-blue-600);
+    --charts-highlight-100: var(--color-blue-800);    
+
+    /* Neutral */
+    --charts-neutral-3: var(--color-lightgray-50);
+    --charts-neutral-5: var(--color-lightgray-100);
+    --charts-neutral-10: var(--color-lightgray-200);
+    --charts-neutral-20: var(--color-lightgray-400);
+    --charts-neutral-40: var(--color-lightgray-600);    
+    --charts-neutral-60: var(--color-lightgray-700);    
+    --charts-neutral-80: var(--color-lightgray-900);    
+    --charts-neutral-100: var(--black);
+
+    /* series */
+    --charts-series-0: var(--color-blue-400);
+    --charts-series-1: var(--color-purple-400);
+    --charts-series-2: var(--color-green-300);
+    --charts-series-3: var(--color-orange-500);
+    --charts-series-4: var(--color-darkgray-400);
+    --charts-series-5: var(--color-magenta-400);
+    --charts-series-6: var(--color-teal-300);
+    --charts-series-7: var(--color-red-400);
+    --charts-series-8: var(--color-orange-300);
+    --charts-series-9: var(--color-teal-200);
+
+    /* Status */
+    --charts-status-information: var(--color-blue-500);
+    --charts-status-warning: var(--color-yellow-500);
+    --charts-status-danger: var(--color-red-500);
+    --charts-status-discovery: var(--color-purple-400);
+    --charts-status-neutral: var(--color-lightgray-400);
+    --charts-status-success: var(--color-green-500);    
+  }
+
+:root,
+:host,
+.highcharts-dark{
+    /* Dark */
+    /* color */
+
+    /* Background Dark*/
+    --charts-background-color: var(--color-lightgray-900);
+
+    /* Neutral Dark*/
+    --charts-neutral-3: var(--color-lightgray-800);
+    --charts-neutral-5: var(--color-lightgray-700);    
+    --charts-neutral-10: var(--color-lightgray-600);
+    --charts-neutral-20: var(--color-lightgray-500);    
+    --charts-neutral-40: var(--color-lightgray-400);    
+    --charts-neutral-60: var(--color-lightgray-300);    
+    --charts-neutral-80: var(--color-lightgray-200);    
+    --charts-neutral-100: var(--white);
+
+    /* Highlight Dark*/
+    --charts-highlight-10: var(--color-blue-800);  
+    --charts-highlight-20: var(--color-blue-600);
+    --charts-highlight-60: var(--color-blue-400);
+    --charts-highlight-80: var(--color-blue-200);
+    --charts-highlight-100: var(--color-blue-50);
+}
+```
+
+<b>Font Size (highchart.scss)</b><br/>
+Font aleady added in highchart.
+
+```
+@use './global/font-heading';
+@use './global/font';
+
+/* (6) Title */
+.highcharts-title text{
+@include font-heading.text-style-heading-1();
+}
+
+/* (7) Sub Title */
+.highcharts-subtitle text{
+@include font.text-style-base-regular();
+}
+
+/* (2) Axix Labels */
+.highcharts-axis-labels text{
+@include font.text-style-base-regular();
+}
+
+/* (10) Legends */
+.highcharts-a11y-proxy-element{
+@include font.text-style-base-regular();
+}
+
+/* (11) Tooltip Text */
+.highcharts-tooltip text{
+@include font.text-style-base-regular();
+}
+
+```
+
+## Overview 
+Data visualization is the representation of information in pictorial or graphical format, such as charts, graphs, maps, and diagrams. <br/>
+These visuals aid in the communication of complex data so that insights can be more easily drawn.
+Because color can affect our perception of information, the appropriate use of color is critical in making a data visualization successful.<br/>
+<br/>
+
+<img src={Chartoverviewlight} alt="Chart overview light" width="100%"/><br/><br/><br/>
+
+
+<img src={Chartoverviewdark} alt="Chart overview dark" width="100%"/>
+
+
+## Series 
+
+You can add more color tokens in _highchart-token.scss.<br/>
+<Canvas of={ChartColorGuideStories.Series} sourceState="none"/>
+
+## Status
+
+<b>--charts-status-information :</b> For data visualization communicating low priority or in-progress statuses. <br/>
+<b>--charts-status-warning :</b> For data visualization communicating caution, such as 'at risk' or 'medium priority'.<br/> 
+<b>--charts-status-danger :</b> For data visualization communicating negative or critical information, such as 'off track' or 'high priority'.<br/> 
+<b>--charts-status-discovery :</b> For data visualization communicating 'new' statuses.<br/> 
+<b>--charts-status-neutral :</b> For data visualization communicating 'to-do' statuses.<br/> 
+<b>--charts-status-success :</b> For data visualization communicating positive information, such as 'on track' or done.
+
+<Canvas of={ChartColorGuideStories.Status} sourceState="none"/>
+
+## Neutral
+<Canvas of={ChartColorGuideStories.Neutral} sourceState="none"/>
+
+## HighLight 
+<Canvas of={ChartColorGuideStories.Highlight} sourceState="none"/>
+
+## Annotation
+<Canvas of={ChartColorGuideStories.Annotation} sourceState="none"/>

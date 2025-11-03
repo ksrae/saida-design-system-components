@@ -16,7 +16,7 @@ export class SyCheckbox {
   private inputEl?: HTMLInputElement;
   private labelEl?: HTMLLabelElement;
 
-  @Prop() titleText = '';
+  @Prop({ attribute: 'title' }) checkboxTitle = '';
   @Prop() name = '';
   @Prop({ mutable: true, reflect: true }) checked = false;
   @Prop({ reflect: true, mutable: true }) disabled = false;
@@ -262,7 +262,7 @@ export class SyCheckbox {
     return (
       <div class="checkbox-wrapper">
         <label ref={el => this.labelEl = el} class={Object.keys(wrapperClasses).filter(k => wrapperClasses[k]).join(' ')} tabindex="0" onClick={this.handleClick}>
-          <input ref={el => this.inputEl = el} class="checkbox--input" type="checkbox" title={this.titleText} name={this.name} checked={this.checked} disabled={this.disabled} required={this.required} aria-checked={this.checked ? 'true' : 'false'} aria-describedby="help-text" onFocus={this.handleFocus} onBlur={this.handleBlur} onChange={this.onChange} tabindex="-1" />
+          <input ref={el => this.inputEl = el} class="checkbox--input" type="checkbox" title={this.checkboxTitle} name={this.name} checked={this.checked} disabled={this.disabled} required={this.required} aria-checked={this.checked ? 'true' : 'false'} aria-describedby="help-text" onFocus={this.handleFocus} onBlur={this.handleBlur} onChange={this.onChange} tabindex="-1" />
           <span class={`checkbox-visual-label ${this.isTree ? 'checkbox-label' : ''}`}>
             <sy-icon size="xsmall" class="checked">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M534 132.5C544.8 140.2 547.2 155.2 539.5 166L275.5 534C271.4 539.7 265 543.4 258 543.9C251 544.4 244 542 239 537L103 401C93.6 391.6 93.6 376.4 103 367.1C112.4 357.8 127.6 357.7 136.9 367.1L253 483L500.5 138C508.2 127.2 523.2 124.8 534 132.5z"/></svg>

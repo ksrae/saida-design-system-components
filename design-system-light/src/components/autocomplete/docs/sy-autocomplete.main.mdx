@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as AutocompleteStories from './sy-autocomplete.stories';
+
+<Meta of={AutocompleteStories} />
+
+# Autocomplete
+
+## Definition
+The Autocomplete element allows users to search for and display items, including words from the input, based on the source data.component that provides search suggestions as users type, with support for filtering, debouncing, and custom data sources.
+
+## Example
+<Canvas of={AutocompleteStories.Default} />
+<Controls of={AutocompleteStories.Default} />

@@ -28,7 +28,7 @@ export class SyModeless {
 
   // --- Public Properties ---
   @Prop({ reflect: true, mutable: true }) open = false;
-  @Prop({ reflect: false }) draggable = false;
+  @Prop({ reflect: false, attribute: 'draggable' }) isdraggable = false;
   @Prop() resizable = false;
   @Prop() closable = false;
   @Prop() minimizable = false;
@@ -193,7 +193,7 @@ export class SyModeless {
   }
 
   private onDragStart = (event: MouseEvent): void => {
-    if (!this.draggable || this.status !== 'restore' || event.button !== 0) {
+    if (!this.isdraggable || this.status !== 'restore' || event.button !== 0) {
       return;
     }
 
@@ -571,7 +571,7 @@ export class SyModeless {
         <div
           class="header"
           onMouseDown={this.onDragStart}
-          hidden={!this.draggable}
+          hidden={!this.isdraggable}
         >
           <div class="title">
             <slot name="title" />

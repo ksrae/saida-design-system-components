@@ -1,0 +1,77 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks"; 
+import theme from "../assets/theme-guide.png";
+
+import * as ThemeUsageStories from "./theme-usage.stories";
+
+<Meta of={ThemeUsageStories} />
+<div className="story-control">
+  <Canvas of={ThemeUsageStories.Param} />
+</div>
+
+# Theme Guide
+
+## Overview
+Please use this guide to change the theme of a dc component.<br/><br/>
+We use flat design to focus more on the state and flow of Data.<br/>
+In the future, it will be easier to understand if the expression of data and status in each widget is included.<br/>
+And we make it as simple as possible to construct disturbances other than the information and state of the data.<br/><br/>
+Flat Design refers to a two-dimensional design method that excludes complex graphic effects and configures them to enable intuitive recognition through simple colors and composition. <br/>
+It pursues minimalism, a design technique that expresses the essence of an object by using only the least elements.<br/>
+
+<b>Justice and Purpose</b><br/>
+Flat design is an interface design style that emphasizes the minimal use of simple elements, typography, and flat colors.<br/>
+We use flat design because it makes interface design simpler and more efficient. It is easier to deliver information quickly while making it look visually attractive and accessible.<br/><br/>
+It also makes it easier to design interfaces that are responsive to changes in the size of browsers on different devices.<br/>
+Using minimal design elements, websites can be loaded faster, resized more easily, and appear more clearly on high-resolution screens.<br/><br/>
+
+<img src={theme} alt="Theme guide" />
+
+<div className="title">
+    ## How to use theme class.
+</div>
+
+Please apply the sy-them class to the body tag only once. <br/>
+You should never use it in duplicate elsewhere. <br/>
+(Please do not create and use any additional class names that begin with the number 3 "sy-theme-" in the image above.)
+
+### Default Theme (Light)
+Add sy-theme-light class on your component 
+```
+<body class="sy-theme sy-theme-light"><body>
+```
+
+### Dark theme 
+Add sy-theme-dark class on your component 
+```
+<body class="sy-theme sy-theme-dark"><body>
+```
+
+<style>
+  { `
+    .story-control {
+      display: none !important;
+    }
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #484848;
+    }
+
+    .title h2{
+      border-bottom: none !important;
+    }
+
+    .title img {
+      height: 30px;
+      width: auto;
+      margin-top: 32px;
+    }
+
+    #note, #note-1, #note-2 {
+      color: var(--background-error-contrast-bold);
+    }
+
+  `
+  }
+</style>

@@ -61,17 +61,19 @@ sy-checkbox {
     display: inline-flex;
     align-self: center;
     flex-direction: column;
+    vertical-align: middle; /* ensure inline checkboxes align vertically when next to text or other controls */
 }
 
 sy-checkbox .checkbox-wrapper {
     display: inline-flex;
-    min-height: var(--component-small);
+    align-items: center; /* center contents vertically inside the wrapper */
 }
 
 sy-checkbox .checkbox {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    min-height: var(--component-small);
     cursor: var(--cursor-button);
     gap: var(--spacing-3xsmall);
 
@@ -131,7 +133,7 @@ sy-checkbox .checkbox {
         width: 16px;
         height: 16px;
         border: var(--border-small) var(--checkbox-unchecked-border-enabled);
-        position: relative;
+        position: relative; /* keep relative so indeterminate icon can be absolutely centered within */
         border-radius: var(--border-radius-medium);
         cursor: var(--cursor-button);
 
@@ -243,6 +245,21 @@ sy-checkbox .checkbox.checkbox--indeterminate {
     .checkbox-visual-label {
         background-color: var(--background-default);
         display: flex;
+
+    }
+
+    /* ensure indeterminate icon is visually centered even if the SVG viewBox is off */
+    .checkbox-visual-label sy-icon.indeterminate {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
     }
 
     &.checkbox--disabled {

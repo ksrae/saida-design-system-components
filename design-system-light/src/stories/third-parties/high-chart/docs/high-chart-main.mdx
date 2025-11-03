@@ -1,0 +1,49 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+import chart from "./chart-guide.png";
+import chartusage from "./chart-token-usage.png";
+import * as HighChartStories from "./high-chart.stories";
+
+<Meta of={HighChartStories} />
+
+# High Chart Style Wrapper
+The style wrapper for high-chart.<br/>
+If you would like to apply the theme that fits the DC component to the high chart, please add class as below.
+<br/>
+
+<img src={chart} alt="chart guide" />
+<br/><br/>
+
+<b>Light Theme</b>
+
+```
+<div id="myHighChart" class="highcharts-light"></div>
+```
+
+<b>Dark Theme</b>
+```
+<div id="myHighChart" class="highchart-dark"></div>
+```
+
+<img src={chartusage} alt="chart token usage" />
+
+## Please put the two files below in the chart your style folder.
+highcharts.scss uses highcharts-token.
+
+```<host>/public/style/_highchart-token.scss```
+
+
+You can customize your high chart with highchart-token.<br/>
+
+```<host>/public/style/highcharts.scss```
+
+
+## Palette & Guide of Highcharts.
+
+You can customize your color code in "Highcharts Palette Helper".<br/>
+[Highcharts Palette Helper](https://www.highcharts.com/samples/highcharts/css/palette-helper)<br/><br/>
+
+CSS rules of High Chart".<br/>
+[Highcharts Palette Helper](https://www.highcharts.com/docs/chart-design-and-style/style-by-css)<br/><br/>
+
+
+

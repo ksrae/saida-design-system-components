@@ -1,0 +1,32 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+
+import * as ColorTokenStories from "./color-token.stories";
+
+<Meta of={ColorTokenStories} />
+
+# Colors
+## Definition
+The color token using our design system.
+
+## Usage
+The color token can be used as a CSS variables:
+<Source code={`
+  .class-name {
+    background-color: var(--background-brand-contrast-bold);
+}
+`} />
+
+## Background
+<Canvas of={ColorTokenStories.Background} sourceState="none"/>
+
+
+
+## Border
+<Canvas of={ColorTokenStories.Border} sourceState="none"/>
+
+## Text
+<Canvas of={ColorTokenStories.Text} sourceState="none"/>
+
+
+## Icon
+<Canvas of={ColorTokenStories.Icon} sourceState="none"/>

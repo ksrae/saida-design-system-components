@@ -1,0 +1,10 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as BannerStories from './sy-banner.stories';
+
+<Meta of={BannerStories} />
+
+# Banner Message
+Display global messages on top of the page.<br/>
+Use a banner for global, persistent, or urgent messages. Avoid for localized, non-critical information.
+<Canvas of={BannerStories.Default} />
+<Controls of={BannerStories.Default} />

@@ -1,0 +1,41 @@
+import { Meta, Stories, Canvas } from '@storybook/addon-docs/blocks';
+import * as TypoStories from './typography-token.stories';
+ 
+<Meta of={TypoStories} />
+ 
+# Typography 
+
+## Definition 
+Typography serves as the foundation of our design system as it establishes visual hierarchy, increases readability, strengthens brand identity, and ensures consistency across different platforms and devices.<br/><br/>
+The default alignment of DC component fonts is Baseline.
+
+<a href="https://www.figma.com/design/SGdtLbL9A4uZbVVJr0Uesh/Foundation?node-id=144213-2752&m=dev" target="_blank">Typography Guide in Figma</a>
+
+## Typefaces - Roboto
+Roboto was chosen as the product's primary font for its clean, modern look, excellent readability on a variety of screen sizes, seamless integration with digital interfaces, and improved overall user experience.<br/>
+This Roboto font family is also a typeface selected in our brand identity guide.
+<Canvas of={TypoStories.typoFontfaces} />
+
+
+## Heading Styles
+<Canvas of={TypoStories.typoHeading} />
+
+
+## Text Styles & Size
+Text styles follow the website's hierarchy, using the specified font family and its styles. Base styles are applied to components such as buttons, paragraphs, inputs. Headings serve as titles within components.
+
+### Regular
+<Canvas of={TypoStories.textStylesRegular} />
+
+### Large
+<Canvas of={TypoStories.textStylesLarge} />
+
+### Small
+<Canvas of={TypoStories.textStylesSmall} />
+
+### xsmall
+<Canvas of={TypoStories.textStylesXSmall} />
+
+## Text Color
+Depending on the hierarchy of the text and where it will be used, use the appropriate color using the table below.
+<Canvas of={TypoStories.textColor} />

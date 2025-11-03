@@ -207,17 +207,16 @@
 
     /* Collapse Body */
     .collapse--content {
-        display: block;
+        display: flex;
         overflow:auto;
         min-height: 22px;
         background-color: var(--collapse-default-body-background-enabled);
-        slot{
-            padding: var(--spacing-xsmall);
-            display: block;
-            height: 100%;
-            overflow:auto;
-            min-height: 38px;
-        }
+        padding: var(--spacing-xsmall);
+        display: block;
+        height: 100%;
+        overflow:auto;
+        min-height: 38px;        
+        box-sizing: border-box;
     }
 
 

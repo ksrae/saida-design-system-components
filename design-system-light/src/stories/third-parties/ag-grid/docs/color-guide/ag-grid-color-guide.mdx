@@ -1,0 +1,22 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+import * as AgGridColorGuideStories from "./ag-grid-color-guide.stories";
+import chartLight from "./ag-grid-light.png";
+import chartDark from "./ag-grid-dark.png";
+
+<Meta of={AgGridColorGuideStories} />
+
+# Ag Grid Color Guide
+The style Guide for ag-grid.<br/>
+<a href="https://www.figma.com/design/ZK6HYzNZNoB4xq1fj8cQHu/AG-Grid?node-id=193-46068&m=dev" target="_blank">Ag Grid Design Guide</a>
+
+<img src={chartLight} alt="chart guide light" />
+<br/><br/>
+
+<img src={chartDark} alt="chart guide dark" />
+<br/><br/>
+
+
+## AG-Grid Light
+<Canvas of={AgGridColorGuideStories.Grid}/>
+
+

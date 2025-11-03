@@ -13,6 +13,7 @@
     --button-spacing-large: 10px;
     --button-spacing-medium: var(--spacing-2xsmall);
     --button-spacing-small: var(--spacing-3xsmall);
+    // --button-spacing-small: var(--spacing-2xsmall);
 
     /* Button justified */
     --button-justified: 100%;
@@ -40,6 +41,83 @@ button {
     padding: 0px var(--button-medium-spacing);
     line-height: normal !important;
     width: 100%;
+    white-space: nowrap;
+
+    /* --- Button group spacing ---
+       When this button is part of a button-group, the parent sets
+       state on the button (button--first / middle / last / vertical).
+       Let the button itself apply the small negative margins so
+       borders overlap and no gap is visible. */
+    &.button--first,
+    &.button--middle,
+    &.button--last {
+        margin: 0;
+        margin-left: -1px; /* horizontal overlap for grouped buttons */
+    }
+
+    &.button--first {
+        margin-left: 0; /* first button doesn't overlap to the left */
+    }
+
+    /* Vertical stacked group spacing */
+    &.button--vertical {
+        &.button--first,
+        &.button--middle,
+        &.button--last {
+            margin: 0;
+            margin-top: -1px; /* vertical overlap for stacked buttons */
+        }
+
+        &.button--first {
+            margin-top: 0; /* top-most button shouldn't overlap upwards */
+        }
+    }
+
+    &.button--first {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    &.button--middle {
+        border-radius: 0px;
+    }
+
+    &.button--last {
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    &.button--vertical {
+        &.button--first {
+            border-top-left-radius: var(--border-radius-medium);
+            border-top-right-radius: var(--border-radius-medium);
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+
+        &.button--middle {
+            border-radius: 0px;
+        }
+
+        &.button--last {
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: var(--border-radius-medium);
+            border-bottom-right-radius: var(--border-radius-medium);
+        }
+    }
+
+    &.button--small {
+        &.button--first {
+            border-top-left-radius: var(--border-radius-small);
+            border-top-right-radius: var(--border-radius-small);
+        }
+
+        &.button--last {
+            border-bottom-left-radius: var(--border-radius-small);
+            border-bottom-right-radius: var(--border-radius-small);
+        }
+    }
 
     &[justified="true"] {
         width: 100%;
@@ -51,7 +129,6 @@ button {
         }
     }
 
-    /* [수정] loading 상태와 관계없이 disabled 스타일 적용 */
     &[disabled],
     &[disabled]:hover,
     &[disabled]:active,
@@ -59,11 +136,7 @@ button {
         border: var(--border-small) var(--button-default-border-disabled);
         background-color: var(--button-default-background-disabled);
         color: var(--button-default-text-disabled);
-    }
-
-    /* [수정] loading이 아닐 때만 not-allowed 커서 적용 */
-    &[disabled]:not([loading="true"]) {
-        cursor: not-allowed;
+        cursor: auto;
     }
 
     &[loading="false"] {
@@ -73,8 +146,6 @@ button {
     }
 
     &[loading="true"] {
-        cursor: wait; // 이 속성이 not-allowed를 덮어씁니다.
-
         .spinner--wrapper {
             display: inline-flex;
             align-items: center;
@@ -113,9 +184,19 @@ button {
             stroke-dasharray: $offset;
             stroke-dashoffset: 0;
             transform-origin: center;
-            stroke: currentColor;
             animation:
-                dash $duration ease-in-out infinite;
+                dash $duration ease-in-out infinite,
+                colors ($duration*4) ease-in-out infinite;
+        }
+
+        @keyframes colors {
+            0% {
+                stroke: var(--button-default-icon-disabled);
+            }
+
+            100% {
+                stroke: var(--button-default-icon-disabled);
+            }
         }
 
         @keyframes dash {
@@ -135,7 +216,6 @@ button {
         }
     }
 }
-
 
 .button--primary {
     background-color: var(--button-primary-background-enabled);
@@ -285,6 +365,7 @@ button {
         height: 12px;
         border-width: 4px !important;
     }
+
 }
 
 
@@ -301,42 +382,189 @@ button {
     border-radius: var(--border-radius-medium);
 }
 
-/* Button Group (Priority Override) */
-.button--first {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-}
-.button--middle {
-    border-radius: 0px;
-}
-.button--last {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-}
-.button--vertical {
-    &.button--first {
-        border-top-left-radius: var(--border-radius-medium);
-        border-top-right-radius: var(--border-radius-medium);
-        border-bottom-left-radius: 0px;
-        border-bottom-right-radius: 0px;
+
+
+/* Radio Button */
+
+:host(sy-radio-button) {
+    position: relative;
+    display: inline-block;
+
+    button {
+        border-left: 0px;
+        border-radius: 0;
+
+        &:hover {
+            border-left: 0px;
+
+            &::before {
+                border-left: var(--border-small) var(--button-primary-border-hover);
+
+            }
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: -1px;
+            display: inline-block;
+            width: 1px;
+            height: 100%;
+            box-sizing: content-box;
+            border-left: var(--border-small) var(--button-default-border-enabled);
+        }
+
+        // &::after {
+        //     content: "";
+        //     position: absolute;
+        //     z-index: 1;
+        //     top: 0px;
+        //     right: 0px;
+        //     display: inline-block;
+        //     width: 1px;
+        //     height: 100%;
+        //     box-sizing: content-box;
+        //     border-right: var(--border-small) var(--button-default-border-enabled);
+        // }
+
+
+        &:focus-visible {
+            box-shadow: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        &:disabled {
+            border-left: none;
+
+            &::before {
+                border-left: var(--border-small) var(--button-default-border-disabled) !important;
+            }
+
+        }
     }
-    &.button--middle {
-        border-radius: 0px;
-    }
-    &.button--last {
-        border-top-left-radius: 0px;
-        border-top-right-radius: 0px;
-        border-bottom-left-radius: var(--border-radius-medium);
-        border-bottom-right-radius: var(--border-radius-medium);
+
+    .button--primary {
+        &::before {
+            border-left: var(--border-small) var(--button-primary-border-active);
+        }
+
     }
 }
-.button--small {
-    &.button--first {
-        border-top-left-radius: var(--border-radius-small);
-        border-top-right-radius: var(--border-radius-small);
+
+:host(sy-radio-button:first-of-type) {
+    .button--default {
+        border-left: var(--border-small) var(--button-default-border-enabled);
+        border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+
+        &::before {
+            border-left: 0px;
+        }
+        // &::after {
+        //     border-right: var(--border-small) var(--button-default-border-enabled);
+        // }        
+
+        &:hover {
+            border-left: var(--border-small) var(--button-default-border-hover);  
+            // &:after {
+            //     border-right: var(--border-small) var(--button-default-border-hover);
+            //     z-index: 1;
+            // }        
+        }
+
+        &:active {
+            border-left: var(--border-small) var(--button-default-border-active);
+        }
+
+        &:disabled {
+            border-left: var(--border-small) var(--button-default-border-disabled);
+
+            &::before {
+                border-left: none !important;
+            }
+        }
+
+        &:after {
+            &:hover {
+                border-right: var(--border-small) var(--button-default-border-hover);
+            }
+        }
+
     }
-    &.button--last {
-        border-bottom-left-radius: var(--border-radius-small);
-        border-bottom-right-radius: var(--border-radius-small);
+
+    .button--secondary {
+        border-left: var(--border-small) var(--button-secondary-border-enabled);
+        border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+
+        &::before {
+            border-left: 0px;
+        }
+
+        &:hover {
+            border-left: var(--border-small) var(--button-secondary-border-hover);
+        }
+
+        &:active {
+            border-left: var(--border-small) var(--button-secondary-border-active);
+        }
+
+        &:disabled {
+            border-left: var(--border-small) var(--button-default-border-disabled);
+
+            &::before {
+                border-left: none !important;
+            }
+        }
+    }
+
+    .button--primary {
+        border-left: var(--border-small) var(--button-primary-border-enabled);
+        border-radius: var(--border-radius-medium) 0 0 var(--border-radius-medium);
+
+        &::before {
+            border-left: 0px;
+        }
+
+        &:hover {
+            border-left: var(--border-small) var(--button-primary-border-hover);
+        }
+
+        &:active {
+            border-left: var(--border-small) var(--button-primary-border-hover);
+        }
+
+
+        &:disabled {
+            border-left: var(--border-small) var(--button-default-border-disabled);
+
+            &::before {
+                border-left: none !important;
+            }
+        }
+    }
+}
+
+
+:host(sy-radio-button:last-of-type) {
+    button {
+        border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+        &::after {
+            border-right: var(--border-small) transparent;
+        }            
+    }
+
+    &::before {
+        border-left: var(--border-small) var(--button-default-border-enabled);
+    }
+}
+
+:host(sy-radio-button:last-of-type) {
+    button.button--small {
+        border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;     
+    }
+
+    &::before {
+        border-left: var(--border-small) var(--button-default-border-enabled);
     }
 }

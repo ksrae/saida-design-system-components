@@ -17,7 +17,6 @@ export class SyMenu {
 	private originalParent: any;
 	private nextSibling: any;
 	private isDropdown = false;
-	private DISPLAY_INTERVAL = 5;
 	private DefaultOpendelay = 0;
 	private DefaultClosedelay = 75;
 	private width!: number;
@@ -196,7 +195,10 @@ export class SyMenu {
 			this.open = true;
 			this.isUpdatingOpenState = false;
 
-			this.updateMenuPosition();
+			// requestAnimationFrame을 사용하여 DOM 렌더링 후 위치 계산
+			requestAnimationFrame(() => {
+				this.updateMenuPosition();
+			});
 
 			setTimeout(() => {
 				document.addEventListener('click', this.handleDocumentClick, true);
@@ -394,6 +396,11 @@ export class SyMenu {
 		const parentRect = this.parentDom.getBoundingClientRect();
 		const rect = this.host.getBoundingClientRect();
 
+		// 메뉴의 실제 크기 가져오기
+		const menuWidth = rect.width > 0 ? rect.width : this.width;
+		const menuHeight = rect.height > 0 ? rect.height : this.height;
+
+		// 크기 저장
 		if (rect.width > 0 && rect.height > 0) {
 			this.width = rect.width;
 			this.height = rect.height;
@@ -413,11 +420,11 @@ export class SyMenu {
 			let left = this.mouseX + scrollLeft;
 			let top = this.mouseY + scrollTop;
 
-			if (this.mouseX + this.width > viewportWidth) {
-				left = this.mouseX - this.width + scrollLeft;
+			if (this.mouseX + menuWidth > viewportWidth) {
+				left = this.mouseX - menuWidth + scrollLeft;
 			}
-			if (this.mouseY + this.height > viewportHeight) {
-				top = this.mouseY - this.height + scrollTop;
+			if (this.mouseY + menuHeight > viewportHeight) {
+				top = this.mouseY - menuHeight + scrollTop;
 			}
 
 			this.host.style.left = `${left}px`;
@@ -426,43 +433,41 @@ export class SyMenu {
 			let left = 0;
 			let top = 0;
 
-			if (this.position.indexOf('bottom') === 0) {
+			if (this.position === 'bottomLeft') {
+				// Bottom Left - 기본 동작 (부모 아래, 왼쪽 정렬)
 				top = parentRect.bottom + scrollTop;
+				left = parentRect.left + scrollLeft;
 
-				if (parentRect.bottom + this.height > viewportHeight && parentRect.top - this.height >= 0) {
-					top = parentRect.top - this.height + scrollTop;
+				// 화면 아래로 넘어가면 위로
+				if (parentRect.bottom + menuHeight > viewportHeight && parentRect.top - menuHeight >= 0) {
+					top = parentRect.top - menuHeight + scrollTop;
 				}
+			} else if (this.position === 'bottomRight') {
+				// Bottom Right - 부모 아래, 오른쪽 정렬
+				top = parentRect.bottom + scrollTop;
+				left = parentRect.right - menuWidth + scrollLeft;
 
-				if (this.position.indexOf('Left') > -1) {
-					left = parentRect.left + scrollLeft;
-				} else if (this.position.indexOf('Right') > -1) {
-					left = parentRect.right - this.width + scrollLeft;
-				} else {
-					left = parentRect.left + (parentRect.width - this.width) / 2 + scrollLeft;
+				// 화면 아래로 넘어가면 위로
+				if (parentRect.bottom + menuHeight > viewportHeight && parentRect.top - menuHeight >= 0) {
+					top = parentRect.top - menuHeight + scrollTop;
 				}
-			} else if (this.position.indexOf('right') === 0) {
-				left = parentRect.right + scrollLeft;
-				top = parentRect.top + scrollTop;
+			} else if (this.position === 'topLeft') {
+				// Top Left - 부모 위, 왼쪽 정렬
+				top = parentRect.top - menuHeight + scrollTop;
+				left = parentRect.left + scrollLeft;
 
-				if (parentRect.right + this.width > viewportWidth && parentRect.left - this.width >= 0) {
-					left = parentRect.left - this.width + scrollLeft;
-					this.direction = 'left';
-				} else {
-					this.direction = 'right';
-				}
-			} else if (this.position.indexOf('top') === 0) {
-				top = parentRect.top - this.height + scrollTop;
-
-				if (parentRect.top - this.height < 0 && parentRect.bottom + this.height <= viewportHeight) {
+				// 화면 위로 넘어가면 아래로
+				if (parentRect.top - menuHeight < 0 && parentRect.bottom + menuHeight <= viewportHeight) {
 					top = parentRect.bottom + scrollTop;
 				}
+			} else if (this.position === 'topRight') {
+				// Top Right - 부모 위, 오른쪽 정렬
+				top = parentRect.top - menuHeight + scrollTop;
+				left = parentRect.right - menuWidth + scrollLeft;
 
-				if (this.position.indexOf('Left') > -1) {
-					left = parentRect.left + scrollLeft;
-				} else if (this.position.indexOf('Right') > -1) {
-					left = parentRect.right - this.width + scrollLeft;
-				} else {
-					left = parentRect.left + (parentRect.width - this.width) / 2 + scrollLeft;
+				// 화면 위로 넘어가면 아래로
+				if (parentRect.top - menuHeight < 0 && parentRect.bottom + menuHeight <= viewportHeight) {
+					top = parentRect.bottom + scrollTop;
 				}
 			}
 
@@ -470,7 +475,7 @@ export class SyMenu {
 			this.host.style.top = `${top}px`;
 		}
 
-		this.host.style.width = `${this.width}px`;
+		this.host.style.width = `${menuWidth}px`;
 	}
 
 	@Method()

@@ -13,8 +13,8 @@ export class SyColorpicker {
   @Prop({ mutable: true }) value: string = '#ff0000';
   @Prop({ mutable: true }) opacity: number = 1;
   @Prop({ attribute: 'showText' }) showText: boolean = false;
-  @Prop() disabled: boolean = false;
-  @Prop() readonly: boolean = false;
+  @Prop({ reflect: true }) disabled: boolean = false;
+  @Prop({ reflect: true }) readonly: boolean = false;
   @Prop() inline: boolean = false;
   @Prop({ attribute: 'hideOpacity' }) hideOpacity: boolean = false;
   @Prop({ mutable: true }) format: 'hex' | 'hsb' | 'rgb' = 'hex';
@@ -150,14 +150,14 @@ export class SyColorpicker {
     
     return (
       <div 
+        {...(this.disabled && { disabled: true })}
+        {...(this.readonly && { readonly: true })}
         onClick={this.handleClick}
         tabindex={this.disabled || this.readonly ? '-1' : '0'}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
         class={{
-          'color-picker-button': true,
-          'disabled': this.disabled,
-          'readonly': this.readonly
+          'color-picker-button': true
         }}
       >
         <div 

@@ -1,0 +1,16 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DropdownParamStory from "./sy-dropdown.stories";
+
+<Meta of={DropdownParamStory} />
+
+# Dropdown
+## Definition
+Dropdowns open and/or close a panel by trigger. It also closes the panel by clicking outside of the dropdown if trigger is set to click.<br/>
+The panels of the dropdown consist of &lt;sy-menu&gt;, so it is possible to use the menu attribute to the panel.<br/>
+However, some attributes are not allowed to be fixed like `trigger` and `mode`.
+
+## Example
+<Canvas of={DropdownParamStory.Default} />
+
+<Controls of={DropdownParamStory.Default} />
+

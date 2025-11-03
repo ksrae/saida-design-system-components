@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as InlineMessageStories from "./sy-inline-message.stories";
+
+<Meta of={InlineMessageStories} />
+
+# Inline Message
+## Definition
+An inline message appears as a type of contextual message that appears near the element that triggers it, providing feedback, guidance, or information directly related to a user action or interaction.
+Use an inline message for contextual feedback tied to specific elements or actions.<br/>
+Avoid for global or temporary notifications.   
+
+## Example
+<Canvas of={InlineMessageStories.Default} />
+
+<Controls of={InlineMessageStories.Default} />

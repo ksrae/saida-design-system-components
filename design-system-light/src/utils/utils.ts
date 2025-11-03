@@ -96,7 +96,12 @@ export function fnAssignPropFromAlias<T = string>(host: HTMLStencilElement, ...a
 		if (v == null) return null;
 
 		const trimmed = v.trim();
-		// boolean
+		
+		// boolean: empty string means attribute present without value (true)
+		if (trimmed === '') {
+			return (true as unknown) as T;
+		}
+		
 		if (trimmed === 'true' || trimmed === 'false' || trimmed === '1' || trimmed === '0') {
 			const b = trimmed === 'true' || trimmed === '1';
 			return (b as unknown) as T;

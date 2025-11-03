@@ -124,9 +124,14 @@
     display: flex;
     justify-content: end;
     width: 100%;
+
+    ::slotted([slot="footer"]){
+      display: flex;
+      gap:var(--spacing-3xsmall);
+    }
   }
 
-    &.closable {
+  &.closable {
     .banner-close {
       display: flex;
     }

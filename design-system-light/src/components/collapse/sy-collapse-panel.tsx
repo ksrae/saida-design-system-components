@@ -141,7 +141,7 @@ export class SyCollapsePanel {
 
   private handleClick() {
     const index = this.currentIndex;
-
+    
     if (!this.disabled && index !== -1) {
       this.active = !this.active;
       this.emitChange();

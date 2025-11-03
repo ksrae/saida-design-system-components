@@ -1,0 +1,32 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+
+import * as SpacingTokenStories from "./spacing-token.stories";
+
+<Meta of={SpacingTokenStories} />
+
+# Spacing
+## Definition
+Spacing tokens in a design system provide consistent spacing between elements throughout an interface.<br/><br/>
+Spacing tokens are used at every interval.<br/>
+Please use it for padding, margin, and gap.<br/>
+
+## Values
+<b>--spacing-4xsmall (2px)</b> : Small size component spacing.<br/>
+<b>--spacing-4xsmall (4px)</b> : Medium size component spacing.<br/>
+<b>--spacing-4xsmall (6px)</b> : Large size component spacing.Left and right padding values of small size components. (Include checkbox, radio, switch) <br/>
+<b>--spacing-4xsmall (8px)</b> : This is default spacing.You can use left and right padding values of medium size components.<br/>
+<b>--spacing-4xsmall (12px)</b> : Left and right padding values of large size components. (Include popconfirm, modal, drawer, banner message, toast message)<br/>
+<b>--spacing-4xsmall (16px)</b> : Left and right padding of banner messages, toast messages, and inline messages.<br/>
+
+## Usage
+The spacing token can be used as a CSS variables:
+<Source code={`
+  .class-name {
+    padding: var(--spacing-xsmall);
+}
+`} />
+
+## Values
+<Canvas of={SpacingTokenStories.Default} sourceState="none"/>
+
+

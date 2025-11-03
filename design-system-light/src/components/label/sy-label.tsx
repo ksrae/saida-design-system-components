@@ -13,14 +13,15 @@ export class SyLabel {
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop({ reflect: true }) required: boolean = false;
   @Prop({ reflect: true, attribute: 'requiredPosition', mutable: true }) requiredPosition: 'left' | 'right' = 'right';
-  @Prop({ attribute: 'for' }) htmlFor: string = '';
+  @Prop({ attribute: 'for', mutable: true }) htmlFor: string = '';
   @Prop() value: string = '';
   @Prop() valuePosition: 'left' | 'right' = 'left';
   @Prop() width: string = '';
 
-  @State() private implicitInput: HTMLElement | null = null;
   @State() private labelWidth: string = 'auto';
 
+  private implicitInput: HTMLElement | null = null;
+  private internalHtmlFor: string = '';
   private mutationObserver: MutationObserver | null = null;
   private resizeObserver: ResizeObserver | null = null;
 
@@ -43,7 +44,7 @@ export class SyLabel {
     this.observeChildren();
 
     // 초기 라벨 가능한 요소 찾기
-    this.findAndApplyLabeling();
+    this.findAndApplyLabelingWithoutTriggeringRerender();
   }
 
   disconnectedCallback() {
@@ -105,6 +106,34 @@ export class SyLabel {
       attributes: false,
       characterData: false
     });
+  }
+
+  private findAndApplyLabelingWithoutTriggeringRerender() {
+    const labelItem = this.host.querySelector('.label-item');
+    if (!labelItem) return;
+
+    // 모든 자식 요소 가져오기
+    const elements = Array.from(labelItem.children);
+
+    // 라벨 가능한 요소 찾기
+    const newImplicitInput = this.findLabelableElement(elements);
+
+    // 이전과 다른 요소인 경우에만 업데이트
+    if (newImplicitInput !== this.implicitInput) {
+      // 이전 ResizeObserver 정리
+      if (this.resizeObserver && this.implicitInput) {
+        this.resizeObserver.unobserve(this.implicitInput);
+        this.resizeObserver = null;
+      }
+
+      this.implicitInput = newImplicitInput;
+      this.applyImplicitLabelingWithoutPropChange();
+
+      // 새로운 요소에 ResizeObserver 설정 (필요한 경우)
+      if (this.implicitInput) {
+        this.setupResizeObserver();
+      }
+    }
   }
 
   private findAndApplyLabeling() {
@@ -182,6 +211,45 @@ export class SyLabel {
     return null;
   }
 
+  private applyImplicitLabelingWithoutPropChange() {
+    if (!this.implicitInput) return;
+
+    // 요소에 id가 없으면 자동으로 생성
+    if (!this.implicitInput.id) {
+      this.implicitInput.id = `sy-label-input-${Math.random().toString(36).substring(2, 11)}`;
+    }
+
+    // htmlFor를 내부 변수에만 저장하고 prop은 변경하지 않음
+    this.internalHtmlFor = this.implicitInput.id;
+
+    // required 속성 설정
+    if (this.required) {
+      this.implicitInput.setAttribute('required', 'true');
+      // 커스텀 컴포넌트인 경우 prop으로도 설정
+      if ((this.implicitInput as any).required !== undefined) {
+        (this.implicitInput as any).required = true;
+      }
+    } else {
+      this.implicitInput.removeAttribute('required');
+      if ((this.implicitInput as any).required !== undefined) {
+        (this.implicitInput as any).required = false;
+      }
+    }
+
+    // disabled 속성 설정
+    if (this.disabled) {
+      this.implicitInput.setAttribute('disabled', 'true');
+      if ((this.implicitInput as any).disabled !== undefined) {
+        (this.implicitInput as any).disabled = true;
+      }
+    } else {
+      this.implicitInput.removeAttribute('disabled');
+      if ((this.implicitInput as any).disabled !== undefined) {
+        (this.implicitInput as any).disabled = false;
+      }
+    }
+  }
+
   private applyImplicitLabeling() {
     if (!this.implicitInput) return;
 
@@ -191,8 +259,11 @@ export class SyLabel {
     }
 
     // htmlFor 속성이 명시적으로 설정되지 않은 경우에만 암시적 라벨링 적용
-    if (!this.htmlFor) {
-      this.htmlFor = this.implicitInput.id;
+    const newHtmlFor = this.implicitInput.id;
+    
+    // Only update htmlFor if it's different to avoid re-render warnings
+    if (this.htmlFor !== newHtmlFor) {
+      this.htmlFor = newHtmlFor;
     }
 
     // required 속성 설정
@@ -280,11 +351,14 @@ export class SyLabel {
       [`align-${this.valuePosition}`]: true
     };
 
+    // Use internalHtmlFor if set (from implicit labeling), otherwise use htmlFor prop
+    const effectiveHtmlFor = this.internalHtmlFor || this.htmlFor || undefined;
+
     return (
       <label
         class={Object.keys(labelClass).filter(k => labelClass[k]).join(' ')}
         style={{ width: this.labelWidth }}
-        htmlFor={this.htmlFor || undefined}
+        htmlFor={effectiveHtmlFor}
       >
         <div class="label-title">
           {this.required && this.requiredPosition === 'left' && (

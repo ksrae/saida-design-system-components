@@ -1,0 +1,28 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as CollapseStories from './sy-collapse.stories';
+import * as CollapsePanelStories from './sy-collapse-panel.stories';
+
+<Meta of={CollapseStories} />
+
+# Collapse
+
+## Definition
+Collapse allows sections of content to be hidden from view.<br/>
+This functionality helps streamline the interface, making it less cluttered and allowing users to focus on the most relevant information.<br/>
+When a section is collapsed, it shows only a title, and users can expand it by clicking or tapping to reveal the panel which has additional information.
+
+## Examples
+
+<Canvas of={CollapseStories.Default} />
+
+<Controls of={CollapseStories.Default} />
+
+# Collapse Panel 
+
+## Definition
+A panel is collapsed or expanded by event of the collapse header.
+
+## Examples
+<Canvas of={CollapsePanelStories.Default} />
+
+<Controls of={CollapsePanelStories.Default} />

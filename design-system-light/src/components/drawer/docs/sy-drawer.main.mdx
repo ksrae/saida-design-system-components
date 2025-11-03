@@ -1,0 +1,17 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DrawerMainStories from "./sy-drawer.stories";
+
+<Meta of={DrawerMainStories} />
+
+# Drawer
+## Definition
+Drawer is a panel that slides in from the edge of the screen, typically used to provide additional options or content. <br />
+It allows users to access various features or sections without cluttering the main interface. <br />
+The drawer can be positioned on any side (top, left, right, bottom) and opened or closed through user interaction.
+
+## Example
+
+<Canvas of={DrawerMainStories.Default} />
+
+<Controls of={DrawerMainStories.Default} />
+

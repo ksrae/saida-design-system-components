@@ -10,11 +10,15 @@ import { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-pan
 import { ModelessPositionChangedDetail } from "./components/modeless/sy-modeless";
 import { VNode } from "@stencil/core";
 import { ToastOptions } from "./components/toast/sy-toast";
+import { TreeNode } from "./components/tree/sy-tree";
+import { TreeNode as TreeNode1 } from "./components/tree/sy-tree";
 export { ButtonGroupState } from "./components/button-group";
 export { CollapsePanelChangeDetail } from "./components/collapse/sy-collapse-panel";
 export { ModelessPositionChangedDetail } from "./components/modeless/sy-modeless";
 export { VNode } from "@stencil/core";
 export { ToastOptions } from "./components/toast/sy-toast";
+export { TreeNode } from "./components/tree/sy-tree";
+export { TreeNode as TreeNode1 } from "./components/tree/sy-tree";
 export namespace Components {
     interface SyAutocomplete {
         /**
@@ -309,6 +313,10 @@ export namespace Components {
     interface SyCheckbox {
         "checkValidity": () => Promise<boolean>;
         /**
+          * @default ''
+         */
+        "checkboxTitle": string;
+        /**
           * @default false
          */
         "checked": boolean;
@@ -337,10 +345,6 @@ export namespace Components {
         "setBlur": () => Promise<void>;
         "setCustomError": () => Promise<void>;
         "setFocus": () => Promise<void>;
-        /**
-          * @default ''
-         */
-        "titleText": string;
     }
     interface SyCollapse {
         /**
@@ -873,7 +877,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "title": string;
+        "menuGroupTitle": string;
     }
     interface SyMenuItem {
         /**
@@ -903,13 +907,13 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * @default ''
+         */
+        "menuSubTitle": string;
+        /**
           * @default false
          */
         "open": boolean;
-        /**
-          * @default ''
-         */
-        "title": string;
     }
     interface SyModal {
         /**
@@ -970,15 +974,15 @@ export namespace Components {
         /**
           * @default false
          */
-        "draggable": boolean;
-        /**
-          * @default false
-         */
         "edge": boolean;
         /**
           * @default 150
          */
         "height": number;
+        /**
+          * @default false
+         */
+        "isdraggable": boolean;
         /**
           * @default undefined
          */
@@ -1061,7 +1065,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "title": string;
+        "navGroupTitle": string;
     }
     /**
      * sy-nav-item (Stencil port, light DOM, scoped)
@@ -1101,6 +1105,10 @@ export namespace Components {
         "disabled": boolean;
         "groupItem": (group: boolean) => Promise<void>;
         /**
+          * @default ''
+         */
+        "navSubTitle": string;
+        /**
           * @default false
          */
         "open": boolean;
@@ -1109,10 +1117,6 @@ export namespace Components {
         "setClose": () => Promise<void>;
         "setOpen": () => Promise<void>;
         "setTrigger": () => Promise<void>;
-        /**
-          * @default ''
-         */
-        "title": string;
         /**
           * @default ''
          */
@@ -1474,6 +1478,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "isTreeSelect": boolean;
+        /**
+          * @default false
+         */
         "loading": boolean;
         /**
           * @default 0
@@ -1822,7 +1830,7 @@ export namespace Components {
         /**
           * @default false
          */
-        "draggable": boolean;
+        "isdraggable": boolean;
         /**
           * @default "none"
          */
@@ -2062,6 +2070,261 @@ export namespace Components {
          */
         "trigger": 'hover' | 'click' | 'focus' | 'none';
     }
+    interface SyTree {
+        /**
+          * @default false
+         */
+        "checkable": boolean;
+        "clearAllSelectedItem": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default false
+         */
+        "editable": boolean;
+        /**
+          * @default false
+         */
+        "expandAll": boolean;
+        /**
+          * @default false
+         */
+        "expandable": boolean;
+        "findNode": (nodes: TreeNode[], value: string) => Promise<TreeNode | null>;
+        /**
+          * @default false
+         */
+        "isTreeSelect": boolean;
+        /**
+          * @default false
+         */
+        "line": boolean;
+        /**
+          * @default false
+         */
+        "manualAdd": boolean;
+        "manualAddChildNode": (parentValue: string, childLabel: string, childValue?: string) => Promise<void>;
+        /**
+          * @default false
+         */
+        "manualRemove": boolean;
+        "manualRemoveNode": (value: string) => Promise<void>;
+        /**
+          * @default null
+         */
+        "nodeWidth": number | null;
+        /**
+          * @default []
+         */
+        "nodes": TreeNode[];
+        /**
+          * @default ''
+         */
+        "searchTerm": string;
+        /**
+          * @default ''
+         */
+        "selectedValue": string;
+        "setCheckState": (value: string, checked: boolean) => Promise<void>;
+        /**
+          * @default false
+         */
+        "treeDraggable": boolean;
+    }
+    interface SyTreeItem {
+        /**
+          * @default 'New item'
+         */
+        "appendPlaceholder": string;
+        /**
+          * @default false
+         */
+        "appendable": boolean;
+        /**
+          * @default false
+         */
+        "checkable": boolean;
+        /**
+          * @default false
+         */
+        "checked": boolean;
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "dragging": boolean;
+        /**
+          * @default false
+         */
+        "editable": boolean;
+        /**
+          * @default false
+         */
+        "expandable": boolean;
+        /**
+          * @default false
+         */
+        "expanded": boolean;
+        /**
+          * @default false
+         */
+        "fixed": boolean;
+        /**
+          * @default false
+         */
+        "hasChild": boolean;
+        /**
+          * @default ''
+         */
+        "icon": string;
+        /**
+          * @default false
+         */
+        "indeterminate": boolean;
+        /**
+          * @default false
+         */
+        "isDescendant": boolean;
+        /**
+          * @default false
+         */
+        "isEditable": boolean;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default 0
+         */
+        "level": number;
+        /**
+          * @default false
+         */
+        "line": boolean;
+        /**
+          * @default null
+         */
+        "nodeWidth": number | null;
+        /**
+          * @default false
+         */
+        "removable": boolean;
+        /**
+          * @default ''
+         */
+        "searchTerm": string;
+        /**
+          * @default ''
+         */
+        "selectedValue": string;
+        "setOverflow": () => Promise<void>;
+        /**
+          * @default ''
+         */
+        "tagMessage": string;
+        /**
+          * @default undefined
+         */
+        "tagVariant": "gray" | "purple" | "blue" | "green" | "cyan" | "yellow" | "orange" | "red" | undefined;
+        /**
+          * @default []
+         */
+        "treeChildren": any[];
+        /**
+          * @default false
+         */
+        "treeitemDraggable": boolean;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface SyTreeSelect {
+        /**
+          * @default false
+         */
+        "appendParent": boolean;
+        "checkValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "checkable": boolean;
+        /**
+          * @default false
+         */
+        "clearable": boolean;
+        /**
+          * @default ''
+         */
+        "defaultValue": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "expandAll": boolean;
+        /**
+          * @default false
+         */
+        "expandable": boolean;
+        /**
+          * @default false
+         */
+        "line": boolean;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default 0
+         */
+        "maxTagCount": number;
+        /**
+          * @default ''
+         */
+        "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
+        /**
+          * @default null
+         */
+        "nodeWidth": number | null;
+        /**
+          * @default []
+         */
+        "nodes": TreeNode1[];
+        /**
+          * @default ''
+         */
+        "placeholder": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setCustomValidity": (message: string) => Promise<void>;
+        /**
+          * @default 'default'
+         */
+        "status": 'error' | 'default';
+    }
 }
 export interface SyAutocompleteCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2202,6 +2465,18 @@ export interface SyTextareaCustomEvent<T> extends CustomEvent<T> {
 export interface SyTimepickerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyTimepickerElement;
+}
+export interface SyTreeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTreeElement;
+}
+export interface SyTreeItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTreeItemElement;
+}
+export interface SyTreeSelectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyTreeSelectElement;
 }
 declare global {
     interface HTMLSyAutocompleteElementEventMap {
@@ -3061,6 +3336,68 @@ declare global {
         prototype: HTMLSyTooltipElement;
         new (): HTMLSyTooltipElement;
     };
+    interface HTMLSyTreeElementEventMap {
+        "nodesChanged": { nodes: TreeNode[] };
+        "itemChecked": { value: string; label: string; checked: boolean };
+        "itemSelected": { value: string; label: string; checked: boolean };
+    }
+    interface HTMLSyTreeElement extends Components.SyTree, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTreeElementEventMap>(type: K, listener: (this: HTMLSyTreeElement, ev: SyTreeCustomEvent<HTMLSyTreeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTreeElementEventMap>(type: K, listener: (this: HTMLSyTreeElement, ev: SyTreeCustomEvent<HTMLSyTreeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTreeElement: {
+        prototype: HTMLSyTreeElement;
+        new (): HTMLSyTreeElement;
+    };
+    interface HTMLSyTreeItemElementEventMap {
+        "expandChanged": { value: string; label: string; expanded: boolean };
+        "checkChanged": { value: string; label: string; checked: boolean };
+        "itemAdded": { parentValue: string; childLabel: string; childValue: string; childLevel: number };
+        "itemRemoved": { value: string; label: string };
+        "itemEdited": { value: string; label: string };
+        "itemUpdating": any;
+        "itemUpdatingReset": any;
+        "itemDrop": { targetKey: string; draggedKey: string; dropPosition: string; targetLevel: number };
+        "itemSelected": { value: string; label: string; checked: boolean };
+        "draggingEvent": string;
+    }
+    interface HTMLSyTreeItemElement extends Components.SyTreeItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTreeItemElementEventMap>(type: K, listener: (this: HTMLSyTreeItemElement, ev: SyTreeItemCustomEvent<HTMLSyTreeItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTreeItemElementEventMap>(type: K, listener: (this: HTMLSyTreeItemElement, ev: SyTreeItemCustomEvent<HTMLSyTreeItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTreeItemElement: {
+        prototype: HTMLSyTreeItemElement;
+        new (): HTMLSyTreeItemElement;
+    };
+    interface HTMLSyTreeSelectElementEventMap {
+        "changed": { selectedItem: { value: string; label: string }[]; isValid: boolean };
+    }
+    interface HTMLSyTreeSelectElement extends Components.SyTreeSelect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyTreeSelectElementEventMap>(type: K, listener: (this: HTMLSyTreeSelectElement, ev: SyTreeSelectCustomEvent<HTMLSyTreeSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyTreeSelectElementEventMap>(type: K, listener: (this: HTMLSyTreeSelectElement, ev: SyTreeSelectCustomEvent<HTMLSyTreeSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyTreeSelectElement: {
+        prototype: HTMLSyTreeSelectElement;
+        new (): HTMLSyTreeSelectElement;
+    };
     interface HTMLElementTagNameMap {
         "sy-autocomplete": HTMLSyAutocompleteElement;
         "sy-autocomplete-option": HTMLSyAutocompleteOptionElement;
@@ -3128,6 +3465,9 @@ declare global {
         "sy-toast": HTMLSyToastElement;
         "sy-toast-item": HTMLSyToastItemElement;
         "sy-tooltip": HTMLSyTooltipElement;
+        "sy-tree": HTMLSyTreeElement;
+        "sy-tree-item": HTMLSyTreeItemElement;
+        "sy-tree-select": HTMLSyTreeSelectElement;
     }
 }
 declare namespace LocalJSX {
@@ -3424,6 +3764,10 @@ declare namespace LocalJSX {
     }
     interface SyCheckbox {
         /**
+          * @default ''
+         */
+        "checkboxTitle"?: string;
+        /**
           * @default false
          */
         "checked"?: boolean;
@@ -3450,10 +3794,6 @@ declare namespace LocalJSX {
           * @default false
          */
         "required"?: boolean;
-        /**
-          * @default ''
-         */
-        "titleText"?: string;
     }
     interface SyCollapse {
         /**
@@ -3977,7 +4317,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "title"?: string;
+        "menuGroupTitle"?: string;
     }
     interface SyMenuItem {
         /**
@@ -4009,13 +4349,13 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * @default ''
+         */
+        "menuSubTitle"?: string;
+        /**
           * @default false
          */
         "open"?: boolean;
-        /**
-          * @default ''
-         */
-        "title"?: string;
     }
     interface SyModal {
         /**
@@ -4071,15 +4411,15 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "draggable"?: boolean;
-        /**
-          * @default false
-         */
         "edge"?: boolean;
         /**
           * @default 150
          */
         "height"?: number;
+        /**
+          * @default false
+         */
+        "isdraggable"?: boolean;
         /**
           * @default undefined
          */
@@ -4154,7 +4494,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "title"?: string;
+        "navGroupTitle"?: string;
     }
     /**
      * sy-nav-item (Stencil port, light DOM, scoped)
@@ -4190,13 +4530,13 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * @default ''
+         */
+        "navSubTitle"?: string;
+        /**
           * @default false
          */
         "open"?: boolean;
-        /**
-          * @default ''
-         */
-        "title"?: string;
         /**
           * @default ''
          */
@@ -4546,6 +4886,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "hide"?: boolean;
+        /**
+          * @default false
+         */
+        "isTreeSelect"?: boolean;
         /**
           * @default false
          */
@@ -4908,7 +5252,7 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "draggable"?: boolean;
+        "isdraggable"?: boolean;
         "onClosed"?: (event: SyTabGroupCustomEvent<any>) => void;
         "onOrdered"?: (event: SyTabGroupCustomEvent<HTMLSyTabElement[]>) => void;
         "onSelected"?: (event: SyTabGroupCustomEvent<any>) => void;
@@ -5141,6 +5485,266 @@ declare namespace LocalJSX {
          */
         "trigger"?: 'hover' | 'click' | 'focus' | 'none';
     }
+    interface SyTree {
+        /**
+          * @default false
+         */
+        "checkable"?: boolean;
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default false
+         */
+        "editable"?: boolean;
+        /**
+          * @default false
+         */
+        "expandAll"?: boolean;
+        /**
+          * @default false
+         */
+        "expandable"?: boolean;
+        /**
+          * @default false
+         */
+        "isTreeSelect"?: boolean;
+        /**
+          * @default false
+         */
+        "line"?: boolean;
+        /**
+          * @default false
+         */
+        "manualAdd"?: boolean;
+        /**
+          * @default false
+         */
+        "manualRemove"?: boolean;
+        /**
+          * @default null
+         */
+        "nodeWidth"?: number | null;
+        /**
+          * @default []
+         */
+        "nodes"?: TreeNode[];
+        "onItemChecked"?: (event: SyTreeCustomEvent<{ value: string; label: string; checked: boolean }>) => void;
+        "onItemSelected"?: (event: SyTreeCustomEvent<{ value: string; label: string; checked: boolean }>) => void;
+        "onNodesChanged"?: (event: SyTreeCustomEvent<{ nodes: TreeNode[] }>) => void;
+        /**
+          * @default ''
+         */
+        "searchTerm"?: string;
+        /**
+          * @default ''
+         */
+        "selectedValue"?: string;
+        /**
+          * @default false
+         */
+        "treeDraggable"?: boolean;
+    }
+    interface SyTreeItem {
+        /**
+          * @default 'New item'
+         */
+        "appendPlaceholder"?: string;
+        /**
+          * @default false
+         */
+        "appendable"?: boolean;
+        /**
+          * @default false
+         */
+        "checkable"?: boolean;
+        /**
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "dragging"?: boolean;
+        /**
+          * @default false
+         */
+        "editable"?: boolean;
+        /**
+          * @default false
+         */
+        "expandable"?: boolean;
+        /**
+          * @default false
+         */
+        "expanded"?: boolean;
+        /**
+          * @default false
+         */
+        "fixed"?: boolean;
+        /**
+          * @default false
+         */
+        "hasChild"?: boolean;
+        /**
+          * @default ''
+         */
+        "icon"?: string;
+        /**
+          * @default false
+         */
+        "indeterminate"?: boolean;
+        /**
+          * @default false
+         */
+        "isDescendant"?: boolean;
+        /**
+          * @default false
+         */
+        "isEditable"?: boolean;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        /**
+          * @default 0
+         */
+        "level"?: number;
+        /**
+          * @default false
+         */
+        "line"?: boolean;
+        /**
+          * @default null
+         */
+        "nodeWidth"?: number | null;
+        "onCheckChanged"?: (event: SyTreeItemCustomEvent<{ value: string; label: string; checked: boolean }>) => void;
+        "onDraggingEvent"?: (event: SyTreeItemCustomEvent<string>) => void;
+        "onExpandChanged"?: (event: SyTreeItemCustomEvent<{ value: string; label: string; expanded: boolean }>) => void;
+        "onItemAdded"?: (event: SyTreeItemCustomEvent<{ parentValue: string; childLabel: string; childValue: string; childLevel: number }>) => void;
+        "onItemDrop"?: (event: SyTreeItemCustomEvent<{ targetKey: string; draggedKey: string; dropPosition: string; targetLevel: number }>) => void;
+        "onItemEdited"?: (event: SyTreeItemCustomEvent<{ value: string; label: string }>) => void;
+        "onItemRemoved"?: (event: SyTreeItemCustomEvent<{ value: string; label: string }>) => void;
+        "onItemSelected"?: (event: SyTreeItemCustomEvent<{ value: string; label: string; checked: boolean }>) => void;
+        "onItemUpdating"?: (event: SyTreeItemCustomEvent<any>) => void;
+        "onItemUpdatingReset"?: (event: SyTreeItemCustomEvent<any>) => void;
+        /**
+          * @default false
+         */
+        "removable"?: boolean;
+        /**
+          * @default ''
+         */
+        "searchTerm"?: string;
+        /**
+          * @default ''
+         */
+        "selectedValue"?: string;
+        /**
+          * @default ''
+         */
+        "tagMessage"?: string;
+        /**
+          * @default undefined
+         */
+        "tagVariant"?: "gray" | "purple" | "blue" | "green" | "cyan" | "yellow" | "orange" | "red" | undefined;
+        /**
+          * @default []
+         */
+        "treeChildren"?: any[];
+        /**
+          * @default false
+         */
+        "treeitemDraggable"?: boolean;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface SyTreeSelect {
+        /**
+          * @default false
+         */
+        "appendParent"?: boolean;
+        /**
+          * @default false
+         */
+        "checkable"?: boolean;
+        /**
+          * @default false
+         */
+        "clearable"?: boolean;
+        /**
+          * @default ''
+         */
+        "defaultValue"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "expandAll"?: boolean;
+        /**
+          * @default false
+         */
+        "expandable"?: boolean;
+        /**
+          * @default false
+         */
+        "line"?: boolean;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default 0
+         */
+        "maxTagCount"?: number;
+        /**
+          * @default ''
+         */
+        "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
+        /**
+          * @default null
+         */
+        "nodeWidth"?: number | null;
+        /**
+          * @default []
+         */
+        "nodes"?: TreeNode1[];
+        "onChanged"?: (event: SyTreeSelectCustomEvent<{ selectedItem: { value: string; label: string }[]; isValid: boolean }>) => void;
+        /**
+          * @default ''
+         */
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 'default'
+         */
+        "status"?: 'error' | 'default';
+    }
     interface IntrinsicElements {
         "sy-autocomplete": SyAutocomplete;
         "sy-autocomplete-option": SyAutocompleteOption;
@@ -5208,6 +5812,9 @@ declare namespace LocalJSX {
         "sy-toast": SyToast;
         "sy-toast-item": SyToastItem;
         "sy-tooltip": SyTooltip;
+        "sy-tree": SyTree;
+        "sy-tree-item": SyTreeItem;
+        "sy-tree-select": SyTreeSelect;
     }
 }
 export { LocalJSX as JSX };
@@ -5309,6 +5916,9 @@ declare module "@stencil/core" {
             "sy-toast": LocalJSX.SyToast & JSXBase.HTMLAttributes<HTMLSyToastElement>;
             "sy-toast-item": LocalJSX.SyToastItem & JSXBase.HTMLAttributes<HTMLSyToastItemElement>;
             "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;
+            "sy-tree": LocalJSX.SyTree & JSXBase.HTMLAttributes<HTMLSyTreeElement>;
+            "sy-tree-item": LocalJSX.SyTreeItem & JSXBase.HTMLAttributes<HTMLSyTreeItemElement>;
+            "sy-tree-select": LocalJSX.SyTreeSelect & JSXBase.HTMLAttributes<HTMLSyTreeSelectElement>;
         }
     }
 }

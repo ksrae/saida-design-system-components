@@ -1,0 +1,26 @@
+import { Canvas, Meta, Story, Source} from "@storybook/addon-docs/blocks";
+import * as ZIndexTokenStories from "./zindex-token.stories";
+import zIndexToken from "./z-index-token.svg";
+import zIndexLayer from "./z-index-layer.svg";
+
+<Meta of={ZIndexTokenStories} />
+
+# Z-Index
+## Definition
+Z-index tokens in a design system provide consistent spacing between elements throughout an interface.
+
+## Usage
+The z-index token can be used as a CSS variables
+<Source code={`
+  .class-name {
+    z-index: var(--z-index-600);
+}
+`} />
+
+## Values
+<Canvas of={ZIndexTokenStories.Default} sourceState="none"/>
+<br/><br/><br/>
+<img src={zIndexToken} alt="z-index-token" />
+<br/><br/>
+<img src={zIndexLayer} alt="z-index-layer" />
+

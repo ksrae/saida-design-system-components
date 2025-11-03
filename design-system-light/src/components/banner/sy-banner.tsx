@@ -100,7 +100,7 @@ export class SyBannerMessage {
                 <div class="banner-message">{this.message}</div>
               </div>
               <div class="banner-footer">
-                <slot name="footer" />
+                <slot name="footer"/>
               </div>
             </div>
           </div>
