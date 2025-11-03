@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@storybook/web-components';
 import { SyBadgeProps, Badge } from './sy-badge.main';
 import { clearElements } from '../../clear-element';
 

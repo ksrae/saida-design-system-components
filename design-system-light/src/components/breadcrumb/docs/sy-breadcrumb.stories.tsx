@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@storybook/web-components';
 import { SyBreadcrumbProps, BreadCrumb } from './sy-breadcrumb.main';
 import { h } from '@stencil/core';
 import { clearElements } from '../../clear-element';

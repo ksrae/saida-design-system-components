@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@storybook/web-components';
 import { clearElements } from '../../clear-element';
 import { SyCheckboxProps, Checkbox } from './sy-checkbox.main';
 

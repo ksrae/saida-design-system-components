@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@storybook/web-components';
 import { h } from '@stencil/core';
 import { SyButtonProps, ButtonSlot } from '../../sy-button.main';
 import buttonMeta from '../../sy-button.stories';

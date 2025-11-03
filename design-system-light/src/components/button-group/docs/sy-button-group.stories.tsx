@@ -1,5 +1,5 @@
 import { SyButtonGroupProps, ButtonGroup } from './sy-button-group.main';
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@storybook/web-components';
 import { clearElements } from '../../clear-element';
 
 const buttonGroupMeta: Meta<SyButtonGroupProps> = {
