@@ -262,9 +262,9 @@ export class SyTreeSelect {
             required={this.required}
             maxTagCount={this.maxTagCount}
             onInputChanged={this.handleSearchInputChanged.bind(this)}
-            onFocused={this.handleSearchFocus.bind(this)}
+            onFocused={() => { this.isOpen = true; this.touched = true; }}
             onBlured={this.handleSearchBlur.bind(this)}
-            onOpened={this.handleSearchFocus.bind(this)}
+            onOpened={() => { this.isOpen = true; this.touched = true; }}
             onRemoved={this.handleRemovedItem.bind(this)}
             onCleared={this.handleCleared.bind(this)}
           ></sy-select>
@@ -366,6 +366,7 @@ export class SyTreeSelect {
         emptyContainer.appendChild(emptyElement);
         this.popupContainer.appendChild(emptyContainer);
       } else {
+        console.log('[TreeSelect] Creating tree, nodes length:', this.nodes?.length, 'checkable:', this.checkable);
         this.treeElement = document.createElement("sy-tree") as HTMLSyTreeElement;
         this.treeElement.clickable = true;
         this.treeElement.nodes = this.nodes;
@@ -379,6 +380,7 @@ export class SyTreeSelect {
         this.treeElement.isTreeSelect = true;
         
         console.log('[TreeSelect] Initial popup tree searchTerm:', this.searchTerm);
+        console.log('[TreeSelect] Tree element created, nodes:', this.treeElement.nodes);
         
         this.treeElement.addEventListener('itemSelected', (e: any) => {
           this.handleTreeItemClick(e);
@@ -388,6 +390,7 @@ export class SyTreeSelect {
         });
 
         this.popupContainer.appendChild(this.treeElement);
+        console.log('[TreeSelect] Tree element appended to popup');
       }
     }
   }
@@ -599,9 +602,8 @@ export class SyTreeSelect {
       (this.treeElement as any).setCheckState(removedItem.value, false);
     }
 
-    if (this.checkable && !this.appendParent) {
-      const popupContainer = document.querySelector('.sy-tree-select-option-container');
-      const popupTreeElement = popupContainer?.querySelector('sy-tree') as HTMLSyTreeElement;
+    if (this.checkable && !this.appendParent && this.popupContainer) {
+      const popupTreeElement = this.popupContainer.querySelector('sy-tree') as HTMLSyTreeElement;
       if (popupTreeElement) {
         (popupTreeElement as any).setCheckState(removedItem.value, false);
       }
@@ -613,9 +615,8 @@ export class SyTreeSelect {
       (this.treeElement as any).clearAllSelectedItem();
     }
 
-    if (!this.appendParent) {
-      const popupContainer = document.querySelector('.sy-tree-select-option-container');
-      const popupTreeElement = popupContainer?.querySelector('sy-tree') as HTMLSyTreeElement;
+    if (!this.appendParent && this.popupContainer) {
+      const popupTreeElement = this.popupContainer.querySelector('sy-tree') as HTMLSyTreeElement;
       if (popupTreeElement) {
         (popupTreeElement as any).clearAllSelectedItem();
       }
@@ -656,6 +657,7 @@ export class SyTreeSelect {
   }
 
   private handleNodesChanged(event: CustomEvent) {
+    console.log('[TreeSelect] handleNodesChanged, event.detail.nodes length:', event.detail.nodes?.length, 'checkable:', this.checkable);
     this.nodes = event.detail.nodes;
 
     if (this.checkable) {
@@ -667,8 +669,8 @@ export class SyTreeSelect {
         (this.selectElement as any).setValue(selectDefaultValue);
       }
 
+      console.log('[TreeSelect] checkable mode, calling filterAndExpandNodes');
       this.searchTerm = '';
-      this.hasSearchResults = false;
       this.filterAndExpandNodes();
       // Don't close popup in checkable mode - user may want to check multiple items
     }
