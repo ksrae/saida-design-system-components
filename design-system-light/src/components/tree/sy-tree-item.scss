@@ -207,24 +207,24 @@
 
 :host(sy-tree-item) {
 
-  // padding-left: var(--spacing-large);  
+  // padding-left: var(--spacing-large);
   .children {
     padding-left: var(--spacing-large);
   }
 }
 
 // :host(sy-tree-item[haschildren]){
-//   padding-left:0px; 
+//   padding-left:0px;
 // }
 
 /* Line */
 @for $i from 1 through 30 {
-  :host(sy-tree-item[expandable][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable].level-#{$i}) {
     position: relative;
   }
 
-  :host(sy-tree-item[expandable][line][class=" level-#{$i} "]),
-  :host(sy-tree-item[expandable][checkable][line][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable][line].level-#{$i}),
+  :host(sy-tree-item[expandable][checkable][line].level-#{$i}) {
     position: relative;
 
     &:before {
@@ -239,8 +239,8 @@
     }
   }
 
-  :host(sy-tree-item[line][class=" level-#{$i} "]),
-  :host(sy-tree-item[checkable][line][class=" level-#{$i} "]) {
+  :host(sy-tree-item[line].level-#{$i}),
+  :host(sy-tree-item[checkable][line].level-#{$i}) {
     position: relative;
 
     &:before {
@@ -257,27 +257,27 @@
 }
 
 @for $i from 1 through 30 {
-  :host(sy-tree-item[expandable][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable].level-#{$i}) {
     padding-left: var(--spacing-large);
   }
 
-  :host(sy-tree-item[expandable][checkable][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable][checkable].level-#{$i}) {
     padding-left: var(--spacing-large);
   }
 
-  :host(sy-tree-item[expandable][line][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable][line].level-#{$i}) {
     padding-left: var(--spacing-large);
   }
 
-  :host(sy-tree-item[expandable][haschild][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable][haschild].level-#{$i}) {
     padding-left: 0px;
   }
 
-  :host(sy-tree-item[expandable][checkable][haschild][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable][checkable][haschild].level-#{$i}) {
     padding-left: 0px;
   }
 
-  :host(sy-tree-item[expandable][line][haschild][class=" level-#{$i} "]) {
+  :host(sy-tree-item[expandable][line][haschild].level-#{$i}) {
     padding-left: 0px;
   }
 }

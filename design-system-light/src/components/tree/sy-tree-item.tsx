@@ -14,12 +14,12 @@ export class SyTreeItem {
   @Prop() appendable = false;
   @Prop() checkable = false;
   @Prop() checked = false;
-  @Prop() clickable = false;
+  @Prop({ reflect: true }) clickable = false;
   @Prop() disabled = false;
   @Prop({ attribute: 'draggable' }) treeitemDraggable = false;
   @Prop() dragging = false;
   @Prop() editable = false;
-  @Prop() expandable = false;
+  @Prop({ reflect: true }) expandable = false;
   @Prop() expanded = false;
   @Prop() fixed = false;
   @Prop({ attribute: 'hasChild', mutable: true }) hasChild = false;
@@ -38,7 +38,7 @@ export class SyTreeItem {
   @Prop({ attribute: 'searchTerm', mutable: true }) searchTerm = '';
   @Prop({ attribute: 'selectedValue', mutable: true }) selectedValue = '';
   @Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;
-  @Prop() line = false;
+  @Prop({ reflect: true }) line = false;
 
   // --- State ---
   @State() hovered = false;
@@ -86,7 +86,9 @@ export class SyTreeItem {
     this.searchTerm = fnAssignPropFromAlias(this.host, 'searchTerm') ?? this.searchTerm;
     this.selectedValue = fnAssignPropFromAlias(this.host, 'selected-value') ?? this.selectedValue;
     this.nodeWidth = fnAssignPropFromAlias(this.host, 'node-width') ?? this.nodeWidth;
-    
+    this.active = (this.value?.toString() === this.selectedValue?.toString());
+    this.host.className = ` level-${this.level} `;
+
     // Initialize textTerm with label so it displays on first render
     this.renderLabelWithHighlight(this.label, this.searchTerm);
   }
@@ -101,19 +103,21 @@ export class SyTreeItem {
   }
 
   // --- Watchers ---
+  @Watch('level')
+  handleLevelChange() {
+    // 기존 클래스 제거하고 새로 추가
+    this.host.className = ` level-${this.level} `;
+  }
+
   @Watch('searchTerm')
   @Watch('label')
   handleLabelOrSearchChange() {
-    console.log('[TreeItem] searchTerm or label changed:', {
-      label: this.label,
-      searchTerm: this.searchTerm
-    });
     this.renderLabelWithHighlight(this.label, this.searchTerm);
   }
 
   @Watch('selectedValue')
   handleSelectedValueChange() {
-    this.active = (this.value?.toString()?.toLowerCase() === this.selectedValue?.toString());
+    this.active = (this.value?.toString() === this.selectedValue?.toString());
   }
 
   @Watch('nodeWidth')
@@ -160,7 +164,7 @@ export class SyTreeItem {
 
     const treeItemListClasses = {
       'tree-item-list': true,
-      'line': this.line ?? false,
+      'line': this.line,
       'dragging': this.dragging && !this.disabled,
       'drop-target': this.hasDropTarget && !this.isDescendant,
       'tree-item-selected': this.active,
@@ -352,15 +356,8 @@ export class SyTreeItem {
   };
 
   private renderLabelWithHighlight(label: string, searchTerm: string) {
-    console.log('[TreeItem] renderLabelWithHighlight:', {
-      label,
-      searchTerm,
-      hasSearchTerm: !!searchTerm
-    });
-    
     if (!searchTerm) {
       this.textTerm = label;
-      console.log('[TreeItem] No searchTerm, textTerm set to:', this.textTerm);
       return;
     }
 
@@ -389,7 +386,6 @@ export class SyTreeItem {
     }
 
     this.textTerm = result;
-    console.log('[TreeItem] highlight result set, textTerm:', this.textTerm);
   }
 
   private extractHtmlAndText(htmlString: string) {
@@ -538,7 +534,7 @@ export class SyTreeItem {
     e.stopPropagation();
   }
 
-  private handleEditChange(e: CustomEvent) {
+  private handleEditChange(e: any) {
     e.stopPropagation();
     this.editingLabel = e.detail.value;
   }
@@ -613,7 +609,7 @@ export class SyTreeItem {
     }
   }
 
-  private handleNewChildInputChange(e: CustomEvent) {
+  private handleNewChildInputChange(e: any) {
     this.newChildLabel = e.detail.value;
   }
 
@@ -662,7 +658,7 @@ export class SyTreeItem {
     this.itemRemoved.emit({ value: this.value, label: this.label });
   }
 
-  private handleItemClick(e: Event) {
+  private handleItemClick(e: MouseEvent) {
     e.preventDefault();
 
     if (!this.clickable) {
@@ -701,7 +697,7 @@ export class SyTreeItem {
     this.expandChanged.emit({ value: this.value, label: this.label, expanded: this.expanded });
   }
 
-  private handleCheckChange(e: CustomEvent) {
+  private handleCheckChange(e: any) {
     if (this.checkable && !this.fixed && !this.disabled && this.checked !== e.detail.checked) {
       this.checked = e.detail.checked;
       this.checkChanged.emit({ value: this.value, label: this.label, checked: this.checked });

@@ -1512,6 +1512,10 @@ export namespace Components {
           * @default false
          */
         "required": boolean;
+        /**
+          * @default []
+         */
+        "selectedOptions": { value: string; label?: string }[];
         "setCustomError": () => Promise<void>;
         "setValue": (values: string[] | string) => Promise<void>;
         /**
@@ -4929,6 +4933,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "required"?: boolean;
+        /**
+          * @default []
+         */
+        "selectedOptions"?: { value: string; label?: string }[];
         /**
           * @default 'medium'
          */

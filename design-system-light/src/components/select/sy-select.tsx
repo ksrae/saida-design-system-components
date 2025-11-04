@@ -47,9 +47,10 @@ export class SySelect {
   @Prop() name: string = '';
   @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity: boolean = false;
   @Prop({ attribute: 'isTreeSelect', mutable: true }) isTreeSelect: boolean = false;
+  @Prop({ attribute: 'selectedOptions', mutable: true }) selectedOptions: { value: string; label?: string }[] = [];
 
   @State() isOpen: boolean = false;
-  @State() selectedOptions: { value: string; label?: string }[] = [];
+
   @State() private models: string[] = [];
   @State() private inputPlaceholder: string = '';
   @State() private options: HTMLSyOptionElement[] = []; // 타입을 인터페이스로 지정
@@ -94,6 +95,7 @@ export class SySelect {
     this.maxTagCount = fnAssignPropFromAlias(this.host, 'max-tag-count') ?? this.maxTagCount;
     this.defaultValue = fnAssignPropFromAlias(this.host, 'default-value') ?? this.defaultValue;
     this.isTreeSelect = fnAssignPropFromAlias(this.host, 'is-tree-select') ?? this.isTreeSelect;
+    this.selectedOptions = fnAssignPropFromAlias(this.host, 'selected-options') ?? this.selectedOptions;
     this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
 
     this.isValid = true;
@@ -170,9 +172,18 @@ export class SySelect {
   onPlaceholderChange() {
     this.updatePlaceholder();
   }
+
   @Watch('selectedOptions')
-  onSelectedOptionsChange() {
-    this.updateFormValue();
+  onSelectedOptionsChange(newVal: any, oldVal: any) {
+    if (this.isTreeSelect && newVal !== oldVal) {
+      // 기존 코드
+      this.updateFormValue();
+      this.updatePlaceholder();
+      this.updateOptions();
+
+    } else if (!this.isTreeSelect) {
+      this.updateFormValue();
+    }
   }
 
   private formSubmitListener() {
@@ -203,14 +214,20 @@ export class SySelect {
 
   @Method()
   async setValue(values: string[] | string) {
-    if (this.mode !== 'multiple' && this.mode !== 'tag') {
-      const value = Array.isArray(values) ? values.join(',') : values;
-      this.inputValue = value as string;
+    const value = Array.isArray(values) ? values.join(',') : values;
+
+    if (this.mode === 'tag' || this.mode === 'multiple') {
+      // tag/multiple 모드에서는 defaultValue를 업데이트
+      this.defaultValue = value;
+      this.applyDefaultValue();
+    } else {
+      this.inputValue = value;
       if (this.inputEl) {
-        this.inputEl.value = value as string;
+        this.inputEl.value = value;
       }
     }
   }
+
 
   @Method()
   async clearValue() {
@@ -246,7 +263,7 @@ export class SySelect {
     } else {
       this.models = newModels;
     }
-    
+
     // 모델이 설정된 후, 모델에 따라 selectedOptions를 업데이트
     this.updateModel();
   }
@@ -258,21 +275,22 @@ export class SySelect {
 
   private updateModel() {
     if (this.isTreeSelect) {
-      if (this.models?.length) {
-        this.selectedOptions = this.models.map(modelValue => ({
-          value: modelValue,
-          label: modelValue,
-        }));
-        if (this.mode === 'searchable') {
-          this.inputValue = this.models[0];
-        }
-      } else {
-        this.selectedOptions = [];
-      }
+      return;
+      // if (this.models?.length) {
+      //   this.selectedOptions = this.models.map(modelValue => ({
+      //     value: modelValue,
+      //     label: modelValue,
+      //   }));
+      //   if (this.mode === 'searchable') {
+      //     this.inputValue = this.models[0];
+      //   }
+      // } else {
+      //   this.selectedOptions = [];
+      // }
     } else {
       // `this.host.children` 대신 `querySelectorAll` 사용
       const options = Array.from(this.host.querySelectorAll(OPTION)) as HTMLSyOptionElement[];
-      
+
       if (options?.length) {
         const filterOptions = options.filter(opt => this.models?.some(m => opt.value?.toString() && m === opt.value.toString() && !opt.disabled));
 
@@ -608,6 +626,7 @@ export class SySelect {
         this.inputPlaceholder = !this.selectedOptions?.length ? this.placeholder : '';
         this.inputEl.value = this.selectedOptions?.length ? this.selectedOptions[0]?.label ?? '' : '';
       } else {
+        // tag/multiple 모드
         this.inputEl.value = '';
         this.inputPlaceholder = !this.selectedOptions?.length ? this.placeholder : '';
       }
@@ -672,21 +691,28 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
     e.stopPropagation();
     this.touched = true;
 
-    const currentInput = this.inputEl?.value || '';
-    const isValidInput = this.options.some(opt => opt.label === currentInput);
+    // tree-select이고 tag 모드일 때는 input을 비워둠
+    if (this.isTreeSelect && this.mode === 'tag') {
+      this.inputValue = '';
+      if (this.inputEl) {
+        this.inputEl.value = '';
+      }
+    } else {
+      // 기존 로직
+      const currentInput = this.inputEl?.value || '';
+      const isValidInput = this.options.some(opt => opt.label === currentInput);
 
-    if (!isValidInput) {
-      // 잘못된 값이면 무조건 이전 선택값으로 복원
-      if (this.selectedOptions?.length > 0) {
-        this.inputValue = this.selectedOptions[0].label ?? '';
-        if (this.inputEl) {
-          this.inputEl.value = this.inputValue;
-        }
-      } else {
-        // 이전 선택값이 없으면 입력창을 비움
-        this.inputValue = '';
-        if (this.inputEl) {
-          this.inputEl.value = '';
+      if (!isValidInput) {
+        if (this.selectedOptions?.length > 0) {
+          this.inputValue = this.selectedOptions[0].label ?? '';
+          if (this.inputEl) {
+            this.inputEl.value = this.inputValue;
+          }
+        } else {
+          this.inputValue = '';
+          if (this.inputEl) {
+            this.inputEl.value = '';
+          }
         }
       }
     }
@@ -907,24 +933,28 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
 
   private handleOutsideClickEvent(e: MouseEvent) {
     if (!this.isOpen) return;
+
     const target = e.target as HTMLElement;
     const selectContainer = this.host.querySelector('.select-container');
     const isInsideSelect = selectContainer?.contains(target) || this.host.contains(target);
-    // sy-option 엘리먼트 또는 그 내부 엘리먼트인지 확인
     const closestSyOption = target.closest('sy-option');
     const isInsideContainer = this.optionsContainer?.contains(target) ||
                               target === this.optionsContainer ||
                               target.tagName === 'SY-OPTION' ||
                               closestSyOption !== null;
+
     if (!isInsideSelect && !isInsideContainer) {
       if (this.optionsContainer?.dataset?.mode === 'tag') {
         this.tempOption = null;
-        if (this.inputEl) this.inputEl.value = '';
+        if (this.inputEl) {
+          this.inputEl.value = '';
+        }
         this.options = this.options.filter(opt => opt.isCustomTag);
       } else if (this.optionsContainer?.dataset?.mode === 'searchable' && this.inputEl) {
         this.inputEl.value = this.selectedOptions?.length ? this.selectedOptions[0]?.label ?? '' : '';
         this.inputPlaceholder = this.selectedOptions?.length ? this.selectedOptions[0]?.label ?? '' : this.placeholder;
       }
+
       this.closeSelectOption();
       this.isOpen = false;
     }
@@ -1036,7 +1066,7 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
       // Tree-select manages its own popup, so don't render anything here
       return;
     }
-    
+
     if (!this.optionsContainer) {
       const popupContainer = document.createElement('div');
       popupContainer.classList.add('sy-select-options-container');

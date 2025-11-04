@@ -46,25 +46,40 @@
       button:hover {
         background: #2980b9;
       }
+  .tree-result {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 30px;
+    color: #555;
+    font-family: monospace;
+    white-space: pre;
+    max-height: 200px;
+    overflow: auto;
+  }
 
-      .tree-result {
-        margin-top: 10px;
-        padding: 10px;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        min-height: 30px;
-        color: #555;
-      }
+  .tree-controls {
+    margin: 10px 0;
+  }
 
-      .tree-controls {
-        margin: 10px 0;
-      }
+  .tree-controls label {
+    margin-right: 15px;
+  }
 
-      .tree-controls label {
-        margin-right: 15px;
-      }
-    </style>
+  .example-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+
+  h3 {
+    margin-top: 0;
+    color: #333;
+  }
+</style>
 
 <!-- TREE-SELECT COMPONENT TEST -->
 <section id="tree-select-examples">
@@ -72,58 +87,508 @@
 
   <!-- Basic Tree Select -->
   <div class="example-section">
-    <h3>Basic Tree Select (Nodes)</h3>
-    <sy-tree-select id="treeSelectNodes"></sy-tree-select>
+    <h3>1. Basic Tree Select</h3>
+    <sy-tree-select id="treeSelectBasic" placeholder="Select an item"></sy-tree-select>
+    <div id="basicResult" class="tree-result"></div>
     <script>
       (() => {
         const nodes = [
           { label: 'grandparent 1', value: '100', children: [
               { label: 'parent 1-0', value: '1001', children: [
-                  { label: 'leaf1', value: '10010' }, 
-                  { label: 'leaf2', value: '10011' }, 
-                  { label: 'leaf3', value: '10012' }  
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
                 ]
               },
               { label: 'parent 1-1', value: '1002', children: [
                   { label: 'leaf4', value: '10020' }
-                ] 
+                ]
               },
             ]
           }
         ];
-        const tree = document.querySelector('#treeSelectNodes');
-        if (tree) tree.nodes = nodes;
+        const tree = document.querySelector('#treeSelectBasic');
+        const result = document.querySelector('#basicResult');
+        tree.nodes = nodes;
+        tree.addEventListener('changed', (e) => {
+          result.textContent = 'Selected: ' + JSON.stringify(e.detail, null, 2);
+        });
       })();
     </script>
   </div>
 
   <!-- Checkable Tree Select -->
   <div class="example-section">
-    <h3>Checkable Tree Select</h3>
-    <sy-tree-select id="treeSelectCheckable" checkable expandAll></sy-tree-select>
+    <h3>2. Checkable Tree Select</h3>
+    <sy-tree-select id="treeSelectCheckable" checkable expandAll placeholder="Select multiple items"></sy-tree-select>
+    <div id="checkableResult" class="tree-result"></div>
     <script>
       (() => {
         const nodes = [
           { label: 'grandparent 1', value: '100', children: [
               { label: 'parent 1-0', value: '1001', checked: true, children: [
-                  { label: 'leaf1', value: '10010' }, 
-                  { label: 'leaf2', value: '10011' }, 
-                  { label: 'leaf3', value: '10012' }  
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
                 ]
               },
               { label: 'parent 1-1', value: '1002', children: [
                   { label: 'leaf4', value: '10020' }
-                ] 
+                ]
               },
             ]
           }
         ];
         const tree = document.querySelector('#treeSelectCheckable');
-        if (tree) tree.nodes = nodes;
+        const result = document.querySelector('#checkableResult');
+        tree.nodes = nodes;
+        tree.addEventListener('changed', (e) => {
+          result.textContent = 'Checked items: ' + JSON.stringify(e.detail.selectedItem, null, 2);
+        });
       })();
     </script>
   </div>
 
+  <!-- Clearable Tree Select -->
+  <div class="example-section">
+    <h3>3. Clearable Tree Select</h3>
+    <sy-tree-select id="treeSelectClearable" clearable defaultValue="10011" placeholder="Clearable select"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeSelectClearable');
+        tree.nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Disabled & Readonly States -->
+  <div class="example-section">
+    <h3>4. Disabled & Readonly States</h3>
+    <label>Disabled:</label>
+    <sy-tree-select id="treeSelectDisabled" disabled defaultValue="10010" placeholder="Disabled select"></sy-tree-select>
+    <br><br>
+    <label>Readonly:</label>
+    <sy-tree-select id="treeSelectReadonly" readonly defaultValue="10020" placeholder="Readonly select"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectDisabled').nodes = nodes;
+        document.querySelector('#treeSelectReadonly').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Error Status -->
+  <div class="example-section">
+    <h3>5. Error Status</h3>
+    <sy-tree-select id="treeSelectError" status="error" placeholder="Error state"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              }
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectError').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Expandable Options -->
+  <div class="example-section">
+    <h3>6. Expandable Options</h3>
+    <label>Not Expandable:</label>
+    <sy-tree-select id="treeSelectNotExpandable" placeholder="Not expandable"></sy-tree-select>
+    <br><br>
+    <label>Expandable:</label>
+    <sy-tree-select id="treeSelectExpandable" expandable placeholder="Expandable"></sy-tree-select>
+    <br><br>
+    <label>Expand All:</label>
+    <sy-tree-select id="treeSelectExpandAll" expandable expandAll placeholder="Expand all"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' }
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectNotExpandable').nodes = nodes;
+        document.querySelector('#treeSelectExpandable').nodes = nodes;
+        document.querySelector('#treeSelectExpandAll').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Line Style -->
+  <div class="example-section">
+    <h3>7. Line Style</h3>
+    <sy-tree-select id="treeSelectLine" line expandable expandAll placeholder="With line style"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectLine').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Loading State -->
+  <div class="example-section">
+    <h3>8. Loading State</h3>
+    <sy-tree-select id="treeSelectLoading" loading placeholder="Loading..."></sy-tree-select>
+    <button onclick="toggleLoading()">Toggle Loading</button>
+    <script>
+      function toggleLoading() {
+        const tree = document.querySelector('#treeSelectLoading');
+        tree.loading = !tree.loading;
+      }
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' }
+                ]
+              }
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectLoading').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Max Tag Count -->
+  <div class="example-section">
+    <h3>9. Max Tag Count (for Checkable)</h3>
+    <sy-tree-select id="treeSelectMaxTag" checkable maxTagCount="2" expandAll placeholder="Max 2 tags"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', checked: true, children: [
+                  { label: 'leaf1', value: '10010', checked: true },
+                  { label: 'leaf2', value: '10011', checked: true },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectMaxTag').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Node Width -->
+  <div class="example-section">
+    <h3>10. Node Width Limit</h3>
+    <sy-tree-select id="treeSelectNodeWidth" nodeWidth="150" expandAll placeholder="Node width 150px"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'This is a very long node label that will be truncated', value: '100', children: [
+              { label: 'Another long parent node label for testing overflow', value: '1001', children: [
+                  { label: 'Long leaf node label 1', value: '10010' },
+                  { label: 'Long leaf node label 2', value: '10011' }
+                ]
+              }
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectNodeWidth').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- AppendParent Mode -->
+  <div class="example-section">
+    <h3>11. AppendParent Mode (Inline Tree)</h3>
+    <sy-tree-select id="treeSelectAppendParent" appendParent expandable placeholder="Inline tree mode"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' }
+                ]
+              }
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectAppendParent').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Form Integration -->
+  <div class="example-section">
+    <h3>12. Form Integration (Required Field)</h3>
+    <form id="testForm">
+      <sy-tree-select id="treeSelectRequired" name="treeSelection" required placeholder="Required field"></sy-tree-select>
+      <br><br>
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
+    </form>
+    <div id="formResult" class="tree-result"></div>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' }
+                ]
+              }
+            ]
+          }
+        ];
+        const tree = document.querySelector('#treeSelectRequired');
+        const form = document.querySelector('#testForm');
+        const result = document.querySelector('#formResult');
+
+        tree.nodes = nodes;
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = new FormData(form);
+          const value = formData.get('treeSelection');
+          result.textContent = 'Form submitted with value: ' + value;
+        });
+
+        form.addEventListener('reset', (e) => {
+          result.textContent = 'Form reset';
+        });
+      })();
+    </script>
+  </div>
+
+  <!-- Default Value with Multiple Selection -->
+  <div class="example-section">
+    <h3>13. Default Value (Multiple)</h3>
+    <sy-tree-select id="treeSelectDefaultMultiple" checkable defaultValue="10010,10020" expandAll placeholder="Multiple default values"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'grandparent 1', value: '100', children: [
+              { label: 'parent 1-0', value: '1001', children: [
+                  { label: 'leaf1', value: '10010' },
+                  { label: 'leaf2', value: '10011' },
+                  { label: 'leaf3', value: '10012' }
+                ]
+              },
+              { label: 'parent 1-1', value: '1002', children: [
+                  { label: 'leaf4', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectDefaultMultiple').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Complex Node Features -->
+  <div class="example-section">
+    <h3>14. Complex Node Features</h3>
+    <sy-tree-select id="treeSelectComplex" expandAll placeholder="Nodes with icons and tags"></sy-tree-select>
+    <script>
+      (() => {
+        const nodes = [
+          {
+            label: 'Documents',
+            value: '100',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M144 480C144 497.7 158.3 512 176 512L464 512C481.7 512 496 497.7 496 480L496 288L384 288C348.7 288 320 259.3 320 224L320 112L176 112C158.3 112 144 126.3 144 144L144 480zM512 285.3C512 279 509.9 273 506 268.1L371.9 134C367 130.1 361 128 354.7 128L352 128L352 224C352 241.7 366.3 256 384 256L480 256L480 253.3C480 253.2 480 253.2 480 253.1L480 253.1L480 285.3C495.9 285.5 508.2 291.5 517.6 300.9C527.3 310.6 532 323 532 334L532 336L532 480C532 515.3 503.3 544 468 544L172 544C136.7 544 108 515.3 108 480L108 144C108 108.7 136.7 80 172 80L357.5 80C369.8 80 381.6 84.7 390.6 93.7L524.3 227.5C533.3 236.4 538 248.2 538 260.5L538 289.9C526.2 286.7 519 285.6 512 285.3z"/></svg>',
+            tagMessage: 'Important',
+            tagVariant: 'red',
+            children: [
+              {
+                label: 'Contracts',
+                value: '1001',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M256 64L384 64C419.3 64 448 92.7 448 128L448 448L192 448L192 128C192 92.7 220.7 64 256 64zM256 16C194.1 16 144 66.1 144 128L144 480C144 497.7 158.3 512 176 512L464 512C481.7 512 496 497.7 496 480L496 128C496 66.1 445.9 16 384 16L256 16z"/></svg>',
+                tagMessage: 'New',
+                tagVariant: 'blue',
+                disabled: false,
+                children: [
+                  { label: 'Q1 Contract', value: '10010' },
+                  { label: 'Q2 Contract', value: '10011' }
+                ]
+              },
+              {
+                label: 'Reports',
+                value: '1002',
+                tagMessage: 'Archived',
+                tagVariant: 'gray',
+                disabled: true,
+                children: [
+                  { label: 'Annual Report', value: '10020' }
+                ]
+              },
+            ]
+          }
+        ];
+        document.querySelector('#treeSelectComplex').nodes = nodes;
+      })();
+    </script>
+  </div>
+
+  <!-- Dynamic Node Update -->
+  <div class="example-section">
+    <h3>15. Dynamic Node Update</h3>
+    <sy-tree-select id="treeSelectDynamic" placeholder="Dynamic nodes"></sy-tree-select>
+    <br><br>
+    <button onclick="addNode()">Add Node</button>
+    <button onclick="removeLastNode()">Remove Last Node</button>
+    <button onclick="updateNodeLabel()">Update First Label</button>
+    <script>
+      let dynamicNodes = [
+        { label: 'Node 1', value: '1', children: [
+            { label: 'Child 1-1', value: '11' },
+            { label: 'Child 1-2', value: '12' }
+          ]
+        },
+        { label: 'Node 2', value: '2' }
+      ];
+
+      const dynamicTree = document.querySelector('#treeSelectDynamic');
+      dynamicTree.nodes = dynamicNodes;
+
+      function addNode() {
+        const newNode = {
+          label: 'New Node ' + (dynamicNodes.length + 1),
+          value: String(dynamicNodes.length + 1),
+          children: []
+        };
+        dynamicNodes = [...dynamicNodes, newNode];
+        dynamicTree.nodes = dynamicNodes;
+      }
+
+      function removeLastNode() {
+        if (dynamicNodes.length > 0) {
+          dynamicNodes = dynamicNodes.slice(0, -1);
+          dynamicTree.nodes = dynamicNodes;
+        }
+      }
+
+      function updateNodeLabel() {
+        if (dynamicNodes.length > 0) {
+          dynamicNodes[0].label = 'Updated Node 1 - ' + new Date().toLocaleTimeString();
+          dynamicTree.nodes = [...dynamicNodes];
+        }
+      }
+    </script>
+  </div>
+
+  <!-- Search Functionality Test -->
+  <div class="example-section">
+    <h3>16. Search Functionality</h3>
+    <p>Type to search through nodes (try: "leaf", "parent", etc.)</p>
+    <sy-tree-select id="treeSelectSearch" expandable placeholder="Search nodes..."></sy-tree-select>
+    <div id="searchInfo" class="tree-result">Type something to see filtered results</div>
+    <script>
+      (() => {
+        const nodes = [
+          { label: 'Apple Products', value: '100', children: [
+              { label: 'iPhone Series', value: '1001', children: [
+                  { label: 'iPhone 14', value: '10010' },
+                  { label: 'iPhone 15', value: '10011' },
+                  { label: 'iPhone 15 Pro', value: '10012' }
+                ]
+              },
+              { label: 'MacBook Series', value: '1002', children: [
+                  { label: 'MacBook Air', value: '10020' },
+                  { label: 'MacBook Pro', value: '10021' }
+                ]
+              },
+            ]
+          },
+          { label: 'Samsung Products', value: '200', children: [
+              { label: 'Galaxy Series', value: '2001', children: [
+                  { label: 'Galaxy S23', value: '20010' },
+                  { label: 'Galaxy S24', value: '20011' }
+                ]
+              }
+            ]
+          }
+        ];
+        const searchTree = document.querySelector('#treeSelectSearch');
+        const searchInfo = document.querySelector('#searchInfo');
+        searchTree.nodes = nodes;
+
+        // Monitor search through select element's input
+        searchTree.addEventListener('input', (e) => {
+          setTimeout(() => {
+            const selectEl = searchTree.querySelector('sy-select');
+            const inputEl = selectEl?.querySelector('input');
+            if (inputEl) {
+              searchInfo.textContent = 'Searching for: "' + inputEl.value + '"';
+            }
+          }, 100);
+        });
+      })();
+    </script>
+  </div>
 
 </section>
 
@@ -464,7 +929,7 @@
         const tree = document.querySelector('#treeManualAdd');
         const result = document.querySelector('#treeManualAddResult');
         const manualAddButton = document.querySelector('#treeManualAddButton');
-        
+
         let addNode = null;
         if (tree) {
           tree.nodes = nodes;
@@ -473,7 +938,7 @@
             addNode = e.detail;
           });
         }
-        
+
         if (manualAddButton) {
           manualAddButton.addEventListener('click', () => {
             if (addNode && tree) {
@@ -522,7 +987,7 @@
         const tree = document.querySelector('#treeManualRemove');
         const result = document.querySelector('#treeManualRemoveResult');
         const manualRemoveButton = document.querySelector('#treeManualRemoveButton');
-        
+
         let removeNode = null;
         if (tree) {
           tree.nodes = nodes;
@@ -531,7 +996,7 @@
             removeNode = e.detail;
           });
         }
-        
+
         if (manualRemoveButton) {
           manualRemoveButton.addEventListener('click', () => {
             if (removeNode && tree) {
@@ -745,7 +1210,7 @@
 <section id="dropdown-examples">
   <h1>Dropdown Component Examples</h1>
 
-  
+
   <!-- Basic Dropdown -->
   <div class="dropdown-example">
     <h3>Basic Dropdown</h3>
@@ -925,7 +1390,7 @@
     // Basic Dropdown Event Listener
     const basicDropdown = document.getElementById('basicDropdown');
     const basicDropdownLog = document.getElementById('basicDropdownLog');
-    
+
     basicDropdown.addEventListener('selected', (e) => {
       basicDropdownLog.textContent = `Selected: ${e.detail.value} at ${new Date().toLocaleTimeString()}`;
     });
@@ -1116,7 +1581,7 @@
       <sy-tab tabkey="t4">tab4</sy-tab>
       <sy-tab tabkey="t5">tab5</sy-tab>
     </div>
-      
+
     <sy-tab slot="extra">
       <sy-icon size="medium"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M344 120C344 106.7 333.3 96 320 96C306.7 96 296 106.7 296 120L296 296L120 296C106.7 296 96 306.7 96 320C96 333.3 106.7 344 120 344L296 344L296 520C296 533.3 306.7 544 320 544C333.3 544 344 533.3 344 520L344 344L520 344C533.3 344 544 333.3 544 320C544 306.7 533.3 296 520 296L344 296L344 120z"/></svg></sy-icon>
     </sy-tab>
@@ -7184,7 +7649,7 @@
     <sy-avatar icon="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path fill='currentColor' d='M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z'/></svg>" tooltipContent="Icon User"></sy-avatar>
     <sy-avatar letter="DK" tooltipContent="Dana King"></sy-avatar>
   </sy-avatar-group>
-  
+
       <h3>Avatar Group - overflow (+N)</h3>
       <sy-avatar-group id="groupOverflow" clickable maxCount="3" size="medium" variant="stack">
         <sy-avatar image="/assets/test.png" tooltipContent="Alice"></sy-avatar>

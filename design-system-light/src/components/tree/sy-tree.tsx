@@ -31,15 +31,15 @@ export class SyTree {
 
   // --- Props ---
   @Prop({ mutable: true }) nodes: TreeNode[] = [];
-  @Prop() checkable = false;
-  @Prop() clickable = false;
+  @Prop({ reflect: true }) checkable = false;
+  @Prop({ reflect: true }) clickable = false;
   @Prop({ attribute: 'draggable' }) treeDraggable = false;
   @Prop() editable = false;
   @Prop() expandable = false;
   @Prop({ attribute: 'expandAll', mutable: true }) expandAll = false;
   @Prop({ attribute: 'manualAdd', mutable: true }) manualAdd = false;
   @Prop({ attribute: 'manualRemove', mutable: true }) manualRemove = false;
-  @Prop() line = false;
+  @Prop({ reflect: true }) line = false;
   @Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;
   @Prop({ attribute: 'selectedValue', mutable: true }) selectedValue = '';
   @Prop({ attribute: 'searchTerm', mutable: true }) searchTerm: string = '';
@@ -178,10 +178,8 @@ export class SyTree {
 
   @Watch('searchTerm')
   handleSearchTermChange() {
-    console.log('[Tree] searchTerm changed:', this.searchTerm, 'isTreeSelect:', this.isTreeSelect);
     if (this.isTreeSelect) {
       this.updatedNodes = this.filterNodes(this.nodes, this.searchTerm);
-      console.log('[Tree] updatedNodes after filter:', this.updatedNodes);
     }
   }
 
@@ -198,12 +196,16 @@ export class SyTree {
       this.expandParentNodesForSelectedValue(this.selectedValue);
     }
 
-    const allItems = this.host.querySelectorAll('sy-tree-item');
-    if (allItems) {
-      allItems.forEach(item => {
-        (item as any).selectedValue = this.selectedValue;
+    // DOM이 준비될 때까지 대기
+    requestAnimationFrame(() => {
+      const allItems = this.host.querySelectorAll('sy-tree-item');
+
+      allItems.forEach((item: any) => {
+        item.selectedValue = this.selectedValue;
+        // 직접 active 상태도 설정
+        item.active = (item.value?.toString() === this.selectedValue?.toString());
       });
-    }
+    });
   }
 
   @Watch('nodeWidth')
@@ -254,7 +256,7 @@ export class SyTree {
           disabled={node.disabled ?? false}
           draggable={this.treeDraggable}
           clickable={this.clickable ? (node.clickable ?? true) : false}
-          selectedValue={this.selectedValue?.toString().toLowerCase()}
+          selectedValue={this.selectedValue?.toString()}
           nodeWidth={this.nodeWidth !== null && this.nodeWidth > 0 ? this.nodeWidth : null}
           treeChildren={node.children ? this.renderTree(node.children, level + 1) : []}
           onDragStart={(e) => this.handleDragStart(e, node)}
@@ -268,7 +270,7 @@ export class SyTree {
           onItemUpdating={this.handleUpdatingItem.bind(this)}
           onItemUpdatingReset={this.handleUpdatingResetItem.bind(this)}
           onItemDrop={this.treeDraggable && !node.disabled ? this.handleItemDrop.bind(this) : undefined}
-          onItemSelected={this.handleItemSelected.bind(this)}
+          onItemSelected={(e: Event) => {this.handleItemSelected(e);}}
         ></sy-tree-item>,
         <div
           class="drop-zone"
@@ -282,7 +284,7 @@ export class SyTree {
   }
 
   render() {
-    return this.renderTree(this.updatedNodes, 1);
+    return this.renderTree(this.updatedNodes, 0);
   }
 
   // --- Private Methods ---
@@ -346,9 +348,10 @@ export class SyTree {
     return clonedNodes;
   }
 
-  private handleAddItem(e: CustomEvent) {
+  private handleAddItem(e: Event) {
     e.preventDefault();
-    const { parentValue, childLabel, childValue } = e.detail;
+    const { parentValue, childLabel, childValue } = (e as any).detail;
+
 
     if (!this.manualAdd) {
       const child: TreeNode = {
@@ -379,7 +382,7 @@ export class SyTree {
     }
   }
 
-  private handleEditItem(e: CustomEvent) {
+  private handleEditItem(e: any) {
     const { value, label } = e.detail;
 
     const { node: targetNode } = this.findNodeAndParent(this.updatedNodes, value);
@@ -399,8 +402,9 @@ export class SyTree {
     this.emitNodesChanged();
   }
 
-  private handleUpdatingItem(e: CustomEvent) {
-    e.stopPropagation();
+  private handleUpdatingItem(e: Event) {
+    const customEvent = e as CustomEvent<any>;
+    customEvent.stopPropagation();
     this.isUpdating = true;
   }
 
@@ -417,7 +421,7 @@ export class SyTree {
     }
   }
 
-  private handleItemSelected(e: CustomEvent) {
+  private handleItemSelected(e: any) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -569,9 +573,8 @@ export class SyTree {
     return newNode;
   }
 
-  private handleCheckChanged(e: CustomEvent) {
+  private handleCheckChanged(e: any) {
     e.stopPropagation();
-
     const { value, label, checked } = e.detail;
 
     this.itemChecked.emit({ value, label, checked });
@@ -583,7 +586,7 @@ export class SyTree {
     }
   }
 
-  private handleExpandChanged(e: CustomEvent) {
+  private handleExpandChanged(e: any) {
     const { value, expanded } = e.detail;
     this.updateNodeProperty(value, 'expanded', expanded);
 
@@ -909,40 +912,36 @@ export class SyTree {
     }
   }
 
-
   private filterNodes(nodes: TreeNode[], searchTerm: string): TreeNode[] {
     if (!this.isTreeSelect) {
       return nodes;
     }
 
     if (!searchTerm) {
+      // searchTerm이 없으면 원본 노드의 expanded 상태를 유지
       return nodes.map(node => ({
         ...node,
-        expanded: this.expandable ? this.expandAll : true,
+        expanded: node.expanded ?? false,  // 원본 상태 유지, 없으면 false
         children: node.children ? this.filterNodes(node.children, searchTerm) : []
       }));
     }
 
-    return nodes.map(node => {
+    // 검색 시 필터링
+    return nodes.reduce((acc: TreeNode[], node) => {
       const isMatch = node.label.toLowerCase().includes(searchTerm.toLowerCase());
-      const children = node.children ? this.filterNodes(node.children, searchTerm) : [];
-      const hasMatchingChildren = this.hasMatchInChildren(children, searchTerm);
+      const filteredChildren = node.children ? this.filterNodes(node.children, searchTerm) : [];
+      const hasMatchingChildren = filteredChildren.length > 0;
 
-      // Expand nodes that match or have matching descendants
       if (isMatch || hasMatchingChildren) {
-        return {
+        acc.push({
           ...node,
-          expanded: true, // Always expand on match or when children match
-          children
-        };
+          expanded: hasMatchingChildren,
+          children: filteredChildren
+        });
       }
 
-      return {
-        ...node,
-        expanded: false,
-        children
-      };
-    });
+      return acc;
+    }, []);
   }
 
   private hasMatchInChildren(children: TreeNode[], searchTerm: string): boolean {
