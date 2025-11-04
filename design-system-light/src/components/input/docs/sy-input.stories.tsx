@@ -1,5 +1,5 @@
 import { Input, SyInputProps } from './sy-input.main';
-import { Meta, StoryObj } from "@storybook/web-components";
+import { Meta, StoryObj } from "@storybook/web-components-vite";
 import { clearElements } from '../../clear-element';
 
 const inputMeta: Meta<SyInputProps> = {

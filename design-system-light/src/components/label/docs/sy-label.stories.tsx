@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { Label, SyLabelProps } from './sy-label.main';
 import { clearElements } from "../../clear-element";
 

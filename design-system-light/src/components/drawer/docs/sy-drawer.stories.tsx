@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/web-components";
+import { Meta, StoryObj } from "@storybook/web-components-vite";
 import { clearElements } from '../../clear-element';
 import { SyDrawerProps, Drawer } from './sy-drawer.main';
 

@@ -1,5 +1,5 @@
 
-import { Meta, StoryObj } from "@storybook/web-components";
+import { Meta, StoryObj } from "@storybook/web-components-vite";
 import { clearElements } from '../../clear-element';
 import { Datepicker, SyDatepickerProps } from './sy-datepicker.main';
 
