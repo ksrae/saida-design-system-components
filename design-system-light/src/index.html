@@ -80,7 +80,809 @@
     color: #333;
   }
 </style>
+<section>
+    <div class="container">
+        <div class="test-header">
+            <h1>🧪 SY Global Header Test Suite</h1>
+            <p>Complete testing environment based on Storybook test cases</p>
+        </div>
 
+        <!-- Test Case 1: Basic Header with All Properties -->
+        <div class="test-case">
+            <span class="test-badge">Basic</span>
+            <div class="test-case-header">
+                <div class="test-number">1</div>
+                <h2>Complete Header with All Features</h2>
+            </div>
+            <p class="test-case-description">
+                Tests all properties: title, sticky, search, information, notification, and actions slot
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-complete"
+                    title="Complete Feature Set"
+                    sticky="true"
+                    search="true"
+                    information="true"
+                    notification="true">
+                    <div slot="actions">
+                        <button class="custom-action-btn">User Profile</button>
+                        <button class="custom-action-btn">Settings</button>
+                    </div>
+                </sy-global-header>
+            </div>
+            <div id="result-complete" class="result-area"></div>
+        </div>
+
+        <!-- Test Case 2: Header with Tabs -->
+        <div class="test-case">
+            <span class="test-badge">Tabs</span>
+            <div class="test-case-header">
+                <div class="test-number">2</div>
+                <h2>Header with Tab Navigation</h2>
+            </div>
+            <p class="test-case-description">
+                Tests tab integration with overflow menu functionality. Includes closable tabs and draggable feature.
+            </p>
+            <div class="component-wrapper">
+                <sy-tab-group active="1" position="top" draggable>
+                    <sy-global-header id="header-tabs" title="Tab Navigation Example">
+                        <div slot="tabs">
+                            <sy-tab tabkey="a1">Tab1</sy-tab>
+                            <sy-tab tabkey="a2" closable>Tab2</sy-tab>
+                            <sy-tab tabkey="a3">Tab3</sy-tab>
+                            <sy-tab tabkey="a4">Tab4</sy-tab>
+                            <sy-tab tabkey="a5">Tab5</sy-tab>
+                            <sy-tab tabkey="a6">Tab6</sy-tab>
+                            <sy-tab tabkey="a7" closable>Tab7</sy-tab>
+                            <sy-tab tabkey="a8">Tab8</sy-tab>
+                            <sy-tab tabkey="a9">Tab9</sy-tab>
+                            <sy-tab tabkey="a10">Tab10</sy-tab>
+                        </div>
+                    </sy-global-header>
+                    <div slot="contents">
+                        <sy-tab-content name="a1">Content for Tab 1</sy-tab-content>
+                        <sy-tab-content name="a2">Content for Tab 2</sy-tab-content>
+                        <sy-tab-content name="a3">Content for Tab 3</sy-tab-content>
+                        <sy-tab-content name="a4">Content for Tab 4</sy-tab-content>
+                        <sy-tab-content name="a5">Content for Tab 5</sy-tab-content>
+                        <sy-tab-content name="a6">Content for Tab 6</sy-tab-content>
+                        <sy-tab-content name="a7">Content for Tab 7</sy-tab-content>
+                        <sy-tab-content name="a8">Content for Tab 8</sy-tab-content>
+                        <sy-tab-content name="a9">Content for Tab 9</sy-tab-content>
+                        <sy-tab-content name="a10">Content for Tab 10</sy-tab-content>
+                    </div>
+                </sy-tab-group>
+            </div>
+            <div id="result-tabs" class="result-area"></div>
+        </div>
+
+        <!-- Test Case 3: Sticky Header -->
+        <div class="test-case">
+            <span class="test-badge">Sticky</span>
+            <div class="test-case-header">
+                <div class="test-number">3</div>
+                <h2>Sticky Header Test</h2>
+            </div>
+            <p class="test-case-description">
+                Tests sticky positioning. Scroll down to see the header stick to the top of the viewport.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-sticky"
+                    title="Sticky Header Example"
+                    sticky="true">
+                </sy-global-header>
+                <div class="scroll-test-area">
+                    <h3>Scroll down to test sticky behavior</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Sticky:</span>
+                    <div class="btn-group">
+                        <button onclick="toggleSticky(true)">Enable</button>
+                        <button class="secondary" onclick="toggleSticky(false)">Disable</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 4: Search Functionality -->
+        <div class="test-case">
+            <span class="test-badge">Search</span>
+            <div class="test-case-header">
+                <div class="test-number">4</div>
+                <h2>Search Feature Test</h2>
+            </div>
+            <p class="test-case-description">
+                Tests search input and changed event. Type in the search box to trigger events.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-search"
+                    title="Search Feature Demo"
+                    search="true">
+                </sy-global-header>
+            </div>
+            <div id="result-search" class="result-area"></div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Search:</span>
+                    <div class="btn-group">
+                        <button onclick="toggleSearch(true)">Enable</button>
+                        <button class="secondary" onclick="toggleSearch(false)">Disable</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 5: Information Button -->
+        <div class="test-case">
+            <span class="test-badge">Info</span>
+            <div class="test-case-header">
+                <div class="test-number">5</div>
+                <h2>Information Button Test</h2>
+            </div>
+            <p class="test-case-description">
+                Tests information button click event. Click the info icon to trigger the event.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-information"
+                    title="Information Button Demo"
+                    information="true">
+                </sy-global-header>
+            </div>
+            <div id="result-information" class="result-area"></div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Information:</span>
+                    <div class="btn-group">
+                        <button onclick="toggleInformation(true)">Enable</button>
+                        <button class="secondary" onclick="toggleInformation(false)">Disable</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 6: Notification Button -->
+        <div class="test-case">
+            <span class="test-badge">Notification</span>
+            <div class="test-case-header">
+                <div class="test-number">6</div>
+                <h2>Notification Button Test</h2>
+            </div>
+            <p class="test-case-description">
+                Tests notification button click event. Click the bell icon to trigger the event.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-notification"
+                    title="Notification Button Demo"
+                    notification="true">
+                </sy-global-header>
+            </div>
+            <div id="result-notification" class="result-area"></div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Notification:</span>
+                    <div class="btn-group">
+                        <button onclick="toggleNotification(true)">Enable</button>
+                        <button class="secondary" onclick="toggleNotification(false)">Disable</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 7: Slot Actions -->
+        <div class="test-case">
+            <span class="test-badge">Actions</span>
+            <div class="test-case-header">
+                <div class="test-number">7</div>
+                <h2>Custom Actions Slot Test</h2>
+            </div>
+            <p class="test-case-description">
+                Tests custom action buttons in the actions slot. Various button styles and functionalities.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-actions"
+                    title="Custom Actions Demo">
+                    <div slot="actions">
+                        <button class="custom-action-btn" onclick="handleCustomAction('profile')">
+                            👤 Profile
+                        </button>
+                        <button class="custom-action-btn" onclick="handleCustomAction('settings')">
+                            ⚙️ Settings
+                        </button>
+                        <button class="custom-action-btn" onclick="handleCustomAction('logout')" style="background: #e74c3c;">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </sy-global-header>
+            </div>
+            <div id="result-actions" class="result-area"></div>
+        </div>
+
+        <!-- Test Case 8: Dynamic Title -->
+        <div class="test-case">
+            <span class="test-badge">Title</span>
+            <div class="test-case-header">
+                <div class="test-number">8</div>
+                <h2>Dynamic Title Test</h2>
+            </div>
+            <p class="test-case-description">
+                Tests dynamic title changes. Enter a new title and click 'Update Title' to change it.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-title"
+                    title="Default Title">
+                </sy-global-header>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">New Title:</span>
+                    <input type="text" id="title-input" placeholder="Enter new title" value="Dynamic Title Example">
+                    <button onclick="updateTitle()" style="margin-left: 10px;">Update Title</button>
+                </div>
+            </div>
+            <div id="result-title" class="result-area"></div>
+        </div>
+
+        <!-- Test Case 9: Combined Features -->
+        <div class="test-case">
+            <span class="test-badge">Combined</span>
+            <div class="test-case-header">
+                <div class="test-number">9</div>
+                <h2>Dynamic Property Control</h2>
+            </div>
+            <p class="test-case-description">
+                Interactive test case to toggle all properties dynamically. Use the controls below to enable/disable features.
+            </p>
+            <div class="component-wrapper">
+                <sy-global-header
+                    id="header-dynamic"
+                    title="Interactive Demo">
+                </sy-global-header>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Title:</span>
+                    <input type="text" id="dynamic-title-input" placeholder="Enter title">
+                    <button onclick="updateDynamicTitle()" style="margin-left: 10px;">Update</button>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Sticky:</span>
+                    <div class="btn-group">
+                        <button onclick="setDynamicProp('sticky', true)">Enable</button>
+                        <button class="secondary" onclick="setDynamicProp('sticky', false)">Disable</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Search:</span>
+                    <div class="btn-group">
+                        <button onclick="setDynamicProp('search', true)">Enable</button>
+                        <button class="secondary" onclick="setDynamicProp('search', false)">Disable</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Information:</span>
+                    <div class="btn-group">
+                        <button onclick="setDynamicProp('information', true)">Enable</button>
+                        <button class="secondary" onclick="setDynamicProp('information', false)">Disable</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Notification:</span>
+                    <div class="btn-group">
+                        <button onclick="setDynamicProp('notification', true)">Enable</button>
+                        <button class="secondary" onclick="setDynamicProp('notification', false)">Disable</button>
+                    </div>
+                </div>
+            </div>
+            <div id="result-dynamic" class="result-area"></div>
+        </div>
+
+        <!-- Test Case 10: Tab Overflow Test -->
+        <div class="test-case">
+            <span class="test-badge">Overflow</span>
+            <div class="test-case-header">
+                <div class="test-number">10</div>
+                <h2>Dynamic Tab Management</h2>
+            </div>
+            <p class="test-case-description">
+                Tests dynamic tab addition/removal and overflow menu behavior. Resize browser to test responsive overflow.
+            </p>
+            <div class="component-wrapper">
+                <sy-tab-group id="dynamic-tab-group" active="0">
+                    <sy-global-header id="header-dynamic-tabs" title="Dynamic Tabs">
+                        <div slot="tabs" id="dynamic-tabs-container">
+                            <sy-tab tabkey="tab1">Tab 1</sy-tab>
+                            <sy-tab tabkey="tab2">Tab 2</sy-tab>
+                            <sy-tab tabkey="tab3">Tab 3</sy-tab>
+                        </div>
+                    </sy-global-header>
+                    <div slot="contents" id="dynamic-contents-container">
+                        <sy-tab-content name="tab1">Content 1</sy-tab-content>
+                        <sy-tab-content name="tab2">Content 2</sy-tab-content>
+                        <sy-tab-content name="tab3">Content 3</sy-tab-content>
+                    </div>
+                </sy-tab-group>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Tab Management:</span>
+                    <div class="btn-group">
+                        <button class="success" onclick="addTab()">➕ Add Tab</button>
+                        <button class="danger" onclick="removeTab()">➖ Remove Tab</button>
+                        <button onclick="addManyTabs()">Add 5 Tabs</button>
+                        <button class="secondary" onclick="resetTabs()">Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div id="result-dynamic-tabs" class="result-area"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Debug Console -->
+        <div class="test-case" style="background: #2c3e50; color: white;">
+            <div class="test-case-header">
+                <div class="test-number" style="background: white; color: #2c3e50;">🛠️</div>
+                <h2 style="color: white;">Developer Console</h2>
+            </div>
+            <p style="color: #ecf0f1; margin-bottom: 20px;">
+                Advanced debugging tools and utilities for testing
+            </p>
+            <div class="controls" style="background: #34495e;">
+                <div class="control-group">
+                    <button onclick="logAllHeaders()">📊 Log All Headers</button>
+                    <button onclick="testAllEvents()">🧪 Test All Events</button>
+                    <button onclick="clearAllLogs()">🗑️ Clear All Logs</button>
+                    <button onclick="exportTestResults()">📥 Export Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global event log helper
+        function logEvent(resultId, message) {
+            const resultArea = document.getElementById(resultId);
+            if (resultArea) {
+                const timestamp = new Date().toLocaleTimeString();
+                const existingContent = resultArea.innerHTML;
+                resultArea.innerHTML = `[${timestamp}] ${message}<br>${existingContent}`;
+            }
+        }
+
+        // Clear specific log
+        function clearLog(resultId) {
+            const resultArea = document.getElementById(resultId);
+            if (resultArea) {
+                resultArea.innerHTML = '';
+            }
+        }
+
+        // Clear all logs
+        function clearAllLogs() {
+            document.querySelectorAll('.result-area').forEach(area => {
+                area.innerHTML = '';
+            });
+            console.log('All logs cleared');
+        }
+
+        // Initialize event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Complete header events
+            const headerComplete = document.getElementById('header-complete');
+            if (headerComplete) {
+                headerComplete.addEventListener('changed', (e) => {
+                    logEvent('result-complete', `Search: "${e.detail.value}"`);
+                });
+                headerComplete.addEventListener('click', (e) => {
+                    logEvent('result-complete', `Button clicked: ${e.detail.type}`);
+                });
+            }
+
+            // Tabs header events
+            const headerTabs = document.getElementById('header-tabs');
+            if (headerTabs) {
+                headerTabs.addEventListener('selected', (e) => {
+                    logEvent('result-tabs', `Tab selected: ${e.detail.tabkey} (index: ${e.detail.index})`);
+                });
+            }
+
+            // Search header events
+            const headerSearch = document.getElementById('header-search');
+            if (headerSearch) {
+                headerSearch.addEventListener('changed', (e) => {
+                    const searchText = e.detail.value;
+                    logEvent('result-search', `Search text: "${searchText}"`);
+                });
+            }
+
+            // Information header events
+            const headerInformation = document.getElementById('header-information');
+            if (headerInformation) {
+                headerInformation.addEventListener('click', (e) => {
+                    const clickType = e.detail.type;
+                    logEvent('result-information', `Information button clicked: ${clickType}`);
+                });
+            }
+
+            // Notification header events
+            const headerNotification = document.getElementById('header-notification');
+            if (headerNotification) {
+                headerNotification.addEventListener('click', (e) => {
+                    const clickType = e.detail.type;
+                    logEvent('result-notification', `Notification button clicked: ${clickType}`);
+                });
+            }
+
+            // Dynamic header events
+            const headerDynamic = document.getElementById('header-dynamic');
+            if (headerDynamic) {
+                headerDynamic.addEventListener('changed', (e) => {
+                    logEvent('result-dynamic', `Search changed: "${e.detail.value}"`);
+                });
+                headerDynamic.addEventListener('click', (e) => {
+                    logEvent('result-dynamic', `${e.detail.type} clicked`);
+                });
+            }
+
+            // Dynamic tabs header events
+            const headerDynamicTabs = document.getElementById('header-dynamic-tabs');
+            if (headerDynamicTabs) {
+                headerDynamicTabs.addEventListener('selected', (e) => {
+                    logEvent('result-dynamic-tabs', `Tab selected: ${e.detail.tabkey}`);
+                });
+            }
+
+            // Log initialization
+            console.log('✅ All event listeners initialized');
+        });
+
+        // Test Case 3: Sticky control
+        function toggleSticky(value) {
+            const header = document.getElementById('header-sticky');
+            header.setAttribute('sticky', value);
+            console.log(`Sticky set to: ${value}`);
+        }
+
+        // Test Case 4: Search control
+        function toggleSearch(value) {
+            const header = document.getElementById('header-search');
+            header.setAttribute('search', value);
+            logEvent('result-search', `Search ${value ? 'enabled' : 'disabled'}`);
+        }
+
+        // Test Case 5: Information control
+        function toggleInformation(value) {
+            const header = document.getElementById('header-information');
+            header.setAttribute('information', value);
+            logEvent('result-information', `Information button ${value ? 'enabled' : 'disabled'}`);
+        }
+
+        // Test Case 6: Notification control
+        function toggleNotification(value) {
+            const header = document.getElementById('header-notification');
+            header.setAttribute('notification', value);
+            logEvent('result-notification', `Notification button ${value ? 'enabled' : 'disabled'}`);
+        }
+
+        // Test Case 7: Custom action handler
+        function handleCustomAction(action) {
+            logEvent('result-actions', `Custom action triggered: ${action}`);
+            switch(action) {
+                case 'profile':
+                    alert('Opening user profile...');
+                    break;
+                case 'settings':
+                    alert('Opening settings...');
+                    break;
+                case 'logout':
+                    if(confirm('Are you sure you want to logout?')) {
+                        alert('Logging out...');
+                    }
+                    break;
+            }
+        }
+
+        // Test Case 8: Title update
+        function updateTitle() {
+            const input = document.getElementById('title-input');
+            const header = document.getElementById('header-title');
+            if (input && header) {
+                const newTitle = input.value || 'Default Title';
+                header.setAttribute('title', newTitle);
+                logEvent('result-title', `Title updated to: "${newTitle}"`);
+            }
+        }
+
+        // Test Case 9: Dynamic property control
+        function setDynamicProp(prop, value) {
+            const header = document.getElementById('header-dynamic');
+            header.setAttribute(prop, value);
+            logEvent('result-dynamic', `${prop} set to ${value}`);
+        }
+
+        function updateDynamicTitle() {
+            const input = document.getElementById('dynamic-title-input');
+            const header = document.getElementById('header-dynamic');
+            if (input && header && input.value) {
+                header.setAttribute('title', input.value);
+                logEvent('result-dynamic', `Title updated to: "${input.value}"`);
+                input.value = '';
+            }
+        }
+
+        // Test Case 10: Dynamic tab management
+        let tabCounter = 3;
+
+        function addTab() {
+            tabCounter++;
+            const tabsContainer = document.getElementById('dynamic-tabs-container');
+            const contentsContainer = document.getElementById('dynamic-contents-container');
+
+            // Create new tab
+            const newTab = document.createElement('sy-tab');
+            newTab.setAttribute('tabkey', `tab${tabCounter}`);
+            newTab.textContent = `Tab ${tabCounter}`;
+            tabsContainer.appendChild(newTab);
+
+            // Create corresponding content
+            const newContent = document.createElement('sy-tab-content');
+            newContent.setAttribute('name', `tab${tabCounter}`);
+            newContent.textContent = `Content for Tab ${tabCounter}`;
+            contentsContainer.appendChild(newContent);
+
+            logEvent('result-dynamic-tabs', `Added Tab ${tabCounter}`);
+
+            // Trigger overflow recalculation
+            const header = document.getElementById('header-dynamic-tabs');
+            if (header && header.updateOverflowTabs) {
+                setTimeout(() => header.updateOverflowTabs(), 100);
+            }
+        }
+
+        function removeTab() {
+            const tabsContainer = document.getElementById('dynamic-tabs-container');
+            const contentsContainer = document.getElementById('dynamic-contents-container');
+
+            if (tabsContainer.children.length > 1) {
+                const lastTab = tabsContainer.lastElementChild;
+                const tabName = lastTab.getAttribute('tabkey');
+
+                tabsContainer.removeChild(lastTab);
+
+                // Remove corresponding content
+                const content = contentsContainer.querySelector(`[name="${tabName}"]`);
+                if (content) {
+                    contentsContainer.removeChild(content);
+                }
+
+                logEvent('result-dynamic-tabs', `Removed ${lastTab.textContent}`);
+
+                // Trigger overflow recalculation
+                const header = document.getElementById('header-dynamic-tabs');
+                if (header && header.updateOverflowTabs) {
+                    setTimeout(() => header.updateOverflowTabs(), 100);
+                }
+            } else {
+                logEvent('result-dynamic-tabs', 'Cannot remove last tab');
+            }
+        }
+
+        function addManyTabs() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => addTab(), i * 100);
+            }
+        }
+
+        function resetTabs() {
+            const tabsContainer = document.getElementById('dynamic-tabs-container');
+            const contentsContainer = document.getElementById('dynamic-contents-container');
+
+            // Clear all tabs and contents
+            tabsContainer.innerHTML = '';
+            contentsContainer.innerHTML = '';
+
+            // Reset counter
+            tabCounter = 0;
+
+            // Add initial 3 tabs
+            for (let i = 1; i <= 3; i++) {
+                tabCounter++;
+
+                const tab = document.createElement('sy-tab');
+                tab.setAttribute('tabkey', `tab${i}`);
+                tab.textContent = `Tab ${i}`;
+                tabsContainer.appendChild(tab);
+
+                const content = document.createElement('sy-tab-content');
+                content.setAttribute('name', `tab${i}`);
+                content.textContent = `Content ${i}`;
+                contentsContainer.appendChild(content);
+            }
+
+            logEvent('result-dynamic-tabs', 'Tabs reset to initial state');
+
+            // Trigger overflow recalculation
+            const header = document.getElementById('header-dynamic-tabs');
+            if (header && header.updateOverflowTabs) {
+                setTimeout(() => header.updateOverflowTabs(), 100);
+            }
+        }
+
+        // Developer Console Functions
+        function logAllHeaders() {
+            const headers = document.querySelectorAll('sy-global-header');
+            console.group('📊 All Global Headers Status');
+            headers.forEach((header, index) => {
+                console.group(`Header ${index + 1}: ${header.id || 'no-id'}`);
+                console.log('Title:', header.getAttribute('title'));
+                console.log('Sticky:', header.getAttribute('sticky') === 'true');
+                console.log('Search:', header.getAttribute('search') === 'true');
+                console.log('Information:', header.getAttribute('information') === 'true');
+                console.log('Notification:', header.getAttribute('notification') === 'true');
+                console.log('Has tabs slot:', header.querySelector('[slot="tabs"]') !== null);
+                console.log('Has actions slot:', header.querySelector('[slot="actions"]') !== null);
+                console.log('Has logo slot:', header.querySelector('[slot="logo"]') !== null);
+
+                // Check for overflow tabs
+                if (header.overflowTabs) {
+                    console.log('Overflow tabs count:', header.overflowTabs.length);
+                }
+                console.groupEnd();
+            });
+            console.groupEnd();
+        }
+
+        function testAllEvents() {
+            console.group('🧪 Testing All Events');
+
+            // Test search events
+            const searchHeaders = document.querySelectorAll('sy-global-header[search="true"]');
+            searchHeaders.forEach(header => {
+                console.log(`Testing search on ${header.id}...`);
+                const searchInput = header.querySelector('sy-input');
+                if (searchInput) {
+                    searchInput.dispatchEvent(new CustomEvent('changed', {
+                        detail: { value: 'test search' },
+                        bubbles: true
+                    }));
+                }
+            });
+
+            // Test button clicks
+            const infoHeaders = document.querySelectorAll('sy-global-header[information="true"]');
+            infoHeaders.forEach(header => {
+                console.log(`Testing information button on ${header.id}...`);
+                header.dispatchEvent(new CustomEvent('click', {
+                    detail: { type: 'information' },
+                    bubbles: true
+                }));
+            });
+
+            const notifHeaders = document.querySelectorAll('sy-global-header[notification="true"]');
+            notifHeaders.forEach(header => {
+                console.log(`Testing notification button on ${header.id}...`);
+                header.dispatchEvent(new CustomEvent('click', {
+                    detail: { type: 'notification' },
+                    bubbles: true
+                }));
+            });
+
+            console.groupEnd();
+            alert('All events tested! Check console and event logs for results.');
+        }
+
+        function exportTestResults() {
+            const results = {};
+            const resultAreas = document.querySelectorAll('.result-area');
+
+            resultAreas.forEach(area => {
+                if (area.id && area.innerHTML) {
+                    results[area.id] = area.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
+                }
+            });
+
+            const headers = document.querySelectorAll('sy-global-header');
+            const headerStates = [];
+
+            headers.forEach(header => {
+                headerStates.push({
+                    id: header.id,
+                    title: header.getAttribute('title'),
+                    sticky: header.getAttribute('sticky') === 'true',
+                    search: header.getAttribute('search') === 'true',
+                    information: header.getAttribute('information') === 'true',
+                    notification: header.getAttribute('notification') === 'true'
+                });
+            });
+
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                testResults: results,
+                headerStates: headerStates,
+                userAgent: navigator.userAgent
+            };
+
+            // Create downloadable JSON file
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = `sy-global-header-test-results-${Date.now()}.json`;
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+
+            console.log('Test results exported:', exportData);
+        }
+
+        // Window resize handler for testing responsive behavior
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                console.log('Window resized - checking overflow tabs...');
+                const headers = document.querySelectorAll('sy-global-header');
+                headers.forEach(header => {
+                    if (header.updateOverflowTabs) {
+                        header.updateOverflowTabs();
+                    }
+                });
+            }, 250);
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            if (window.performance) {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                console.group('⚡ Performance Metrics');
+                console.log('DOM Content Loaded:', perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart, 'ms');
+                console.log('Page Load Complete:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+                console.log('Total Load Time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
+                console.groupEnd();
+            }
+        });
+
+        // Keyboard shortcuts for testing
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Shift + L: Log all headers
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'L') {
+                e.preventDefault();
+                logAllHeaders();
+            }
+
+            // Ctrl/Cmd + Shift + C: Clear all logs
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                clearAllLogs();
+            }
+
+            // Ctrl/Cmd + Shift + E: Export results
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
+                e.preventDefault();
+                exportTestResults();
+            }
+        });
+
+        // Initial console message
+        console.log('%c🎉 SY Global Header Test Suite Loaded!', 'color: #667eea; font-size: 16px; font-weight: bold;');
+        console.log('%cKeyboard Shortcuts:', 'font-weight: bold;');
+        console.log('Ctrl/Cmd + Shift + L: Log all headers');
+        console.log('Ctrl/Cmd + Shift + C: Clear all logs');
+        console.log('Ctrl/Cmd + Shift + E: Export test results');
+    </script>
+
+</section>
 <!-- TREE-SELECT COMPONENT TEST -->
 <section id="tree-select-examples">
   <h1>Tree Select Component Examples</h1>

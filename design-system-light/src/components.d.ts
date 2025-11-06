@@ -632,6 +632,26 @@ export namespace Components {
          */
         "description": string;
     }
+    interface SyGlobalHeader {
+        /**
+          * @default false
+         */
+        "information": boolean;
+        /**
+          * @default false
+         */
+        "notification": boolean;
+        /**
+          * @default false
+         */
+        "search": boolean;
+        /**
+          * @default false
+         */
+        "sticky": boolean;
+        "title": string;
+        "updateOverflowTabs": () => Promise<void>;
+    }
     interface SyIcon {
         "path"?: string;
         /**
@@ -2382,6 +2402,10 @@ export interface SyDrawerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyDrawerElement;
 }
+export interface SyGlobalHeaderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyGlobalHeaderElement;
+}
 export interface SyIconCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyIconElement;
@@ -2784,6 +2808,25 @@ declare global {
     var HTMLSyEmptyElement: {
         prototype: HTMLSyEmptyElement;
         new (): HTMLSyEmptyElement;
+    };
+    interface HTMLSyGlobalHeaderElementEventMap {
+        "changed": any;
+        "click": any;
+        "selected": any;
+    }
+    interface HTMLSyGlobalHeaderElement extends Components.SyGlobalHeader, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyGlobalHeaderElementEventMap>(type: K, listener: (this: HTMLSyGlobalHeaderElement, ev: SyGlobalHeaderCustomEvent<HTMLSyGlobalHeaderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyGlobalHeaderElementEventMap>(type: K, listener: (this: HTMLSyGlobalHeaderElement, ev: SyGlobalHeaderCustomEvent<HTMLSyGlobalHeaderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSyGlobalHeaderElement: {
+        prototype: HTMLSyGlobalHeaderElement;
+        new (): HTMLSyGlobalHeaderElement;
     };
     interface HTMLSyIconElementEventMap {
         "selected": { value: string };
@@ -3426,6 +3469,7 @@ declare global {
         "sy-drawer": HTMLSyDrawerElement;
         "sy-dropdown": HTMLSyDropdownElement;
         "sy-empty": HTMLSyEmptyElement;
+        "sy-global-header": HTMLSyGlobalHeaderElement;
         "sy-icon": HTMLSyIconElement;
         "sy-inline-message": HTMLSyInlineMessageElement;
         "sy-input": HTMLSyInputElement;
@@ -4084,6 +4128,28 @@ declare namespace LocalJSX {
           * @property에 해당합니다.
          */
         "description"?: string;
+    }
+    interface SyGlobalHeader {
+        /**
+          * @default false
+         */
+        "information"?: boolean;
+        /**
+          * @default false
+         */
+        "notification"?: boolean;
+        "onChanged"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
+        "onClick"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
+        "onSelected"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
+        /**
+          * @default false
+         */
+        "search"?: boolean;
+        /**
+          * @default false
+         */
+        "sticky"?: boolean;
+        "title"?: string;
     }
     interface SyIcon {
         "onSelected"?: (event: SyIconCustomEvent<{ value: string }>) => void;
@@ -5777,6 +5843,7 @@ declare namespace LocalJSX {
         "sy-drawer": SyDrawer;
         "sy-dropdown": SyDropdown;
         "sy-empty": SyEmpty;
+        "sy-global-header": SyGlobalHeader;
         "sy-icon": SyIcon;
         "sy-inline-message": SyInlineMessage;
         "sy-input": SyInput;
@@ -5857,6 +5924,7 @@ declare module "@stencil/core" {
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-dropdown": LocalJSX.SyDropdown & JSXBase.HTMLAttributes<HTMLSyDropdownElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
+            "sy-global-header": LocalJSX.SyGlobalHeader & JSXBase.HTMLAttributes<HTMLSyGlobalHeaderElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
