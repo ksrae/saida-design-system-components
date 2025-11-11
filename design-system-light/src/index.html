@@ -79,7 +79,117 @@
     margin-top: 0;
     color: #333;
   }
+
+  /*
+  card 전용
+  */
+  sy-card {
+    width: 300px;
+    display:block;
+  }
+
+  .card-border {
+    border:1px dashed var(--border-default);
+    border-radius: var(--border-radius-large);
+  }
 </style>
+<section>
+
+
+   <sy-card>
+    <div slot="header">
+      Card header
+    </div>
+
+    <img slot="cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR00kA85xJ0C8R7i6lXIG09-VHGdDqh0YUy4A&amp;s" alt="This is a synopsys design system card">
+    <div class="card-body">
+      <p>Make your own component</p>
+    </div>
+    <div slot="footer">
+        <sy-button variant="primary">More Info</sy-button>
+      </div>
+
+    </sy-card>
+
+   <h2>1. Basic Card (Default Slot)</h2>
+    <sy-card>
+      <!-- 중요: Light DOM에서는 기본 슬롯 콘텐츠에 스타일을 적용하기 위해 약속된 클래스(.card-body)를 사용해야 합니다. -->
+      <div class="card-body">
+        <p>This is a basic card. The content is placed in a div with class="card-body" for proper padding.</p>
+      </div>
+    </sy-card>
+
+    <h2>2. Card with Header and Footer</h2>
+    <sy-card>
+      <div slot="header">Card Header</div>
+      <div class="card-body">
+        <p>This card includes a simple text header and footer.</p>
+      </div>
+      <div slot="footer">Card Footer</div>
+    </sy-card>
+
+    <h2>3. Card with Cover Image</h2>
+    <sy-card>
+      <img slot="cover" src="https://picsum.photos/id/1018/400/200" alt="Landscape with mountains and a lake">
+      <div class="card-body">
+        <p>This card features a cover image at the top.</p>
+      </div>
+    </sy-card>
+
+    <h2>4. Collapsible Card</h2>
+    <sy-card collapsible>
+      <div slot="header">Collapsible Card (Click the icon)</div>
+      <div class="card-body">
+        <p>This content can be hidden and shown by clicking the toggle icon in the header.</p>
+        <p style="margin-top: 8px;">Some more content to show the effect.</p>
+      </div>
+    </sy-card>
+
+    <h2>5. Card with Backdrop (Shadow)</h2>
+    <sy-card backdrop>
+        <div class="card-body">
+            <p>This card has the <strong>backdrop</strong> attribute, which applies a box-shadow.</p>
+        </div>
+    </sy-card>
+
+    <h2>6. All Features Combined</h2>
+    <sy-card collapsible backdrop>
+      <img slot="cover" src="https://picsum.photos/id/10/400/200" alt="Forest path">
+      <div slot="header">All-in-One Card</div>
+      <div class="card-body">
+        <p>This card combines a cover, header, footer, and is both collapsible and has a backdrop shadow.</p>
+      </div>
+      <div slot="footer">Footer with Actions</div>
+    </sy-card>
+
+    <h2>7. Complex Header (from Storybook)</h2>
+    <sy-card>
+      <!-- Storybook 예제와 동일한 복잡한 헤더 구조 -->
+      <div slot="header">
+        <!-- sy-flex, sy-icon 등 다른 컴포넌트가 로드되었다고 가정합니다. -->
+        <div style="display: flex; align-items: center; width: 100%; gap: 8px;">
+          <div style="display: flex; align-items: center; flex-grow: 1; gap: 8px;">
+            <sy-icon>
+              <!-- 아이콘 SVG (예시) -->
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            </sy-icon>
+            <span style="font-weight: bold; font-size: 1.1em;">Card Title</span>
+          </div>
+          <button>Action</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>This card has a complex header with an icon and an action button.</p>
+      </div>
+    </sy-card>
+
+    <h2>8. Custom External Styling</h2>
+    <sy-card class="card-border">
+      <div class="card-body">
+        <p>This card has an external class <strong>.card-border</strong> applied to it, demonstrating custom styling capabilities.</p>
+      </div>
+    </sy-card>
+</section>
 <section>
     <div class="container">
         <div class="test-header">

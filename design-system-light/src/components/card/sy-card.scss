@@ -1,0 +1,79 @@
+:host {
+  display: block;  // inline-block이 아니라 block!
+  width: 100%;     // 부모 컨테이너나 max-width까지 채움
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--card-container-border-enabled);
+  border-radius: var(--border-radius-small);
+  background-color: var(--card-container-background-enabled);
+  overflow: hidden;
+}
+
+.card-backdrop {
+  box-shadow: var(--box-shadow);
+}
+
+[slot="cover"] {
+  display: block;
+  font-size: 0;
+
+  img {
+    display: block;
+    width: 100%;  // max-width가 아니라 width: 100%
+    height: auto;
+  }
+}
+
+.card-header-wrapper {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-2xsmall) var(--spacing-small);
+  min-height: var(--component-large);
+  box-sizing: border-box;
+
+  &:has([slot="header"]:not(:empty)) {
+    border-bottom: 1px solid var(--card-body-border-enabled);
+  }
+}
+
+.card-header-wrapper > sy-icon {
+  margin-right: var(--spacing-small);
+  cursor: pointer;
+}
+
+[slot="header"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-weight: bold;
+  color: var(--card-header-text-enabled);
+}
+
+.card-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  max-height: 1000px;
+}
+
+.card-content.collapsed {
+  max-height: 0;
+}
+
+.card-content > .card-body {
+  padding: var(--spacing-small);
+}
+
+[slot="footer"] {
+  padding: var(--spacing-2xsmall) var(--spacing-small);
+  border-top: 1px solid var(--card-body-border-enabled);
+}
+
+.card-header-wrapper:has([slot="header"]:empty):not(:has(sy-icon)),
+[slot="footer"]:empty {
+  display: none;
+}

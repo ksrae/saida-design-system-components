@@ -310,6 +310,16 @@ export namespace Components {
         "variant": 'date' | 'datetime' | 'range' | 'time';
         "year": number;
     }
+    interface SyCard {
+        /**
+          * @default false
+         */
+        "backdrop": boolean;
+        /**
+          * @default false
+         */
+        "collapsible": boolean;
+    }
     interface SyCheckbox {
         "checkValidity": () => Promise<boolean>;
         /**
@@ -2642,6 +2652,12 @@ declare global {
         prototype: HTMLSyCalendarElement;
         new (): HTMLSyCalendarElement;
     };
+    interface HTMLSyCardElement extends Components.SyCard, HTMLStencilElement {
+    }
+    var HTMLSyCardElement: {
+        prototype: HTMLSyCardElement;
+        new (): HTMLSyCardElement;
+    };
     interface HTMLSyCheckboxElementEventMap {
         "changed": { value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; };
         "focused": boolean;
@@ -3457,6 +3473,7 @@ declare global {
         "sy-button": HTMLSyButtonElement;
         "sy-button-group": HTMLSyButtonGroupElement;
         "sy-calendar": HTMLSyCalendarElement;
+        "sy-card": HTMLSyCardElement;
         "sy-checkbox": HTMLSyCheckboxElement;
         "sy-collapse": HTMLSyCollapseElement;
         "sy-collapse-panel": HTMLSyCollapsePanelElement;
@@ -3809,6 +3826,16 @@ declare namespace LocalJSX {
          */
         "variant"?: 'date' | 'datetime' | 'range' | 'time';
         "year": number;
+    }
+    interface SyCard {
+        /**
+          * @default false
+         */
+        "backdrop"?: boolean;
+        /**
+          * @default false
+         */
+        "collapsible"?: boolean;
     }
     interface SyCheckbox {
         /**
@@ -5831,6 +5858,7 @@ declare namespace LocalJSX {
         "sy-button": SyButton;
         "sy-button-group": SyButtonGroup;
         "sy-calendar": SyCalendar;
+        "sy-card": SyCard;
         "sy-checkbox": SyCheckbox;
         "sy-collapse": SyCollapse;
         "sy-collapse-panel": SyCollapsePanel;
@@ -5912,6 +5940,7 @@ declare module "@stencil/core" {
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
             "sy-button-group": LocalJSX.SyButtonGroup & JSXBase.HTMLAttributes<HTMLSyButtonGroupElement>;
             "sy-calendar": LocalJSX.SyCalendar & JSXBase.HTMLAttributes<HTMLSyCalendarElement>;
+            "sy-card": LocalJSX.SyCard & JSXBase.HTMLAttributes<HTMLSyCardElement>;
             "sy-checkbox": LocalJSX.SyCheckbox & JSXBase.HTMLAttributes<HTMLSyCheckboxElement>;
             "sy-collapse": LocalJSX.SyCollapse & JSXBase.HTMLAttributes<HTMLSyCollapseElement>;
             "sy-collapse-panel": LocalJSX.SyCollapsePanel & JSXBase.HTMLAttributes<HTMLSyCollapsePanelElement>;
