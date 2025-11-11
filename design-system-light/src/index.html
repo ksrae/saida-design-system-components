@@ -93,9 +93,131 @@
     border-radius: var(--border-radius-large);
   }
 </style>
+    <!-- BEGIN: sy-flex Static Test Block -->
+    <section class="example-section" id="sy-flex-static-tests">
+      <h2>sy-flex 기능별 테스트 (하나씩 검증)</h2>
+
+      <!-- TEST 1: WIDTH -->
+      <h3>TEST 1: Width (width="300")</h3>
+      <sy-flex width="300">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 2: HEIGHT -->
+      <h3>TEST 2: Height (height="150")</h3>
+      <sy-flex height="150">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 3: DIRECTION HORIZONTAL -->
+      <h3>TEST 3: Direction Horizontal (direction="horizontal")</h3>
+      <sy-flex direction="horizontal">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+        <div class="flex-item">Item3</div>
+      </sy-flex>
+
+      <!-- TEST 4: DIRECTION VERTICAL -->
+      <h3>TEST 4: Direction Vertical (direction="vertical")</h3>
+      <sy-flex direction="vertical">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+        <div class="flex-item">Item3</div>
+      </sy-flex>
+
+      <!-- TEST 5: JUSTIFY START -->
+      <h3>TEST 5: Justify Start (justify="start", width="100%")</h3>
+      <sy-flex justify="start" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 6: JUSTIFY CENTER -->
+      <h3>TEST 6: Justify Center (justify="center", width="100%")</h3>
+      <sy-flex justify="center" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 7: JUSTIFY END -->
+      <h3>TEST 7: Justify End (justify="end", width="100%")</h3>
+      <sy-flex justify="end" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 8: JUSTIFY SPACE-BETWEEN -->
+      <h3>TEST 8: Justify Space-Between (justify="space-between", width="100%")</h3>
+      <sy-flex justify="space-between" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 9: ALIGN START -->
+      <h3>TEST 9: Align Start (align="start", height="200")</h3>
+      <sy-flex align="start" height="200" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 10: ALIGN CENTER -->
+      <h3>TEST 10: Align Center (align="center", height="200")</h3>
+      <sy-flex align="center" height="200" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 11: ALIGN END -->
+      <h3>TEST 11: Align End (align="end", height="200")</h3>
+      <sy-flex align="end" height="200" width="100%">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 12: COLUMN GAP -->
+      <h3>TEST 12: Column Gap (columngap="xlarge")</h3>
+      <sy-flex columnGap="xlarge">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+        <div class="flex-item">Item3</div>
+      </sy-flex>
+
+      <!-- TEST 13: ROW GAP -->
+      <h3>TEST 13: Row Gap (rowgap="xlarge", wrap="wrap", width="300")</h3>
+      <sy-flex rowGap="xlarge" wrap="wrap" width="300">
+        <div class="flex-item" style="white-space:nowrap">Long Item 1</div>
+        <div class="flex-item" style="white-space:nowrap">Long Item 2</div>
+        <div class="flex-item" style="white-space:nowrap">Long Item 3</div>
+      </sy-flex>
+
+      <!-- TEST 14: PADDING -->
+      <h3>TEST 14: Padding (padding="xlarge")</h3>
+      <sy-flex padding="xlarge">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+      </sy-flex>
+
+      <!-- TEST 15: WRAP -->
+      <h3>TEST 15: Wrap (wrap="wrap", width="250")</h3>
+      <sy-flex wrap="wrap" width="250">
+        <div class="flex-item" style="white-space:nowrap">Long Item Text 1</div>
+        <div class="flex-item" style="white-space:nowrap">Long Item Text 2</div>
+        <div class="flex-item" style="white-space:nowrap">Long Item Text 3</div>
+      </sy-flex>
+
+      <!-- TEST 16: ATTRIBUTE ALIAS (kebab-case) -->
+      <h3>TEST 16: Attribute Alias (column-gap / row-gap)</h3>
+      <sy-flex columnGap="xlarge" rowGap="xlarge" wrap="wrap" width="300">
+        <div class="flex-item">Item1</div>
+        <div class="flex-item">Item2</div>
+        <div class="flex-item">Item3</div>
+        <div class="flex-item">Item4</div>
+      </sy-flex>
+
+    </section>
 <section>
-
-
    <sy-card>
     <div slot="header">
       Card header
