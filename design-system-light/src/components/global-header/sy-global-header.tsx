@@ -196,7 +196,7 @@ export class SyGlobalHeader {
         // Overflow 처리
         if (overflowIndex > -1 && overflowIndex > 0) {
           const visibleTabCount = overflowIndex;
-          const newOverflowTabs = [];
+          const newOverflowTabs: any[] = [];
 
           // active 탭 인덱스
           const activeIndex = this._parentTabGroup?.active || 0;
@@ -241,7 +241,7 @@ export class SyGlobalHeader {
   }
 
 render() {
-  const synopsysLogo = '../../assets/style/images/test.png';
+  const logo = '../../assets/style/images/test.png';
   const hasOverflowTabs = this.overflowTabs.length > 0;
   const hasTabsSlot = this.hasNamedSlot('tabs');
   const hasActionsSlot = this.hasNamedSlot('actions');
@@ -255,7 +255,7 @@ render() {
           class="logo"
           style={{ display: this.isCustomLogo ? 'none' : 'block' }}
         >
-          <img src={synopsysLogo} width="100%" height="100%" />
+          <img src={logo} width="100%" height="100%" />
         </span>
         {hasLogoSlot && <slot name="logo" />}
         {this.title && <span class="appname">{this.title}</span>}
