@@ -9,7 +9,7 @@ export default create({
 
   // Typography
   fontBase: '"Roboto", "Open Sans", sans-serif',
-  brandTitle: 'Synopsys Design System',
+  brandTitle: 'Design System',
   // brandUrl: 'https://example.com',
   brandImage: logo,
   brandTarget: '_self',

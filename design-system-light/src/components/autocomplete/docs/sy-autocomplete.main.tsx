@@ -48,7 +48,7 @@ export const Autocomplete = ({caseSensitive, debounceTime, loading, min, placeho
 
     <script>
       (() => {
-        let source = ["synopsys", "Design", "System"];
+        let source = ["Design", "System"];
         document.querySelector('#autocompleteDebounce').source = source;
       })();
     </script>
