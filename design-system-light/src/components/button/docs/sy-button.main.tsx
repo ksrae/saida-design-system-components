@@ -163,3 +163,31 @@ export const ButtonClick = () => {
     </script>
 `;
 }
+
+export const ButtonSetClick = () => {
+  return html`
+    <sy-button id="btnSetClickElem">Button</sy-button>
+    <p id="btnSetClickResult"></p>
+    <script>
+      (() => {
+        const elem = document.querySelector('#btnSetClickElem');
+        const result = document.querySelector('#btnSetClickResult');
+
+        const handleButtonClick = (e) => {
+          result.textContent = 'clicked via setClick()';
+        };
+
+        elem.addEventListener('click', handleButtonClick);
+
+        // trigger setClick programmatically after 1 sec.
+        setTimeout(() => {
+          elem.setClick();
+        }, 1000);
+
+        window.addEventListener('beforeunload', () => {
+          elem.removeEventListener('click', handleButtonClick);
+        });
+      })();
+    </script>
+`;
+}

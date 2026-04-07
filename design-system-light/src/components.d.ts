@@ -642,6 +642,44 @@ export namespace Components {
          */
         "description": string;
     }
+    interface SyFlex {
+        /**
+          * @default 'start'
+         */
+        "align": 'start' | 'end' | 'center' | 'stretch' | 'baseline';
+        /**
+          * @default 'medium'
+         */
+        "columnGap": 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default "horizontal"
+         */
+        "direction": "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse";
+        /**
+          * @default ''
+         */
+        "height": string;
+        /**
+          * @default 'start'
+         */
+        "justify": 'start' | 'center' | 'end' | 'space-between';
+        /**
+          * @default 'medium'
+         */
+        "padding": 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default 'medium'
+         */
+        "rowGap": 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default ''
+         */
+        "width": string;
+        /**
+          * @default 'nowrap'
+         */
+        "wrap": 'nowrap' | 'wrap' | 'wrap-reverse';
+    }
     interface SyGlobalHeader {
         /**
           * @default false
@@ -2825,6 +2863,12 @@ declare global {
         prototype: HTMLSyEmptyElement;
         new (): HTMLSyEmptyElement;
     };
+    interface HTMLSyFlexElement extends Components.SyFlex, HTMLStencilElement {
+    }
+    var HTMLSyFlexElement: {
+        prototype: HTMLSyFlexElement;
+        new (): HTMLSyFlexElement;
+    };
     interface HTMLSyGlobalHeaderElementEventMap {
         "changed": any;
         "click": any;
@@ -3486,6 +3530,7 @@ declare global {
         "sy-drawer": HTMLSyDrawerElement;
         "sy-dropdown": HTMLSyDropdownElement;
         "sy-empty": HTMLSyEmptyElement;
+        "sy-flex": HTMLSyFlexElement;
         "sy-global-header": HTMLSyGlobalHeaderElement;
         "sy-icon": HTMLSyIconElement;
         "sy-inline-message": HTMLSyInlineMessageElement;
@@ -4155,6 +4200,44 @@ declare namespace LocalJSX {
           * @property에 해당합니다.
          */
         "description"?: string;
+    }
+    interface SyFlex {
+        /**
+          * @default 'start'
+         */
+        "align"?: 'start' | 'end' | 'center' | 'stretch' | 'baseline';
+        /**
+          * @default 'medium'
+         */
+        "columnGap"?: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default "horizontal"
+         */
+        "direction"?: "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse";
+        /**
+          * @default ''
+         */
+        "height"?: string;
+        /**
+          * @default 'start'
+         */
+        "justify"?: 'start' | 'center' | 'end' | 'space-between';
+        /**
+          * @default 'medium'
+         */
+        "padding"?: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default 'medium'
+         */
+        "rowGap"?: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default ''
+         */
+        "width"?: string;
+        /**
+          * @default 'nowrap'
+         */
+        "wrap"?: 'nowrap' | 'wrap' | 'wrap-reverse';
     }
     interface SyGlobalHeader {
         /**
@@ -5871,6 +5954,7 @@ declare namespace LocalJSX {
         "sy-drawer": SyDrawer;
         "sy-dropdown": SyDropdown;
         "sy-empty": SyEmpty;
+        "sy-flex": SyFlex;
         "sy-global-header": SyGlobalHeader;
         "sy-icon": SyIcon;
         "sy-inline-message": SyInlineMessage;
@@ -5953,6 +6037,7 @@ declare module "@stencil/core" {
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-dropdown": LocalJSX.SyDropdown & JSXBase.HTMLAttributes<HTMLSyDropdownElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
+            "sy-flex": LocalJSX.SyFlex & JSXBase.HTMLAttributes<HTMLSyFlexElement>;
             "sy-global-header": LocalJSX.SyGlobalHeader & JSXBase.HTMLAttributes<HTMLSyGlobalHeaderElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;

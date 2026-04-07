@@ -1,0 +1,44 @@
+@use './third-party-tokens/table-token';
+@use '../global/font';
+
+/* Table */
+.sy-table {
+  width:100%;
+  font-variant-numeric: tabular-nums;
+  border-collapse: collapse;
+  border-color: currentcolor;
+  display: table; 
+  position: relative; 
+  border-spacing: 5px;
+
+  caption {
+    padding-block: 8px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  th, thead, tfoot {
+    font-weight: bold;
+  }
+
+  th, td {
+    padding-block: 4px;
+    padding-inline: 4px;
+    border:1px solid var(--table-body-default-border-enabled);    
+  }
+  th{
+    color: var(--table-header-default-text-enabled);
+    background-color: var(--table-header-default-background-enabled);
+  }
+  td{
+    color: var(--table-body-default-text-enabled);
+    background-color: var(--table-body-default-background-enabled);
+  }
+}
+
+ 
+:root,
+:host,
+.sy-table-dark{
+  
+}

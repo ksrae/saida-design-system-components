@@ -1,0 +1,9 @@
+// Foundation
+@use '../foundation/color-primitives';
+@use './third-party-tokens/grid-token';
+@use '../global/font-heading';
+@use '../global/font';
+
+.ag-root-wrapper{
+    border-radius: 0px;
+}

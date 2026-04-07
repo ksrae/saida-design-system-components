@@ -1,0 +1,33 @@
+.sy-theme{
+    --autocomplete-dropdownmenu-background-enabled: var(--background-default);
+    --autocomplete-input-focusoutline: var(--border-brand-bold);
+    --autocomplete-input-background-enabled: var(--background-default);
+    --autocomplete-input-background-focus: var(--background-default);
+    --autocomplete-input-background-hover: var(--background-default);
+    --autocomplete-input-border-enabled: var(--border-default);
+    --autocomplete-input-border-focus: var(--border-brand-bold);
+    --autocomplete-input-border-hover: var(--border-brand-default);
+    --autocomplete-input-icon-focus: var(--icon-bold);
+    --autocomplete-input-text-enabled: var(--text-default);
+    --autocomplete-input-text-focus: var(--text-default);
+    --autocomplete-input-text-hover: var(--text-default);
+    --autocomplete-inputlistcontainer-background-enabled: var(--background-default);
+    --autocomplete-menuitem-arrow-icon-active: var(--icon-subtler);
+    --autocomplete-menuitem-arrow-icon-disabled: var(--icon-subtler);
+    --autocomplete-menuitem-arrow-icon-enabled: var(--icon-subtler);
+    --autocomplete-menuitem-arrow-icon-hover: var(--icon-subtler);
+    --autocomplete-menuitem-arrow-icon-selected: var(--icon-subtler);
+    --autocomplete-menuitem-default-background-active: var(--background-bold);
+    --autocomplete-menuitem-default-background-hover: var(--background-bold);
+    --autocomplete-menuitem-default-background-selected: var(--background-brand-default);
+    --autocomplete-menuitem-default-text-active: var(--text-default);
+    --autocomplete-menuitem-default-text-disabled: var(--text-subtlest);
+    --autocomplete-menuitem-default-text-enabled: var(--text-default);
+    --autocomplete-menuitem-default-text-hover: var(--text-default);
+    --autocomplete-menuitem-default-text-selected: var(--text-default);
+    --autocomplete-menuitem-icon-icon-active: var(--icon-default);
+    --autocomplete-menuitem-icon-icon-disabled: var(--icon-subtlest);
+    --autocomplete-menuitem-icon-icon-enabled: var(--icon-default);
+    --autocomplete-menuitem-icon-icon-hover: var(--icon-default);
+    --autocomplete-menuitem-icon-icon-selected: var(--icon-default);
+}

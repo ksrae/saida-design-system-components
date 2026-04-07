@@ -1,0 +1,20 @@
+.sy-theme{
+    --progress-line-completed-bar-background-enabled: var(--background-success-contrast-subtle);
+    --progress-line-completed-bar-text-enabled: var(--text-invert);
+    --progress-line-completed-inner-background-enabled: var(--background-bold);
+    --progress-line-completed-inner-text-enabled: var(--text-invert);
+    --progress-line-error-bar-background-enabled: var(--background-error-contrast-subtle);
+    --progress-line-error-bar-text-enabled: var(--text-invert);
+    --progress-line-error-inner-background-enabled: var(--background-bold);
+    --progress-line-error-inner-text-enabled: var(--text-invert);
+    --progress-line-initial-inner-background-enabled: var(--background-bold);
+    --progress-line-initial-inner-text-enabled: var(--text-invert);
+    --progress-line-inprogress-bar-background-enabled: var(--background-information-contrast-subtle);
+    --progress-line-inprogress-bar-text-enabled: var(--text-invert);
+    --progress-line-inprogress-inner-background-enabled: var(--background-bold);
+    --progress-line-inprogress-inner-text-enabled: var(--text-invert);
+    --progress-line-paused-bar-background-enabled: var(--background-bolder);
+    --progress-line-paused-bar-text-enabled: var(--text-invert);
+    --progress-line-paused-inner-background-enabled: var(--background-bold);
+    --progress-line-paused-inner-text-enabled: var(--text-invert);
+}
