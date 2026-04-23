@@ -13,6 +13,10 @@
   align-items: start;
   gap: var(--spacing-xsmall);
   width: 100%;
+
+  .banner-icon {
+    --icon-xxxlarge: 26px;
+  }
 }
 
 .banner-message-group {

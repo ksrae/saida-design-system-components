@@ -25,6 +25,7 @@ export class SyMenu {
 	private mouseY!: number;
 	private isUpdatingOpenState = false;
 	private isClosing = false;
+	private dropdownElement: HTMLSyDropdownElement | null = null;
 
 	@Prop({ reflect: true, mutable: true }) open: boolean = false;
 	@Prop({ reflect: true }) checkable: boolean = false;
@@ -81,16 +82,17 @@ export class SyMenu {
 	}
 
 	disconnectedCallback() {
-		window.removeEventListener('resize', this.updateMenuPosition);
-		window.removeEventListener('scroll', this.updateMenuPosition);
-		document.removeEventListener('click', this.handleDocumentClick);
+		window.removeEventListener('resize', this.updateMenuPosition, true);
+		window.removeEventListener('scroll', this.updateMenuPosition, true);
+		document.removeEventListener('click', this.handleDocumentClick, true);
+		this.dropdownElement?.removeEventListener('keydown', this.handleDropdownKeydown);
 
 		if (this.openTimer) clearTimeout(this.openTimer);
 		if (this.closeTimer) clearTimeout(this.closeTimer);
 
 		this.host.removeEventListener('itemSelected', this.itemSelectedHandler);
 		this.host.removeEventListener('itemChecked', this.itemCheckedHandler);
-		this.host.removeEventListener('click', this.handleMenuItemClick);
+		this.host.removeEventListener('click', this.handleMenuItemClick, true);
 	}
 
 	render() {
@@ -107,8 +109,14 @@ export class SyMenu {
 	}
 
 	@Watch('disabled')
-	watchDisabled() {
+	watchDisabled(newVal: boolean) {
 		this.addEvent();
+		// When a currently-open dropdown/menu becomes disabled, close it
+		// immediately so the UI doesn't present an interactive menu that
+		// the user can't actually use.
+		if (newVal && this.open) {
+			this.hideMenu();
+		}
 	}
 
 	@Watch('checkable')
@@ -131,6 +139,7 @@ export class SyMenu {
 
 	private setDropdown() {
 		const dropdownElement = this.host.closest('sy-dropdown') as HTMLSyDropdownElement;
+		this.dropdownElement = dropdownElement ?? null;
 		this.isDropdown = !!dropdownElement;
 		if (this.isDropdown && dropdownElement) {
 			this.position = dropdownElement.position;
@@ -178,7 +187,7 @@ export class SyMenu {
 		// 플래그 리셋
 		this.isClosing = false;
 
-		document.removeEventListener('click', this.handleDocumentClick);
+		document.removeEventListener('click', this.handleDocumentClick, true);
 
 		if (this.openTimer) clearTimeout(this.openTimer);
 
@@ -222,7 +231,7 @@ export class SyMenu {
 			this.closeTimer = null;
 		}
 
-		document.removeEventListener('click', this.handleDocumentClick);
+		document.removeEventListener('click', this.handleDocumentClick, true);
 
 		this.host.classList.add('closing');
 		this.host.style.display = 'none';

@@ -11,6 +11,8 @@ export class SyIcon {
 
   @Prop({ reflect: true }) size: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge' = 'medium';
   @Prop({ reflect: true }) path?: string; // slot보다 path가 우선함.
+  @Prop() svgMarkup?: string;
+  @Prop({ reflect: true, attribute: 'natural-aspect' }) naturalAspect: boolean = false;
   @Prop({ reflect: true }) selectable: boolean = false;
 
   @State() private svgContent: string = '';
@@ -18,27 +20,50 @@ export class SyIcon {
   @Event() selected: EventEmitter<{ value: string }>;
 
   private containerEl: HTMLSpanElement;
+  private mutationObserver?: MutationObserver;
 
 
   componentWillLoad() {
     // Load external SVG if path is provided
     if (this.path) {
       this.loadExternalSvg(this.path);
+      return;
+    }
+
+    if (this.svgMarkup) {
+      this.svgContent = this.normalizeSvgMarkup(this.svgMarkup);
     }
   }
 
   componentDidLoad() {
+    this.observeSvgMutations();
+    this.normalizeRenderedSvgDimensions();
+  }
 
+  componentDidRender() {
+    this.normalizeRenderedSvgDimensions();
   }
 
   disconnectedCallback() {
-
+    this.mutationObserver?.disconnect();
   }
 
   @Watch('path')
   async watchPath(newValue: string, oldValue: string) {
     if (newValue && newValue !== oldValue) {
       await this.loadExternalSvg(newValue);
+      return;
+    }
+
+    if (!newValue) {
+      this.svgContent = this.svgMarkup ? this.normalizeSvgMarkup(this.svgMarkup) : '';
+    }
+  }
+
+  @Watch('svgMarkup')
+  watchSvgMarkup(newValue: string) {
+    if (!this.path) {
+      this.svgContent = newValue ? this.normalizeSvgMarkup(newValue) : '';
     }
   }
 
@@ -46,12 +71,99 @@ export class SyIcon {
     try {
       const res = await fetch(path);
       if (res.ok) {
-        this.svgContent = await res.text();
+        this.svgContent = this.normalizeSvgMarkup(await res.text());
       } else {
         console.error(`Failed to load SVG from path: ${path}, status: ${res.status}`);
       }
     } catch (e) {
       console.error(`Error loading SVG: ${e.message}`);
+    }
+  }
+
+  private normalizeSvgMarkup(svgMarkup: string): string {
+    if (!svgMarkup || typeof document === 'undefined' || !svgMarkup.includes('<svg')) {
+      return svgMarkup;
+    }
+
+    try {
+      const template = document.createElement('template');
+      template.innerHTML = svgMarkup.trim();
+      template.content.querySelectorAll('svg').forEach((svg) => {
+        const hadDimensions = svg.hasAttribute('width') || svg.hasAttribute('height');
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
+        if (hadDimensions) {
+          svg.setAttribute('data-sy-had-dimensions', 'true');
+        }
+      });
+      return template.innerHTML.trim();
+    } catch {
+      return svgMarkup;
+    }
+  }
+
+  private normalizeRenderedSvgDimensions() {
+    // sy-icon controls the final rendered size, so incoming SVG dimensions are stripped.
+    this.host?.querySelectorAll('svg').forEach((svg) => {
+      const hadDimensions = svg.hasAttribute('width') || svg.hasAttribute('height') || svg.getAttribute('data-sy-had-dimensions') === 'true';
+      svg.removeAttribute('width');
+      svg.removeAttribute('height');
+      svg.removeAttribute('data-sy-had-dimensions');
+
+      if (hadDimensions) {
+        this.normalizeSvgViewBox(svg as SVGSVGElement);
+      }
+    });
+  }
+
+  private observeSvgMutations() {
+    if (!this.host || typeof MutationObserver === 'undefined') {
+      return;
+    }
+
+    this.mutationObserver?.disconnect();
+    this.mutationObserver = new MutationObserver(() => {
+      this.normalizeRenderedSvgDimensions();
+    });
+    this.mutationObserver.observe(this.host, { childList: true, subtree: true });
+  }
+
+  private normalizeSvgViewBox(svg: SVGSVGElement) {
+    const viewBox = svg.viewBox?.baseVal;
+    const bbox = this.getSvgBBox(svg);
+
+    if (!bbox || bbox.width <= 0 || bbox.height <= 0) {
+      return;
+    }
+
+    const shouldTrimViewBox = !viewBox ||
+      !Number.isFinite(viewBox.width) ||
+      !Number.isFinite(viewBox.height) ||
+      viewBox.width <= 0 ||
+      viewBox.height <= 0 ||
+      viewBox.x !== 0 ||
+      viewBox.y !== 0 ||
+      (bbox.width / viewBox.width) < 0.6 ||
+      (bbox.height / viewBox.height) < 0.6;
+
+    if (!shouldTrimViewBox) {
+      return;
+    }
+
+    svg.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  }
+
+  private getSvgBBox(svg: SVGSVGElement) {
+    try {
+      return svg.getBBox();
+    } catch {
+      try {
+        const graphic = svg.querySelector('path, g, rect, circle, ellipse, polygon, polyline, line') as SVGGraphicsElement | null;
+        return graphic?.getBBox();
+      } catch {
+        return null;
+      }
     }
   }
 
@@ -90,16 +202,20 @@ private handleClick = () => {
       xlarge: this.size === 'xlarge',
       xxlarge: this.size === 'xxlarge',
       xxxlarge: this.size === 'xxxlarge',
+      'natural-aspect': this.naturalAspect,
       selectable: this.selectable,
     };
-
     return (
       <span
         class={Object.keys(classNames).filter(key => classNames[key]).join(' ')}
         onClick={this.handleClick}
       >
-        {/* Always render slot container */}
-        <span ref={(el) => this.containerEl = el as HTMLSpanElement} class="svg-container">
+        {/* Always render slot container; hide when svgContent is present */}
+        <span
+          ref={(el) => this.containerEl = el as HTMLSpanElement}
+          class="svg-container"
+          style={{ display: this.svgContent ? 'none' : undefined }}
+        >
           <slot />
         </span>
 

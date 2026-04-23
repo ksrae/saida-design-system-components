@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as SelectableStories from './sy-icon-selectable.stories';
+
+<Meta of={SelectableStories} />
+
+# Selectable
+
+The `selectable` attribute makes the icon clickable and emits the `selected` event.
+
+<Canvas of={SelectableStories.Default} />
+<Controls of={SelectableStories.Default} />

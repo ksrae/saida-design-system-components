@@ -165,6 +165,20 @@ export class SyCalendar {
     this.closed.emit(undefined);
   }
 
+  /**
+   * For the `time` variant, the parent datepicker may pass a combined
+   * date+time format like `yyyy-MM-dd hh:mm:ss`. The timepicker's header
+   * does a raw replace on `hh/mm/ss` and would leave `yyyy-MM-dd` as
+   * literal text. Strip the date portion and fall back to `hh:mm:ss`.
+   */
+  private extractTimeFormat(format: string | undefined): string {
+    if (!format) return 'hh:mm:ss';
+    // Match the first contiguous run starting at `hh` that contains only
+    // time tokens + separators. This covers hh:mm, hh:mm:ss, hh-mm-ss, etc.
+    const match = format.match(/hh[^a-zA-Z]*mm([^a-zA-Z]*ss)?/);
+    return match ? match[0] : 'hh:mm:ss';
+  }
+
 render() {
   return (
     <div class="calendar">
@@ -205,7 +219,7 @@ render() {
           hour={this.selectedDatetime?.hour ?? this.todayDate.getHours()}
           minute={this.selectedDatetime?.minute ?? this.todayDate.getMinutes()}
           second={this.selectedDatetime?.second ?? this.todayDate.getSeconds()}
-          format={this.format}
+          format={this.extractTimeFormat(this.format)}
           onSelected={this.handleTimeSelected}>
         </sy-timepicker>
       )}

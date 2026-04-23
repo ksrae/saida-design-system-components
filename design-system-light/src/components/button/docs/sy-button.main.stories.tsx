@@ -92,7 +92,7 @@ export default buttonMeta;
 
 type Story = StoryObj<SyButtonProps>;
 
-export const Default: Story = {
+export const PluginDefault: Story = {
   args: {
     slot: 'Default Button',
     variant: 'default',

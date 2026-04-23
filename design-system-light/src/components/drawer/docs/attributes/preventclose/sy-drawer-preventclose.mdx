@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as PreventCloseStories from './sy-drawer-preventclose.stories';
+
+<Meta of={PreventCloseStories} />
+
+# Prevent Close
+
+The `preventClose` attribute keeps the drawer open when the user clicks the mask.
+
+<Canvas of={PreventCloseStories.Default} />
+<Controls of={PreventCloseStories.Default} />

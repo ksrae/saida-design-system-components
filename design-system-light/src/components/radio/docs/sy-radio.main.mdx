@@ -1,0 +1,23 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as RadioStories from './sy-radio.stories';
+import * as RadioGroupStories from './sy-radio-group.stories';
+import * as RadioButtonStories from './sy-radio-button.stories';
+
+<Meta of={RadioStories} />
+
+# Radio
+
+## Definition
+A radio button. Group multiple radios with `sy-radio-group`. For segmented button style use `sy-radio-button`.
+
+## Radio
+<Canvas of={RadioStories.Default} />
+<Controls of={RadioStories.Default} />
+
+## Radio Group
+<Canvas of={RadioGroupStories.Default} />
+<Controls of={RadioGroupStories.Default} />
+
+## Radio Button
+<Canvas of={RadioButtonStories.Default} />
+<Controls of={RadioButtonStories.Default} />

@@ -1,5 +1,7 @@
 import { Component, Prop, State, h, Element, Event, EventEmitter, Watch, Method, Listen } from '@stencil/core';
 
+let tabGroupOverflowMenuSequence = 0;
+
 @Component({
   tag: 'sy-tab-group',
   styleUrl: 'sy-tab-group.scss',
@@ -25,6 +27,8 @@ export class SyTabGroup {
 
   private latestActiveIndex: number | undefined;
   private resizeObserver?: ResizeObserver;
+  private overflowMenuId = `tab-overflow-menu-${++tabGroupOverflowMenuSequence}`;
+  private tabElements: HTMLSyTabElement[] = [];
 
   @Event() selected!: EventEmitter<any>;
   @Event() closed!: EventEmitter<any>;
@@ -60,8 +64,145 @@ export class SyTabGroup {
     this.updateParentRect();
   }
 
+  componentWillLoad() {
+    // Take a snapshot of the sy-tab / sy-tab-content children the caller
+    // provided (flat or inside slot wrappers). We'll physically move them
+    // into the rendered containers in componentDidLoad. This bypasses
+    // Stencil's scoped-slot emulation entirely — which is what was leaving
+    // the tabs unstyled and stacking vertically regardless of how we
+    // decorated the [slot="tabs"] wrapper.
+    this.collectSlottedChildren();
+  }
+
+  /** Pending tab elements captured from light-DOM before first render. */
+  private pendingTabs: HTMLSyTabElement[] = [];
+  /** Pending tab-content elements captured from light-DOM before first render. */
+  private pendingContents: HTMLSyTabContentElement[] = [];
+
+  private collectSlottedChildren() {
+    const host = this.host;
+    // If a global-header is nested inside the group it owns the tab slot —
+    // leave everything alone in that case.
+    if (host.querySelector('sy-global-header')) return;
+
+    const tabs: HTMLSyTabElement[] = [];
+    const contents: HTMLSyTabContentElement[] = [];
+
+    const walk = (root: Element) => {
+      Array.from(root.children).forEach((child) => {
+        const tag = child.tagName;
+        if (tag === 'SY-TAB' && child.getAttribute('slot') !== 'extra') {
+          tabs.push(child as HTMLSyTabElement);
+        } else if (tag === 'SY-TAB-CONTENT') {
+          contents.push(child as HTMLSyTabContentElement);
+        } else if (child.getAttribute('slot') === 'tabs' || child.getAttribute('slot') === 'contents') {
+          // Descend into user-provided slot wrappers.
+          walk(child);
+        }
+      });
+    };
+    walk(host);
+
+    this.pendingTabs = tabs;
+    this.pendingContents = contents;
+
+    // Remove any empty slot wrappers the user left around so we don't end
+    // up with stray div.slot="tabs" nodes fighting with our rendered .tabs.
+    Array.from(host.children).forEach((child) => {
+      const slot = child.getAttribute('slot');
+      if (slot === 'tabs' || slot === 'contents') {
+        host.removeChild(child);
+      }
+    });
+
+    // Also remove now-orphan tabs/contents that were captured — we'll
+    // reinsert them into the rendered containers after first render.
+    tabs.forEach((t) => t.parentElement?.removeChild(t));
+    contents.forEach((c) => c.parentElement?.removeChild(c));
+  }
+
+  private mountCapturedChildren() {
+    const tabsContainer = this.host.querySelector('.tabs') as HTMLElement | null;
+    const contentsContainer = this.host.querySelector('.contents') as HTMLElement | null;
+
+    if (tabsContainer && this.pendingTabs.length) {
+      const isVertical = this.position === 'left' || this.position === 'right';
+      // Force the rendered tabs container into the correct axis via inline
+      // styles so nothing — scope-class misses, cascade order, specificity
+      // — can push the tabs back into a column at top/bottom.
+      tabsContainer.style.display = 'flex';
+      tabsContainer.style.flexDirection = isVertical ? 'column' : 'row';
+      tabsContainer.style.alignItems = isVertical ? 'stretch' : 'center';
+      tabsContainer.style.flex = '1 1 auto';
+      tabsContainer.style.minWidth = '0';
+      tabsContainer.style.minHeight = '0';
+      tabsContainer.style.overflow = 'hidden';
+
+      this.pendingTabs.forEach((tab) => {
+        tab.style.display = 'inline-flex';
+        tab.style.flex = '0 0 auto';
+        tabsContainer.appendChild(tab);
+      });
+      this.pendingTabs = [];
+    }
+
+    if (contentsContainer && this.pendingContents.length) {
+      contentsContainer.style.display = 'block';
+      contentsContainer.style.flex = '1 1 auto';
+      contentsContainer.style.minHeight = '0';
+      this.pendingContents.forEach((c) => contentsContainer.appendChild(c));
+      this.pendingContents = [];
+    }
+  }
+
+  /** Re-flow layout when `position` changes at runtime or after any render. */
+  private reapplyTabsAxis() {
+    const tabsContainer = this.host.querySelector('.tabs') as HTMLElement | null;
+    if (!tabsContainer) return;
+    const isVertical = this.position === 'left' || this.position === 'right';
+    tabsContainer.style.display = 'flex';
+    tabsContainer.style.flexDirection = isVertical ? 'column' : 'row';
+    tabsContainer.style.alignItems = isVertical ? 'stretch' : 'center';
+    tabsContainer.style.flex = '1 1 auto';
+    tabsContainer.style.minWidth = '0';
+    tabsContainer.style.minHeight = '0';
+    tabsContainer.style.overflow = 'hidden';
+  }
+
+  componentDidRender() {
+    // Re-assert the inline flex layout on .tabs after every render so any
+    // subsequent VDOM reconciliation can't flip it back to the default
+    // block display.
+    this.reapplyTabsAxis();
+    // Also re-append tabs if VDOM reconciliation pulled them out.
+    this.remountIfMissing();
+  }
+
+  /**
+   * Walk the current `.tabs` container; if any tab we previously mounted
+   * is no longer inside it (VDOM reconciliation can pull them out), append
+   * it back. Cheap no-op when nothing drifted.
+   */
+  private remountIfMissing() {
+    const tabsContainer = this.host.querySelector('.tabs') as HTMLElement | null;
+    if (!tabsContainer) return;
+    this.tabElements.forEach((tab) => {
+      if (tab && tab.parentElement !== tabsContainer) {
+        tab.style.display = 'inline-flex';
+        tab.style.flex = '0 0 auto';
+        tabsContainer.appendChild(tab);
+      }
+    });
+  }
+
   componentDidLoad() {
+    // Physically mount the captured tabs/contents into the rendered
+    // containers FIRST. Must happen before refreshTabs so refreshTabs can
+    // find them with its normal queries.
+    this.mountCapturedChildren();
+
     this.isUpdateComplete = true;
+    this.refreshTabs();
 
     if (this.isdraggable && !this.disabled) {
       this.enableDragAndDrop();
@@ -69,7 +210,7 @@ export class SyTabGroup {
 
     this.setTabs();
     this.setActive(this.active);
-    
+
     // Add resize observer to handle parent size changes
     requestAnimationFrame(() => {
       this.updateParentRect();
@@ -87,6 +228,8 @@ export class SyTabGroup {
   }
 
   disconnectedCallback() {
+    this.disableDragAndDrop();
+
     // Cleanup resize observer
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
@@ -99,7 +242,7 @@ export class SyTabGroup {
     if (this.isUpdateComplete) {
       this.setActive(this.active);
 
-      const menu = document.querySelector("sy-menu#tab-overflow-menu") as HTMLSyMenuElement;
+      const menu = this.getOverflowMenu();
       if(menu) {
         menu.disabled = this.disabled;
       }
@@ -129,15 +272,21 @@ export class SyTabGroup {
   watchPosition() {
     if (this.isUpdateComplete) {
       this.updateOverflowTabs();
-      for(let tab of this.tabs) {
+      const tabs = this.refreshTabs();
+      for (const tab of tabs) {
         tab.position = this.position;
       }
+      // Flip the inline flex-direction on the rendered .tabs container
+      // when switching between horizontal (top/bottom) and vertical
+      // (left/right) layouts.
+      this.reapplyTabsAxis();
     }
   }
 
   @Method()
   async closeTab(name: string) {
-    const tab = this.tabs.find((tab: HTMLSyTabElement) => tab.tabkey === name);
+    const tabs = this.refreshTabs();
+    const tab = tabs.find((currentTab: HTMLSyTabElement) => currentTab.tabkey === name);
     if (tab) {
       await tab.setClose();
       this.removeTab(tab.tabkey);
@@ -176,7 +325,7 @@ export class SyTabGroup {
           <sy-menu
             disabled={this.disabled}
             position="bottomRight"
-            id="tab-overflow-menu"
+            id={this.overflowMenuId}
             onItemSelected={this.handleMenuSelect.bind(this)}
           >
             {this.overflowTabs.map(tab => {
@@ -203,7 +352,14 @@ export class SyTabGroup {
   }
 
   render() {
-    const isInsideGlobalHeader = this.host.querySelector('sy-global-header [slot="tabs"]') !== null;
+    // Common usage nests a sy-global-header INSIDE a sy-tab-group so the
+    // header renders the tab row. In that case the tab-group should NOT
+    // render its own tab container (which would duplicate the tab row
+    // and make the overflow calculation fight with the header's).
+    // The original code used `closest('sy-global-header')` which looks for
+    // an ancestor and was therefore always false — use `querySelector` for
+    // descendants instead.
+    const hasGlobalHeaderChild = this.host.querySelector('sy-global-header') !== null;
 
     const layoutClasses = {
       "top-layout": this.position === "top",
@@ -225,7 +381,7 @@ export class SyTabGroup {
     return (
       <div class={layoutClasses}>
         <slot />
-        {isInsideGlobalHeader ? this.renderHeader() : (
+        {!hasGlobalHeaderChild && (
           <div class={containerClasses}>
             {this.renderHeader()}
           </div>
@@ -239,19 +395,39 @@ export class SyTabGroup {
   }
 
   private get tabs(): HTMLSyTabElement[] {
-    const tabContainer = this.host.querySelector('[slot="tabs"]') as HTMLElement;
+    return this.tabElements;
+  }
+
+  private refreshTabs(): HTMLSyTabElement[] {
+    // Tabs live inside the rendered `.tabs` container after
+    // mountCapturedChildren has run. Fall back to the legacy `[slot="tabs"]`
+    // wrapper for the global-header case (header owns that slot).
+    const tabContainer =
+      (this.host.querySelector('.tabs') as HTMLElement) ||
+      (this.host.querySelector('[slot="tabs"]') as HTMLElement);
 
     if (tabContainer) {
-      return Array.from(tabContainer.querySelectorAll('sy-tab'))
+      this.tabElements = Array.from(tabContainer.querySelectorAll('sy-tab'))
         .filter((tab) => tab.getAttribute('slot') !== 'extra') as HTMLSyTabElement[];
-    } else return [];
+    } else {
+      this.tabElements = [];
+    }
+
+    return this.tabElements;
   }
 
   private getTabContents(): HTMLSyTabContentElement[] {
-    const contentContainer = this.host.querySelector('[slot="contents"]') as HTMLElement;
-    if(contentContainer) {
+    const contentContainer =
+      (this.host.querySelector('.contents') as HTMLElement) ||
+      (this.host.querySelector('[slot="contents"]') as HTMLElement);
+    if (contentContainer) {
       return Array.from(contentContainer.querySelectorAll('sy-tab-content')) as HTMLSyTabContentElement[];
-    } else return [];
+    }
+    return [];
+  }
+
+  private getOverflowMenu(): HTMLSyMenuElement | null {
+    return document.getElementById(this.overflowMenuId) as unknown as HTMLSyMenuElement | null;
   }
 
   /**
@@ -279,15 +455,16 @@ export class SyTabGroup {
   private handleOverflowMenuButtonClick(e: Event) {
     e.stopPropagation();
     setTimeout(() => {
-      const menu = document.querySelector("sy-menu#tab-overflow-menu") as HTMLSyMenuElement;
+      const menu = this.getOverflowMenu();
       menu?.setSelectableAllItems();
     }, 1);
   }
 
   private setTabs() {
+    const tabs = this.refreshTabs();
     const tabContents = this.getTabContents();
 
-    this.tabs.forEach((tab: HTMLSyTabElement, index: number) => {
+    tabs.forEach((tab: HTMLSyTabElement, index: number) => {
       tab.index = index;
       tab.parentDisabled = this.disabled;
       tab.type = this.type;
@@ -302,22 +479,24 @@ export class SyTabGroup {
 
     tabContents.forEach((content: HTMLSyTabContentElement) => {
       const contentName = content.getAttribute("name");
-      const activatedTab = this.tabs.find((t: HTMLSyTabElement) => t.index === this.active);
+      const activatedTab = tabs.find((tab: HTMLSyTabElement) => tab.index === this.active);
       content.active = contentName === activatedTab?.getAttribute("tabkey");
       content.disabled = this.disabled;
     });
   }
 
   private setActive(activeIndex?: number) {
+    const tabs = this.refreshTabs();
+
     if (this.disabled) {
       if (this.active !== undefined) {
         this.latestActiveIndex = this.active;
       }
       this.active = undefined;
     } else {
-      if (activeIndex !== undefined && !this.tabs[activeIndex]?.currentDisabledStatus) {
+      if (activeIndex !== undefined && !tabs[activeIndex]?.currentDisabledStatus) {
         this.active = activeIndex;
-      } else if (this.latestActiveIndex !== undefined && !this.tabs[this.latestActiveIndex]?.currentDisabledStatus) {
+      } else if (this.latestActiveIndex !== undefined && !tabs[this.latestActiveIndex]?.currentDisabledStatus) {
         this.active = this.latestActiveIndex;
       } else {
         this.active = this.findNextEnabledTab(0);
@@ -327,10 +506,11 @@ export class SyTabGroup {
   }
 
   private updateTabs() {
+    const tabs = this.refreshTabs();
     const tabContents = this.getTabContents();
 
-    if (this.tabs && tabContents) {
-      this.tabs.forEach((tab: HTMLSyTabElement, _index: number) => {
+    if (tabs.length && tabContents) {
+      tabs.forEach((tab: HTMLSyTabElement, _index: number) => {
         tab.parentDisabled = this.disabled;
         tab.type = this.type;
         tab.size = this.size;
@@ -340,27 +520,26 @@ export class SyTabGroup {
   }
 
 private updateOverflowTabs() {
-  const isInsideGlobalHeader = this.host.querySelector('sy-global-header [slot="tabs"]') !== null;
-
-  if (isInsideGlobalHeader) {
-    // const headerElement = this.host.querySelector('sy-global-header') as HTMLSyGlobalHeaderElement;
-    const headerElement = this.host.querySelector('sy-global-header') as any;
-    if (headerElement) {
-      headerElement.updateOverflowTabs();
-    }
+    const tabs = this.refreshTabs();
+  // When sy-tab-group wraps a sy-global-header, the header renders the
+  // tab row and owns overflow handling — delegate to it and bail out so
+  // the two components don't fight over `tab.style.display`.
+  const headerChild = this.host.querySelector('sy-global-header') as any;
+  if (headerChild) {
+    headerChild.updateOverflowTabs?.();
     return;
   }
 
   if (this._updateInProgress) return;
   this._updateInProgress = true;
 
-  if (!this.tabs.length || !this.parentRect) {
+  if (!tabs.length || !this.parentRect) {
     this._updateInProgress = false;
     return;
   }
 
   // 모든 탭을 보이도록 초기화
-  this.tabs.forEach((tab: HTMLSyTabElement) => {
+  tabs.forEach((tab: HTMLSyTabElement) => {
     tab.style.display = 'flex';
   });
 
@@ -387,8 +566,8 @@ private updateOverflowTabs() {
       let overflowIndex = -1;
 
       // 탭 크기 계산 및 오버플로우 지점 찾기
-      for (let i = 0; i < this.tabs.length; i++) {
-        const tab = this.tabs[i];
+      for (let i = 0; i < tabs.length; i++) {
+        const tab = tabs[i];
         const tabRect = tab.getBoundingClientRect();
         const tabWidth = (this.position === 'top' || this.position === 'bottom') ?
           tabRect.width : tabRect.height;
@@ -422,15 +601,15 @@ private updateOverflowTabs() {
           startIndex = 0;
         }
         // activeTab이 끝부분에 있는 경우 마지막 visibleTabCount개 보여줌
-        else if (active >= this.tabs.length - Math.ceil(visibleTabCount / 2)) {
-          startIndex = Math.max(0, this.tabs.length - visibleTabCount);
+        else if (active >= tabs.length - Math.ceil(visibleTabCount / 2)) {
+          startIndex = Math.max(0, tabs.length - visibleTabCount);
         }
         // activeTab이 중간에 있는 경우 활성 탭을 중심으로 보여줌
         else {
           startIndex = Math.max(0, active - Math.floor(visibleTabCount / 2));
         }
 
-        this.tabs.forEach((tab: HTMLSyTabElement, index: number) => {
+        tabs.forEach((tab: HTMLSyTabElement, index: number) => {
           if (index >= startIndex && index < startIndex + visibleTabCount) {
             tab.style.display = 'flex';
           } else {
@@ -441,12 +620,12 @@ private updateOverflowTabs() {
       } else {
         // 오버플로우가 없는 경우 - 모든 탭 표시
         this.overflowTabs = [];
-        this.tabs.forEach(tab => {
+        tabs.forEach(tab => {
           tab.style.display = 'flex';
         });
       }
 
-      const menu = document.querySelector("sy-menu#tab-overflow-menu") as HTMLSyMenuElement;
+      const menu = this.getOverflowMenu();
       menu?.clearSelectedItem();
     } finally {
       this._updateInProgress = false;
@@ -481,7 +660,8 @@ private updateOverflowTabs() {
   private handleTabClose(e: any) {
     e.stopPropagation();
     if (!e.detail.isManualClose) {
-      const closedTab = this.tabs.find((t: HTMLSyTabElement) => t.index === e.detail.index);
+      const tabs = this.refreshTabs();
+      const closedTab = tabs.find((tab: HTMLSyTabElement) => tab.index === e.detail.index);
       this.removeTab(e.detail.tabkey);
 
       if (closedTab && this.active === closedTab.index) {
@@ -503,11 +683,12 @@ private updateOverflowTabs() {
   private handleMenuSelect(e: CustomEvent) {
     e.stopPropagation();
     if (!this.disabled) {
-      const activeTab = this.tabs.find((t: HTMLSyTabElement) => t.tabkey === e.detail.value);
+      const tabs = this.refreshTabs();
+      const activeTab = tabs.find((tab: HTMLSyTabElement) => tab.tabkey === e.detail.value);
       if(activeTab) {
         this.setActive(activeTab.index);
         setTimeout(() => {
-          const menu = document.querySelector("sy-menu#tab-overflow-menu") as HTMLSyMenuElement;
+          const menu = this.getOverflowMenu();
           menu?.clearSelectedItem();
           const selectedMenuItem = e.target as HTMLSyMenuItemElement;
           if(selectedMenuItem) {
@@ -521,15 +702,16 @@ private updateOverflowTabs() {
   }
 
   private removeTab(key: string) {
+    const tabs = this.refreshTabs();
     const tabContents = this.getTabContents();
-    const tabIndex = this.tabs.findIndex((t: HTMLSyTabElement) => t.tabkey === key);
+    const tabIndex = tabs.findIndex((tab: HTMLSyTabElement) => tab.tabkey === key);
 
     if (tabIndex >= 0) {
-      this.tabs[tabIndex]?.remove();
+      tabs[tabIndex]?.remove();
       const contentToRemove = tabContents.find(content => content.getAttribute("name") === key);
       contentToRemove?.remove();
 
-      this.tabs.splice(tabIndex, 1);
+      this.refreshTabs();
       this.setTabs();
 
       if (this.active === tabIndex) {
@@ -546,18 +728,24 @@ private updateOverflowTabs() {
   }
 
   private enableDragAndDrop() {
-    this.tabs.forEach((tab: HTMLSyTabElement) => {
+    const tabs = this.refreshTabs();
+    tabs.forEach((tab: HTMLSyTabElement) => {
       tab.draggable = true;
-      tab.addEventListener("dragstart", this.handleDragStart.bind(this));
-      tab.addEventListener("dragover", this.handleDragOver.bind(this));
-      tab.addEventListener("drop", this.handleDrop.bind(this));
-      tab.addEventListener("dragend", this.handleDragEnd.bind(this));
+      tab.removeEventListener("dragstart", this.handleDragStart);
+      tab.removeEventListener("dragover", this.handleDragOver);
+      tab.removeEventListener("drop", this.handleDrop);
+      tab.removeEventListener("dragend", this.handleDragEnd);
+      tab.addEventListener("dragstart", this.handleDragStart);
+      tab.addEventListener("dragover", this.handleDragOver);
+      tab.addEventListener("drop", this.handleDrop);
+      tab.addEventListener("dragend", this.handleDragEnd);
     });
     this.updateOverflowTabs();
   }
 
   private disableDragAndDrop() {
-    this.tabs.forEach((tab: HTMLSyTabElement) => {
+    const tabs = this.refreshTabs();
+    tabs.forEach((tab: HTMLSyTabElement) => {
       tab.draggable = false;
       tab.removeEventListener("dragstart", this.handleDragStart);
       tab.removeEventListener("dragover", this.handleDragOver);
@@ -566,7 +754,7 @@ private updateOverflowTabs() {
     });
   }
 
-  private handleDragStart(e: DragEvent) {
+  private handleDragStart = (e: DragEvent) => {
     this.draggedItem = e.target;
     this.isDropped = false;
     this.draggedIndex = this.draggedItem.index;
@@ -596,7 +784,7 @@ private updateOverflowTabs() {
     }
   };
 
-  private handleDrop(e: DragEvent) {
+  private handleDrop = (e: DragEvent) => {
     e.preventDefault();
     this.isDropped = true;
     this.handleDragEnd(e);
@@ -615,7 +803,7 @@ private updateOverflowTabs() {
   private reorderTabs(draggedIndex: number, droppedIndex: number) {
     if (draggedIndex === droppedIndex) return;
 
-    const tabsArray = Array.from(this.tabs);
+    const tabsArray = Array.from(this.refreshTabs());
     const draggedTab = tabsArray[draggedIndex] as HTMLSyTabElement;
 
     tabsArray.splice(draggedIndex, 1);

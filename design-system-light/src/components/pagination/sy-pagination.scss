@@ -5,13 +5,27 @@
     display: inline-flex;
 
     .pagination-wrapper {
+        /* Stack the pager row and the optional "Total N Items" label
+           vertically so the total sits BELOW the pagination controls. */
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
-        flex-wrap: wrap;
-        justify-content: center;
         gap: var(--spacing-3xsmall);
 
+        .pagination-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--spacing-3xsmall);
+        }
+
+        .page-info {
+            display: inline-flex;
+            align-items: center;
+            color: var(--pagination-index-inactive-text-enabled);
+        }
 
         .pagination {
             padding: 0px;

@@ -14,7 +14,7 @@ export class SyBannerMessage {
 
   @Prop({ reflect: true }) closable: boolean = false;
   @Prop({ attribute: 'showIcon', mutable: true }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
-  @Prop() neutralIcon: string = '';
+  @Prop({ mutable: true }) neutralIcon: string = '';
   @Prop() message: string = '';
   @Prop() header: string = '';
   @Prop() variant: 'info' | 'success' | 'warning' | 'error' | 'neutral' = 'info';
@@ -33,6 +33,7 @@ export class SyBannerMessage {
 
   componentWillLoad() {
     this.showIcon = fnAssignPropFromAlias(this.host, 'show-icon') ?? this.showIcon;
+    this.neutralIcon = fnAssignPropFromAlias<string>(this.host, 'neutral-icon') ?? this.neutralIcon;
     this.updateIconVariant();
   }
 
@@ -89,9 +90,10 @@ export class SyBannerMessage {
           <div class="banner-group">
             {showIconCondition && this.iconVariant && (
               <sy-icon
-                size="xxlarge"
+                size="xxxlarge"
+                naturalAspect={this.variant === 'neutral'}
                 class="banner-icon"
-                innerHTML={this.iconVariant}
+                svgMarkup={this.iconVariant}
               ></sy-icon>
             )}
             <div class="banner-message-group">

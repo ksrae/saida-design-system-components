@@ -31,14 +31,17 @@ export class SyTab {
   confirmVisible: boolean = false;
 
   componentDidLoad() {
-    this.currentDisabledStatus = this.disabled;
     this.setEnabled();
   }
 
-  componentwWillLoad() {
+  componentWillLoad() {
     this.parentDisabled = fnAssignPropFromAlias(this.host, 'parent-disabled') ?? this.parentDisabled;
-    this.currentDisabledStatus = fnAssignPropFromAlias(this.host, 'current-disabled-status') ?? this.currentDisabledStatus;
+    this.currentDisabledStatus = fnAssignPropFromAlias(this.host, 'current-disabled-status') ?? this.disabled;
     this.inHeader = fnAssignPropFromAlias(this.host, 'in-header') ?? this.inHeader;
+    if (this.parentDisabled) {
+      this.currentDisabledStatus = true;
+      this.active = false;
+    }
   }
 
   @Watch('active')

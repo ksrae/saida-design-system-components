@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-open.stories';
+
+<Meta of={Stories} />
+
+# Open
+
+The `open` attribute controls modal visibility. Set it to `true` to display the modal; set it back to `false` to allow reopening later.
+
+<Canvas of={Stories.Default} />
+<Controls of={Stories.Default} />

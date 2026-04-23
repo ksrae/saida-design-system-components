@@ -1,20 +1,21 @@
 import { html } from "lit";
 import { Components } from '../../../components';
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface SyBreadcrumbProps extends Components.SyBreadcrumb {
-  slot?: any;
+  slot?: string;
   selected?: (event: CustomEvent<any>) => void;
 }
 
 export interface SyBreadcrumbItemprops extends Components.SyBreadcrumbItem {
-  slot?: any;
+  slot?: string;
 }
 
 export const BreadCrumb = ({separator, slot} : SyBreadcrumbProps) => {
   return html`
     <sy-breadcrumb
-      separator=${separator}>
+      separator=${ifDefined(separator)}>
       ${unsafeHTML(slot)}
     </sy-breadcrumb>
     `;
@@ -26,11 +27,20 @@ export const BreadCrumbItem = ({active, disabled, separator, slot} : SyBreadcrum
     <sy-breadcrumb-item
     ?active=${active}
     ?disabled=${disabled}
-    separator=${separator}>
+    separator=${ifDefined(separator)}>
     ${unsafeHTML(slot)}
     </sy-breadcrumb-item>
   </sy-breadcrumb>
   `
+};
+
+export const BreadCrumbItemSeparator = ({separator} : {separator: 'slash' | 'arrow'}) => {
+  return html`
+  <sy-breadcrumb separator="slash">
+    <sy-breadcrumb-item separator=${ifDefined(separator)}>item 1</sy-breadcrumb-item>
+    <sy-breadcrumb-item >item 2</sy-breadcrumb-item>
+  </sy-breadcrumb>
+  `;
 };
 
 export const BreadCrumbSeparator = (args: {separator: 'slash' | 'arrow'}) => {
@@ -41,30 +51,38 @@ export const BreadCrumbSeparator = (args: {separator: 'slash' | 'arrow'}) => {
 };
 
 export const BreadCrumbSelected = () => {
-  return html`
-  <sy-breadcrumb id="breadcrumbSelected">
-    <sy-breadcrumb-item>item 1</sy-breadcrumb-item><sy-breadcrumb-item>item 2</sy-breadcrumb-item><sy-breadcrumb-item>item 3</sy-breadcrumb-item></sy-breadcrumb>
-  </sy-breadcrumb>
-
-<p id="breadcrumbSelectedResult"></p>
-<script>
-(() => {
-  const elem = document.querySelector('#breadcrumbSelected');
-  const result = document.querySelector('#breadcrumbSelectedResult');
-
-  const handleBreadcrumbSelected = (e) => {
-    result.textContent = 'value ' + e.detail.target.innerText + ' is selected';
+  const handleSelected = (e: CustomEvent<HTMLElement>) => {
+    const result = document.querySelector('#breadcrumbSelectedResult');
+    if (result) {
+      result.textContent = 'value ' + e.detail.innerText + ' is selected';
+    }
   };
 
-  elem.addEventListener('selected', handleBreadcrumbSelected);
+  return html`
+  <sy-breadcrumb id="breadcrumbSelected" @selected=${handleSelected}>
+    <sy-breadcrumb-item>item 1</sy-breadcrumb-item>
+    <sy-breadcrumb-item>item 2</sy-breadcrumb-item>
+    <sy-breadcrumb-item>item 3</sy-breadcrumb-item>
+  </sy-breadcrumb>
+  <p id="breadcrumbSelectedResult"></p>
+  `;
+}
 
-  // this is for release click event. It is recommanded for optimization.
-  window.addEventListener('beforeunload', () => {
-    elem.removeEventListener('selected', handleBreadcrumbSelected);
-  });
-})();
+export const BreadCrumbItemSelected = () => {
+  const handleSelected = (e: CustomEvent<HTMLElement>) => {
+    const result = document.querySelector('#breadcrumbItemSelectedResult');
+    if (result) {
+      result.textContent = 'selected: ' + (e.target as HTMLElement).innerText;
+    }
+  };
 
-</script>
-  `
+  return html`
+  <sy-breadcrumb id="breadcrumbItemSelected">
+    <sy-breadcrumb-item @selected=${handleSelected}>item 1</sy-breadcrumb-item>
+    <sy-breadcrumb-item @selected=${handleSelected}>item 2</sy-breadcrumb-item>
+    <sy-breadcrumb-item @selected=${handleSelected}>item 3</sy-breadcrumb-item>
+  </sy-breadcrumb>
+  <p id="breadcrumbItemSelectedResult"></p>
+  `;
 }
 

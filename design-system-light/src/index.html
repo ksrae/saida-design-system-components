@@ -715,7 +715,7 @@
                 headerComplete.addEventListener('changed', (e) => {
                     logEvent('result-complete', `Search: "${e.detail.value}"`);
                 });
-                headerComplete.addEventListener('click', (e) => {
+                headerComplete.addEventListener('actionClick', (e) => {
                     logEvent('result-complete', `Button clicked: ${e.detail.type}`);
                 });
             }
@@ -740,7 +740,7 @@
             // Information header events
             const headerInformation = document.getElementById('header-information');
             if (headerInformation) {
-                headerInformation.addEventListener('click', (e) => {
+                headerInformation.addEventListener('actionClick', (e) => {
                     const clickType = e.detail.type;
                     logEvent('result-information', `Information button clicked: ${clickType}`);
                 });
@@ -749,7 +749,7 @@
             // Notification header events
             const headerNotification = document.getElementById('header-notification');
             if (headerNotification) {
-                headerNotification.addEventListener('click', (e) => {
+                headerNotification.addEventListener('actionClick', (e) => {
                     const clickType = e.detail.type;
                     logEvent('result-notification', `Notification button clicked: ${clickType}`);
                 });
@@ -761,7 +761,7 @@
                 headerDynamic.addEventListener('changed', (e) => {
                     logEvent('result-dynamic', `Search changed: "${e.detail.value}"`);
                 });
-                headerDynamic.addEventListener('click', (e) => {
+                headerDynamic.addEventListener('actionClick', (e) => {
                     logEvent('result-dynamic', `${e.detail.type} clicked`);
                 });
             }
@@ -994,7 +994,7 @@
             const infoHeaders = document.querySelectorAll('sy-global-header[information="true"]');
             infoHeaders.forEach(header => {
                 console.log(`Testing information button on ${header.id}...`);
-                header.dispatchEvent(new CustomEvent('click', {
+                header.dispatchEvent(new CustomEvent('actionClick', {
                     detail: { type: 'information' },
                     bubbles: true
                 }));
@@ -1003,7 +1003,7 @@
             const notifHeaders = document.querySelectorAll('sy-global-header[notification="true"]');
             notifHeaders.forEach(header => {
                 console.log(`Testing notification button on ${header.id}...`);
-                header.dispatchEvent(new CustomEvent('click', {
+                header.dispatchEvent(new CustomEvent('actionClick', {
                     detail: { type: 'notification' },
                     bubbles: true
                 }));

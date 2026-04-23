@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-maskless.stories';
+
+<Meta of={Stories} />
+
+# Maskless
+
+The `maskless` attribute hides the dimmed backdrop behind the modal. `maskClosable` is ignored when `maskless` is true.
+
+<Canvas of={Stories.Default} />
+<Controls of={Stories.Default} />

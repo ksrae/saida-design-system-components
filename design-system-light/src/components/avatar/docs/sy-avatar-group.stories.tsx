@@ -3,7 +3,7 @@ import { AvatarGroup, SyAvatarGroupProps } from './sy-avatar.main';
 import { clearElements } from '../../clear-element';
 
 const avatarGroupMeta: Meta<SyAvatarGroupProps> = {
-  title: 'Avatar-Group/Overview',
+  title: 'Avatar/Group Overview',
   component: 'sy-avatar-group',
   tags: [],
   render: (args) => {
@@ -69,7 +69,7 @@ export const Default: Story = {
   args: {
     clickable: false,
     variant: 'stack',
-    maxCount: Infinity,
+    maxCount: 2,
     size: 'medium',
     slot: ``
   },

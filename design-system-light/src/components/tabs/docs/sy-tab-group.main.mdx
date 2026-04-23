@@ -1,0 +1,25 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TabGroupStories from './sy-tab-group.stories';
+import * as TabStories from './sy-tab.stories';
+import * as TabContentStories from './sy-tab-content.stories';
+
+<Meta of={TabGroupStories} />
+
+# Tab
+
+A tabbed interface composed of a `sy-tab-group` container with `sy-tab` headers and `sy-tab-content` panels. Supports horizontal/vertical layout, card/line style, closable and draggable tabs.
+
+## Tab Group
+
+<Canvas of={TabGroupStories.Default} />
+<Controls of={TabGroupStories.Default} />
+
+## Tab
+
+<Canvas of={TabStories.Default} />
+<Controls of={TabStories.Default} />
+
+## Tab Content
+
+<Canvas of={TabContentStories.Default} />
+<Controls of={TabContentStories.Default} />

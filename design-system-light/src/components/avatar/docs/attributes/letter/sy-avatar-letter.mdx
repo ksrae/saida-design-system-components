@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as LetterStories from './sy-avatar-letter.stories';
+
+<Meta of={LetterStories} />
+
+# Letter
+
+The `letter` attribute displays up to 2 letters inside the avatar. Longer strings are truncated and uppercased.
+
+<Canvas of={LetterStories.Default} />
+<Controls of={LetterStories.Default} />

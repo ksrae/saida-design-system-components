@@ -355,13 +355,12 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
   }
 
   private renderTreeSelectPopup() {
-    // Store popup reference in instance property instead of querySelector
     if (!this.popupContainer) {
       this.popupContainer = document.createElement("div");
       this.popupContainer.classList.add("sy-tree-select-option-container");
       this.popupContainer.classList.add("visible");
       this.popupContainer.style.position = 'absolute';
-      this.popupContainer.style.zIndex = '1000';
+      this.popupContainer.style.zIndex = 'var(--z-index-select, 800)';
       this.popupContainer.style.backgroundColor = 'var(--treeselect-background-enabled, #fff)';
       this.popupContainer.style.border = '1px solid var(--border-color, #d9d9d9)';
       this.popupContainer.style.borderRadius = '4px';
@@ -369,85 +368,75 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       this.popupContainer.style.maxHeight = '300px';
       this.popupContainer.style.overflowY = 'auto';
       document.body.appendChild(this.popupContainer);
-
-      if (this.loading) {
-        this.popupContainer.classList.add("loading");
-        const loadingContainer = document.createElement("div");
-        loadingContainer.classList.add("loading-container");
-        loadingContainer.style.width = '100%';
-        loadingContainer.style.display = 'flex';
-        loadingContainer.style.minHeight = '60px';
-        loadingContainer.style.alignItems = 'center';
-        loadingContainer.style.justifyContent = 'center';
-        const spinnerElement = document.createElement("sy-spinner");
-        loadingContainer.appendChild(spinnerElement);
-        this.popupContainer.appendChild(loadingContainer);
-      } else if (!this.hasSearchResults) {
-        this.popupContainer.classList.add("empty");
-        const emptyContainer = document.createElement("div");
-        emptyContainer.classList.add("empty-container");
-        emptyContainer.style.width = '100%';
-        emptyContainer.style.display = 'flex';
-        emptyContainer.style.minHeight = '60px';
-        emptyContainer.style.alignItems = 'center';
-        emptyContainer.style.justifyContent = 'center';
-        const emptyElement = document.createElement("sy-empty");
-        emptyContainer.appendChild(emptyElement);
-        this.popupContainer.appendChild(emptyContainer);
-      } else {
-        this.treeElement = document.createElement("sy-tree") as HTMLSyTreeElement;
-        this.treeElement.clickable = true;
-        this.treeElement.nodes = this.nodes;
-        this.treeElement.checkable = this.checkable;
-        this.treeElement.expandable = this.expandable;
-        this.treeElement.line = this.line;
-        this.treeElement.selectedValue = this.selectedItem?.length ? this.selectedItem.map(item => item.value).join(',') : this.defaultValue;
-        this.treeElement.nodeWidth = this.nodeWidth !== null && this.nodeWidth > 0 ? this.nodeWidth : null;
-        this.treeElement.searchTerm = this.searchTerm;
-        this.treeElement.expandAll = this.expandAll;
-        this.treeElement.isTreeSelect = true;
-
-        this.treeElement.addEventListener('itemSelected', (e: any) => {
-          this.handleTreeItemClick(e);
-        });
-        this.treeElement.addEventListener('nodesChanged', (e: any) => {
-          this.handleNodesChanged(e);
-        });
-
-        this.popupContainer.appendChild(this.treeElement);
-      }
     }
+
+    this.renderPopupContent();
+  }
+
+  private renderPopupContent() {
+    if (!this.popupContainer) {
+      return;
+    }
+
+    this.popupContainer.classList.remove("loading", "empty");
+    this.popupContainer.innerHTML = '';
+    this.treeElement = undefined;
+
+    if (this.loading) {
+      this.popupContainer.classList.add("loading");
+      const loadingContainer = document.createElement("div");
+      loadingContainer.classList.add("loading-container");
+      loadingContainer.style.width = '100%';
+      loadingContainer.style.display = 'flex';
+      loadingContainer.style.minHeight = '60px';
+      loadingContainer.style.alignItems = 'center';
+      loadingContainer.style.justifyContent = 'center';
+      const spinnerElement = document.createElement("sy-spinner");
+      loadingContainer.appendChild(spinnerElement);
+      this.popupContainer.appendChild(loadingContainer);
+      return;
+    }
+
+    if (!this.hasSearchResults) {
+      this.popupContainer.classList.add("empty");
+      const emptyContainer = document.createElement("div");
+      emptyContainer.classList.add("empty-container");
+      emptyContainer.style.width = '100%';
+      emptyContainer.style.display = 'flex';
+      emptyContainer.style.minHeight = '60px';
+      emptyContainer.style.alignItems = 'center';
+      emptyContainer.style.justifyContent = 'center';
+      const emptyElement = document.createElement("sy-empty");
+      emptyContainer.appendChild(emptyElement);
+      this.popupContainer.appendChild(emptyContainer);
+      return;
+    }
+
+    this.treeElement = document.createElement("sy-tree") as HTMLSyTreeElement;
+    this.treeElement.clickable = true;
+    this.treeElement.nodes = this.nodes;
+    this.treeElement.checkable = this.checkable;
+    this.treeElement.expandable = this.expandable;
+    this.treeElement.line = this.line;
+    this.treeElement.selectedValue = this.selectedItem?.length ? this.selectedItem.map(item => item.value).join(',') : this.defaultValue;
+    this.treeElement.nodeWidth = this.nodeWidth !== null && this.nodeWidth > 0 ? this.nodeWidth : null;
+    this.treeElement.searchTerm = this.searchTerm;
+    this.treeElement.expandAll = this.expandAll;
+    this.treeElement.isTreeSelect = true;
+
+    this.treeElement.addEventListener('itemSelected', (e: any) => {
+      this.handleTreeItemClick(e);
+    });
+    this.treeElement.addEventListener('nodesChanged', (e: any) => {
+      this.handleNodesChanged(e);
+    });
+
+    this.popupContainer.appendChild(this.treeElement);
   }
 
   private updateTreeSelectPopup() {
     if (this.popupContainer) {
-      if (this.loading) {
-        const exist = this.popupContainer.querySelector('sy-spinner');
-        if (!exist) {
-          this.popupContainer.innerHTML = '';
-          const loadingContainer = document.createElement("div");
-          loadingContainer.classList.add("loading-container");
-          const spinnerElement = document.createElement("sy-spinner");
-          loadingContainer.appendChild(spinnerElement);
-          this.popupContainer.appendChild(loadingContainer);
-        }
-      } else if (!this.hasSearchResults) {
-        const exist = this.popupContainer.querySelector('sy-empty');
-        if (!exist) {
-          this.popupContainer.innerHTML = '';
-          const emptyContainer = document.createElement("div");
-          emptyContainer.classList.add("empty-container");
-          const emptyElement = document.createElement("sy-empty");
-          emptyContainer.appendChild(emptyElement);
-          this.popupContainer.appendChild(emptyContainer);
-        }
-      } else {
-        const exist = this.popupContainer.querySelector('sy-tree');
-        if (!exist) {
-          this.popupContainer.innerHTML = '';
-          this.renderTreeSelectPopup();
-        }
-      }
+      this.renderPopupContent();
     }
   }
 
@@ -470,7 +459,7 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       this.popupContainer.style.top = `${rect.bottom + window.scrollY}px`;
       this.popupContainer.style.left = `${rect.left + window.scrollX}px`;
       this.popupContainer.style.width = `${rect.width}px`;
-      this.popupContainer.style.zIndex = '1000';
+      this.popupContainer.style.zIndex = 'var(--z-index-select, 800)';
     }
   }
 

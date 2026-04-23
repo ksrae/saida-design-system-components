@@ -1,0 +1,17 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ChangedStories from './sy-autocomplete-changed.stories';
+
+<Meta of={ChangedStories} />
+
+# changed
+
+The `changed` event fires every time the input value changes (on each keystroke).
+
+```js
+const elem = document.querySelector('sy-autocomplete');
+elem.addEventListener('changed', (e) => {
+  console.log(e.detail); // { value, isValid, status }
+});
+```
+
+<Canvas of={ChangedStories.Default} />

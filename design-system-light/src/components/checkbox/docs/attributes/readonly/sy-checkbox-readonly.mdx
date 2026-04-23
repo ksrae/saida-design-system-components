@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ReadonlyStories from './sy-checkbox-readonly.stories';
+
+<Meta of={ReadonlyStories} />
+
+# Readonly
+
+The `readonly` attribute locks the current value; the user cannot toggle it but it submits with the form.
+
+<Canvas of={ReadonlyStories.Default} />
+<Controls of={ReadonlyStories.Default} />

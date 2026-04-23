@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as OverflowCountStories from './sy-badge-overflow-count.stories';
+
+<Meta of={OverflowCountStories} />
+
+# Overflow Count
+
+When the `value` exceeds `overflowCount`, the badge renders `{overflowCount}+` (e.g., `99+`).
+
+<Canvas of={OverflowCountStories.Default} />
+<Controls of={OverflowCountStories.Default} />

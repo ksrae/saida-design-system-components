@@ -1,165 +1,128 @@
-import { html } from "lit";
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { ref, createRef, Ref } from 'lit/directives/ref.js';
 import { Components } from '../../../components';
 
 export interface SyButtonProps extends Components.SyButton {
-  slot: any;
+  slot?: string;
   click?: (event: MouseEvent) => void;
 }
 
-export const Button = ({disabled, justified, loading, size, type, variant, slot}: SyButtonProps) => {
+/**
+ * Generic single-button render used by both Overview and Attributes stories.
+ * All props are optional so each attribute story can pass only what it controls.
+ */
+const renderButton = (args: Partial<SyButtonProps>) => html`
+  <sy-button
+    ?disabled=${!!args.disabled}
+    ?justified=${!!args.justified}
+    ?loading=${!!args.loading}
+    size=${ifDefined(args.size)}
+    type=${ifDefined(args.type)}
+    variant=${ifDefined(args.variant)}
+  >${unsafeHTML(args.slot ?? 'Button')}</sy-button>
+`;
+
+export const Button = (args: SyButtonProps) => renderButton(args);
+
+// Single shared renderer used by every single-prop attribute story.
+export const ButtonAttribute = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonDisabled  = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonJustified = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonLoading   = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonSize      = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonVariant   = (args: Partial<SyButtonProps>) => renderButton(args);
+
+export const ButtonSlot = (args: { slot?: string }) => html`
+  <sy-button>${unsafeHTML(args.slot ?? 'Button')}</sy-button>
+`;
+
+export const ButtonType = (args: { type?: 'button' | 'submit' | 'reset' }) => {
+  const handleClick = (e: Event) => {
+    const btn = e.currentTarget as HTMLSyButtonElement;
+    if (btn.type === 'button') {
+      const out = document.getElementById('formResult');
+      if (out) out.textContent = 'button clicked';
+    }
+  };
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const out = document.getElementById('formResult');
+    if (out) out.textContent = 'Form submitted!';
+  };
+  const handleReset = () => {
+    const out = document.getElementById('formResult');
+    if (out) out.textContent = 'Form reset!';
+  };
+
   return html`
-    <sy-button
-      ?disabled=${disabled}
-      ?justified=${justified}
-      ?loading=${loading}
-      size=${size}
-      type=${type}
-      variant=${variant}
-      >
-      ${unsafeHTML(slot)}
-    </sy-button>`;
+    <form id="sampleForm" style="display:flex;gap:4px;" @submit=${handleSubmit} @reset=${handleReset}>
+      <sy-input type="text" name="testInput" value="test input value"></sy-input>
+      <sy-button type=${ifDefined(args.type)} @click=${handleClick}>Button</sy-button>
+    </form>
+    <p>Result: <span id="formResult">(idle)</span></p>
+  `;
 };
 
-// Variant
-export const ButtonAttribute = (args: {disabled: boolean}) => {
-  return html`
-    <sy-button ?disabled=${args.disabled}>Button</sy-button>
-  `;
-}
-
-export const ButtonDisabled = (args: {disabled: boolean}) => {
-  return html`
-<sy-button ?disabled=${args.disabled}>Button</sy-button>
-`
-}
-
-export const ButtonJustified = (args: {justified: boolean}) => {
-  return html`
-<sy-button ?justified=${args.justified}>Button</sy-button>
-`;
-}
-
-export const ButtonLoading = (args: {loading: boolean}) => {
-  return html`
-<sy-button ?loading=${args.loading}>Button</sy-button>
-`;
-}
-
-export const ButtonSize = (args: {size: 'small' | 'medium' | 'large'}) => {
-  return html`
-<sy-button size="${args.size}">Button</sy-button>
-`;
-}
-
-export const ButtonType = (args: {type: 'button' | 'submit' | 'reset'}) => {
-  return html`
-    <form id="sampleForm" style="display:flex;gap:4px;">
-      <sy-input type="text" name="testInput" value="test input value" /></sy-input>
-      <sy-button type=${args.type} id="buttonType">Button</sy-button>
-    </form>
-    <p id="formResult"></p>
-    <script>
-      (() => {
-        const form = document.querySelector('#sampleForm');
-        const result = document.querySelector('#formResult');
-        const buttonType = document.querySelector('#buttonType');
-
-        buttonType.addEventListener('click', () => {
-          if(buttonType.type === 'button') { // Since the event occurs in overlap with a submit or reset, it is executed only when the button type is a button.
-            result.textContent = 'button clicked';
-          }
-        });
-
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          result.textContent = 'Form submitted!';
-        });
-
-        form.addEventListener('reset', (e) => {
-          result.textContent = 'Form reset!';
-        });
-      })();
-    </script>
-  `;
-}
-
-export const ButtonSlot = (args: {slotContent: any}) => {
-  return html`
-	<sy-button>
-    ${unsafeHTML(args.slotContent)}
-  </sy-button>
-  `;
-}
-
-export const ButtonVariant = (args: {variant: 'default' | 'primary' | 'secondary' | 'borderless'}) => {
-  return html`
-<sy-button variant="${args.variant}">Button</sy-button>
-`;
-}
-
-export const ButtonFocusBlur = () => {
-  return html`
-<sy-button id="btnFocusElem">Button</sy-button>
-<p id="btnFocusResult"></p>
-<script>
-  (() => {
-    const elem = document.querySelector('#btnFocusElem');
-    const result = document.querySelector('#btnFocusResult');
-
-    // focus button by force with function in 1 sec.
-    setTimeout(() => {
-      elem.setFocus();
-    }, 1000);
-
-    // blur button by force with function in 4 sec.
-    setTimeout(() => {
-      elem.setBlur();
-    }, 4000);
-
-
-    const handleFocus = (e) => {
-      result.textContent = 'focus';
-    };
-
-    const handleBlur = (e) => {
-      result.textContent = 'blur';
-    };
-
-    elem.addEventListener('focus', handleFocus);
-    elem.addEventListener('blur', handleBlur);
-
-    // this is for release click event. It is recommanded for optimization.
-    window.addEventListener('beforeunload', () => {
-      elem.removeEventListener('focus', handleFocus);
-      elem.removeEventListener('blur', handleBlur);
-    });
-  })();
-
-</script>`;
-}
+/* -------------------- Events -------------------- */
 
 export const ButtonClick = () => {
+  const handleClick = () => {
+    const out = document.getElementById('btnClickResult');
+    if (out) out.textContent = 'clicked at ' + new Date().toLocaleTimeString();
+  };
   return html`
-    <sy-button id="btnClickElem">Button</sy-button>
-    <p id="btnClickResult"></p>
-    <script>
-      (() => {
-        const elem = document.querySelector('#btnClickElem');
-        const result = document.querySelector('#btnClickResult');
+    <sy-button @click=${handleClick}>Button</sy-button>
+    <p>Status: <span id="btnClickResult">(idle)</span></p>
+  `;
+};
 
-        const handleButtonClick = (e) => {
-          result.textContent = 'clicked';
-        };
+/* -------------------- Methods -------------------- */
 
-        elem.addEventListener('click', handleButtonClick);
+export const ButtonFocusBlur = () => {
+  const btnRef: Ref<HTMLSyButtonElement> = createRef();
 
-        // this is for release click event. It is recommanded for optimization.
-        window.addEventListener('beforeunload', () => {
-          elem.removeEventListener('click', handleButtonClick);
-        });
-      })();
+  const updateResult = (text: string) => {
+    const out = document.getElementById('btnFocusResult');
+    if (out) out.textContent = text;
+  };
 
-    </script>
-`;
-}
+  return html`
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <sy-button
+        ${ref(btnRef)}
+        @focusin=${() => updateResult('focus')}
+        @focusout=${() => updateResult('blur')}
+      >Target Button</sy-button>
+
+      <sy-button
+        variant="primary"
+        @click=${() => btnRef.value?.setFocus()}
+      >Call setFocus()</sy-button>
+
+      <sy-button
+        variant="secondary"
+        @click=${() => btnRef.value?.setBlur()}
+      >Call setBlur()</sy-button>
+    </div>
+    <p>Status: <span id="btnFocusResult">(idle)</span></p>
+  `;
+};
+
+export const ButtonSetClick = () => {
+  const btnRef: Ref<HTMLSyButtonElement> = createRef();
+
+  const updateResult = () => {
+    const out = document.getElementById('btnSetClickResult');
+    if (out) out.textContent = 'clicked at ' + new Date().toLocaleTimeString();
+  };
+
+  return html`
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <sy-button ${ref(btnRef)} @click=${updateResult}>Target Button</sy-button>
+      <sy-button variant="primary" @click=${() => btnRef.value?.setClick()}>Call setClick()</sy-button>
+    </div>
+    <p>Status: <span id="btnSetClickResult">(idle)</span></p>
+  `;
+};

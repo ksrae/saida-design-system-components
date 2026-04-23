@@ -33,9 +33,9 @@ export class SyNavGroup {
   private calculateDepth() {
     const parent = this.host.parentElement;
     if (!parent) return;
-    
+
     const parentTagName = parent.tagName.toLowerCase();
-    
+
     if (parentTagName === 'sy-nav') {
       this.depth = 0;
     } else if (parentTagName === 'sy-nav-sub') {
@@ -62,7 +62,7 @@ export class SyNavGroup {
       });
     }
   }
-  
+
   private sanitizeHtml(content: string): string {
     if (!content) return '';
     const tempDiv = document.createElement('div');
@@ -71,13 +71,15 @@ export class SyNavGroup {
   }
 
   render() {
+    const safeTitle = this.sanitizeHtml(this.navGroupTitle);
+
     return (
       <div>
-        <div 
+        <div
           class="group-title"
-          title={this.sanitizeHtml(this.navGroupTitle)}
+          title={safeTitle}
         >
-          <span innerHTML={this.navGroupTitle}></span>
+          <span>{safeTitle}</span>
         </div>
         <div class="group-content">
           <slot></slot>

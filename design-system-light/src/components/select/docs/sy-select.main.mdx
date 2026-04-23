@@ -1,0 +1,28 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SelectStories from './sy-select.stories';
+import * as SelectOptionStories from './sy-select-option.stories';
+
+<Meta of={SelectStories} />
+
+# Select
+
+A selection control that lets a user pick one or more options from a dropdown list. Supports `default`, `searchable`, `multiple`, and `tag` interaction modes.
+
+## Usage
+
+```html
+<sy-select placeholder="Choose" mode="default">
+  <sy-select-option value="apple" label="Apple">Apple</sy-select-option>
+  <sy-select-option value="banana" label="Banana">Banana</sy-select-option>
+</sy-select>
+```
+
+## Select
+
+<Canvas of={SelectStories.Default} />
+<Controls of={SelectStories.Default} />
+
+## Select Option
+
+<Canvas of={SelectOptionStories.Default} />
+<Controls of={SelectOptionStories.Default} />

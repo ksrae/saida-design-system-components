@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as HiddenStories from './sy-badge-hidden.stories';
+
+<Meta of={HiddenStories} />
+
+# Hidden
+
+The `hidden` attribute hides the badge while keeping the slotted content visible.
+
+<Canvas of={HiddenStories.Default} />
+<Controls of={HiddenStories.Default} />

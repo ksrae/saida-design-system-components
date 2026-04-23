@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as RequiredStories from './sy-label-required.stories';
+
+<Meta of={RequiredStories} />
+
+# Required
+
+The `required` attribute shows a `*` marker; `requiredPosition` controls whether it appears on the `left` or `right` of the label.
+
+<Canvas of={RequiredStories.Default} />
+<Controls of={RequiredStories.Default} />

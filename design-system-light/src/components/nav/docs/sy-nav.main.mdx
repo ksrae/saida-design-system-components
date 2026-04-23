@@ -1,0 +1,31 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as NavStories from './sy-nav.stories';
+import * as NavGroupStories from './sy-nav-group.stories';
+import * as NavItemStories from './sy-nav-item.stories';
+import * as NavSubStories from './sy-nav-sub.stories';
+
+<Meta of={NavStories} />
+
+# Nav
+
+Hierarchical navigation menu. Use `sy-nav` as the root, `sy-nav-group` to group items under a title, `sy-nav-sub` for nested expandable menus, and `sy-nav-item` for leaf entries.
+
+## Nav
+
+<Canvas of={NavStories.Default} />
+<Controls of={NavStories.Default} />
+
+## Nav Group
+
+<Canvas of={NavGroupStories.Default} />
+<Controls of={NavGroupStories.Default} />
+
+## Nav Item
+
+<Canvas of={NavItemStories.Default} />
+<Controls of={NavItemStories.Default} />
+
+## Nav Sub
+
+<Canvas of={NavSubStories.Default} />
+<Controls of={NavSubStories.Default} />

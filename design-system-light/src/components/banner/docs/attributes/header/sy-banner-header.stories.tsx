@@ -1,0 +1,15 @@
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import { BannerHeader } from '../../sy-banner.main';
+import bannerMeta from '../../sy-banner.stories';
+
+const meta: Meta = {
+  title: 'BannerMessage/Attributes/Header',
+  component: 'sy-banner-messsage',
+  tags: [],
+  render: (args) => BannerHeader(args as { header: string }),
+  argTypes: { header: bannerMeta?.argTypes?.header },
+  args: { header: 'Banner Title' },
+};
+export default meta;
+type Story = StoryObj;
+export const Default: Story = {};

@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as SelectedStories from './sy-dropdown-selected.stories';
+
+<Meta of={SelectedStories} />
+
+# Selected
+
+The `selected` event fires when any menu item is chosen. The event `detail.value` holds the selected item's `value`.
+
+<Canvas of={SelectedStories.Default} />

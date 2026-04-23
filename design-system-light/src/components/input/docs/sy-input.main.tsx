@@ -1,11 +1,12 @@
-import { html } from "lit";
+import { html } from 'lit';
 import { Components } from '../../../components';
-import { ifDefined } from "lit/directives/if-defined.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { ref, createRef, Ref } from 'lit/directives/ref.js';
 
 export interface SyInputProps extends Components.SyInput {
-  slotPrefix?: any;
-  slotSuffix?: any;
+  slotPrefix?: string;
+  slotSuffix?: string;
   changed?: (event: CustomEvent<any>) => void;
   blured?: (event: CustomEvent<any>) => void;
   focused?: (event: CustomEvent<any>) => void;
@@ -184,71 +185,39 @@ export const InputSuffix = () => {
 };
 
 export const InputChanged = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('inputChangedResult');
+    const detail = (e as CustomEvent).detail ?? {};
+    if (out) out.textContent = `value: ${detail.value} valid: ${detail.status}`;
+  };
   return html`
     <div style="width:300px;">
-      <sy-input id="inputChanged" validation clearable></sy-input>
-      <p id="inputChangedResult"></p>
+      <sy-input validation clearable @changed=${handle}></sy-input>
+      <p id="inputChangedResult">(idle)</p>
     </div>
-    <script>
-      (() => {
-        const elem = document.querySelector("#inputChanged");
-        const result = document.querySelector("#inputChangedResult");
-
-        const handleChanged = (e) => {
-          result.textContent =
-            "value: " + e.detail.value + " valid: " + e.detail.status;
-        };
-
-        elem.addEventListener("changed", handleChanged);
-
-        // this is for release click event. It is recommanded for optimization.
-        window.addEventListener("beforeunload", () => {
-          elem.removeEventListener("changed", handleChanged);
-        });
-      })();
-    </script>
   `;
 };
 
 export const InputFocusBlur = () => {
-  return html` <!-- focus -->
+  const elRef: Ref<HTMLSyInputElement> = createRef();
+  const update = (text: string) => {
+    const out = document.getElementById('inputFocusResult');
+    if (out) out.textContent = text;
+  };
+  return html`
     <div style="width:300px;">
       <h3>Focus, Blur Function</h3>
-      <sy-input id="inputFocusElem"></sy-input>
-      <p id="inputFocusResult"></p>
+      <sy-input
+        ${ref(elRef)}
+        @focused=${() => update('focus')}
+        @blured=${() => update('blur')}
+      ></sy-input>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <sy-button variant="primary" @click=${() => elRef.value?.setFocus()}>Call setFocus()</sy-button>
+        <sy-button variant="secondary" @click=${() => elRef.value?.setBlur()}>Call setBlur()</sy-button>
+      </div>
+      <p>Status: <span id="inputFocusResult">(idle)</span></p>
     </div>
-    <script>
-      (() => {
-        const elem = document.querySelector("#inputFocusElem");
-        const result = document.querySelector("#inputFocusResult");
-
-        // focus button by force with function in 1 sec.
-        setTimeout(() => {
-          elem.setFocus();
-        }, 1000);
-
-        // blur button by force with function in 4 sec.
-        setTimeout(() => {
-          elem.setBlur();
-        }, 4000);
-
-        const handleFocus = (e) => {
-          result.textContent = "focus";
-        };
-
-        const handleBlur = (e) => {
-          result.textContent = "blur";
-        };
-
-        elem.addEventListener("focused", handleFocus);
-        elem.addEventListener("blured", handleBlur);
-
-        // this is for release click event. It is recommanded for optimization.
-        window.addEventListener("beforeunload", () => {
-          elem.removeEventListener("focused", handleFocus);
-          elem.removeEventListener("blured", handleBlur);
-        });
-      })();
-    </script>`;
+  `;
 };
 

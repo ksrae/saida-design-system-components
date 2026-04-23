@@ -19,9 +19,11 @@ export class SyMenuGroup {
   }
 
   render() {
+    const safeTitle = this.sanitizeHtml(this.menuGroupTitle);
+
     return (
       <div>
-        <div class="group-title" title={this.sanitizeHtml(this.menuGroupTitle)} innerHTML={this.menuGroupTitle}></div>
+        <div class="group-title" title={safeTitle}>{safeTitle}</div>
         <div class="group-content">
           <slot></slot>
         </div>

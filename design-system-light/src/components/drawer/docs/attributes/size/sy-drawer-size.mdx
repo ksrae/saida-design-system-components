@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as SizeStories from './sy-drawer-size.stories';
+
+<Meta of={SizeStories} />
+
+# Size
+
+The `size` attribute chooses a preset drawer width/height: `small`, `medium`, `large`, or `custom` (combined with `customSize`).
+
+<Canvas of={SizeStories.Default} />
+<Controls of={SizeStories.Default} />

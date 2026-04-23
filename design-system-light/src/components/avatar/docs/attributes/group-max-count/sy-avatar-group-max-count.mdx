@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as MaxCountStories from './sy-avatar-group-max-count.stories';
+
+<Meta of={MaxCountStories} />
+
+# Max Count (Group)
+
+The `maxCount` attribute limits the number of visible avatars; the rest collapse into a `+N` indicator.
+
+<Canvas of={MaxCountStories.Default} />
+<Controls of={MaxCountStories.Default} />

@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ItemDisabledStories from './sy-breadcrumb-item-disabled.stories';
+
+<Meta of={ItemDisabledStories} />
+
+# Item Disabled
+
+Add the `disabled` attribute to a `<sy-breadcrumb-item>` to make it non-interactive. Disabled items do not emit the `selected` event and are visually muted.
+
+```html
+<sy-breadcrumb-item disabled>Unavailable</sy-breadcrumb-item>
+```
+
+<Canvas of={ItemDisabledStories.Default} />
+<Controls of={ItemDisabledStories.Default} />

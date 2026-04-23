@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ModeStories from './sy-datepicker-mode.stories';
+
+<Meta of={ModeStories} />
+
+# Mode
+
+The `mode` attribute controls which calendar level is shown: `day`, `month`, or `year`.
+
+<Canvas of={ModeStories.Default} />
+<Controls of={ModeStories.Default} />

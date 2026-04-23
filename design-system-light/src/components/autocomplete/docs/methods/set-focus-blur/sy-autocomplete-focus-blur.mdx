@@ -1,0 +1,18 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as FocusBlurStories from './sy-autocomplete-focus-blur.stories';
+
+<Meta of={FocusBlurStories} />
+
+# setFocus() / setBlur()
+
+`setFocus()` and `setBlur()` are public methods that programmatically control the focus state of the autocomplete.
+
+The example below auto-focuses the input after 1 second and then blurs it after 4 seconds.
+
+```js
+const elem = document.querySelector('sy-autocomplete');
+elem.setFocus();
+elem.setBlur();
+```
+
+<Canvas of={FocusBlurStories.Default} />

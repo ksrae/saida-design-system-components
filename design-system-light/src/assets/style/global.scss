@@ -122,6 +122,10 @@
         --transition-fast: 0.3s;
         --transition-x-fast: 0.1s;
 
+        /* Collapse animation */
+        --collapse-transition-duration: var(--transition-fast);
+        --collapse-transition-timing: ease-in-out;
+
         /* Focus outline */
         --focus-outline: var(--border-brand-bold);
 
@@ -180,4 +184,360 @@
 .sy-select-options-container {
     z-index: var(--z-index-select) !important;
     padding: var(--spacing-3xsmall) 0;
+}
+
+
+/* -----------------------------------------------------------------------
+ * Tab layout — UNSCOPED.
+ * Stencil scoped-CSS prefixes every selector with `.sc-sy-tab-group` /
+ * `.sc-sy-tab`. Those classes aren't guaranteed to land on slotted or
+ * dynamically-appended elements, so critical layout rules were being
+ * missed and tabs rendered as a vertical block. The rules below are
+ * written as plain global selectors — no scope class required — so the
+ * horizontal tab row always resolves correctly regardless of how the
+ * scoped-CSS rewriter treats descendants.
+ * Visual / hover / color rules live in the scoped component stylesheets;
+ * these handle LAYOUT only.
+ * --------------------------------------------------------------------- */
+
+sy-tab-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+sy-tab-group > div.top-layout,
+sy-tab-group > div.bottom-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+sy-tab-group > div.bottom-layout {
+    flex-direction: column-reverse;
+}
+
+sy-tab-group > div.left-layout {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+sy-tab-group > div.right-layout {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+sy-tab-group .tab-group-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    min-width: 0;
+    min-height: 0;
+}
+
+sy-tab-group[size="small"] > div.top-layout .tab-group-container,
+sy-tab-group[size="small"] > div.bottom-layout .tab-group-container {
+    height: var(--header-small);
+}
+sy-tab-group[size="medium"] > div.top-layout .tab-group-container,
+sy-tab-group[size="medium"] > div.bottom-layout .tab-group-container,
+sy-tab-group:not([size]) > div.top-layout .tab-group-container,
+sy-tab-group:not([size]) > div.bottom-layout .tab-group-container {
+    height: var(--header-medium);
+}
+sy-tab-group[size="large"] > div.top-layout .tab-group-container,
+sy-tab-group[size="large"] > div.bottom-layout .tab-group-container {
+    height: var(--header-large);
+}
+
+/* The `padding` prop on sy-tab-group adds horizontal padding to the tab bar
+   so the first/last tab isn't flush against the container edges. Rules were
+   originally scoped — moving to global so they always land on the rendered
+   .tab-group-container regardless of scope-class plumbing. */
+sy-tab-group .tab-group-container.tab-padding-none {
+    padding: 0;
+}
+sy-tab-group .tab-group-container.tab-padding-small {
+    padding: 0 var(--spacing-xsmall);
+}
+sy-tab-group .tab-group-container.tab-padding-medium {
+    padding: 0 var(--spacing-small);
+}
+sy-tab-group .tab-group-container.tab-padding-large {
+    padding: 0 var(--spacing-medium);
+}
+/* In vertical layouts the padding runs along the vertical axis instead. */
+sy-tab-group > div.left-layout .tab-group-container.tab-padding-small,
+sy-tab-group > div.right-layout .tab-group-container.tab-padding-small {
+    padding: var(--spacing-xsmall) 0;
+}
+sy-tab-group > div.left-layout .tab-group-container.tab-padding-medium,
+sy-tab-group > div.right-layout .tab-group-container.tab-padding-medium {
+    padding: var(--spacing-small) 0;
+}
+sy-tab-group > div.left-layout .tab-group-container.tab-padding-large,
+sy-tab-group > div.right-layout .tab-group-container.tab-padding-large {
+    padding: var(--spacing-medium) 0;
+}
+
+sy-tab-group > div.left-layout .tab-group-container,
+sy-tab-group > div.right-layout .tab-group-container {
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+}
+
+sy-tab-group .tabs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+sy-tab-group > div.left-layout .tabs,
+sy-tab-group > div.right-layout .tabs {
+    flex-direction: column;
+    align-items: stretch;
+    flex-shrink: 0;
+}
+
+sy-tab-group .contents {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    overflow: auto;
+}
+
+sy-tab-group .extra-area {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+sy-tab-group .tab-more {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* sy-tab = flex item in the .tabs row */
+sy-tab {
+    display: inline-flex;
+    position: relative;
+    align-items: stretch;
+    box-sizing: border-box;
+    user-select: none;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+sy-tab-group[position="left"] sy-tab,
+sy-tab-group[position="right"] sy-tab {
+    width: 100%;
+    max-width: 150px;
+}
+
+sy-tab .tab-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+}
+
+sy-tab .tab-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    padding: 0 var(--spacing-medium);
+    height: var(--header-medium);
+    min-width: 0;
+    max-width: 100%;
+}
+
+sy-tab .tab-container.tab-container--small  { height: var(--header-small);  padding: 0 var(--spacing-small); }
+sy-tab .tab-container.tab-container--medium { height: var(--header-medium); padding: 0 var(--spacing-medium); }
+sy-tab .tab-container.tab-container--large  { height: var(--header-large);  padding: 0 var(--spacing-large); }
+
+sy-tab .tab-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3xsmall);
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* sy-tab-content visibility */
+sy-tab-content {
+    display: none;
+}
+sy-tab-content[active] {
+    display: block;
+}
+
+/* -----------------------------------------------------------------------
+ * sy-tab VISUAL rules — also unscoped so every tab picks them up
+ * regardless of whether Stencil's runtime added a scope class.
+ * --------------------------------------------------------------------- */
+
+sy-tab {
+    color: var(--tabs-line-list-text-enabled);
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+sy-tab .tab-inner {
+    color: inherit;
+}
+
+sy-tab .tab-inner sy-icon {
+    color: var(--tabs-line-list-icon-enabled);
+    flex-shrink: 0;
+}
+
+sy-tab .tab-inner:focus-visible {
+    border: var(--border-small) var(--focus-outline);
+    outline: var(--border-small) var(--focus-outline);
+    z-index: 2;
+}
+
+/* Hover — skip disabled tabs */
+sy-tab:not([disabled]):not([parentdisabled]):hover .tab-container {
+    color: var(--tabs-line-list-text-hover);
+}
+sy-tab:not([disabled]):not([parentdisabled]):hover .tab-container sy-icon {
+    color: var(--tabs-line-list-icon-hover);
+}
+
+/* Active (selected) — line variant draws a 2px accent bar on the edge
+   facing the tab content, depending on tab position. */
+sy-tab[active] .tab-container--line {
+    position: relative;
+    color: var(--tabs-line-list-text-selected);
+}
+
+sy-tab[active] .tab-container--line::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    background-color: var(--tabs-line-list-border-selected);
+}
+
+sy-tab[active] .tab-container--line.tab-position-top::after {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+}
+sy-tab[active] .tab-container--line.tab-position-bottom::after {
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+}
+sy-tab[active] .tab-container--line.tab-position-left::after {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 2px;
+}
+sy-tab[active] .tab-container--line.tab-position-right::after {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+}
+
+/* Card variant — full border, rounded on the side away from contents. */
+sy-tab .tab-container--card {
+    border: var(--border-small) var(--tabs-card-list-border-enabeld);
+    background-color: var(--tabs-card-list-background-enabled);
+    color: var(--tabs-card-list-text-enabled);
+    margin-right: var(--spacing-3xsmall);
+}
+
+sy-tab:not([disabled]):not([parentdisabled]):hover .tab-container--card {
+    color: var(--tabs-line-list-text-hover);
+    background-color: var(--tabs-card-list-background-hover);
+}
+
+sy-tab .tab-container--card.tab-position-top {
+    border-top-left-radius: var(--border-radius-medium);
+    border-top-right-radius: var(--border-radius-medium);
+}
+sy-tab .tab-container--card.tab-position-bottom {
+    border-bottom-left-radius: var(--border-radius-medium);
+    border-bottom-right-radius: var(--border-radius-medium);
+}
+sy-tab .tab-container--card.tab-position-left {
+    border-top-left-radius: var(--border-radius-medium);
+    border-bottom-left-radius: var(--border-radius-medium);
+}
+sy-tab .tab-container--card.tab-position-right {
+    border-top-right-radius: var(--border-radius-medium);
+    border-bottom-right-radius: var(--border-radius-medium);
+}
+
+sy-tab[active] .tab-container--card {
+    background-color: var(--tabs-card-list-background-selected);
+    color: var(--tabs-card-list-text-selected);
+}
+
+/* Disabled */
+sy-tab[disabled] .tab-container,
+sy-tab[parentdisabled] .tab-container,
+sy-tab .tab-container.tab-container-disabled {
+    color: var(--tabs-line-list-text-disabled) !important;
+    cursor: auto !important;
+    pointer-events: none;
+}
+
+/* Separator line under/over the tab-group-container at top/bottom. */
+sy-tab-group > div.top-layout > .tab-group-container,
+sy-tab-group > div.bottom-layout > .tab-group-container {
+    position: relative;
+}
+sy-tab-group > div.top-layout > .tab-group-container::after,
+sy-tab-group > div.bottom-layout > .tab-group-container::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-style: solid;
+    border-color: var(--tabs-card-list-border-enabeld);
+    border-width: 0;
+    pointer-events: none;
+}
+sy-tab-group > div.top-layout > .tab-group-container::after {
+    bottom: 0;
+    border-bottom-width: var(--border-small);
+}
+sy-tab-group > div.bottom-layout > .tab-group-container::after {
+    top: 0;
+    border-top-width: var(--border-small);
 }

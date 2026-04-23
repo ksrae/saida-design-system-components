@@ -40,7 +40,7 @@ const collapseMeta: Meta<SyCollapseProps> = {
     },
     fullheight: {
       control: 'boolean',
-      description: 'If true, the panel content is stretched corresponding to its parent.',
+      description: 'Only effective when `accordion` is also true. The active panel stretches to fill the remaining parent height after the other panel headers; total size never exceeds the parent. If `accordion` is false, `fullheight` is ignored.',
       table: {
         category: 'Parameter',
         defaultValue: {summary: false as any},

@@ -10,9 +10,13 @@ export class SyCard {
 
   @Prop({ reflect: true }) collapsible: boolean = false;
   @Prop({ reflect: true }) backdrop: boolean = false;
+  @Prop() openDelay: number = 0;
+  @Prop() closeDelay: number = 0;
 
   @State() isCollapsed: boolean = false;
   @State() private hasHeaderSlot: boolean = false;
+
+  private pendingToggleTimer?: number;
 
   componentWillLoad() {
     this.checkHeaderSlot();
@@ -29,13 +33,33 @@ export class SyCard {
     observer.observe(this.el, { childList: true, subtree: true });
   }
 
+  disconnectedCallback() {
+    if (this.pendingToggleTimer !== undefined) {
+      window.clearTimeout(this.pendingToggleTimer);
+      this.pendingToggleTimer = undefined;
+    }
+  }
+
   private checkHeaderSlot = () => {
     const hasHeader = !!this.el.querySelector('[slot="header"]');
     this.hasHeaderSlot = hasHeader;
   }
 
   private toggle = () => {
-    this.isCollapsed = !this.isCollapsed;
+    if (this.pendingToggleTimer !== undefined) {
+      window.clearTimeout(this.pendingToggleTimer);
+      this.pendingToggleTimer = undefined;
+    }
+    const willCollapse = !this.isCollapsed;
+    const delay = willCollapse ? this.closeDelay : this.openDelay;
+    if (delay > 0) {
+      this.pendingToggleTimer = window.setTimeout(() => {
+        this.isCollapsed = willCollapse;
+        this.pendingToggleTimer = undefined;
+      }, delay);
+    } else {
+      this.isCollapsed = willCollapse;
+    }
   }
 
   render() {

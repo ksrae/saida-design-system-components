@@ -1,27 +1,27 @@
 import { Components } from '../../../components';
-import { html } from "lit";
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 export interface SyLabelProps extends Components.SyLabel {
-  slot?: any;
+  slot?: string;
 }
-export const Label = ({ disabled, htmlFor, required, requiredPosition = 'right', value, valuePosition = 'left', width, slot }: SyLabelProps) => {
-  return html`
-    <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
-      <sy-label
-        ?disabled=${disabled}
-        htmlFor=${htmlFor}
-        ?required=${required}
-        requiredPosition=${requiredPosition}
-        value=${value}
-        valuePosition=${valuePosition}
-        width=${width}>
-      </sy-label>
-      <sy-flex align="center" style="flex:1">
-        <sy-input id="${htmlFor}" placeholder="Input"></sy-input>
-      </sy-flex>
+
+export const Label = ({ disabled, htmlFor, required, requiredPosition = 'right', value, valuePosition = 'left', width }: SyLabelProps) => html`
+  <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
+    <sy-label
+      ?disabled=${!!disabled}
+      ?required=${!!required}
+      htmlFor=${ifDefined(htmlFor)}
+      requiredPosition=${ifDefined(requiredPosition)}
+      value=${ifDefined(value)}
+      valuePosition=${ifDefined(valuePosition)}
+      width=${ifDefined(width)}
+    ></sy-label>
+    <sy-flex align="center" style="flex:1">
+      <sy-input id=${ifDefined(htmlFor)} placeholder="Input"></sy-input>
     </sy-flex>
-    `;
-};
+  </sy-flex>
+`;
 
 export const LabelFor = () => {
   return html`

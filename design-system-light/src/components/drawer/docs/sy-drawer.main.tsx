@@ -1,258 +1,136 @@
 import { html } from 'lit';
-import { Components } from '../../../components';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { Components } from '../../../components';
 
 export interface SyDrawerProps extends Components.SyDrawer {
-  slotHeader?: any;
-  slotBody?: any;
-  slotFooter?: any;
+  slotHeader?: string;
+  slotBody?: string;
+  slotFooter?: string;
   opened?: (event: CustomEvent<any>) => void;
   closed?: (event: CustomEvent<any>) => void;
 }
 
-export const Drawer = ({ closable, customSize, maskless, preventClose, open, position, size, slotHeader, slotBody, slotFooter}: SyDrawerProps) => {
+const slotOrEmpty = (s?: string) => (s ? unsafeHTML(s) : '');
+
+const renderDrawerWithTrigger = (args: Partial<SyDrawerProps>, body = html`<span slot="body">Body</span>`) => {
+  const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
   return html`
-	<sy-drawer
-    ?closable=${closable}
-    customSize=${customSize}
-    ?maskless=${maskless}
-    ?preventClose=${preventClose}
-    ?open=${open}
-    position=${position}
-    size=${size}>
-    ${unsafeHTML(slotHeader)}
-    ${unsafeHTML(slotBody)}
-    ${unsafeHTML(slotFooter)}
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
+    <sy-drawer
+      ${ref(drawerRef)}
+      ?closable=${!!args.closable}
+      ?maskless=${!!args.maskless}
+      ?preventClose=${!!args.preventClose}
+      ?open=${!!args.open}
+      customSize=${ifDefined(args.customSize as any)}
+      position=${ifDefined(args.position)}
+      size=${ifDefined(args.size)}
+    >
+      <span slot="header">Header</span>
+      ${body}
+      <span slot="footer">Footer</span>
+    </sy-drawer>
+    <sy-button @click=${() => { if (drawerRef.value) drawerRef.value.open = true; }}>Click to Open</sy-button>
   `;
 };
 
-export const DrawerClosable = (args: {closable: boolean}) => {
+export const Drawer = (args: SyDrawerProps) => {
+  const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
   return html`
-  <sy-drawer ?closable=${args.closable} id="drawerClosable">
+    <sy-drawer
+      ${ref(drawerRef)}
+      ?closable=${!!args.closable}
+      ?maskless=${!!args.maskless}
+      ?preventClose=${!!args.preventClose}
+      ?open=${!!args.open}
+      customSize=${ifDefined(args.customSize as any)}
+      position=${ifDefined(args.position)}
+      size=${ifDefined(args.size)}
+    >
+      ${slotOrEmpty(args.slotHeader)}
+      ${slotOrEmpty(args.slotBody)}
+      ${slotOrEmpty(args.slotFooter)}
+    </sy-drawer>
+    <sy-button @click=${() => { if (drawerRef.value) drawerRef.value.open = true; }}>Click to Open</sy-button>
+  `;
+};
+
+export const DrawerClosable     = (args: { closable: boolean })                  => renderDrawerWithTrigger(args);
+export const DrawerCustomSize   = (args: { customSize: number })                 => renderDrawerWithTrigger({ ...args, size: 'custom', closable: true });
+export const DrawerMaskless     = (args: { maskless: boolean })                  => renderDrawerWithTrigger({ ...args, closable: true });
+export const DrawerPreventClose = (args: { preventClose: boolean }) => {
+  // With `preventClose`, clicking the mask no longer closes the drawer.
+  // Give the user an explicit close button on the drawer itself so the only
+  // way to dismiss it is to invoke close() programmatically.
+  const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
+  return html`
+    <sy-drawer
+      ${ref(drawerRef)}
+      ?preventClose=${!!args.preventClose}
+    >
+      <span slot="header">Header</span>
+      <span slot="body">
+        <p>With <code>preventClose=true</code>, clicking the backdrop won't close the drawer.</p>
+        <sy-button
+          variant="primary"
+          @click=${() => { if (drawerRef.value) drawerRef.value.open = false; }}
+        >Close drawer</sy-button>
+      </span>
+      <span slot="footer">Footer</span>
+    </sy-drawer>
+    <sy-button @click=${() => { if (drawerRef.value) drawerRef.value.open = true; }}>Click to Open</sy-button>
+  `;
+};
+export const DrawerPosition     = (args: { position: 'top'|'left'|'right'|'bottom' }) => renderDrawerWithTrigger({ ...args, closable: true });
+export const DrawerSize         = (args: { size: 'small'|'medium'|'large'|'custom'; customSize: number }) =>
+  renderDrawerWithTrigger({ ...args, closable: true });
+
+export const DrawerOpen = (args: { open: boolean }) => html`
+  <sy-drawer ?open=${!!args.open} closable>
     <span slot="header">Header</span>
     <span slot="body">Body</span>
     <span slot="footer">Footer</span>
   </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerClosable');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
-  `;
-}
-
-
-export const DrawerCustomSize = (args: {customSize: number}) => {
-  return html`
-  <sy-drawer customSize=${args.customSize} size="custom" closable id="drawerCustomSize">
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerCustomSize');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
-  `;
-}
-
-export const DrawerMaskless = (args: {maskless: boolean}) => {
-  return html`
-  <sy-drawer ?maskless=${args.maskless} closable id="drawerMaskless">
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerMaskless');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
-  `;
-}
-
-export const DrawerPreventClose = (args: {preventClose: boolean}) => {
-  return html`
-  <sy-drawer ?preventClose=${args.preventClose} id="drawerPreventClose">
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerPreventClose');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
-  `;
-}
-
-export const DrawerOpen = (args: {open: boolean}) => {
-  return html`
-  <sy-drawer ?open=${args.open} closable>
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-  `;
-}
-
-export const DrawerPosition = (args: {position: 'top' | 'left' | 'right' | 'bottom'}) => {
-  return html`
-  <sy-drawer position=${args.position} closable id="drawerPosition">
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerPosition');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
-  `;
-}
-
-export const DrawerSize = (args: {size: 'small' | 'medium' | 'large' | 'custom', customSize: number}) => {
-  return html`
-  <sy-drawer size=${args.size} customSize=${args.customSize} closable id="drawerSize">
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerSize');
-      const btn = document.querySelector('#btnOpenDrawer');
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
-  `;
-}
-
+`;
 
 export const DrawerOpened = () => {
+  const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
+  const handleOpened = () => {
+    const out = document.getElementById('drawerOpenedResult');
+    if (out) out.innerText = 'Drawer opened';
+  };
   return html`
-  <sy-drawer id="drawerOpened">
-    <span slot="header">Header</span>
-    <span slot="body">Body</span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-  <p id="drawerOpenedResult"></p>
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerOpened');
-      const btn = document.querySelector('#btnOpenDrawer');
-      const result = document.querySelector('#drawerOpenedResult');
-
-      drawer.addEventListener('opened', () => {
-        result.innerText = 'Drawer opened';
-      });
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-    })();
-  </script>
+    <sy-drawer ${ref(drawerRef)} @opened=${handleOpened}>
+      <span slot="header">Header</span>
+      <span slot="body">Body</span>
+      <span slot="footer">Footer</span>
+    </sy-drawer>
+    <sy-button @click=${() => { if (drawerRef.value) drawerRef.value.open = true; }}>Click to Open</sy-button>
+    <p id="drawerOpenedResult">(idle)</p>
   `;
-}
+};
 
 export const DrawerClosed = () => {
+  const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
+  const setResult = (text: string) => {
+    const out = document.getElementById('drawerClosedResult');
+    if (out) out.innerText = text;
+  };
   return html`
-  <sy-drawer id="drawerClosed">
-    <span slot="header">Header</span>
-    <span slot="body">
-      Body
-      <sy-button id="btnDrawerClosed">Close this drawer</sy-button>
-    </span>
-    <span slot="footer">Footer</span>
-  </sy-drawer>
-
-  <sy-button id="btnOpenDrawer">Click to Open</sy-button>
-  <p id="drawerClosedResult"></p>
-  <script>
-    (() => {
-      const drawer = document.querySelector('sy-drawer#drawerClosed');
-      const btn = document.querySelector('#btnOpenDrawer');
-      const btnClose = document.querySelector('#btnDrawerClosed');
-      const result = document.querySelector('#drawerClosedResult');
-
-      drawer.addEventListener('opened', () => {
-        result.innerText = 'Drawer opened';
-      });
-
-      drawer.addEventListener('closed', () => {
-        result.innerText = 'Drawer closed';
-      });
-
-      btn.addEventListener('click', () => {
-        drawer.open = true;
-      });
-      btnClose.addEventListener('click', () => {
-        drawer.open = false;
-      });
-    })();
-  </script>
+    <sy-drawer
+      ${ref(drawerRef)}
+      @opened=${() => setResult('Drawer opened')}
+      @closed=${() => setResult('Drawer closed')}
+    >
+      <span slot="header">Header</span>
+      <span slot="body">
+        Body
+        <sy-button @click=${() => { if (drawerRef.value) drawerRef.value.open = false; }}>Close this drawer</sy-button>
+      </span>
+      <span slot="footer">Footer</span>
+    </sy-drawer>
+    <sy-button @click=${() => { if (drawerRef.value) drawerRef.value.open = true; }}>Click to Open</sy-button>
+    <p id="drawerClosedResult">(idle)</p>
   `;
-}
+};

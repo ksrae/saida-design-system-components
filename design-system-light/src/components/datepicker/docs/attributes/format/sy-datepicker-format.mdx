@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as FormatStories from './sy-datepicker-format.stories';
+
+<Meta of={FormatStories} />
+
+# Format
+
+The `format` attribute controls how the selected date is rendered. Tokens: `yyyy` (year), `MM` (month), `dd` (day), `hh` (hour), `mm` (minute), `ss` (second).
+
+<Canvas of={FormatStories.Default} />
+<Controls of={FormatStories.Default} />

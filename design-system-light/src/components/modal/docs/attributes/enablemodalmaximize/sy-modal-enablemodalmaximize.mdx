@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-enablemodalmaximize.stories';
+
+<Meta of={Stories} />
+
+# Enable Maximize
+
+The `enableModalMaximize` attribute adds a maximize button to the modal header. Only available when `variant="modal"`.
+
+<Canvas of={Stories.Default} />
+<Controls of={Stories.Default} />

@@ -1,4 +1,4 @@
-import { Component, h, Prop, Element } from '@stencil/core';
+import { Component, h, Prop, Element, Watch } from '@stencil/core';
 import { fnGetChildrenByTagName } from '../../utils/utils';
 
 export interface ButtonGroupState {
@@ -41,6 +41,14 @@ export class SyButtonGroup {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
     }
+  }
+
+  @Watch('vertical')
+  handleVerticalChange() {
+    // vertical이 바뀌어도 자식 버튼 배열은 그대로라 haveButtonsChanged가 false가 됩니다.
+    // 캐시를 비워 다음 updateButtons 호출 시 강제로 자식 상태를 재적용합니다.
+    this.buttons = [];
+    this.updateButtons();
   }
 
   private updateButtons() {

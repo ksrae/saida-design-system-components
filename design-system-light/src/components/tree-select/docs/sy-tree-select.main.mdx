@@ -1,0 +1,11 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TreeSelectStories from './sy-tree-select.stories';
+
+<Meta of={TreeSelectStories} />
+
+# TreeSelect
+
+A select that opens a tree list for hierarchical selection. Supports single or multiple (checkable) selection, clearing, validation, and search.
+
+<Canvas of={TreeSelectStories.Default} />
+<Controls of={TreeSelectStories.Default} />

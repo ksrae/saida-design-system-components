@@ -1,0 +1,12 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-closed.stories';
+
+<Meta of={Stories} />
+
+# Closed
+
+The `closed` event fires whenever the modal closes. The `detail` carries:
+- `event` — one of `ok`, `cancel`, `close`, `mask`
+- `value` — the value passed to `setOk/setCancel/setClose` (if any)
+
+<Canvas of={Stories.Default} />

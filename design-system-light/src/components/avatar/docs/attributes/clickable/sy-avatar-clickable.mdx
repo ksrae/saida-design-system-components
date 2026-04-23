@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ClickableStories from './sy-avatar-clickable.stories';
+
+<Meta of={ClickableStories} />
+
+# Clickable
+
+The `clickable` attribute determines whether the avatar emits the `selected` event when clicked.
+
+<Canvas of={ClickableStories.Default} />
+<Controls of={ClickableStories.Default} />

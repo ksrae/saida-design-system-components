@@ -10,12 +10,12 @@ import { fnGetChildrenByTagName } from '../../utils/utils';
   scoped: true,
 })
 export class SyBreadcrumb {
-  @Element() host: HTMLSyBreadcrumbElement;
+  @Element() host!: HTMLSyBreadcrumbElement;
 
   @Prop() separator: 'slash' | 'arrow' = 'slash';
 
-  private containerEl: HTMLSpanElement;
-  private mutationObserver: MutationObserver;
+  private containerEl!: HTMLSpanElement;
+  private mutationObserver!: MutationObserver;
 
   componentDidLoad() {
     this.updateChildren();

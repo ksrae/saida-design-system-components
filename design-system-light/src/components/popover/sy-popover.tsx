@@ -27,6 +27,7 @@ export class SyPopover {
   private lastParentClickTime = 0;     // 마지막 부모 클릭 시간
   private optionInteractionActive = false; // 옵션 상호작용 활성화 여부
   private preventPositionUpdate = false; // 위치 업데이트 방지 플래그
+  private optionDetectionListenerAdded = false;
 
   // 디바운스 및 쓰로틀링 시간 상수
   private CLICK_DEBOUNCE_TIME = 300;   // 옵션 클릭 후 상태 유지 시간(ms)
@@ -136,14 +137,16 @@ export class SyPopover {
     // 모든 이벤트 리스너 제거
     document.removeEventListener('click', this.handleOutsideClick, true);
     document.removeEventListener('click', this.handleOptionClick, true);
+    document.removeEventListener('mousedown', this.handleOptionPointerDown, true);
 
     if (this.optionClickTimer) {
       clearTimeout(this.optionClickTimer);
     }
 
+    window.removeEventListener("scroll", this.updatePopoverPosition, true);
+    window.removeEventListener("resize", this.updatePopoverPosition, true);
+
     if (this.addedToBody) {
-      window.removeEventListener("scroll", this.updatePopoverPosition, true);
-      window.removeEventListener("resize", this.updatePopoverPosition, true);
       this.removePopover();
     }
   }
@@ -778,20 +781,10 @@ export class SyPopover {
       }, true);
     };
 
-    document.addEventListener('mousedown', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('sy-option') ||
-          target.closest('[class*="sy-menu"], sy-menu, sy-menu-item, sy-menu-sub, sy-menu-group') ||
-          (target.tagName?.toLowerCase().startsWith('sy-') || target.closest('[tagname^="sy-"]')) ||
-          target.closest('sy-autocomplete')) {
-        this.isMouseOverPopover = true;
-        this.optionInteractionActive = true;
-        this.lastOptionClickTime = performance.now();
-        this.preventPositionUpdate = true;
-        setTimeout(() => { this.preventPositionUpdate = false; }, this.CLICK_DEBOUNCE_TIME);
-        if (this.closeTimer) clearTimeout(this.closeTimer);
-      }
-    }, true);
+    if (!this.optionDetectionListenerAdded) {
+      document.addEventListener('mousedown', this.handleOptionPointerDown, true);
+      this.optionDetectionListenerAdded = true;
+    }
 
     document.querySelectorAll('.sy-select-options-container, .sy-dropdown-menu-container, .sy-menu-container, sy-menu').forEach(container => {
       if (container.parentElement === document.body) setupContainerListeners(container);
@@ -822,6 +815,21 @@ export class SyPopover {
     observer.observe(document.body, { childList: true, subtree: true });
 
     setTimeout(() => { observer.disconnect(); }, this.OBSERVER_CLEANUP_TIME);
+  }
+
+  private handleOptionPointerDown = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('sy-option') ||
+        target.closest('[class*="sy-menu"], sy-menu, sy-menu-item, sy-menu-sub, sy-menu-group') ||
+        (target.tagName?.toLowerCase().startsWith('sy-') || target.closest('[tagname^="sy-"]')) ||
+        target.closest('sy-autocomplete')) {
+      this.isMouseOverPopover = true;
+      this.optionInteractionActive = true;
+      this.lastOptionClickTime = performance.now();
+      this.preventPositionUpdate = true;
+      setTimeout(() => { this.preventPositionUpdate = false; }, this.CLICK_DEBOUNCE_TIME);
+      if (this.closeTimer) clearTimeout(this.closeTimer);
+    }
   }
 
   private isMouseOver(): boolean {

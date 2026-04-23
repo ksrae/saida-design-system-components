@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as MasklessStories from './sy-drawer-maskless.stories';
+
+<Meta of={MasklessStories} />
+
+# Maskless
+
+The `maskless` attribute hides the background overlay. The rest of the page stays interactive while the drawer is open.
+
+<Canvas of={MasklessStories.Default} />
+<Controls of={MasklessStories.Default} />

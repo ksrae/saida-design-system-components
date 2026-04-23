@@ -316,9 +316,17 @@ export namespace Components {
          */
         "backdrop": boolean;
         /**
+          * @default 0
+         */
+        "closeDelay": number;
+        /**
           * @default false
          */
         "collapsible": boolean;
+        /**
+          * @default 0
+         */
+        "openDelay": number;
     }
     interface SyCheckbox {
         "checkValidity": () => Promise<boolean>;
@@ -642,7 +650,46 @@ export namespace Components {
          */
         "description": string;
     }
+    interface SyFlex {
+        /**
+          * @default 'start'
+         */
+        "align": 'start' | 'end' | 'center' | 'stretch' | 'baseline';
+        /**
+          * @default 'medium'
+         */
+        "columnGap": 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default "horizontal"
+         */
+        "direction": "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse";
+        /**
+          * @default ''
+         */
+        "height": string;
+        /**
+          * @default 'start'
+         */
+        "justify": 'start' | 'center' | 'end' | 'space-between';
+        /**
+          * @default 'medium'
+         */
+        "padding": 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default 'medium'
+         */
+        "rowGap": 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default ''
+         */
+        "width": string;
+        /**
+          * @default 'nowrap'
+         */
+        "wrap": 'nowrap' | 'wrap' | 'wrap-reverse';
+    }
     interface SyGlobalHeader {
+        "appTitle": string;
         /**
           * @default false
          */
@@ -659,10 +706,13 @@ export namespace Components {
           * @default false
          */
         "sticky": boolean;
-        "title": string;
         "updateOverflowTabs": () => Promise<void>;
     }
     interface SyIcon {
+        /**
+          * @default false
+         */
+        "naturalAspect": boolean;
         "path"?: string;
         /**
           * @default false
@@ -672,6 +722,7 @@ export namespace Components {
           * @default 'medium'
          */
         "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+        "svgMarkup"?: string;
     }
     interface SyInlineMessage {
         /**
@@ -1485,6 +1536,7 @@ export namespace Components {
           * @default false
          */
         "clearable": boolean;
+        "closeDropdown": () => Promise<void>;
         /**
           * @default ''
          */
@@ -2825,9 +2877,15 @@ declare global {
         prototype: HTMLSyEmptyElement;
         new (): HTMLSyEmptyElement;
     };
+    interface HTMLSyFlexElement extends Components.SyFlex, HTMLStencilElement {
+    }
+    var HTMLSyFlexElement: {
+        prototype: HTMLSyFlexElement;
+        new (): HTMLSyFlexElement;
+    };
     interface HTMLSyGlobalHeaderElementEventMap {
         "changed": any;
-        "click": any;
+        "actionClick": any;
         "selected": any;
     }
     interface HTMLSyGlobalHeaderElement extends Components.SyGlobalHeader, HTMLStencilElement {
@@ -3486,6 +3544,7 @@ declare global {
         "sy-drawer": HTMLSyDrawerElement;
         "sy-dropdown": HTMLSyDropdownElement;
         "sy-empty": HTMLSyEmptyElement;
+        "sy-flex": HTMLSyFlexElement;
         "sy-global-header": HTMLSyGlobalHeaderElement;
         "sy-icon": HTMLSyIconElement;
         "sy-inline-message": HTMLSyInlineMessageElement;
@@ -3833,9 +3892,17 @@ declare namespace LocalJSX {
          */
         "backdrop"?: boolean;
         /**
+          * @default 0
+         */
+        "closeDelay"?: number;
+        /**
           * @default false
          */
         "collapsible"?: boolean;
+        /**
+          * @default 0
+         */
+        "openDelay"?: number;
     }
     interface SyCheckbox {
         /**
@@ -4156,7 +4223,46 @@ declare namespace LocalJSX {
          */
         "description"?: string;
     }
+    interface SyFlex {
+        /**
+          * @default 'start'
+         */
+        "align"?: 'start' | 'end' | 'center' | 'stretch' | 'baseline';
+        /**
+          * @default 'medium'
+         */
+        "columnGap"?: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default "horizontal"
+         */
+        "direction"?: "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse";
+        /**
+          * @default ''
+         */
+        "height"?: string;
+        /**
+          * @default 'start'
+         */
+        "justify"?: 'start' | 'center' | 'end' | 'space-between';
+        /**
+          * @default 'medium'
+         */
+        "padding"?: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default 'medium'
+         */
+        "rowGap"?: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+        /**
+          * @default ''
+         */
+        "width"?: string;
+        /**
+          * @default 'nowrap'
+         */
+        "wrap"?: 'nowrap' | 'wrap' | 'wrap-reverse';
+    }
     interface SyGlobalHeader {
+        "appTitle"?: string;
         /**
           * @default false
          */
@@ -4165,8 +4271,8 @@ declare namespace LocalJSX {
           * @default false
          */
         "notification"?: boolean;
+        "onActionClick"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
         "onChanged"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
-        "onClick"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
         "onSelected"?: (event: SyGlobalHeaderCustomEvent<any>) => void;
         /**
           * @default false
@@ -4176,9 +4282,12 @@ declare namespace LocalJSX {
           * @default false
          */
         "sticky"?: boolean;
-        "title"?: string;
     }
     interface SyIcon {
+        /**
+          * @default false
+         */
+        "naturalAspect"?: boolean;
         "onSelected"?: (event: SyIconCustomEvent<{ value: string }>) => void;
         "path"?: string;
         /**
@@ -4189,6 +4298,7 @@ declare namespace LocalJSX {
           * @default 'medium'
          */
         "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
+        "svgMarkup"?: string;
     }
     interface SyInlineMessage {
         /**
@@ -5871,6 +5981,7 @@ declare namespace LocalJSX {
         "sy-drawer": SyDrawer;
         "sy-dropdown": SyDropdown;
         "sy-empty": SyEmpty;
+        "sy-flex": SyFlex;
         "sy-global-header": SyGlobalHeader;
         "sy-icon": SyIcon;
         "sy-inline-message": SyInlineMessage;
@@ -5953,6 +6064,7 @@ declare module "@stencil/core" {
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
             "sy-dropdown": LocalJSX.SyDropdown & JSXBase.HTMLAttributes<HTMLSyDropdownElement>;
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
+            "sy-flex": LocalJSX.SyFlex & JSXBase.HTMLAttributes<HTMLSyFlexElement>;
             "sy-global-header": LocalJSX.SyGlobalHeader & JSXBase.HTMLAttributes<HTMLSyGlobalHeaderElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;

@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as StandaloneStories from './sy-badge-standalone.stories';
+
+<Meta of={StandaloneStories} />
+
+# Standalone
+
+The `standalone` attribute renders the badge as a lone element rather than anchored to slotted content.
+
+<Canvas of={StandaloneStories.Default} />
+<Controls of={StandaloneStories.Default} />

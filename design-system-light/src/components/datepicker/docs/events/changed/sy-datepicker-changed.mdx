@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ChangedStories from './sy-datepicker-changed.stories';
+
+<Meta of={ChangedStories} />
+
+# Changed
+
+The `changed` event fires when the user types or otherwise mutates the input value. The `detail` contains `mode` and `value`.
+
+<Canvas of={ChangedStories.Default} />

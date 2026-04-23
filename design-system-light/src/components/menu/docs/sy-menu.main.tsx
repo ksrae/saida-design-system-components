@@ -199,48 +199,35 @@ export const MenuOpen = (args: {open: boolean}) => {
 
 
 export const MenuOpened = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('menuOpenedResult');
+    if (out) out.textContent = (e as CustomEvent).detail ? 'Menu is opened' : 'Menu is closed';
+  };
   return html`
-  <style>
-    .container {
-      position: relative;
-      padding: 4px 8px;
-      width: fit-content;
-      height: 32px;
-      border: 1px solid rgba(0 0 0 / 0.24);
-      display: flex;
-      align-items: center;
-      text-align: center;
-      justify-content: center;
-      border-radius: 3px;
-      box-sizing: border-box;
-      cursor: pointer;
-    }
-  </style>
+    <style>
+      .container {
+        position: relative;
+        padding: 4px 8px;
+        width: fit-content;
+        height: 32px;
+        border: 1px solid rgba(0 0 0 / 0.24);
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        border-radius: 3px;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+    </style>
     <div class="container">
       <span>Menu</span>
-      <sy-menu id="menuOpened">
+      <sy-menu @opened=${handle}>
         <sy-menu-item value="1">Item1</sy-menu-item>
         <sy-menu-item value="2">Item2</sy-menu-item>
       </sy-menu>
     </div>
-
-    <p id="menuOpenedResult"></p>
-
-    <script>
-      (() => {
-        const menu = document.querySelector('#menuOpened');
-        const result = document.querySelector('#menuOpenedResult');
-
-        menu.addEventListener('opened', (e) => {
-          if(e.detail) {
-            result.textContent = 'Menu is opened';
-          } else {
-            result.textContent = 'Menu is closed';
-          }
-
-        });
-      })();
-    </script>
+    <p id="menuOpenedResult">(idle)</p>
   `;
 };
 
@@ -420,8 +407,8 @@ export const MenuSubOpen = (args: {open: boolean}) => {
     <div class="container">
       <span>Menu</span>
       <sy-menu ?open=${args.open}>
-        <sy-menu-sub open title='NavSub with icon <sy-icon size="medium"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M466.6 114.2C461.2 115.9 455.3 116 450.4 113.3C444.6 110.1 438.6 107.1 432.6 104.4C422.2 99.7 418.9 86.1 428.5 79.8C443.5 69.9 461.5 64.1 480.8 64.1C533.4 64.1 576 106.7 576 159.3C576 172.5 573.3 185.1 568.4 196.6C563.9 207.1 550 206.4 543.5 197C539.7 191.5 535.7 186.2 531.5 181C528 176.6 527 170.8 527.7 165.2C527.9 163.3 528.1 161.3 528.1 159.3C528.1 133.2 506.9 112.1 480.9 112.1C476 112.1 471.2 112.9 466.7 114.3zM96.5 196.9C90 206.3 76 207 71.6 196.5C66.7 185 64 172.4 64 159.2C64 106.6 106.6 64 159.2 64C178.5 64 196.5 69.8 211.5 79.7C221.1 86 217.8 99.6 207.4 104.3C201.3 107.1 195.4 110 189.6 113.2C184.7 115.9 178.7 115.8 173.4 114.1C168.9 112.7 164.2 111.9 159.2 111.9C133.1 111.9 112 133.1 112 159.1C112 161.1 112.1 163.1 112.4 165C113.1 170.6 112.1 176.4 108.6 180.8C104.4 186 100.4 191.3 96.6 196.8zM496 352C496 254.8 417.2 176 320 176C222.8 176 144 254.8 144 352C144 449.2 222.8 528 320 528C417.2 528 496 449.2 496 352zM460.5 526.5C422.1 557.4 373.2 576 320 576C266.8 576 217.9 557.4 179.5 526.5L137 569C127.6 578.4 112.4 578.4 103.1 569C93.8 559.6 93.7 544.4 103.1 535.1L145.6 492.6C114.6 454.1 96 405.2 96 352C96 228.3 196.3 128 320 128C443.7 128 544 228.3 544 352C544 405.2 525.4 454.1 494.5 492.5L537 535C546.4 544.4 546.4 559.6 537 568.9C527.6 578.2 512.4 578.3 503.1 568.9L460.6 526.4zM344 248L344 342.1L385 383.1C394.4 392.5 394.4 407.7 385 417C375.6 426.3 360.4 426.4 351.1 417L303.1 369C298.6 364.5 296.1 358.4 296.1 352L296.1 248C296.1 234.7 306.8 224 320.1 224C333.4 224 344.1 234.7 344.1 248z"></path></svg></sy-icon>'>
-          <sy-menu-group title='Group<sy-icon size="medium"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M466.6 114.2C461.2 115.9 455.3 116 450.4 113.3C444.6 110.1 438.6 107.1 432.6 104.4C422.2 99.7 418.9 86.1 428.5 79.8C443.5 69.9 461.5 64.1 480.8 64.1C533.4 64.1 576 106.7 576 159.3C576 172.5 573.3 185.1 568.4 196.6C563.9 207.1 550 206.4 543.5 197C539.7 191.5 535.7 186.2 531.5 181C528 176.6 527 170.8 527.7 165.2C527.9 163.3 528.1 161.3 528.1 159.3C528.1 133.2 506.9 112.1 480.9 112.1C476 112.1 471.2 112.9 466.7 114.3zM96.5 196.9C90 206.3 76 207 71.6 196.5C66.7 185 64 172.4 64 159.2C64 106.6 106.6 64 159.2 64C178.5 64 196.5 69.8 211.5 79.7C221.1 86 217.8 99.6 207.4 104.3C201.3 107.1 195.4 110 189.6 113.2C184.7 115.9 178.7 115.8 173.4 114.1C168.9 112.7 164.2 111.9 159.2 111.9C133.1 111.9 112 133.1 112 159.1C112 161.1 112.1 163.1 112.4 165C113.1 170.6 112.1 176.4 108.6 180.8C104.4 186 100.4 191.3 96.6 196.8zM496 352C496 254.8 417.2 176 320 176C222.8 176 144 254.8 144 352C144 449.2 222.8 528 320 528C417.2 528 496 449.2 496 352zM460.5 526.5C422.1 557.4 373.2 576 320 576C266.8 576 217.9 557.4 179.5 526.5L137 569C127.6 578.4 112.4 578.4 103.1 569C93.8 559.6 93.7 544.4 103.1 535.1L145.6 492.6C114.6 454.1 96 405.2 96 352C96 228.3 196.3 128 320 128C443.7 128 544 228.3 544 352C544 405.2 525.4 454.1 494.5 492.5L537 535C546.4 544.4 546.4 559.6 537 568.9C527.6 578.2 512.4 578.3 503.1 568.9L460.6 526.4zM344 248L344 342.1L385 383.1C394.4 392.5 394.4 407.7 385 417C375.6 426.3 360.4 426.4 351.1 417L303.1 369C298.6 364.5 296.1 358.4 296.1 352L296.1 248C296.1 234.7 306.8 224 320.1 224C333.4 224 344.1 234.7 344.1 248z"></path></svg></sy-icon>'>
+        <sy-menu-sub open title="Navigation Submenu">
+          <sy-menu-group title="Group actions">
             <sy-menu-item value="1">Item1</sy-menu-item>
             <sy-menu-item value="2">Item2</sy-menu-item>
           </sy-menu-group>
@@ -486,99 +473,70 @@ export const MenuItemDisabled = (args: {disabled: boolean}) => {
 // };
 
 export const MenuItemChecked = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('menuItemCheckedResult');
+    const detail = (e as CustomEvent).detail ?? {};
+    if (out) out.textContent = `Item: ${JSON.stringify(detail)} is ${detail.checked ? 'checked' : 'unchecked'}`;
+  };
   return html`
-  <style>
-    .container {
-      position: relative;
-      padding: 4px 8px;
-      width: fit-content;
-      height: 32px;
-      border: 1px solid rgba(0 0 0 / 0.24);
-      display: flex;
-      align-items: center;
-      text-align: center;
-      justify-content: center;
-      border-radius: 3px;
-      box-sizing: border-box;
-      cursor: pointer;
-    }
-  </style>
+    <style>
+      .container {
+        position: relative;
+        padding: 4px 8px;
+        width: fit-content;
+        height: 32px;
+        border: 1px solid rgba(0 0 0 / 0.24);
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        border-radius: 3px;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+    </style>
     <div class="container">
       <span>Menu</span>
-      <sy-menu id="menuItemChecked" checkable>
+      <sy-menu checkable @itemChecked=${handle}>
         <sy-menu-item value="1">Item1</sy-menu-item>
         <sy-menu-item value="2">Item2</sy-menu-item>
       </sy-menu>
     </div>
-
-    <p id="menuItemCheckedResult"></p>
-
-    <script>
-      (() => {
-        let elem = document.querySelector("#menuItemChecked");
-        let result = document.querySelector("#menuItemCheckedResult");
-
-        let handleChecked = (e) => {
-          const item = JSON.stringify(e.detail);
-          const checked = e.detail.checked ? 'checked' : 'unchecked';
-          result.textContent = "Item: " + item + " is " + checked;
-        };
-
-        elem.addEventListener("itemChecked", handleChecked);
-
-        // this is for release click event. It is recommanded for optimization.
-        window.addEventListener("beforeunload", () => {
-          elem.removeEventListener("itemChecked", handleChecked);
-        });
-      })();
-    </script>`;
+    <p id="menuItemCheckedResult">(idle)</p>
+  `;
 };
 
 
 export const MenuItemSelected = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('menuItemSelectedResult');
+    if (out) out.textContent = `Item: ${JSON.stringify((e as CustomEvent).detail)} is selected`;
+  };
   return html`
-  <style>
-    .container {
-      position: relative;
-      padding: 4px 8px;
-      width: fit-content;
-      height: 32px;
-      border: 1px solid rgba(0 0 0 / 0.24);
-      display: flex;
-      align-items: center;
-      text-align: center;
-      justify-content: center;
-      border-radius: 3px;
-      box-sizing: border-box;
-      cursor: pointer;
-    }
-  </style>
+    <style>
+      .container {
+        position: relative;
+        padding: 4px 8px;
+        width: fit-content;
+        height: 32px;
+        border: 1px solid rgba(0 0 0 / 0.24);
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        border-radius: 3px;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+    </style>
     <div class="container">
       <span>Menu</span>
-      <sy-menu id="menuItemSelected">
+      <sy-menu @itemSelected=${handle}>
         <sy-menu-item value="1">Item1</sy-menu-item>
         <sy-menu-item value="2">Item2</sy-menu-item>
       </sy-menu>
     </div>
-    <p id="menuItemSelectedResult"></p>
-
-    <script>
-      (() => {
-        let elem = document.querySelector("#menuItemSelected");
-        let result = document.querySelector("#menuItemSelectedResult");
-
-        let handleSelected = (e) => {
-          const item = JSON.stringify(e.detail);
-          result.textContent = "Item: " + item + " is selected";
-        };
-
-        elem.addEventListener("itemSelected", handleSelected);
-
-        // this is for release click event. It is recommanded for optimization.
-        window.addEventListener("beforeunload", () => {
-          elem.removeEventListener("itemSelected", handleSelected);
-        });
-      })();
-    </script>`;
+    <p id="menuItemSelectedResult">(idle)</p>
+  `;
 };
 

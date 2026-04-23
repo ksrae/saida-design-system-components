@@ -139,11 +139,8 @@ export class SyTooltip {
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleOutsideClick, true);
-
-    if (this.addedToBody) {
-      window.removeEventListener("scroll", this.onScroll);
-      window.removeEventListener("resize", this.updateTooltipPosition, true);
-    }
+    window.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("resize", this.updateTooltipPosition, true);
 
     this.disconnectParentObserver();
 
@@ -169,7 +166,7 @@ export class SyTooltip {
     );
   }
 
-  private updateTooltipPosition() {
+  private updateTooltipPosition = () => {
     if (!this.open || !this.addedToBody || !this.parentDom) {
       return;
     }
@@ -263,7 +260,7 @@ export class SyTooltip {
       if (this.trigger === 'hover') {
         parent.removeEventListener('focus', this.setFocus);
         parent.removeEventListener('blur', this.setBlur);
-        parent.addEventListener('click', this.parentClick);
+        parent.removeEventListener('click', this.parentClick);
         parent.addEventListener('mouseenter', this.parentMouseEnter);
         parent.addEventListener('mouseleave', this.parentMouseLeave);
       }

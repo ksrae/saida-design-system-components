@@ -170,7 +170,7 @@ export class SyAvatar {
     } else if (this.icon?.trim()?.length > 0) {
       const iconSize = this.size === 'large' ? 'xxlarge' : this.size === 'medium' ? 'large' : this.size;
       return (
-        <sy-icon size={iconSize} innerHTML={this.icon}></sy-icon>
+        <sy-icon size={iconSize} svgMarkup={this.icon}></sy-icon>
       );
     } else if (this.letter?.trim()?.length || this.exposedText?.trim()?.length) {
       return (

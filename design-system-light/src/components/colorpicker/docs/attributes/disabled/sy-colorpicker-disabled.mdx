@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DisabledStories from './sy-colorpicker-disabled.stories';
+
+<Meta of={DisabledStories} />
+
+# Disabled
+
+The `disabled` attribute blocks user interaction and renders the colorpicker in a disabled visual state.
+
+<Canvas of={DisabledStories.Default} />
+<Controls of={DisabledStories.Default} />

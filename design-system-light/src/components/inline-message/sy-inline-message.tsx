@@ -329,7 +329,7 @@ export class SyInlineMessage {
           [this.position]: true
         }}>
         {this.showIcon && (
-          <sy-icon size="xlarge" class="messege-icon" innerHTML={this.iconType}></sy-icon>
+          <sy-icon size="xlarge" class="messege-icon" svgMarkup={this.iconType}></sy-icon>
         )}
         <div class="inline-group">
           <span class="inline-message">{this.message}</span>

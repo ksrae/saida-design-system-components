@@ -235,31 +235,26 @@ sy-checkbox .checkbox.checkbox--checked {
 
 /* Indeterminate */
 sy-checkbox .checkbox.checkbox--indeterminate {
-    sy-icon.indeterminate {
-        display: inline-flex;
-        color: var(--checkbox-indeterminate-icon-enabled)
-    }
+    /* Use a CSS pseudo-element for a crisp, perfectly centered square.
+       Avoids SVG viewBox padding, sy-icon zoom, and sub-pixel artifacts. */
+    sy-icon.indeterminate,
     sy-icon.checked {
         display: none;
     }
     .checkbox-visual-label {
         background-color: var(--background-default);
         display: flex;
-
-    }
-
-    /* ensure indeterminate icon is visually centered even if the SVG viewBox is off */
-    .checkbox-visual-label sy-icon.indeterminate {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 12px;
-        height: 12px;
-        display: inline-flex;
         align-items: center;
         justify-content: center;
-        pointer-events: none;
+
+        &::after {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--checkbox-indeterminate-icon-enabled);
+            border-radius: 1px;
+        }
     }
 
     &.checkbox--disabled {

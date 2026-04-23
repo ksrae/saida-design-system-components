@@ -1,0 +1,17 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as SelectedStories from './sy-autocomplete-selected.stories';
+
+<Meta of={SelectedStories} />
+
+# selected
+
+The `selected` event fires when the user picks an item from the suggestion list.
+
+```js
+const elem = document.querySelector('sy-autocomplete');
+elem.addEventListener('selected', (e) => {
+  console.log(e.detail); // { value, isValid, status }
+});
+```
+
+<Canvas of={SelectedStories.Default} />

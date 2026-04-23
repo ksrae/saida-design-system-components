@@ -199,19 +199,18 @@ export class SyAutocomplete {
     try {
       // cloneNode 대신 새로 createElement
       const newOptionElement = document.createElement('sy-autocomplete-option') as any;
-      
+
       // 원본의 클래스 복사
       if (originalOptionElement.className) {
         newOptionElement.className = originalOptionElement.className;
       }
-      
+
       // 스타일 설정
       newOptionElement.style.position = 'absolute';
       newOptionElement.style.display = 'none';
       newOptionElement.style.visibility = 'hidden';
-      newOptionElement.id = 'sy-autocomplete-options-list';
-      newOptionElement.style.zIndex = 'var(--z-index-autocomplete, 1000)';
-      
+      newOptionElement.style.zIndex = 'var(--z-index-autocomplete, 800)';
+
       // 데이터 설정
       newOptionElement.source = this.source || [];
       newOptionElement.loading = false;
@@ -222,7 +221,7 @@ export class SyAutocomplete {
       newOptionElement.addEventListener("activeChanged", this.activeChanged);
 
       document.body.appendChild(newOptionElement);
-      
+
       this.optionElementClone = newOptionElement;
 
       // 원본은 완전히 숨김
@@ -231,7 +230,7 @@ export class SyAutocomplete {
       originalOptionElement.style.setProperty('position', 'absolute', 'important');
       originalOptionElement.style.setProperty('pointer-events', 'none', 'important');
       originalOptionElement.style.setProperty('z-index', '-9999', 'important');
-      
+
       return true;
 
     } catch (error) {
@@ -316,7 +315,7 @@ export class SyAutocomplete {
 
   private scrollToSelectedItem = (direction: "down" | "up") => {
     if (!(this.optionElementClone as any)) return;
-    
+
     const optionList = (this.optionElementClone as any).querySelector(".autocomplete-option-container") as HTMLElement;
     const activeItem = (this.optionElementClone as any).querySelector(".option--active") as HTMLElement;
 
@@ -359,11 +358,11 @@ export class SyAutocomplete {
     }
 
     const limitedData = data.slice(0, this.maxItemCount);
-    
+
     // 검색어가 있고 결과가 없을 때는 empty를 보여줘야 함
     // loading일 때나, 데이터가 있을 때, 또는 검색어가 있고(입력 중) 결과가 없을 때 표시
     const shouldShowOptions = this.loading || limitedData.length > 0 || (searchInput && searchInput.length >= this.min);
-    
+
     if (shouldShowOptions) {
       this.setOptionList(limitedData, resetActive);
     } else {
@@ -376,16 +375,16 @@ export class SyAutocomplete {
 
     // 같은 데이터라도 위치 업데이트는 필요하므로 source만 같으면 skip
     const isSameData = this.filteredList.length === data.length && this.filteredList.every((item, index) => item === data[index]);
-    
-    
-    if (isSameData) {      
+
+
+    if (isSameData) {
       // 같은 데이터지만 resetActive가 true면 active를 0으로 리셋
       if (resetActive && this.active !== 0 && this.filteredList.length > 0) {
         this.active = 0;
         const cloneElement = this.optionElementClone as any;
         cloneElement.activeIndex = this.active;
       }
-      
+
       // source는 이미 설정되어 있으므로 위치만 업데이트
       requestAnimationFrame(() => {
         this.updateOptionPosition();
@@ -394,7 +393,7 @@ export class SyAutocomplete {
     }
 
     this.filteredList = [...data];
-    
+
     // resetActive가 true일 때만 0으로 초기화 (입력 중일 때)
     // Arrow 키로 이동 중이면 현재 active 유지
     if (resetActive) {
@@ -409,11 +408,11 @@ export class SyAutocomplete {
         console.log('[setOptionList] kept active as:', this.active);
       }
     }
-    
+
     const cloneElement = this.optionElementClone as any;
     cloneElement.activeIndex = this.active;
     cloneElement.source = [...this.filteredList];
-        
+
     if (typeof cloneElement.forceUpdate === 'function') {
       cloneElement.forceUpdate();
     }
@@ -452,9 +451,9 @@ export class SyAutocomplete {
     if (this.hasFocus) {
       return;
     }
-    
+
     clearTimeout(this.blurTimeout);
-    
+
     if (!this.optionElementClone) {
       if (!this.appendOptionClone()) return;
     }
@@ -551,7 +550,7 @@ export class SyAutocomplete {
 
     if (shouldShow) {
       const cloneElement = this.optionElementClone as any;
-      
+
       cloneElement.style.display = 'block';
       cloneElement.style.visibility = 'hidden';
 

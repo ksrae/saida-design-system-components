@@ -1,4 +1,6 @@
-import { html } from "lit";
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { ref, createRef, Ref } from 'lit/directives/ref.js';
 import { Components } from '../../../components';
 
 export interface SyAutocompleteProps extends Components.SyAutocomplete {
@@ -7,243 +9,126 @@ export interface SyAutocompleteProps extends Components.SyAutocomplete {
   selected?: (event: CustomEvent<any>) => void;
 }
 
-export const Autocomplete = ({caseSensitive, debounceTime, loading, min, placeholder, required, size, source, trigger } : SyAutocompleteProps) => {
-    return html`
-    <sy-autocomplete
-      ?caseSensitive=${caseSensitive}
-      debounceTime=${debounceTime}
-      ?loading=${loading}
-      min=${min}
-      placeholder=${placeholder}
-      ?required=${required}
-      size=${size}
-      .source=${source}
-      trigger=${trigger}>
-    </sy-autocomplete>
-    `
+const DEFAULT_SOURCE = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
+
+/** Bind a `source` array to a sy-autocomplete element via a lit ref. */
+const sourceRef = (source: any): ((el: Element | undefined) => void) => {
+  return (el?: Element) => {
+    if (el && Array.isArray(source)) {
+      (el as any).source = source;
+    }
   };
-
-  export const AutocompleteCaseSensitive = (args: {caseSensitive: boolean}) => {
-    return html`
-  <sy-autoComplete
-    ?caseSensitive="${args.caseSensitive}"
-    id="autocompleteCase">
-  </sy-autoComplete>
-
-<script>
-    (() => {
-      let source = ["ABC", "DEF", "GHI"];
-      document.querySelector('#autocompleteCase').source = source;
-    })();
-  </script>
-  `;
-  };
-
-  export const AutocompleteDebounce = (args: {debounceTime: number}) => {
-    return html`
-    <sy-autocomplete
-      id="autocompleteDebounce"
-      debounceTime="${args.debounceTime}">
-    </sy-autocomplete>
-
-    <script>
-      (() => {
-        let source = ["Design", "System"];
-        document.querySelector('#autocompleteDebounce').source = source;
-      })();
-    </script>
-    `;
-  }
-
-  export const AutocompleteLoading = (args: {loading: boolean}) => {
-    return html`
-  <sy-autoComplete
-    id="autocompleteLoading"
-    ?loading=${args.loading}>
-  </sy-autoComplete>
-
-  <script>
-    (() => {
-      let source = ["abc", "def", "ghi"];
-      document.querySelector('#autocompleteLoading').source = source;
-    })();
-  </script>
-  `;
-  };
-
-  export const AutocompleteMin = (args: {min: number}) => {
-    return html`
-  <sy-autoComplete
-    id="autocompleteMin"
-    min="${args.min}">
-  </sy-autoComplete>
-
-  <script>
-    (() => {
-      let source = ["abc", "def", "ghi"];
-      document.querySelector('#autocompleteMin').source = source;
-    })();
-  </script>
-  `;
-  };
-
-  export const AutocompletePlaceholder = (args: {placeholder: string}) => {
-    return html`
-  <sy-autoComplete
-    id="autoCompletePlaceholder"
-    placeholder="${args.placeholder}">
-  </sy-autoComplete>
-
-<script>
-  (() => {
-    let source = ["abc", "def", "ghi"];
-    document.querySelector('#autoCompletePlaceholder').source = source;
-  })();
-</script>
-`;
-  };
-
-
-  export const AutocompleteSize = (args: {size: 'small' | 'medium' | 'large'}) => {
-    return html`
-  <sy-autoComplete
-    id="autoCompleteSize"
-    size="${args.size}">
-  </sy-autoComplete>
-
-<script>
-  (() => {
-    let source = ["abc", "def", "ghi"];
-    document.querySelector('#autoCompleteSize').source = source;
-  })();
-</script>
-`;
-  };
-
-  export const AutocompleteSource = (args: {source: string[]}) => {
-    return html`
-    <sy-autocomplete
-      id="autocompleteSource">
-    </sy-autocomplete>
-
-    <script>
-      (() => {
-        document.querySelector('#autocompleteSource').source = ${JSON.stringify(args.source)};
-      })();
-    </script>
-    `
-  };
-
-  export const AutocompleteTrigger = (args: {trigger: 'focus' | 'input'}) => {
-    return html`
-  <sy-autoComplete
-    id="autocompleteVariant"
-    trigger="${args.trigger}">
-  </sy-autoComplete>
-
-  <script>
-    (() => {
-      let source = ["abc", "def", "ghi"];
-      document.querySelector('#autocompleteVariant').source = source;
-    })();
-  </script>
-  `;
-  };
-
-  export const AutocompleteFocusBlur = () => {
-    return html`
-    <sy-autoComplete id="autoFocusElem"></sy-autoComplete>
-  <br/>
-  <br/>
-  <p id="autoFocusResult"></p>
-  <script>
-    (() => {
-      let elem = document.querySelector('#autoFocusElem');
-      let result = document.querySelector('#autoFocusResult');
-
-      let source = ["abc", "def", "ghi"];
-      elem.source = source;
-      // focus button by force with function in 1 sec.
-      setTimeout(() => {
-        elem.setFocus();
-      }, 1000);
-
-      // blur button by force with function in 4 sec.
-      setTimeout(() => {
-        elem.setBlur();
-      }, 4000);
-
-
-      let handleFocus = (e) => {
-        result.textContent = 'focus';
-      };
-
-      let handleBlur = (e) => {
-        result.textContent = 'blur';
-      };
-
-      elem.addEventListener('focus', handleFocus);
-      elem.addEventListener('blur', handleBlur);
-
-      // this is for release click event. It is recommanded for optimization.
-      window.addEventListener('beforeunload', () => {
-        elem.removeEventListener('focus', handleFocus);
-        elem.removeEventListener('blur', handleBlur);
-      });
-    })();
-
-  </script>`;
-  }
-
-  export const AutocompleteSelected = () => {
-    return html`
-    <sy-autocomplete id="autocompleteSelected"></sy-autocomplete>
-    <p id="autocompleteSelectedResult"></p>
-
-  <script>
-    (() => {
-      let source = ["abc", "def", "ghi"];
-      let elem = document.querySelector('#autocompleteSelected');
-      elem.source = source;
-
-      let result = document.querySelector('#autocompleteSelectedResult');
-
-      let handleAutocompleteSelected = (e) => {
-        result.textContent = 'value ' + e.detail.value + ' is selected';
-      };
-
-      elem.addEventListener('selected', handleAutocompleteSelected);
-    })();
-
-  </script>`
 };
 
-
-  export const AutocompleteChanged = () => {
-    return html`
-    <sy-autocomplete id="autocompleteChanged"></sy-autocomplete>
-    <p id="autocompleteChangedResult"></p>
-
-  <script>
-    (() => {
-      let source = ["abc", "def", "ghi"];
-      let elem = document.querySelector('#autocompleteChanged');
-      elem.source = source;
-
-      let result = document.querySelector('#autocompleteChangedResult');
-
-      let handleAutocompleteChanged = (e) => {
-        result.textContent = 'value ' + e.detail.value + ' is changed';
-      };
-
-      elem.addEventListener('changed', handleAutocompleteChanged);
-    })();
-
-  </script>`
+/** Generic autocomplete render reused by Overview + Attributes stories. */
+const renderAutocomplete = (args: Partial<SyAutocompleteProps>) => {
+  const source = (args.source as any) ?? DEFAULT_SOURCE;
+  return html`
+    <sy-autocomplete
+      ${ref(sourceRef(source))}
+      .caseSensitive=${!!args.caseSensitive}
+      ?loading=${!!args.loading}
+      ?required=${!!args.required}
+      debounceTime=${ifDefined(args.debounceTime)}
+      min=${ifDefined(args.min)}
+      placeholder=${ifDefined(args.placeholder)}
+      size=${ifDefined(args.size)}
+      trigger=${ifDefined(args.trigger)}
+    ></sy-autocomplete>
+  `;
 };
 
+export const Autocomplete = (args: SyAutocompleteProps) => renderAutocomplete(args);
 
+export const AutocompleteCaseSensitive = (args: { caseSensitive: boolean }) =>
+  renderAutocomplete({ ...args, source: ['ABC', 'DEF', 'GHI', 'abc', 'def'] as any });
+export const AutocompleteDebounce      = (args: { debounceTime: number })           => renderAutocomplete(args);
+export const AutocompleteLoading       = (args: { loading: boolean })               => renderAutocomplete(args);
+export const AutocompleteMin           = (args: { min: number })                    => renderAutocomplete(args);
+export const AutocompletePlaceholder   = (args: { placeholder: string })            => renderAutocomplete(args);
+export const AutocompleteSize          = (args: { size: 'small'|'medium'|'large' }) => renderAutocomplete(args);
+export const AutocompleteSource        = (args: { source: string[] })               => renderAutocomplete(args as any);
+export const AutocompleteTrigger       = (args: { trigger: 'focus'|'input' })       => renderAutocomplete(args);
 
+/* -------------------- Methods -------------------- */
 
+export const AutocompleteFocusBlur = () => {
+  const elRef: Ref<HTMLSyAutocompleteElement> = createRef();
+  const update = (text: string) => {
+    const out = document.getElementById('autoFocusResult');
+    if (out) out.textContent = text;
+  };
+  const bindSource = (el?: Element) => {
+    if (el) (el as any).source = DEFAULT_SOURCE;
+  };
+  const setRefs = (el?: Element) => {
+    bindSource(el);
+    (elRef as any).value = el;
+  };
 
+  return html`
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <sy-autocomplete
+        ${ref(setRefs)}
+        @focus=${() => update('focus')}
+        @blur=${() => update('blur')}
+      ></sy-autocomplete>
+      <sy-button variant="primary" @click=${() => elRef.value?.setFocus()}>Call setFocus()</sy-button>
+      <sy-button variant="secondary" @click=${() => elRef.value?.setBlur()}>Call setBlur()</sy-button>
+    </div>
+    <p>Status: <span id="autoFocusResult">(idle)</span></p>
+  `;
+};
 
+/* -------------------- Events -------------------- */
+
+export const AutocompleteSelected = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('autocompleteSelectedResult');
+    if (out) out.textContent = 'value ' + (e as CustomEvent).detail.value + ' is selected';
+  };
+  return html`
+    <sy-autocomplete ${ref(sourceRef(DEFAULT_SOURCE))} @selected=${handle}></sy-autocomplete>
+    <p>Result: <span id="autocompleteSelectedResult">(idle)</span></p>
+  `;
+};
+
+export const AutocompleteChanged = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('autocompleteChangedResult');
+    if (out) out.textContent = 'value ' + (e as CustomEvent).detail.value + ' is changed';
+  };
+  return html`
+    <sy-autocomplete ${ref(sourceRef(DEFAULT_SOURCE))} @changed=${handle}></sy-autocomplete>
+    <p>Result: <span id="autocompleteChangedResult">(idle)</span></p>
+  `;
+};
+
+export const AutocompleteRequired = (args: { required: boolean }) => {
+  const handleSubmit = (e: Event, elGetter: () => HTMLSyAutocompleteElement | undefined) => {
+    e.preventDefault();
+    const out = document.getElementById('autocompleteRequiredResult');
+    const el = elGetter();
+    if (out && el) out.textContent = 'Submitted: ' + (el as any).value;
+  };
+  const elRef: Ref<HTMLSyAutocompleteElement> = createRef();
+  const setRefs = (el?: Element) => {
+    if (el) (el as any).source = DEFAULT_SOURCE;
+    (elRef as any).value = el;
+  };
+
+  return html`
+    <form
+      style="display:flex;flex-direction:column;gap:12px;width:300px;"
+      @submit=${(e: Event) => handleSubmit(e, () => elRef.value)}
+    >
+      <sy-autocomplete
+        ${ref(setRefs)}
+        ?required=${!!args.required}
+        placeholder="Select a fruit..."
+      ></sy-autocomplete>
+      <sy-button type="submit" variant="primary">Submit</sy-button>
+    </form>
+    <p>Result: <span id="autocompleteRequiredResult">(idle)</span></p>
+  `;
+};

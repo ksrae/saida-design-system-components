@@ -43,7 +43,7 @@ export class SyNavSub {
   connectedCallback() {
     this.calculateDepth();
     this.updateTrigger();
-    
+
     if (this.disabled) {
       this.receiveDisabled = false;
     } else {
@@ -65,7 +65,7 @@ export class SyNavSub {
       this.host.removeEventListener('mouseenter', this.openOnMouseEnter);
       this.host.removeEventListener('mouseleave', this.closeOnMouseLeave);
     }
-    
+
     if (this.keydownHandler) {
       this.host.removeEventListener('keydown', this.keydownHandler);
     }
@@ -96,9 +96,9 @@ export class SyNavSub {
   private calculateDepth() {
     const parent = this.host.parentElement;
     if (!parent) return;
-    
+
     const parentTagName = parent.tagName.toLowerCase();
-    
+
     if (parentTagName === 'sy-nav') {
       this.depth = 0;
     } else if (parentTagName === 'sy-nav-sub') {
@@ -152,7 +152,7 @@ export class SyNavSub {
   @Method()
   async setClose() {
     if (this.disabled) return;
-    
+
     const children = Array.from(this.host.children);
     children?.forEach(child => {
       if (child.tagName.toUpperCase() === SUBNAV) {
@@ -160,7 +160,7 @@ export class SyNavSub {
         (childSub as any).setClose?.();
       }
     });
-    
+
     this.open = false;
     this.active = true;
     this.eventEmitter();
@@ -228,11 +228,12 @@ export class SyNavSub {
   }
 
   render() {
-    const toggleIconSvg = this.hasChild ? 
-      (this.open ? 
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M303.5 207C312.9 197.6 328.1 197.6 337.4 207L497.4 367C506.8 376.4 506.8 391.6 497.4 400.9C488 410.2 472.8 410.3 463.5 400.9L320.5 257.9L177.5 400.9C168.1 410.3 152.9 410.3 143.6 400.9C134.3 391.5 134.2 376.3 143.6 367L303.6 207z"></path></svg>` : 
+    const toggleIconSvg = this.hasChild ?
+      (this.open ?
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M303.5 207C312.9 197.6 328.1 197.6 337.4 207L497.4 367C506.8 376.4 506.8 391.6 497.4 400.9C488 410.2 472.8 410.3 463.5 400.9L320.5 257.9L177.5 400.9C168.1 410.3 152.9 410.3 143.6 400.9C134.3 391.5 134.2 376.3 143.6 367L303.6 207z"></path></svg>` :
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M337.5 433C328.1 442.4 312.9 442.4 303.6 433L143.5 273C134.1 263.6 134.1 248.4 143.5 239.1C152.9 229.8 168.1 229.7 177.4 239.1L320.4 382.1L463.4 239.1C472.8 229.7 488 229.7 497.3 239.1C506.6 248.5 506.7 263.7 497.3 273L337.3 433z"></path></svg>`
       ) : '';
+    const safeTitle = this.sanitizeHtml(this.navSubTitle);
 
     const titleClasses = {
       'submenu-title': true,
@@ -252,14 +253,14 @@ export class SyNavSub {
         <div
           class={titleClasses}
           tabIndex={0}
-          title={this.sanitizeHtml(this.navSubTitle)}
+          title={safeTitle}
           onClick={this.toggleOnClick}
         >
-          <span class="title" innerHTML={this.navSubTitle}></span>
-          
+          <span class="title">{safeTitle}</span>
+
           {toggleIconSvg && (
             <span class="toggle-icon">
-              <sy-icon innerHTML={toggleIconSvg}></sy-icon>
+              <sy-icon svgMarkup={toggleIconSvg}></sy-icon>
             </span>
           )}
         </div>

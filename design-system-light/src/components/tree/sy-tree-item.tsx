@@ -72,14 +72,10 @@ export class SyTreeItem {
   @Event() draggingEvent: EventEmitter<string>;
 
   // --- Lifecycle Methods ---
-  connectedCallback() {
-    document.addEventListener("click", this.handleOutsideClick, true);
-  }
-
   componentWillLoad() {
     this.hasChild = fnAssignPropFromAlias(this.host, 'has-child') ?? this.hasChild;
     this.appendPlaceholder = fnAssignPropFromAlias(this.host, 'append-placeholder') ?? this.appendPlaceholder;
-    this.isDescendant = fnAssignPropFromAlias(this.host, 'is-isDescendant') ?? this.isDescendant;
+    this.isDescendant = fnAssignPropFromAlias(this.host, 'is-descendant') ?? this.isDescendant;
     this.isEditable = fnAssignPropFromAlias(this.host, 'is-editable') ?? this.isEditable;
     this.tagMessage = fnAssignPropFromAlias(this.host, 'tag-message') ?? this.tagMessage;
     this.tagVariant = fnAssignPropFromAlias(this.host, 'tag-variant') ?? this.tagVariant;
@@ -87,7 +83,7 @@ export class SyTreeItem {
     this.selectedValue = fnAssignPropFromAlias(this.host, 'selected-value') ?? this.selectedValue;
     this.nodeWidth = fnAssignPropFromAlias(this.host, 'node-width') ?? this.nodeWidth;
     this.active = (this.value?.toString() === this.selectedValue?.toString());
-    this.host.className = ` level-${this.level} `;
+    this.updateLevelClass();
 
     // Initialize textTerm with label so it displays on first render
     this.renderLabelWithHighlight(this.label, this.searchTerm);
@@ -98,15 +94,13 @@ export class SyTreeItem {
   }
 
   disconnectedCallback() {
-    document.removeEventListener('click', this.handleOutsideClick, true);
     document.removeEventListener("keydown", this.handleNewChildDocumentKeydown);
   }
 
   // --- Watchers ---
   @Watch('level')
   handleLevelChange() {
-    // 기존 클래스 제거하고 새로 추가
-    this.host.className = ` level-${this.level} `;
+    this.updateLevelClass();
   }
 
   @Watch('searchTerm')
@@ -308,7 +302,7 @@ export class SyTreeItem {
           >
             <sy-tooltip position="top" content={this.label} trigger="none" open={this.tooltipOpen}></sy-tooltip>
             {this.icon?.length ? (
-              <sy-icon size="medium" innerHTML={this.icon}></sy-icon>
+              <sy-icon size="medium" svgMarkup={this.icon}></sy-icon>
             ) : null}
             <span class="item-content" innerHTML={this.textTerm}></span>
             {this.tagMessage?.length ? (
@@ -351,25 +345,38 @@ export class SyTreeItem {
     }
   }
 
-  private handleOutsideClick = (_event: any) => {
-    // Can be used for cleanup if needed
-  };
+  private updateLevelClass() {
+    Array.from(this.host.classList)
+      .filter(className => /^level-\d+$/.test(className))
+      .forEach(className => this.host.classList.remove(className));
+    this.host.classList.add(`level-${this.level}`);
+  }
+
+  private escapeHtml(value: string) {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   private renderLabelWithHighlight(label: string, searchTerm: string) {
     if (!searchTerm) {
-      this.textTerm = label;
+      this.textTerm = this.escapeHtml(label).replace(/ /g, '&nbsp;');
       return;
     }
 
-    const escapedSearchTerm = searchTerm.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const safeLabel = this.escapeHtml(label);
+    const escapedSearchTerm = this.escapeHtml(searchTerm).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const regex = new RegExp(`(${escapedSearchTerm})`, 'gi');
 
     let result = '';
     let lastIndex = 0;
     let match;
 
-    while ((match = regex.exec(label)) !== null) {
-      const beforeMatch = label.substring(lastIndex, match.index);
+    while ((match = regex.exec(safeLabel)) !== null) {
+      const beforeMatch = safeLabel.substring(lastIndex, match.index);
       const preservedSpace = beforeMatch.replace(/ /g, '&nbsp;');
 
       const matchedText = match[0].replace(/ /g, '&nbsp;');
@@ -379,8 +386,8 @@ export class SyTreeItem {
       lastIndex = regex.lastIndex;
     }
 
-    if (lastIndex < label.length) {
-      const remainingText = label.substring(lastIndex);
+    if (lastIndex < safeLabel.length) {
+      const remainingText = safeLabel.substring(lastIndex);
       const preservedSpace = remainingText.replace(/ /g, '&nbsp;');
       result += preservedSpace;
     }

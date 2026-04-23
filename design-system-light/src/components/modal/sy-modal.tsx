@@ -46,7 +46,7 @@ export class SyModal {
   private minHeight: number = 1;
 
   connectedCallback() {
-    document.addEventListener('keydown', this.handleKeydown.bind(this));
+    document.addEventListener('keydown', this.handleKeydown);
   }
 
   componentWillLoad() {
@@ -117,7 +117,7 @@ export class SyModal {
   }
 
   disconnectedCallback() {
-    document.removeEventListener('keydown', this.handleKeydown.bind(this));
+    document.removeEventListener('keydown', this.handleKeydown);
     this.removeModal();
 
     // Clean up MutationObserver
@@ -188,7 +188,7 @@ export class SyModal {
   }
 
   private appendToRoot = () => {
-    if (!this.host.isConnected || !this.addedToBody) {
+    if (this.host.isConnected && !this.addedToBody) {
       document.body.appendChild(this.host);
       this.addedToBody = true;
 
@@ -546,7 +546,7 @@ export class SyModal {
                 <sy-icon
                   size="large"
                   onClick={this.handleMaximized}
-                  innerHTML={maximizeIcon}
+                  svgMarkup={maximizeIcon}
                 />
               ) : null}
 
@@ -554,7 +554,7 @@ export class SyModal {
                 <sy-icon
                   size="large"
                   onClick={this.handleClose}
-                  innerHTML={closeIcon}
+                  svgMarkup={closeIcon}
                 />
               ) : null}
             </div>
@@ -596,6 +596,10 @@ export class SyModal {
               <div class="resize-handle bottom-left" onMouseDown={this.onResizeStart}></div>
               <div class="resize-handle top-right" onMouseDown={this.onResizeStart}></div>
               <div class="resize-handle top-left" onMouseDown={this.onResizeStart}></div>
+              <div class="resize-handle top" onMouseDown={this.onResizeStart}></div>
+              <div class="resize-handle bottom" onMouseDown={this.onResizeStart}></div>
+              <div class="resize-handle left" onMouseDown={this.onResizeStart}></div>
+              <div class="resize-handle right" onMouseDown={this.onResizeStart}></div>
             </div>
           ) : null}
         </div>

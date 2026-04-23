@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as TextStories from './sy-avatar-text.stories';
+
+<Meta of={TextStories} />
+
+# Text
+
+The `text` attribute extracts initials from the provided text (e.g., "John Doe" → "JD").
+
+<Canvas of={TextStories.Default} />
+<Controls of={TextStories.Default} />

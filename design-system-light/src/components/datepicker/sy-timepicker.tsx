@@ -46,16 +46,47 @@ export class SyTimePicker {
     if (this.second !== this.internalSecond) this.internalSecond = this.second;
   }
   
+  private visibilityObserver?: IntersectionObserver;
+
   componentDidLoad() {
     this.updateSelectedTime();
     this.cacheColumnRefs();
+    // Initial scroll attempt — if the picker is being rendered hidden
+    // (inside a just-opened popup), `offsetHeight` is 0 and the math
+    // collapses to scrollTop = 0. Watch for the timepicker becoming
+    // visible and re-attempt then.
     this.scrollToSelected();
+    this.watchForVisibility();
   }
 
   componentDidUpdate() {
     this.updateSelectedTime();
     this.cacheColumnRefs();
     this.scrollToSelected();
+  }
+
+  disconnectedCallback() {
+    this.visibilityObserver?.disconnect();
+    this.visibilityObserver = undefined;
+  }
+
+  private watchForVisibility() {
+    if (typeof IntersectionObserver === 'undefined') return;
+    // When the timepicker transitions from 0 intersection ratio (hidden)
+    // to > 0 (popup opened), its columns finally have a non-zero height
+    // and we can snap to the selected row. Disconnect after one hit.
+    this.visibilityObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting && entry.intersectionRatio > 0) {
+          this.cacheColumnRefs();
+          this.scrollToSelected();
+          this.visibilityObserver?.disconnect();
+          this.visibilityObserver = undefined;
+          break;
+        }
+      }
+    });
+    this.visibilityObserver.observe(this.host);
   }
 
   render() {
@@ -174,24 +205,26 @@ export class SyTimePicker {
   }
 
   private scrollToIndex(column: HTMLElement, index: number) {
-    // Find the first item to calculate its height
-    const firstItem = column.querySelector('.time-item') as HTMLElement;
+    const firstItem = column.querySelector('.time-item') as HTMLElement | null;
+    if (!firstItem) return;
 
-    if (!firstItem) {
-      console.error('No time-item found in the column.');
-      return;
-    }
-
-    // Calculate the height of an item
-    const itemHeight = firstItem.offsetHeight;
-
-    // Calculate the total scroll position
-    const totalHeight = itemHeight * index;
-
-    // Ensure the column is set to scroll
-    column.scrollTo({
-      top: totalHeight,
-      behavior: 'smooth'
-    });
+    const attempt = (remainingRetries: number) => {
+      const itemHeight = firstItem.offsetHeight;
+      // If the column hasn't been laid out yet (hidden popup, display:none
+      // ancestor, etc.) offsetHeight is 0 — retry on the next frame until
+      // the column actually has height, or we run out of retries.
+      if (itemHeight <= 0) {
+        if (remainingRetries > 0) {
+          requestAnimationFrame(() => attempt(remainingRetries - 1));
+        }
+        return;
+      }
+      const top = itemHeight * index;
+      // `scrollTop` is more reliable than `scrollTo({ behavior: 'smooth' })`
+      // on a just-shown container — smooth animation from the current
+      // scrollTop (often 0) can race with the popup's own transition.
+      column.scrollTop = top;
+    };
+    attempt(20);
   }
 }

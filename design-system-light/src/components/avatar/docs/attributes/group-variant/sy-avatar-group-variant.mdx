@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as VariantStories from './sy-avatar-group-variant.stories';
+
+<Meta of={VariantStories} />
+
+# Variant (Group)
+
+The `variant` attribute switches the layout between `stack` (overlapping circles) and `grid` (separate tiles).
+
+<Canvas of={VariantStories.Default} />
+<Controls of={VariantStories.Default} />

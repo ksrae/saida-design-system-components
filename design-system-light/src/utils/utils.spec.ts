@@ -1,19 +1,24 @@
-// import { format } from './utils';
+import { fnAssignPropFromAlias } from './utils';
 
-// describe('format', () => {
-//   it('returns empty string for no names defined', () => {
-//     expect(format(undefined, undefined, undefined)).toEqual('');
-//   });
+describe('fnAssignPropFromAlias', () => {
+	it('reads boolean aliases when the attribute is present without a value', () => {
+		const host = document.createElement('div') as any;
+		host.setAttribute('parent-disabled', '');
 
-//   it('formats just first names', () => {
-//     expect(format('Joseph', undefined, undefined)).toEqual('Joseph');
-//   });
+		expect(fnAssignPropFromAlias(host, 'parent-disabled')).toBe(true);
+	});
 
-//   it('formats first and last names', () => {
-//     expect(format('Joseph', undefined, 'Publique')).toEqual('Joseph Publique');
-//   });
+	it('parses numeric aliases into numbers', () => {
+		const host = document.createElement('div') as any;
+		host.setAttribute('page-size', '20');
 
-//   it('formats first, middle and last names', () => {
-//     expect(format('Joseph', 'Quincy', 'Publique')).toEqual('Joseph Quincy Publique');
-//   });
-// });
+		expect(fnAssignPropFromAlias<number>(host, 'page-size')).toBe(20);
+	});
+
+	it('falls back to camelCase aliases when needed', () => {
+		const host = document.createElement('div') as any;
+		host.setAttribute('currentDisabledStatus', 'true');
+
+		expect(fnAssignPropFromAlias(host, 'current-disabled-status')).toBe(true);
+	});
+});

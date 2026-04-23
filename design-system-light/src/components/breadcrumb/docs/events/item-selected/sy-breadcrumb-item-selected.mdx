@@ -1,0 +1,18 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ItemSelectedStories from './sy-breadcrumb-item-selected.stories';
+
+<Meta of={ItemSelectedStories} />
+
+# Item Selected
+
+Each `<sy-breadcrumb-item>` emits its own `selected` event when clicked (unless it is `disabled`). The event's `detail` is the clicked item element.
+
+```js
+document.querySelectorAll('sy-breadcrumb-item').forEach((item) => {
+  item.addEventListener('selected', (e) => {
+    console.log('selected:', e.detail.innerText);
+  });
+});
+```
+
+<Canvas of={ItemSelectedStories.Default} />

@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { SyBreadcrumbProps, BreadCrumb } from './sy-breadcrumb.main';
-import { h } from '@stencil/core';
 import { clearElements } from '../../clear-element';
 
 const breadcrumbMeta: Meta<SyBreadcrumbProps> = {
@@ -15,7 +14,7 @@ const breadcrumbMeta: Meta<SyBreadcrumbProps> = {
     separator: {
       control: 'radio',
       options : ['slash', 'arrow'],
-      description: 'Changes the separator type.',
+      description: 'Changes the separator type of the breadcrumb.',
       table: {
         category: 'Parameter',
         defaultValue : {summary: 'slash'},
@@ -32,12 +31,11 @@ const breadcrumbMeta: Meta<SyBreadcrumbProps> = {
     },
     selected: {
       type: 'function',
-      description: 'Triggered when the breadcrumb is selected.',
+      description: 'Triggered when a breadcrumb item is selected. Bubbles from `<sy-breadcrumb-item>`.',
       table: {
         category: 'Callback',
         type: {
           summary: `.addEventListener('selected', (e) => {})`,
-
         },
       }
     },

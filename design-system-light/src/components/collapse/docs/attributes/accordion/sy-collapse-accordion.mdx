@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as AccordionStories from './sy-collapse-accordion.stories';
+
+<Meta of={AccordionStories} />
+
+# Accordion
+
+The `accordion` attribute restricts only one panel to be open at a time.
+
+<Canvas of={AccordionStories.Default} />
+<Controls of={AccordionStories.Default} />

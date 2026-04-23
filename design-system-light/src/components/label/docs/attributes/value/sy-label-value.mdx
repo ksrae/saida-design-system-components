@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ValueStories from './sy-label-value.stories';
+
+<Meta of={ValueStories} />
+
+# Value
+
+The `value` attribute is the label text; `valuePosition` determines whether it appears on the `left` or `right` of the slotted input.
+
+<Canvas of={ValueStories.Default} />
+<Controls of={ValueStories.Default} />

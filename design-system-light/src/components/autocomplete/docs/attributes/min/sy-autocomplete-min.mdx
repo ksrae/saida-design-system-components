@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as MinStories from './sy-autocomplete-min.stories';
+
+<Meta of={MinStories} />
+
+# Min
+
+The `min` attribute sets the minimum number of characters required before the suggestion list appears.
+The default is `0`, meaning suggestions show immediately on focus.
+
+<Canvas of={MinStories.Default} />
+<Controls of={MinStories.Default} />

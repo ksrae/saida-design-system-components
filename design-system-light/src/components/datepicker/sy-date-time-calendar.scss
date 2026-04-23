@@ -1,20 +1,31 @@
 :host {
-    .datetime-calendar-container {
-      display:flex;
-      flex-grow: 1;
-      box-sizing:border-box;
-      width: auto;
-      .calendar-footer{
-        display: flex;
-        height:37px;
-      }      
+    /* datetime variant: calendar on the left, time picker on the right */
+    .datetime-container {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      box-sizing: border-box;
     }
-    .time-picker-container {
+
+    .datetime-calendar-container {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
       box-sizing: border-box;
-      width:160px;
+      width: auto;
+      .calendar-footer {
+        display: flex;
+        height: 37px;
+      }
+    }
+    .time-picker-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 0;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      width: 160px;
+      border-left: 1px solid var(--date-time-picker-calendar-container-body-border-enabled);
     }
     .time-section{
       box-sizing:border-box;

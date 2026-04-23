@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ReadonlyStories from './sy-colorpicker-readonly.stories';
+
+<Meta of={ReadonlyStories} />
+
+# Readonly
+
+The `readonly` attribute displays the current color but prevents the user from changing it.
+
+<Canvas of={ReadonlyStories.Default} />
+<Controls of={ReadonlyStories.Default} />

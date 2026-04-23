@@ -224,11 +224,11 @@ export const Default: StoryObj<SyModalProps> = {
     slotBody:`
       <div slot="body">Body Content
       <sy-flex align="start" direction="vertical" columngap="medium" rowgap="medium">
-        <div>Click Ok to confirm, click cancel to reject.</div>
-        <sy-select>
-          <sy-option value="value1" label="option1"></sy-option>
-          <sy-option value="value2" label="option2"></sy-option>
-          <sy-option value="value3" label="option3"></sy-option>
+        <div>Click Ok to confirm, click cancel to reject. Open the select to verify its popup stays above the dialog layer.</div>
+        <sy-select placeholder="Choose an option">
+          <sy-option value="value1" label="Option 1"></sy-option>
+          <sy-option value="value2" label="Option 2"></sy-option>
+          <sy-option value="value3" label="Option 3"></sy-option>
         </sy-select>
       </sy-flex>
       </div>`,

@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ValueStories from './sy-colorpicker-value.stories';
+
+<Meta of={ValueStories} />
+
+# Value
+
+The `value` attribute sets the initial color shown by the colorpicker. Accepts hex, rgb, or hsb strings.
+
+<Canvas of={ValueStories.Default} />
+<Controls of={ValueStories.Default} />

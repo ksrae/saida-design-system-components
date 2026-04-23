@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DateNamesStories from './sy-datepicker-datenames.stories';
+
+<Meta of={DateNamesStories} />
+
+# Date Names
+
+The `dateNames` attribute overrides the weekday labels shown above the calendar. Provide a comma-separated list starting from Sunday.
+
+<Canvas of={DateNamesStories.Default} />
+<Controls of={DateNamesStories.Default} />

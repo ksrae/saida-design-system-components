@@ -10,7 +10,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true,
 })
 export class SyBreadcrumbItem {
-  @Element() host: HTMLSyBreadcrumbItemElement;
+  @Element() host!: HTMLSyBreadcrumbItemElement;
 
   @Prop({ reflect: true }) active: boolean = false;
   @Prop({ reflect: true }) disabled: boolean = false;
@@ -24,7 +24,7 @@ export class SyBreadcrumbItem {
     eventName: 'selected',
     composed: true,
     bubbles: true,
-  }) selected: EventEmitter<HTMLSyBreadcrumbItemElement>; // 이벤트 타입을 HTMLElement로 명확히 함
+  }) selected!: EventEmitter<HTMLSyBreadcrumbItemElement>; // 이벤트 타입을 HTMLElement로 명확히 함
 
   @Method()
   async forceUpdate() {
@@ -68,7 +68,7 @@ export class SyBreadcrumbItem {
       </span>,
       !this.isLast && (
         <span class="separator">
-          <sy-icon size="xsmall" innerHTML={finalSeparator === 'arrow' ? arrowIcon : slashIcon}></sy-icon>
+            <sy-icon size="xsmall" svgMarkup={finalSeparator === 'arrow' ? arrowIcon : slashIcon}></sy-icon>
         </span>
       )
     ];

@@ -1,0 +1,16 @@
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import { TreeNodes } from '../../sy-tree.main';
+import treeMeta from '../../sy-tree.stories';
+
+const meta: Meta = {
+  title: 'Tree/Attributes/Nodes',
+  component: 'sy-tree',
+  tags: [],
+  render: (args) => TreeNodes(args as { nodes: any[] }),
+  argTypes: { nodes: treeMeta?.argTypes?.nodes },
+  args: { nodes: [] },
+};
+
+export default meta;
+type Story = StoryObj;
+export const Default: Story = {};

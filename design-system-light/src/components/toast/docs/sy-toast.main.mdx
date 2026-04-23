@@ -1,0 +1,19 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ToastStories from './sy-toast.stories';
+import * as ToastItemStories from './sy-toast-item.stories';
+
+<Meta of={ToastStories} />
+
+# Toast
+
+Transient notification messages. Use `sy-toast` as a container that programmatically creates `sy-toast-item` children via its `createToast()` / `createSuccessToast()` / etc. methods.
+
+## Toast
+
+<Canvas of={ToastStories.Default} />
+<Controls of={ToastStories.Default} />
+
+## Toast Item
+
+<Canvas of={ToastItemStories.Default} />
+<Controls of={ToastItemStories.Default} />

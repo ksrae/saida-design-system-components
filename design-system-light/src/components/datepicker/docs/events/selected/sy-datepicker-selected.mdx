@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as SelectedStories from './sy-datepicker-selected.stories';
+
+<Meta of={SelectedStories} />
+
+# Selected
+
+The `selected` event fires when a date is picked from the calendar. For `range` variant the `detail` carries `rangestart` and `rangeend` instead of a single date.
+
+<Canvas of={SelectedStories.Default} />
+<Controls of={SelectedStories.Default} />

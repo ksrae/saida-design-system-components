@@ -1,0 +1,19 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as StepsStories from './sy-steps.stories';
+import * as StepStories from './sy-step.stories';
+
+<Meta of={StepsStories} />
+
+# Steps
+
+A wizard/navigation strip showing progress through a series of steps, horizontal or vertical, with statuses (finish/current/wait/error).
+
+## Steps
+
+<Canvas of={StepsStories.Default} />
+<Controls of={StepsStories.Default} />
+
+## Step
+
+<Canvas of={StepStories.Default} />
+<Controls of={StepStories.Default} />

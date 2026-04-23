@@ -1,0 +1,15 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ItemActiveStories from './sy-breadcrumb-item-active.stories';
+
+<Meta of={ItemActiveStories} />
+
+# Item Active
+
+Add the `active` attribute to a `<sy-breadcrumb-item>` to mark it as the current page in the trail. Active items are styled to indicate the user's location in the hierarchy.
+
+```html
+<sy-breadcrumb-item active>Current Page</sy-breadcrumb-item>
+```
+
+<Canvas of={ItemActiveStories.Default} />
+<Controls of={ItemActiveStories.Default} />

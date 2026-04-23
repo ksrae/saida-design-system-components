@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as TriggerStories from './sy-autocomplete-trigger.stories';
+
+<Meta of={TriggerStories} />
+
+# Trigger
+
+The `trigger` attribute controls when the suggestion list opens.
+
+- `focus` (default): Opens the list as soon as the input receives focus.
+- `input`: Opens the list only after the user starts typing.
+
+<Canvas of={TriggerStories.Default} />
+<Controls of={TriggerStories.Default} />

@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ChangedStories from './sy-checkbox-changed.stories';
+
+<Meta of={ChangedStories} />
+
+# changed
+
+The `changed` event fires whenever the checked state toggles. Detail: `{ value, isValid, checked, indeterminate }`.
+
+<Canvas of={ChangedStories.Default} />

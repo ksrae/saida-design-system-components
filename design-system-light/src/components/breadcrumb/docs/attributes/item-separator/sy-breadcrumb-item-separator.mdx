@@ -1,0 +1,20 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ItemSeparatorStories from './sy-breadcrumb-item-separator.stories';
+
+<Meta of={ItemSeparatorStories} />
+
+# Item Separator
+
+Each `<sy-breadcrumb-item>` can override the separator inherited from its parent `<sy-breadcrumb>` via the `separator` attribute. The separator is rendered **after** the item (between it and the next item), so overriding it on a single item only affects that one gap.
+
+In the example below, the parent uses `slash`, but item 1's `separator` is overridden — only the separator between item 1 and item 2 changes.
+
+```html
+<sy-breadcrumb separator="slash">
+  <sy-breadcrumb-item separator="arrow">item 1</sy-breadcrumb-item>
+  <sy-breadcrumb-item>item 2</sy-breadcrumb-item>
+</sy-breadcrumb>
+```
+
+<Canvas of={ItemSeparatorStories.Default} />
+<Controls of={ItemSeparatorStories.Default} />

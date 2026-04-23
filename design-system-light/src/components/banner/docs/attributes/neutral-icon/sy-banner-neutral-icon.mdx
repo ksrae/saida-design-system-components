@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as NeutralIconStories from './sy-banner-neutral-icon.stories';
+
+<Meta of={NeutralIconStories} />
+
+# Neutral Icon
+
+The `neutralIcon` attribute accepts a custom SVG string; it only renders when `variant="neutral"` and `showIcon` is true.
+
+<Canvas of={NeutralIconStories.Default} />
+<Controls of={NeutralIconStories.Default} />

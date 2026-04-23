@@ -1,0 +1,19 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DisableStatusStories from './sy-avatar-disable-status.stories';
+
+<Meta of={DisableStatusStories} />
+
+# disableStatus
+
+The `disableStatus` event fires whenever the `disabled` prop changes.
+The event detail contains `{ disabled: boolean }`.
+
+```js
+const avatar = document.querySelector('sy-avatar');
+avatar.addEventListener('disableStatus', (e) => {
+  console.log(e.detail.disabled);
+});
+```
+
+<Canvas of={DisableStatusStories.Default} />
+<Controls of={DisableStatusStories.Default} />

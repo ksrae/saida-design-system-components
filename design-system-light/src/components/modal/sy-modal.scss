@@ -151,6 +151,38 @@
         cursor: nw-resize;
     }
 
+    .resize-handle.top {
+        left: 15px;
+        top: 0;
+        width: calc(100% - 30px);
+        height: 8px;
+        cursor: n-resize;
+    }
+
+    .resize-handle.bottom {
+        left: 15px;
+        bottom: 0;
+        width: calc(100% - 30px);
+        height: 8px;
+        cursor: s-resize;
+    }
+
+    .resize-handle.left {
+        left: 0;
+        top: 15px;
+        width: 8px;
+        height: calc(100% - 30px);
+        cursor: w-resize;
+    }
+
+    .resize-handle.right {
+        right: 0;
+        top: 15px;
+        width: 8px;
+        height: calc(100% - 30px);
+        cursor: e-resize;
+    }
+
     // 모달 리사이징 시 footer 위치 유지 및 body 크기 조정
     .modal-container {
         display: flex;

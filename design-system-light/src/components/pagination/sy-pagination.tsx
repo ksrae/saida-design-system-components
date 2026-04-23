@@ -26,13 +26,13 @@ export class SyPagination {
   // pageSizeOptionsStr을 배열로 변환하는 computed property
   private get pageSizeOptionList(): number[] {
     if (!this.pageSizeOptions) return [];
-    
+
     const numbers = this.pageSizeOptions.split(',')
       .map(num => num.trim())
       .filter(num => num !== '')
       .map(num => parseInt(num, 10))
       .filter(num => !isNaN(num));
-    
+
     return numbers.length > 0 ? numbers : [];
   }
 
@@ -44,22 +44,22 @@ export class SyPagination {
     const activePageValue = fnAssignPropFromAlias(this.host, 'active-page');
     const pageSizeValue = fnAssignPropFromAlias(this.host, 'page-size');
     const totalItemsValue = fnAssignPropFromAlias(this.host, 'total-items');
-    
+
     // 숫자 변환 시 기본값 보장
     if (activePageValue !== null && activePageValue !== undefined) {
       const parsedActivePage = Number(activePageValue);
       this.activePage = !isNaN(parsedActivePage) && parsedActivePage > 0 ? parsedActivePage : 1;
     }
-    
+
     this.hideonSingle = fnAssignPropFromAlias(this.host, 'hideon-single') ?? this.hideonSingle;
-    
+
     if (pageSizeValue !== null && pageSizeValue !== undefined) {
       const parsedPageSize = Number(pageSizeValue);
       this.pageSize = !isNaN(parsedPageSize) && parsedPageSize > 0 ? parsedPageSize : 10;
     }
-    
+
     this.pageSizeOptions = fnAssignPropFromAlias(this.host, 'page-size-options') ?? this.pageSizeOptions;
-    
+
     if (totalItemsValue !== null && totalItemsValue !== undefined) {
       const parsedTotalItems = Number(totalItemsValue);
       this.totalItems = !isNaN(parsedTotalItems) && parsedTotalItems >= 0 ? parsedTotalItems : 0;
@@ -88,10 +88,10 @@ export class SyPagination {
   handleOutsideClick(e: Event) {
     const target = e.target as HTMLElement;
     const selectElement = this.host.querySelector('sy-select');
-    
+
     // pagination 외부를 클릭한 경우에만 select를 닫음
     if (selectElement && !this.host.contains(target)) {
-      (selectElement as any).isOpen = false;
+      (selectElement as HTMLSySelectElement).closeDropdown?.();
     }
   }
 
@@ -173,9 +173,7 @@ export class SyPagination {
 
     return (
       <div class="pagination-wrapper">
-        {this.total && (
-          <span class="page-info">Total {this.totalItems} Items</span>
-        )}
+        <div class="pagination-row">
         <ul class="pagination">
           {/* previous */}
           <li
@@ -201,7 +199,7 @@ export class SyPagination {
           </li>
 
           {this.renderPages()}
-          
+
           {this.totalPages > 1 && (
             <li
               class={{
@@ -213,7 +211,7 @@ export class SyPagination {
               {this.totalPages}
             </li>
           )}
-          
+
           {/* next */}
           <li
             class={{
@@ -228,7 +226,7 @@ export class SyPagination {
             </sy-icon>
           </li>
         </ul>
-        
+
         {this.pageSizeOptionList?.length > 0 && (
           <div class="page-size-selector">
             <sy-select
@@ -245,7 +243,7 @@ export class SyPagination {
             </sy-select>
           </div>
         )}
-        
+
         {this.jumper && (
           <div class="jumper">
             <label htmlFor="jumper" class="jumper-label">Go to</label>
@@ -257,6 +255,12 @@ export class SyPagination {
               disabled={this.disabled}
             ></sy-input-number>
           </div>
+        )}
+        </div>
+        {/* Total label goes BELOW the pagination row per the standard
+            UI convention (page info beneath the pager, not to its left). */}
+        {this.total && (
+          <span class="page-info">Total {this.totalItems} Items</span>
         )}
       </div>
     );

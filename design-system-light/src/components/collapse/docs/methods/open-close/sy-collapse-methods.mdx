@@ -1,0 +1,18 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodsStories from './sy-collapse-methods.stories';
+
+<Meta of={MethodsStories} />
+
+# openAll() / closeAll() / openPanel(i) / closePanel(i)
+
+Public methods to programmatically control panel state.
+
+```js
+const elem = document.querySelector('sy-collapse');
+elem.openAll();
+elem.closeAll();
+elem.openPanel(1);
+elem.closePanel(1);
+```
+
+<Canvas of={MethodsStories.Default} />

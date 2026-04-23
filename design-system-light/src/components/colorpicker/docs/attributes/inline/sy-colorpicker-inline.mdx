@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as InlineStories from './sy-colorpicker-inline.stories';
+
+<Meta of={InlineStories} />
+
+# Inline
+
+The `inline` attribute renders the colorpicker content inline instead of inside a popover.
+
+<Canvas of={InlineStories.Default} />
+<Controls of={InlineStories.Default} />

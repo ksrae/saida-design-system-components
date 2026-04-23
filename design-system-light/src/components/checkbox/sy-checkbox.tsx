@@ -68,7 +68,9 @@ export class SyCheckbox {
   componentWillLoad() {
     // Initialize state before first render to avoid extra re-renders
     this.renderIndeterminate = this.indeterminate;
-    this.isValid = !(this.required && !this.checked && !this.indeterminate);
+    // Ensure the form's internals reflect required/unchecked state on first render
+    // so `form.checkValidity()` fails before the user has interacted.
+    this.updateValidityState();
   }
   connectedCallback() {
     if (this.hostElement.attachInternals && !this.internals) {
@@ -237,16 +239,16 @@ export class SyCheckbox {
 
   private updateValidityState() {
     if (this.validStatus === 'custom' && !this.isValid) {
-      this.internals.setValidity({ customError: true }, "Custom validation error");
+      this.internals?.setValidity({ customError: true }, "Custom validation error");
       return;
     }
     const isValid = !(this.required && !this.checked && !this.indeterminate);
     this.isValid = isValid;
     this.validStatus = isValid ? "" : "valueMissing";
     if (!isValid) {
-      this.internals.setValidity({ valueMissing: true }, this.getErrorMessage('valueMissing'));
+      this.internals?.setValidity({ valueMissing: true }, this.getErrorMessage('valueMissing'));
     } else {
-      this.internals.setValidity({});
+      this.internals?.setValidity({});
     }
   }
 

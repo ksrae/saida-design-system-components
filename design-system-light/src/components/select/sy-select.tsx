@@ -22,6 +22,8 @@ export class SySelect {
   private inputEl: HTMLInputElement;
   private searchTimeout: any;
   private isComposing: boolean = false;
+  private boundDocumentKeydown = (event: KeyboardEvent) => this.handleDocumentKeydown(event);
+  private boundUpdatePopupPosition = () => this.updatePopupPosition();
 
   @Event() opened: EventEmitter<void>;
   @Event() removed: EventEmitter<any>;
@@ -70,16 +72,16 @@ export class SySelect {
 
   connectedCallback() {
     document.addEventListener('click', this.handleOutsideClick);
-    document.addEventListener('keydown', this.handleDocumentKeydown.bind(this));
+    document.addEventListener('keydown', this.boundDocumentKeydown);
     this.initialSelectedOptions = [...this.selectedOptions];
     this.formSubmitListener();
   }
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleOutsideClick);
-    document.removeEventListener('keydown', this.handleDocumentKeydown.bind(this));
-    window.removeEventListener('resize', this.updatePopupPosition.bind(this));
-    window.removeEventListener('scroll', this.updatePopupPosition.bind(this), true);
+    document.removeEventListener('keydown', this.boundDocumentKeydown);
+    window.removeEventListener('resize', this.boundUpdatePopupPosition);
+    window.removeEventListener('scroll', this.boundUpdatePopupPosition, true);
     this.formSubmitListenerRemover();
 
     if (this.resizeObserver) {
@@ -100,10 +102,11 @@ export class SySelect {
 
     this.isValid = true;
     this.validStatus = '';
-    this.updatePopupPosition();
+  }
 
-    window.addEventListener('resize', this.updatePopupPosition.bind(this));
-    window.addEventListener('scroll', this.updatePopupPosition.bind(this), true);
+  componentDidLoad() {
+    window.addEventListener('resize', this.boundUpdatePopupPosition);
+    window.addEventListener('scroll', this.boundUpdatePopupPosition, true);
 
     const selectContainer = this.host.querySelector('.select-container');
     if (selectContainer) {
@@ -115,10 +118,7 @@ export class SySelect {
       this.resizeObserver.observe(selectContainer);
     }
   }
-  @Watch('inputValue')
-  watchInputValue(_newValue: string, _oldValue: string) {
-    // inputValue 변경 감지
-  }
+
   @Watch('isOpen')
   onIsOpenChange(newValue: boolean) {
     if (!newValue) {
@@ -239,6 +239,11 @@ export class SySelect {
     if (this.inputEl) {
       this.inputEl.value = '';
     }
+  }
+
+  @Method()
+  async closeDropdown() {
+    this.isOpen = false;
   }
 
   private handleFormSubmit = (e: Event) => {
@@ -495,10 +500,9 @@ export class SySelect {
     const allSelects = Array.from(document.querySelectorAll('sy-select'));
     allSelects.forEach(select => {
       if (select !== this.host) {
-        (select as any).isOpen = false;
+        (select as HTMLSySelectElement).closeDropdown?.();
       }
     });
-    this.optionsContainer = null;
   }
 
   private updateOptions(isSearch: boolean = false, value?: string) {
@@ -1155,7 +1159,6 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
           if (optionClone?.label && optionClone?.textContent && optionClone?.label.trim() === optionClone?.textContent.trim()) {
             optionClone.textContent = '';
           }
-          this.options.push(optionClone);
           optionClone.addEventListener('mouseenter', () => {
             if (!optionClone.disabled && !optionClone.readonly && !optionClone.hide) {
               if (!this.optionsContainer) return;
@@ -1189,7 +1192,6 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
       this.optionsContainer.style.overflow = 'hidden';
       this.optionsContainer.style.boxShadow = '0px 4px 8px rgba(0 0 0 / 0.24)';
       this.optionsContainer.style.borderRadius = '3px';
-      this.optionsContainer.style.zIndex = '500';
     }
   }
 
@@ -1262,7 +1264,7 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
   private handleClear = (e: any) => {
     e.stopPropagation();
     this.removeEmptyOption();
-    const optionList = Array.from(document.querySelectorAll('sy-option'))  as unknown as HTMLSyOptionElement[];
+    const optionList = Array.from(this.host.querySelectorAll('sy-option')) as unknown as HTMLSyOptionElement[];
     this.inputPlaceholder = this.placeholder;
     if (this.inputEl) this.inputEl.value = '';
     this.selectedOptions = [];

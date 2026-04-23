@@ -18,13 +18,22 @@ const autocompleteMeta: Meta<SyAutocompleteProps> = {
         disable: true,
       },
     },
-     caseSensitive: {
+    caseSensitive: {
       control: 'boolean',
       name: 'caseSensitive (case-sensitive)',
-      description : 'Ensures that the matching of user input to suggestions is case-insensitive.',
+      description: 'When true, filtering is case-sensitive — typing "app" will not match "Apple".',
       table: {
         category: 'Parameter',
-        defaultValue: {summary: false as any},
+        defaultValue: { summary: false as any },
+        type: { summary: 'boolean' }
+      }
+    },
+    required: {
+      control: 'boolean',
+      description: 'Marks the field as required for form validation.',
+      table: {
+        category: 'Parameter',
+        defaultValue: { summary: false as any },
         type: { summary: 'boolean' }
       }
     },

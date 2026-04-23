@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-nested.stories';
+
+<Meta of={Stories} />
+
+# Nested Modals
+
+Modals can be nested — a modal opened from inside another modal stacks on top of it.
+
+<Canvas of={Stories.Default} />

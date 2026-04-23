@@ -56,12 +56,10 @@
 
 .card-content {
   overflow: hidden;
-  transition: max-height 0.3s ease-out;
-  max-height: 1000px;
 }
 
 .card-content.collapsed {
-  max-height: 0;
+  display: none;
 }
 
 .card-content > .card-body {

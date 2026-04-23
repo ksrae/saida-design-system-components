@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-hidefooter.stories';
+
+<Meta of={Stories} />
+
+# Hide Footer
+
+The `hideFooter` attribute removes the footer row (the one with Cancel / OK buttons).
+
+<Canvas of={Stories.Default} />
+<Controls of={Stories.Default} />

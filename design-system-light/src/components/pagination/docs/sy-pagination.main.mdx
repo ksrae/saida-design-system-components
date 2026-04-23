@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as PaginationStories from './sy-pagination.stories';
+
+<Meta of={PaginationStories} />
+
+# Pagination
+
+## Definition
+Page navigation with optional page size selector, jumper and total display.
+
+## Example
+<Canvas of={PaginationStories.Default} />
+<Controls of={PaginationStories.Default} />

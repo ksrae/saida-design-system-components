@@ -8,7 +8,7 @@ import { Component, Prop, State, h, Element, Event, EventEmitter, Method } from 
 export class SyGlobalHeader {
   @Element() hostElement: HTMLElement;
 
-  @Prop() title: string;
+  @Prop({ attribute: 'title' }) appTitle: string;
   @Prop({ reflect: true }) sticky: boolean = false;
   @Prop() search: boolean = false;
   @Prop() information: boolean = false;
@@ -19,7 +19,7 @@ export class SyGlobalHeader {
   @State() isCustomLogo: boolean = false;
 
   @Event() changed: EventEmitter;
-  @Event() click: EventEmitter;
+  @Event({ eventName: 'actionClick' }) actionClick: EventEmitter;
   @Event() selected: EventEmitter;
 
   private _parentTabGroup: any | null = null;
@@ -34,7 +34,10 @@ export class SyGlobalHeader {
     this.isCustomLogo = this.hasSlotLogoContents();
 
     // ResizeObserver로 컨테이너 크기 변화 감지
-    const tabsContainer = this.hostElement.querySelector('.header-tabs');
+    // 렌더에서 사용하는 클래스명은 `.header-tab`(단수). 기존 코드에서
+    // `.header-tabs`(복수)로 조회하던 오타 때문에 리사이즈 감지/
+    // overflow 계산이 전혀 동작하지 않았음.
+    const tabsContainer = this.hostElement.querySelector('.header-tab');
     if (tabsContainer) {
       this.resizeObserver = new ResizeObserver(() => {
         this.updateOverflowTabs();
@@ -98,12 +101,12 @@ export class SyGlobalHeader {
 
   private handleClickInformation = (e: Event) => {
     e.stopPropagation();
-    this.click.emit({ type: "information" });
+    this.actionClick.emit({ type: "information" });
   }
 
   private handleClickNotification = (e: Event) => {
     e.stopPropagation();
-    this.click.emit({ type: "notification" });
+    this.actionClick.emit({ type: "notification" });
   }
 
   private handleMenuItemSelect = (e: CustomEvent) => {
@@ -154,8 +157,8 @@ export class SyGlobalHeader {
 
     requestAnimationFrame(() => {
       try {
-        // header-tabs 컨테이너 찾기
-        const tabContainer = this.hostElement.querySelector('.header-tabs');
+        // header-tab 컨테이너 찾기 (render에서 쓰는 실제 클래스는 단수형)
+        const tabContainer = this.hostElement.querySelector('.header-tab');
         if (!tabContainer) {
           this.updateInProgress = false;
           return;
@@ -258,7 +261,7 @@ render() {
           <img src={logo} width="100%" height="100%" />
         </span>
         {hasLogoSlot && <slot name="logo" />}
-        {this.title && <span class="appname">{this.title}</span>}
+        {this.appTitle && <span class="appname">{this.appTitle}</span>}
       </div>
 
       {hasTabsSlot && (

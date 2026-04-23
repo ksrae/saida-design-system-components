@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as SeparatorStories from './sy-breadcrumb-separator.stories';
+
+<Meta of={SeparatorStories} />
+
+# Separator
+
+The `separator` attribute controls the character between items. Values: `slash` (default), `arrow`.
+
+<Canvas of={SeparatorStories.Default} />
+<Controls of={SeparatorStories.Default} />

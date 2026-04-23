@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element, Event, EventEmitter, h, Watch, Method } from '@stencil/core';
+import { Component, Prop, State, Element, Event, EventEmitter, h, Host, Watch, Method } from '@stencil/core';
 
 export interface CollapsePanelChangeDetail {
   active: boolean;
@@ -79,6 +79,30 @@ export class SyCollapsePanel {
     this.emitChange();
   }
 
+  componentDidLoad() {
+    this.applyHostStyle();
+  }
+
+  componentDidRender() {
+    this.applyHostStyle();
+  }
+
+  private applyHostStyle() {
+    const fullheightActive = this.fullheight && this.active;
+    const s = this.host.style;
+    if (fullheightActive) {
+      s.display = 'flex';
+      s.flexDirection = 'column';
+      s.flex = '1';
+      s.minHeight = '0';
+    } else {
+      s.display = '';
+      s.flexDirection = '';
+      s.flex = '';
+      s.minHeight = '';
+    }
+  }
+
   render() {
     const itemClasses = {
       'collapse--item': true,
@@ -94,38 +118,68 @@ export class SyCollapsePanel {
       'collapse--arrow': this.arrow
     };
 
-    const contentStyle = {
-      display: this.active ? 'block' : 'none'
-    };
+    const fullheightActive = this.fullheight && this.active;
 
-    const slotWrapperStyle = {
-      display: 'block',
-      overflow: 'auto',
-      boxSizing: 'border-box'
-    };
+    const itemStyle: { [k: string]: string } = fullheightActive
+      ? { display: 'flex', flexDirection: 'column', flex: '1', minHeight: '0' }
+      : {};
+
+    // Inline styles guarantee the animation runs regardless of Stencil
+    // scoped-CSS selector transforms. In fullheight+active mode we bypass
+    // the grid animation and let flexbox stretch the content instead.
+    const contentStyle: { [k: string]: string } = fullheightActive
+      ? {
+          display: 'block',
+          flex: '1',
+          minHeight: '0',
+          padding: 'var(--spacing-xsmall)',
+          overflow: 'hidden',
+          backgroundColor: 'var(--collapse-default-body-background-enabled)',
+          boxSizing: 'border-box',
+        }
+      : {
+          display: 'grid',
+          gridTemplateRows: this.active ? '1fr' : '0fr',
+          paddingLeft: 'var(--spacing-xsmall)',
+          paddingRight: 'var(--spacing-xsmall)',
+          paddingTop: this.active ? 'var(--spacing-xsmall)' : '0',
+          paddingBottom: this.active ? 'var(--spacing-xsmall)' : '0',
+          transition:
+            'grid-template-rows var(--collapse-transition-duration, 0.3s) var(--collapse-transition-timing, ease-in-out),' +
+            ' padding var(--collapse-transition-duration, 0.3s) var(--collapse-transition-timing, ease-in-out)',
+          overflow: 'hidden',
+          backgroundColor: 'var(--collapse-default-body-background-enabled)',
+          boxSizing: 'border-box',
+        };
+
+    const slotWrapperStyle: { [k: string]: string } = fullheightActive
+      ? { display: 'block', overflow: 'auto', height: '100%', minHeight: '0', boxSizing: 'border-box' }
+      : { display: 'block', overflow: 'hidden', minHeight: '0', boxSizing: 'border-box' };
 
     return (
-      <div class={Object.keys(itemClasses).filter(key => itemClasses[key]).join(' ')}>
+      <Host>
         <div
-          tabindex={0}
-          class={Object.keys(headerClasses).filter(key => headerClasses[key]).join(' ')}
-          aria-disabled={this.disabled ? 'true' : 'false'}
-          onClick={() => this.handleClick()}
+          class={Object.keys(itemClasses).filter(key => itemClasses[key]).join(' ')}
+          style={itemStyle}
         >
-          <div class="collapse--title">
-            <slot name="header"></slot>
+          <div
+            tabindex={0}
+            class={Object.keys(headerClasses).filter(key => headerClasses[key]).join(' ')}
+            aria-disabled={this.disabled ? 'true' : 'false'}
+            onClick={() => this.handleClick()}
+          >
+            <div class="collapse--title">
+              <slot name="header"></slot>
+            </div>
           </div>
-        </div>
 
-        <div
-          class="collapse--content"
-          style={contentStyle}
-        >
-          <div class="collapse--slot-wrapper" style={slotWrapperStyle}>
-            <slot></slot>
+          <div class="collapse--content" style={contentStyle} aria-hidden={this.active ? 'false' : 'true'}>
+            <div class="collapse--slot-wrapper" style={slotWrapperStyle}>
+              <slot></slot>
+            </div>
           </div>
         </div>
-      </div>
+      </Host>
     );
   }
 

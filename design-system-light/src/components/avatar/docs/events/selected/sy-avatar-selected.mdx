@@ -1,0 +1,18 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as SelectedStories from './sy-avatar-selected.stories';
+
+<Meta of={SelectedStories} />
+
+# selected
+
+The `selected` event fires when a clickable avatar is clicked.
+The event detail contains `{ letter, text, icon, image }`.
+
+```js
+const avatar = document.querySelector('sy-avatar');
+avatar.addEventListener('selected', (e) => {
+  console.log(e.detail);
+});
+```
+
+<Canvas of={SelectedStories.Default} />

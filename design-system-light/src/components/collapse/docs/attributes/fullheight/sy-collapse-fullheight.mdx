@@ -1,0 +1,22 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as FullHeightStories from './sy-collapse-fullheight.stories';
+
+<Meta of={FullHeightStories} />
+
+# Full Height
+
+The `fullheight` attribute makes the collapse fill its parent's height and
+stretches the currently open panel to fill the space remaining after the
+other panels' headers. The total size never exceeds the parent container's
+height.
+
+> `fullheight` **only takes effect when `accordion` is also true** — the
+> stretch only makes sense when exactly one panel can be open at a time.
+> If `accordion` is false, `fullheight` is silently ignored.
+
+The parent of `<sy-collapse>` must have a defined height (e.g. `height:
+400px` or a flex chain that resolves) for the full-height layout to
+resolve.
+
+<Canvas of={FullHeightStories.Default} />
+<Controls of={FullHeightStories.Default} />

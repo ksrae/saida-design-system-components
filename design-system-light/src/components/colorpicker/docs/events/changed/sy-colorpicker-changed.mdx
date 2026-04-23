@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ChangedStories from './sy-colorpicker-changed.stories';
+
+<Meta of={ChangedStories} />
+
+# Changed
+
+The `changed` event fires whenever the selected color changes. The event `detail` includes the `value`, `opacity`, and `format` of the color.
+
+<Canvas of={ChangedStories.Default} />

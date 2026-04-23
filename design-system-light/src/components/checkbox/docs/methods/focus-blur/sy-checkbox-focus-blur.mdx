@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as FocusBlurStories from './sy-checkbox-focus-blur.stories';
+
+<Meta of={FocusBlurStories} />
+
+# setFocus() / setBlur()
+
+Programmatic focus/blur methods. The demo also listens to the `focused` and `blured` events.
+
+<Canvas of={FocusBlurStories.Default} />

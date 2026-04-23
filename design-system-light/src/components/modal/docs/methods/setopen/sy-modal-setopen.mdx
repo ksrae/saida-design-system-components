@@ -1,0 +1,14 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-setopen.stories';
+
+<Meta of={Stories} />
+
+# setOpen()
+
+Programmatically opens the modal. Equivalent to setting `open={true}` from outside.
+
+```ts
+modalRef.setOpen();
+```
+
+<Canvas of={Stories.Default} />

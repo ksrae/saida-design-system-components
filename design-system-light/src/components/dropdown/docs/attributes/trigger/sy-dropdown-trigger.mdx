@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as TriggerStories from './sy-dropdown-trigger.stories';
+
+<Meta of={TriggerStories} />
+
+# Trigger
+
+The `trigger` attribute chooses the event that opens the dropdown: `click` or `hover`.
+
+<Canvas of={TriggerStories.Default} />
+<Controls of={TriggerStories.Default} />

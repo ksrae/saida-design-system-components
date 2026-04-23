@@ -1,0 +1,19 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TreeStories from './sy-tree.stories';
+import * as TreeItemStories from './sy-tree-item.stories';
+
+<Meta of={TreeStories} />
+
+# Tree
+
+A hierarchical tree view with optional checkboxes, drag & drop, expand/collapse, and editing.
+
+## Tree
+
+<Canvas of={TreeStories.Default} />
+<Controls of={TreeStories.Default} />
+
+## Tree Item
+
+<Canvas of={TreeItemStories.Default} />
+<Controls of={TreeItemStories.Default} />

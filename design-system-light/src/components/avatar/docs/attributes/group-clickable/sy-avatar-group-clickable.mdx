@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ClickableStories from './sy-avatar-group-clickable.stories';
+
+<Meta of={ClickableStories} />
+
+# Clickable (Group)
+
+When `clickable` is true, clicking any avatar (including the overflow items) emits the `selected` event.
+
+<Canvas of={ClickableStories.Default} />
+<Controls of={ClickableStories.Default} />

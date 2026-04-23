@@ -3,23 +3,20 @@ import { Components } from '../../../components';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 export interface SyCollapsePanelProps extends Components.SyCollapsePanel {
-  slot?: any;
+  slot?: string;
   changed?: (event: CustomEvent<any>) => void;
 }
 
-export const CollapsePanel = ({active, arrow, disabled, ghost, slot}: SyCollapsePanelProps) => {
-  return html`
+export const CollapsePanel = ({ active, arrow, disabled, ghost, slot }: SyCollapsePanelProps) => html`
   <div>
     <sy-collapse-panel
-      ?active=${active}
-      ?arrow=${arrow}
-      ?disabled=${disabled}
-      ?ghost=${ghost}>
-      ${unsafeHTML(slot)}
-    </sy-collapse-panel>
+      ?active=${!!active}
+      ?arrow=${!!arrow}
+      ?disabled=${!!disabled}
+      ?ghost=${!!ghost}
+    >${slot ? unsafeHTML(slot) : ''}</sy-collapse-panel>
   </div>
-  `;
-};
+`;
 
 export const CollapsePanelActive = (args: {active: boolean}) => {
   return html`
@@ -63,30 +60,17 @@ export const CollapsePanelGhost = (args: {ghost: boolean}) => {
 };
 
 export const CollapsePanelChanged = () => {
+  const handle = () => {
+    const out = document.getElementById('changed-message');
+    if (out) out.textContent = 'Panel clicked!';
+  };
   return html`
     <sy-collapse>
-      <sy-collapse-panel>
+      <sy-collapse-panel @changed=${handle}>
         <div slot="header">This is panel header 1</div>
         <div class="content">This is panel content 1</div>
       </sy-collapse-panel>
     </sy-collapse>
-    <p id="changed-message"></p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const panel = document.querySelector('sy-collapse-panel');
-        const messageElement = document.querySelector('#changed-message');
-
-        if (panel) {
-          const handleChanged = (e) => {
-            if (messageElement) {
-              messageElement.textContent = 'Panel clicked!';
-            }
-          };
-
-          panel.addEventListener('changed', handleChanged);
-        }
-      });
-    </script>
+    <p id="changed-message">(idle)</p>
   `;
 };

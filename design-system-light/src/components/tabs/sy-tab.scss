@@ -1,584 +1,163 @@
-/* Tab */
-:root,
-:host {
-    display: inline-block;
-    user-select: none;
-    border-bottom: var(--border-medium) transparent;
-}
+/*
+ * sy-tab uses `shadow: false, scoped: true` — so every `::slotted()` rule
+ * in the legacy stylesheet did nothing. Rewritten using descendant
+ * selectors against sy-tab's light DOM (tab-wrapper > tab-container >
+ * tab-inner > slot contents).
+ */
 
-/* Tab */
-:host(sy-tab) {
-    display: flex;
+/* The host is a flex item inside the parent [slot="tabs"] row. */
+sy-tab {
+    display: inline-flex;
     position: relative;
-    align-items: center;
+    align-items: stretch;
     box-sizing: border-box;
     color: var(--tabs-line-list-text-enabled);
-    border-bottom: none;
+    user-select: none;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+sy-tab .tab-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+}
+
+sy-tab .tab-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    padding: 0 var(--spacing-medium);
+    height: var(--header-medium);
+    min-width: 0;
+    max-width: 100%;
 
-    .tab-wrapper {
-        width: 100%;
+    &.tab-container--small  { height: var(--header-small);  padding: 0 var(--spacing-small); }
+    &.tab-container--medium { height: var(--header-medium); padding: 0 var(--spacing-medium); }
+    &.tab-container--large  { height: var(--header-large);  padding: 0 var(--spacing-large); }
+
+    .tab-inner {
         display: flex;
-    }
-
-    .tab-container {
-        width: 100%;
+        align-items: center;
+        gap: var(--spacing-3xsmall);
+        height: 100%;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: inline-block;
-        width: -webkit-fill-available;
-        align-items: center;
-        display: flex;
-        outline: 0px;
-        box-sizing: border-box;
-        height: var(--header-medium);
-        cursor: pointer;
-        height: 100%;
 
-        .tab-inner {
-            display: flex;
-            align-items: center;
-            flex: 1;
-            height: -webkit-fill-available;
-            gap: var(--spacing-3xsmall);
-
-            &:focus-visible {
-                border-radius: 0;
-                border: var(--border-small) var(--focus-outline);
-                outline: var(--border-small) var(--focus-outline);
-                z-index: 2;
-            }
-
-            slot {
-                display: inline-flex;
-                align-items: center;
-                height: 100%;
-                line-height: normal;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                align-content: center;
-            }
-        }
-
-        &.tab-container--small {
-            height: var(--header-small);
-        }
-
-        &.tab-container--medium {
-            height: var(--header-medium);
-        }
-
-        &.tab-container--large {
-            height: var(--header-large);
-        }
-    }
-}
-
-:host(sy-tab) {
-
-    .tab-position-left,
-    .tab-position-right {
-        margin-right: 0;
-
-        // padding:0 var(--spacing-xsmall);
-        .tab-inner {
-            justify-content: flex-start;
-        }
-    }
-}
-
-:host(sy-tab[active]) {
-    .tab-container--line {
-        position: relative;
-
-        &:after {
-            display: inline-block;
-            position: absolute;
+        &:focus-visible {
+            border: var(--border-small) var(--focus-outline);
+            outline: var(--border-small) var(--focus-outline);
             z-index: 2;
-            content: "";
-            color: var(--tabs-line-list-text-enabled);
-        }
-    }
-
-    .tab-position-top {
-        &:after {
-            bottom: 0px;
-            left: 0px;
-            height: 2px;
-            width: 100%;
-            border-bottom: var(--border-medium) var(--tabs-line-list-border-selected);
-        }
-    }
-
-    .tab-position-bottom {
-        &:after {
-            top: 0px;
-            left: 0px;
-            height: 2px;
-            width: 100%;
-            border-top: var(--border-medium) var(--tabs-line-list-border-selected);
-        }
-    }
-
-    .tab-position-left {
-        &:after {
-            right: 0px;
-            height: 100%;
-            width: 2px;
-            border-right: var(--border-medium) var(--tabs-line-list-border-selected);
-        }
-    }
-
-    .tab-position-right {
-        &:after {
-            left: 0px;
-            height: 100%;
-            width: 2px;
-            border-left: var(--border-medium) var(--tabs-line-list-border-selected);
-        }
-    }
-}
-
-:host(sy-tab[disabled]) {
-    cursor: auto;
-}
-
-/* Tab list closable */
-:host(sy-tab) {
-    .tab-container--line {
-        padding: 0px !important;
-
-        &:hover {
-            sy-icon {
-                color: var(--tabs-line-list-icon-hover);
-            }
         }
 
         sy-icon {
             color: var(--tabs-line-list-icon-enabled);
-        }
-
-        .tab-inner {
-            border: 1px solid transparent;
-
-            sy-icon {
-                color: var(--tabs-line-closable-icon-enabled);
-
-                &:hover {
-                    color: var(--tabs-line-closable-icon-hover);
-                }
-            }
-        }
-
-        &.tab-position-top {
-            margin-right: var(--spacing-xlarge);
-        }
-
-        &.tab-position-bottom {
-            margin-right: var(--spacing-xlarge);
-        }
-
-        &.tab-position-left {
-            margin-bottom: var(--spacing-3xsmall);
-
-            .tab-inner {
-                padding: 0 var(--spacing-xsmall);
-            }
-        }
-
-        &.tab-position-right {
-            margin-bottom: var(--spacing-3xsmall);
-
-            .tab-inner {
-                padding: 0 var(--spacing-xsmall);
-            }
+            flex-shrink: 0;
         }
     }
 }
 
-:host(sy-tab[active]) {
-    .tab-container--line {
-        sy-icon {
-            color: var(--tabs-line-list-icon-hover);
-        }
-
-        .tab-inner {
-            color: var(--tabs-line-list-text-selected);
-
-            sy-icon {
-                color: var(--tabs-line-closable-icon-selected);
-
-                &:hover {
-                    color: var(--tabs-line-closable-icon-hover);
-                }
-            }
-        }
-    }
+/* Hover */
+sy-tab:hover .tab-container {
+    color: var(--tabs-line-list-text-hover);
+    sy-icon { color: var(--tabs-line-list-icon-hover); }
 }
 
-:host(sy-tab) {
-    .tab-container-disabled {
-        color: var(--tabs-line-list-text-disabled);
-        cursor: auto;
+/* Active indicator — 2px accent bar on one edge depending on position */
+sy-tab[active] .tab-container--line {
+    position: relative;
+    color: var(--tabs-line-list-text-selected);
+
+    &::after {
+        content: "";
+        position: absolute;
+        z-index: 2;
         pointer-events: none;
+    }
 
-        .tab-more {
-            color: var(--tabs-line-list-text-disabled);
+    &.tab-position-top::after {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background-color: var(--tabs-line-list-border-selected);
+    }
 
-            sy-icon {
-                color: var(--tabs-line-list-icon-disabled);
-            }
-        }
+    &.tab-position-bottom::after {
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 2px;
+        background-color: var(--tabs-line-list-border-selected);
+    }
 
-        sy-icon {
-            color: var(--line-list-icon-disabled) !important;
-        }
+    &.tab-position-left::after {
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 2px;
+        background-color: var(--tabs-line-list-border-selected);
+    }
+
+    &.tab-position-right::after {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 2px;
+        background-color: var(--tabs-line-list-border-selected);
     }
 }
 
-:host(sy-tab) .tab-container--line ::slotted(sy-icon) {
-    color: --tabs-line-list-icon-enabled;
+/* Card-type tab visuals */
+sy-tab .tab-container--card {
+    border: var(--border-small) var(--tabs-card-list-border-enabeld);
+    background-color: var(--tabs-card-list-background-enabled);
+    color: var(--tabs-card-list-text-enabled);
     margin-right: var(--spacing-3xsmall);
 
-}
+    &:hover {
+        color: var(--tabs-line-list-text-hover);
+        background-color: var(--tabs-card-list-background-hover);
+    }
 
-/* Tab card  */
-:host(sy-tab) {
-    .tab-container--card {
-        display: flex;
-        border: var(--border-small) var(--tabs-card-list-border-enabeld);
-        color: var(--tabs-card-list-text-enabled);
-        background-color: var(--tabs-card-list-background-enabled);
-        gap: var(--spacing-xsmall);
-
-        &:hover {
-            color: var(--tabs-line-list-text-hover);
-            background-color: var(--tabs-card-list-background-hover);
-
-            sy-icon {
-                color: var(--tabs-card-list-icon-hover);
-            }
-        }
-
-        sy-icon {
-            color: var(--tabs-card-list-icon-enabled);
-        }
-
-        .tab-inner {
-            padding: 0px var(--spacing-xsmall);
-            border: 1px solid transparent;
-
-            sy-icon {
-                color: var(--tabs-card-closable-icon-enabled);
-
-                &:hover {
-                    color: var(--tabs-card-closable-icon-hover);
-                }
-            }
-        }
-
-        &.tab-container--small {
-            .tab-inner {
-                padding: 0 var(--spacing-small);
-            }
-        }
-
-        &.tab-container--medium {
-            .tab-inner {
-                padding: 0 var(--spacing-small);
-            }
-        }
-
-        &.tab-container--large {
-            .tab-inner {
-                padding: 0 var(--spacing-medium);
-            }
-        }
-
-        &.tab-position-top {
-            margin-right: var(--spacing-3xsmall);
-            border-top-left-radius: var(--border-radius-medium);
-            border-top-right-radius: var(--border-radius-medium);
-        }
-
-        &.tab-position-bottom {
-            margin-right: var(--spacing-3xsmall);
-            border-bottom-left-radius: var(--border-radius-medium);
-            border-bottom-right-radius: var(--border-radius-medium);
-        }
-
-        &.tab-position-left {
-            margin-bottom: var(--spacing-3xsmall);
-            border-top-left-radius: var(--border-radius-medium);
-            border-bottom-left-radius: var(--border-radius-medium);
-        }
-
-        &.tab-position-right {
-            margin-bottom: var(--spacing-3xsmall);
-            border-top-right-radius: var(--border-radius-medium);
-            border-bottom-right-radius: var(--border-radius-medium);
-        }
-
+    &.tab-position-top {
+        border-top-left-radius: var(--border-radius-medium);
+        border-top-right-radius: var(--border-radius-medium);
+    }
+    &.tab-position-bottom {
+        border-bottom-left-radius: var(--border-radius-medium);
+        border-bottom-right-radius: var(--border-radius-medium);
+    }
+    &.tab-position-left {
+        border-top-left-radius: var(--border-radius-medium);
+        border-bottom-left-radius: var(--border-radius-medium);
+    }
+    &.tab-position-right {
+        border-top-right-radius: var(--border-radius-medium);
+        border-bottom-right-radius: var(--border-radius-medium);
     }
 }
 
-:host(sy-tab[active]) {
-    .tab-wrapper {
-        z-index: 2;
-    }
-
-    .tab-container--card {
-        color: var(--tabs-line-list-text-selected);
-        background-color: var(--tabs-card-list-background-selected);
-        border-bottom: var(--border-small) var(--tabs-card-list-border-enabeld);
-
-        &:after {
-            border: none;
-        }
-
-        sy-icon {
-            color: var(--tabs-card-list-icon-hover);
-        }
-
-        .tab-inner {
-            color: var(--tabs-card-list-text-selected);
-
-            sy-icon {
-                color: var(--tabs-card-closable-icon-selected);
-
-                &:hover {
-                    color: var(--tabs-card-closable-icon-hover);
-                }
-            }
-        }
-
-        &.tab-position-top {
-            border-bottom: var(--border-small) var(--background-default);
-        }
-
-        &.tab-position-bottom {
-            border: var(--border-small) var(--tabs-card-list-border-enabeld);
-            border-top: 1px solid transparent;
-        }
-
-        &.tab-position-left {
-            border: var(--border-small) var(--tabs-card-list-border-enabeld);
-            border-right: 1px solid transparent;
-        }
-
-        &.tab-position-right {
-            border: var(--border-small) var(--tabs-card-list-border-enabeld);
-            border-left: 1px solid transparent;
-        }
-    }
+sy-tab[active] .tab-container--card {
+    background-color: var(--tabs-card-list-background-selected);
+    color: var(--tabs-card-list-text-selected);
 }
 
-:host(sy-tab) {
-    .tab-container--card.tab-container-disabled {
-        color: var(--tabs-card-list-text-disabled);
-        cursor: auto;
-        pointer-events: none;
-
-        .tab-more {
-            button {
-                color: var(--tabs-card-list-icon-disabled);
-            }
-        }
-    }
+/* Disabled */
+sy-tab[disabled] .tab-container,
+sy-tab .tab-container.tab-container-disabled {
+    color: var(--tabs-line-list-text-disabled) !important;
+    cursor: auto !important;
+    pointer-events: none;
 }
 
-
-:host(sy-tab) .tab-container--card ::slotted(sy-icon) {
-    color: --tabs-card-list-icon-enabled;
-    margin-right: var(--spacing-3xsmall);
-}
-
-/* Tab navigation closable */
-
-:host(sy-tab) {
-    .tab-container--navigation {
-        margin: 0px;
-        border-radius: 0px;
-
-        // height: calc(100% + 2px);
-        &:hover {
-            color: var(--tabs-navigation-list-text-hover);
-
-            sy-icon {
-                color: var(--tabs-navigation-list-icon-hover);
-            }
-        }
-
-        &:focus-visible {
-            .tab-inner {
-                border: var(--border-small) var(--focus-outline);
-                outline: var(--border-small) var(--focus-outline);
-                z-index: 2;
-                border-radius: 0px;
-            }
-        }
-
-        sy-icon {
-            color: var(--tabs-navigation-list-icon-enabled);
-        }
-
-        .tab-inner {
-            color: var(--tabs-navigation-list-text-enabled);
-
-            sy-icon {
-                color: var(--tabs-navigation-closable-icon-enabled);
-
-                &:hover {
-                    color: var(--tabs-navigation-closable-icon-hover);
-                }
-            }
-        }
-
-        &.tab-container--small {
-            .tab-inner {
-                padding: var(--spacing-small);
-            }
-        }
-
-        &.tab-container--medium {
-            .tab-inner {
-                padding: var(--spacing-small);
-            }
-        }
-
-        &.tab-container--large {
-            .tab-inner {
-                padding: var(--spacing-medium);
-            }
-        }
-
-        &.tab-container-disabled {
-            &:hover {
-                .tab-inner {
-                    color: var(--tabs-navigation-list-text-selected);
-                    background-color: var(--tabs-navigation-list-background-enabled);
-                }
-            }
-        }
-    }
-}
-
-:host(sy-tab[active]) {
-    .tab-container--navigation {
-        color: var(--tabs-navigation-list-text-selected);
-        background-color: var(--tabs-navigation-list-background-selected);
-
-        sy-icon {
-            color: var(--tabs-navigation-list-icon-hover);
-        }
-
-        .tab-inner {
-            color: var(--tabs-navigation-list-text-selected);
-
-            sy-icon {
-                color: var(--tabs-navigation-closable-icon-selected);
-
-                &:hover {
-                    color: var(--tabs-navigation-closable-icon-hover);
-                }
-            }
-        }
-    }
-}
-
-
-:host(sy-tab) .tab-container--navigation ::slotted(sy-icon) {
-    color: var(--tabs-navigation-list-icon-enabled);
-    margin-right: var(--spacing-3xsmall);
-}
-
-
-
-/* Draggable  */
-:host(sy-tab[dragover="true"]) {
-    .tab-container--line {
-        position: relative;
-        z-index: 2;
-
-        &:before {
-            display: block;
-            content: "";
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            // border:1px dashed var(--tabs-line-list-border-selected);
-            box-sizing: border-box;
-            z-index: 2;
-        }
-    }
-}
-
-:host(sy-tab[dragover="true"][active]) {
-    .tab-container--line {
-        &:before {
-            display: block;
-            content: "";
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        &.tab-position-top {
-            &:before {
-                border-bottom: var(--border-medium) var(--tabs-line-list-border-selected);
-            }
-        }
-
-        &.tab-position-bottom {
-            &:before {
-                border-top: var(--border-medium) var(--tabs-line-list-border-selected);
-            }
-        }
-
-        &.tab-position-left {
-            &:before {
-                border-right: var(--border-medium) var(--tabs-line-list-border-selected);
-            }
-        }
-
-        &.tab-position-right {
-            &:before {
-                border-left: var(--border-medium) var(--tabs-line-list-border-selected);
-            }
-        }
-    }
-
-}
-
-:host(sy-tab[dragover="true"]) {
-    .tab-container--card {
-        box-sizing: border-box;
-        // border:1px dashed var(--tabs-line-list-border-selected);
-        z-index: 2;
-    }
-}
-
-:host(sy-tab[dragover="navigation"]) {
-    .tab-container--card {
-        box-sizing: border-box;
-        // border:1px dashed var(--tabs-line-list-border-selected);
-    }
-}
-
-:host(sy-tab[slot="extra"]) {
-    .tab-container--line {
-        &.tab-position-top {
-            margin-right: 0px;
-        }
-
-        .tab-inner {
-            justify-content: center;
-        }
-    }
-}
-
-:host(sy-tab[slot="extra"]) ::slotted(sy-icon) {
-    margin: 0px;
+/* Dragover visual hint */
+sy-tab[dragover="true"] .tab-container {
+    position: relative;
+    z-index: 2;
 }

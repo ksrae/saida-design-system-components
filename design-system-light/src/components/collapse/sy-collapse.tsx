@@ -1,4 +1,4 @@
-import { Component, Prop, Element, h, Watch, Method } from '@stencil/core';
+import { Component, Prop, Element, h, Host, Watch, Method } from '@stencil/core';
 import { CollapsePanelChangeDetail } from './sy-collapse-panel';
 
 @Component({
@@ -16,11 +16,42 @@ export class SyCollapse {
   @Prop({ reflect: true }) fullheight: boolean = false;
   @Prop() ghost: boolean = false;
 
+  // Effective fullheight only applies when accordion is true — stretching a
+  // single active panel to fill the remaining space only makes sense when
+  // exactly one panel can be open at a time.
+  private get effectiveFullheight(): boolean {
+    return this.fullheight && this.accordion;
+  }
+
   componentDidLoad() {
     this.setupPanels();
 
     if (this.accordion) {
       this.initializeAccordion();
+    }
+    this.applyHostStyle();
+  }
+
+  componentDidRender() {
+    // Reapply host inline style after every render so `effectiveFullheight`
+    // changes flip the flex chain immediately. Done via direct style
+    // manipulation (not <Host style={...}>) to guarantee the styles land on
+    // the element even if Stencil's Host prop wiring misbehaves.
+    this.applyHostStyle();
+  }
+
+  private applyHostStyle() {
+    const s = this.host.style;
+    if (this.effectiveFullheight) {
+      s.display = 'flex';
+      s.flexDirection = 'column';
+      s.height = '100%';
+      s.minHeight = '0';
+    } else {
+      s.display = '';
+      s.flexDirection = '';
+      s.height = '';
+      s.minHeight = '';
     }
   }
 
@@ -29,6 +60,8 @@ export class SyCollapse {
     if (newValue) {
       this.initializeAccordion();
     }
+    // Accordion toggles also flip effective fullheight.
+    this.updatePanelProp('fullheight');
   }
 
   @Watch('disabled')
@@ -56,6 +89,8 @@ export class SyCollapse {
     panels.forEach((panel: any) => {
       if (prop === 'disabled') {
         panel.disabled = panel.hasAttribute('disabled') ? true : this.disabled;
+      } else if (prop === 'fullheight') {
+        panel.fullheight = this.effectiveFullheight;
       } else {
         panel[prop] = (this as any)[prop];
       }
@@ -107,10 +142,23 @@ export class SyCollapse {
       'ghost': this.ghost
     };
 
+    // When effectiveFullheight, the inner panel div becomes a flex column
+    // that takes all remaining space. Host-level flex is set in
+    // applyHostStyle() (called from componentDidRender) to survive
+    // Stencil's scoped-CSS transforms.
+    const panelStyle: { [k: string]: string } = this.effectiveFullheight
+      ? { display: 'flex', flexDirection: 'column', flex: '1', minHeight: '0' }
+      : {};
+
     return (
-      <div class={Object.keys(classes).filter(key => classes[key]).join(' ')}>
-        <slot></slot>
-      </div>
+      <Host>
+        <div
+          class={Object.keys(classes).filter(key => classes[key]).join(' ')}
+          style={panelStyle}
+        >
+          <slot></slot>
+        </div>
+      </Host>
     );
   }
 
@@ -122,7 +170,7 @@ export class SyCollapse {
       panel.borderless = this.borderless;
       panel.ghost = this.ghost;
       panel.disabled = panel.hasAttribute('disabled') ? true : this.disabled;
-      panel.fullheight = this.fullheight;
+      panel.fullheight = this.effectiveFullheight;
 
       // 이벤트 리스너 등록 (한 번만)
       if (!panel._hasCollapseListener) {

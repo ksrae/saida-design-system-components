@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as HideWeekendStories from './sy-datepicker-hideweekend.stories';
+
+<Meta of={HideWeekendStories} />
+
+# Hide Weekend
+
+The `hideWeekend` attribute hides Saturday and Sunday columns from the calendar.
+
+<Canvas of={HideWeekendStories.Default} />
+<Controls of={HideWeekendStories.Default} />

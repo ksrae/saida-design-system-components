@@ -1,0 +1,495 @@
+=== card ===
+--- sy-card.tsx ---
+@Prop({ reflect: true }) collapsible: boolean = false;  ||  @Prop({ reflect: true }) backdrop: boolean = false;
+@Prop({ reflect: true }) backdrop: boolean = false;  ||  
+=== flex ===
+--- sy-flex.tsx ---
+@Prop({ reflect: true }) align: 'start' | 'end' | 'center' | 'stretch' | 'baseline' = 'start';  ||  @Prop({ reflect: true, attribute: 'rowGap', mutable: true }) rowGap: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
+@Prop({ reflect: true, attribute: 'rowGap', mutable: true }) rowGap: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';  ||  @Prop({ reflect: true, attribute: 'columnGap', mutable: true }) columnGap: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
+@Prop({ reflect: true, attribute: 'columnGap', mutable: true }) columnGap: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';  ||  @Prop({ reflect: true }) justify: 'start' | 'center' | 'end' | 'space-between' = 'start';
+@Prop({ reflect: true }) justify: 'start' | 'center' | 'end' | 'space-between' = 'start';  ||  @Prop({ reflect: true }) direction: "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse" = "horizontal";
+@Prop({ reflect: true }) direction: "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse" = "horizontal";  ||  @Prop({ reflect: true }) wrap: 'nowrap' | 'wrap' | 'wrap-reverse' = 'nowrap';
+@Prop({ reflect: true }) wrap: 'nowrap' | 'wrap' | 'wrap-reverse' = 'nowrap';  ||  @Prop({ reflect: true }) padding: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
+@Prop({ reflect: true }) padding: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';  ||  @Prop({ reflect: true }) width: string = '';
+@Prop({ reflect: true }) width: string = '';  ||  @Prop({ reflect: true }) height: string = '';
+@Prop({ reflect: true }) height: string = '';  ||  
+=== global-header ===
+--- sy-global-header.tsx ---
+@Prop({ attribute: 'title' }) appTitle: string;  ||  @Prop({ reflect: true }) sticky: boolean = false;
+@Prop({ reflect: true }) sticky: boolean = false;  ||  @Prop() search: boolean = false;
+@Prop() search: boolean = false;  ||  @Prop() information: boolean = false;
+@Prop() information: boolean = false;  ||  @Prop() notification: boolean = false;
+@Prop() notification: boolean = false;  ||  
+@Event() changed: EventEmitter;  ||  @Event({ eventName: 'actionClick' }) actionClick: EventEmitter;
+@Event({ eventName: 'actionClick' }) actionClick: EventEmitter;  ||  @Event() selected: EventEmitter;
+@Event() selected: EventEmitter;  ||  
+@Method()  ||  async updateOverflowTabs() {
+=== inline-message ===
+--- sy-inline-message.tsx ---
+@Prop() variant: 'info' | 'success' | 'warning' | 'error' = 'info';  ||  @Prop() message: string = '';
+@Prop() message: string = '';  ||  @Prop({ attribute: 'showIcon', mutable: true}) showIcon: boolean = false;
+@Prop({ attribute: 'showIcon', mutable: true}) showIcon: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) open: boolean = false;
+@Prop({ reflect: true, mutable: true }) open: boolean = false;  ||  @Prop() trigger: 'click' | 'focusout' = 'click';
+@Prop() trigger: 'click' | 'focusout' = 'click';  ||  @Prop({ attribute: 'btnLabel', mutable: true }) btnLabel: string = '';
+@Prop({ attribute: 'btnLabel', mutable: true }) btnLabel: string = '';  ||  @Prop() position: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
+@Prop() position: 'top' | 'bottom' | 'left' | 'right' = 'bottom';  ||  @Prop() sticky: boolean = false;
+@Prop() sticky: boolean = false;  ||  
+@Event() btnClick: EventEmitter<MouseEvent>;  ||  
+=== modeless ===
+--- sy-modeless-group.tsx ---
+@Method()  ||  async create(
+@Method()  ||  async updateContent(id: string, content: string | HTMLElement | VNode) {
+@Method()  ||  async updateTitle(id: string, title: string | HTMLElement | VNode) {
+@Method()  ||  async updateOption(id: string, option: Partial<Pick<HTMLSyModelessElement, 'draggable' | 'resizable' | 'edge' | 'closable' | 'maximizable' | 'minimizable' | 'top' | 'left' | 'width' | 'height'>>) {
+@Method()  ||  async close(id: string) {
+@Method()  ||  async closeAll() {
+--- sy-modeless.tsx ---
+@Prop({ reflect: true, mutable: true }) open = false;  ||  @Prop({ reflect: false, attribute: 'draggable' }) isdraggable = false;
+@Prop({ reflect: false, attribute: 'draggable' }) isdraggable = false;  ||  @Prop() resizable = false;
+@Prop() resizable = false;  ||  @Prop() closable = false;
+@Prop() closable = false;  ||  @Prop() minimizable = false;
+@Prop() minimizable = false;  ||  @Prop() maximizable = false;
+@Prop() maximizable = false;  ||  @Prop() edge = false;
+@Prop() edge = false;  ||  @Prop({ reflect: true }) maximum = false;
+@Prop({ reflect: true }) maximum = false;  ||  @Prop({ reflect: true }) minimum = false;
+@Prop({ reflect: true }) minimum = false;  ||  @Prop() top: number | undefined = undefined;
+@Prop() top: number | undefined = undefined;  ||  @Prop() left: number | undefined = undefined;
+@Prop() left: number | undefined = undefined;  ||  @Prop() width = 200;
+@Prop() width = 200;  ||  @Prop() height = 150;
+@Prop() height = 150;  ||  @Prop({ attribute: 'minWidth', mutable: true }) minWidth = DEFAULT_MIN_WIDTH;
+@Prop({ attribute: 'minWidth', mutable: true }) minWidth = DEFAULT_MIN_WIDTH;  ||  @Prop({ attribute: 'minHeight', mutable: true }) minHeight = DEFAULT_MIN_HEIGHT;
+@Prop({ attribute: 'minHeight', mutable: true }) minHeight = DEFAULT_MIN_HEIGHT;  ||  
+@Event() closed: EventEmitter<{ id: string }>;  ||  @Event() statusChanged: EventEmitter<{ id: string; status: string }>;
+@Event() statusChanged: EventEmitter<{ id: string; status: string }>;  ||  @Event() positionChanged: EventEmitter<ModelessPositionChangedDetail>;
+@Event() positionChanged: EventEmitter<ModelessPositionChangedDetail>;  ||  
+@Method()  ||  async setOpen() {
+@Method()  ||  async setClose() {
+@Method()  ||  async setMaximum() {
+@Method()  ||  async setRestore() {
+@Method()  ||  async setMinimum() {
+=== nav ===
+--- sy-nav-group.tsx ---
+@Prop({ attribute: 'title' }) navGroupTitle: string = '';  ||  @Prop({ reflect: true, mutable: true }) depth: number = 0;
+@Prop({ reflect: true, mutable: true }) depth: number = 0;  ||  
+--- sy-nav-item.tsx ---
+@Prop() value: string = '';  ||  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
+@Prop({ reflect: true, mutable: true }) disabled: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) depth: number = 0;
+@Prop({ reflect: true, mutable: true }) depth: number = 0;  ||  
+@Method()  ||  async parentDisabled(disabled: boolean) {
+@Method()  ||  async groupItem(group: boolean) {
+@Method()  ||  public async setActive(active: boolean) {
+--- sy-nav-sub.tsx ---
+@Prop({ attribute: 'title' }) navSubTitle: string = '';  ||  @Prop() value: string = '';
+@Prop() value: string = '';  ||  @Prop({ mutable: true }) open: boolean = false;
+@Prop({ mutable: true }) open: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
+@Prop({ reflect: true, mutable: true }) disabled: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) depth: number = 0;
+@Prop({ reflect: true, mutable: true }) depth: number = 0;  ||  
+@Method()  ||  async parentDisabled(disabled: boolean) {
+@Method()  ||  async groupItem(group: boolean) {
+@Method()  ||  async setTrigger() {
+@Method()  ||  async setOpen() {
+@Method()  ||  async setClose() {
+@Method()  ||  public async setActive(active: boolean) {
+--- sy-nav.tsx ---
+@Prop({ reflect: true }) disabled: boolean = false;  ||  
+=== pagination ===
+--- sy-pagination.tsx ---
+@Prop({ attribute: 'activePage', mutable: true }) activePage: number = 1; // active page  ||  @Prop() disabled = false; // disables
+@Prop() disabled = false; // disables  ||  @Prop({ attribute: 'hideonSingle', mutable: true }) hideonSingle = false;
+@Prop({ attribute: 'hideonSingle', mutable: true }) hideonSingle = false;  ||  @Prop() jumper = false; // visible go to page
+@Prop() jumper = false; // visible go to page  ||  @Prop({ attribute: 'pageSize', mutable: true }) pageSize: number = 10; // how many items in a page
+@Prop({ attribute: 'pageSize', mutable: true }) pageSize: number = 10; // how many items in a page  ||  @Prop({ attribute: 'pageSizeOptions', mutable: true }) pageSizeOptions: string; // 문자열로 받음
+@Prop({ attribute: 'pageSizeOptions', mutable: true }) pageSizeOptions: string; // 문자열로 받음  ||  @Prop() total = false; // visible current page / total page count
+@Prop() total = false; // visible current page / total page count  ||  @Prop({ attribute: 'totalItems', mutable: true }) totalItems: number = 0; // total number of items
+@Prop({ attribute: 'totalItems', mutable: true }) totalItems: number = 0; // total number of items  ||  
+@Event() pageChanged!: EventEmitter<number>;  ||  @Event() pageSizeChanged!: EventEmitter<number>;
+@Event() pageSizeChanged!: EventEmitter<number>;  ||  
+=== popconfirm ===
+--- sy-popconfirm.tsx ---
+@Prop({ reflect: true }) arrow: boolean = false;  ||  @Prop() closable: boolean = false;
+@Prop() closable: boolean = false;  ||  @Prop({ reflect: true }) position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom' = 'top';
+@Prop({ reflect: true }) position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom' = 'top';  ||  @Prop({ reflect: true }) trigger: 'click' | 'none' = 'click';
+@Prop({ reflect: true }) trigger: 'click' | 'none' = 'click';  ||  @Prop({ reflect: true, mutable: true }) opendelay: number = 0;
+@Prop({ reflect: true, mutable: true }) opendelay: number = 0;  ||  @Prop({ reflect: true, mutable: true }) closedelay: number = 0;
+@Prop({ reflect: true, mutable: true }) closedelay: number = 0;  ||  @Prop({ attribute: 'confirmText', mutable: true }) confirmText: string = 'OK';
+@Prop({ attribute: 'confirmText', mutable: true }) confirmText: string = 'OK';  ||  @Prop({ attribute: 'cancelText', mutable: true }) cancelText: string = 'Cancel';
+@Prop({ attribute: 'cancelText', mutable: true }) cancelText: string = 'Cancel';  ||  @Prop() sticky: boolean = false;
+@Prop() sticky: boolean = false;  ||  
+@Event() visibleChanged: EventEmitter<boolean>;  ||  @Event() selected: EventEmitter<'ok' | 'cancel'>;
+@Event() selected: EventEmitter<'ok' | 'cancel'>;  ||  
+@Method()  ||  async setOpen() {
+@Method()  ||  async setClose() {
+=== popover ===
+--- sy-popover.tsx ---
+@Prop({ reflect: true }) arrow: boolean = false;     // 화살표 표시 여부  ||  @Prop({ reflect: true }) open: boolean = false;    // 열림 상태 여부
+@Prop({ reflect: true }) open: boolean = false;    // 열림 상태 여부  ||  @Prop() position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom' = 'bottom'; // 위치
+@Prop() position: 'top' | 'bottom' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom' = 'bottom'; // 위치  ||  @Prop() trigger: 'hover' | 'click' | 'focus' | 'null' = 'hover'; // 트리거 방식
+@Prop() trigger: 'hover' | 'click' | 'focus' | 'null' = 'hover'; // 트리거 방식  ||  @Prop({ reflect: true }) opendelay: number = 0; // 열기 지연 시간
+@Prop({ reflect: true }) opendelay: number = 0; // 열기 지연 시간  ||  @Prop({ reflect: true }) closedelay: number = 100; // 닫기 지연 시간
+@Prop({ reflect: true }) closedelay: number = 100; // 닫기 지연 시간  ||  
+@Prop() sticky: boolean = false;  ||  
+@Method()  ||  public async setOpen() {
+@Method()  ||  public async setClose() {
+=== progress-bar ===
+--- sy-progress-bar.tsx ---
+@Prop() indeterminate: boolean = false;  ||  /** The current progress as a percentage, 0 to 100. */
+@Prop({ reflect: true, mutable: true }) percent: number = 0;  ||  /** The error state of the progress bar */
+@Prop() status: 'default' | 'error' | 'complete' = 'default';  ||  /** The value position type of the progress bar. */
+@Prop({ attribute: 'valuePosition', mutable: true }) valuePosition: 'progress-left' | 'progress-center' | 'progress-right' | 'center' | 'left' | 'right'  = 'center';  ||  @Prop({ attribute: 'hidePercent', mutable: true }) hidePercent: boolean = false;
+@Prop({ attribute: 'hidePercent', mutable: true }) hidePercent: boolean = false;  ||  @Prop() segment: string = '';
+@Prop() segment: string = '';  ||  @Prop({ attribute: 'tooltipTitle', mutable: true }) tooltipTitle: string = '';
+@Prop({ attribute: 'tooltipTitle', mutable: true }) tooltipTitle: string = '';  ||  
+=== progress-circular ===
+--- sy-progress-circular.tsx ---
+@Prop({ reflect: true, mutable: true }) percent: number = 0;  ||  @Prop() segment: string = '';
+@Prop() segment: string = '';  ||  @Prop() status: 'default' | 'error' | 'complete' = 'default';
+@Prop() status: 'default' | 'error' | 'complete' = 'default';  ||  @Prop({ attribute: 'hideText', mutable: true }) hideText: boolean = false;
+@Prop({ attribute: 'hideText', mutable: true }) hideText: boolean = false;  ||  @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';
+@Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';  ||  @Prop({ attribute: 'tooltipTitle', mutable: true }) tooltipTitle: string = '';
+@Prop({ attribute: 'tooltipTitle', mutable: true }) tooltipTitle: string = '';  ||  @Prop() indeterminate: boolean = false;
+@Prop() indeterminate: boolean = false;  ||  
+=== radio ===
+--- sy-radio-button.tsx ---
+@Prop({ mutable: true }) checked: boolean = false;  ||  @Prop({ reflect: true }) disabled: boolean = false;
+@Prop({ reflect: true }) disabled: boolean = false;  ||  @Prop() value!: string;
+@Prop() value!: string;  ||  // [수정] @State에서 @Prop으로 변경하여 부모 컴포넌트로부터 값을 받을 수 있도록 함
+@Prop({ mutable: true }) size: 'small' | 'medium' | 'large' = 'medium';  ||  @Prop({ mutable: true }) variant: 'outlined' | 'solid' = 'outlined';
+@Prop({ mutable: true }) variant: 'outlined' | 'solid' = 'outlined';  ||  
+@Event() selected: EventEmitter<string>;  ||  
+--- sy-radio-group.tsx ---
+@Prop({ reflect: true, mutable: true }) disabled: boolean = false;  ||  @Prop({ mutable: true, attribute: 'defaultValue' }) defaultValue: string = '';
+@Prop({ mutable: true, attribute: 'defaultValue' }) defaultValue: string = '';  ||  @Prop({ reflect: true }) readonly: boolean = false;
+@Prop({ reflect: true }) readonly: boolean = false;  ||  @Prop({ reflect: true }) required: boolean = false;
+@Prop({ reflect: true }) required: boolean = false;  ||  @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';
+@Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';  ||  @Prop() position: 'horizontal' | 'vertical' = 'horizontal';
+@Prop() position: 'horizontal' | 'vertical' = 'horizontal';  ||  @Prop() variant: 'outlined' | 'solid' = 'outlined';
+@Prop() variant: 'outlined' | 'solid' = 'outlined';  ||  @Prop() name: string = '';
+@Prop() name: string = '';  ||  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
+@Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;  ||  
+@Event() changed: EventEmitter<{ value: string; isValid: boolean; status: string }>;  ||  
+@Method()  ||  async checkValidity(): Promise<boolean> {
+@Method()  ||  async reportValidity(): Promise<boolean> {
+@Method()  ||  async setCustomError() {
+@Method()  ||  async clearCustomError() {
+@Method()  ||  async getStatus() {
+--- sy-radio.tsx ---
+@Prop({ reflect: true, mutable: true }) checked: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
+@Prop({ reflect: true, mutable: true }) disabled: boolean = false;  ||  @Prop({ reflect: true }) readonly: boolean = false;
+@Prop({ reflect: true }) readonly: boolean = false;  ||  @Prop() value: string = '';
+@Prop() value: string = '';  ||  
+@Event() selected: EventEmitter<string>;  ||  
+=== select ===
+--- sy-select-option.tsx ---
+@Prop() disabled: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) label: string = '';
+@Prop({ reflect: true, mutable: true }) label: string = '';  ||  @Prop() readonly: boolean = false;
+@Prop() readonly: boolean = false;  ||  @Prop({ reflect: true }) value: string = '';
+@Prop({ reflect: true }) value: string = '';  ||  @Prop({ attribute: 'showTooltip', mutable: true}) showTooltip: boolean = false;
+@Prop({ attribute: 'showTooltip', mutable: true}) showTooltip: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) selected: boolean = false;
+@Prop({ reflect: true, mutable: true }) selected: boolean = false;  ||  
+@Prop() hide: boolean = false;  ||  @Prop() empty: boolean = false;
+@Prop() empty: boolean = false;  ||  @Prop() loading: boolean = false;
+@Prop() loading: boolean = false;  ||  @Prop() isCustomTag: boolean = false;
+@Prop() isCustomTag: boolean = false;  ||  @Prop() active: boolean = false;
+@Prop() active: boolean = false;  ||  @State() private hasSlotContents: boolean = false;
+@Event({  ||  eventName: 'activated',
+--- sy-select.tsx ---
+@Event() opened: EventEmitter<void>;  ||  @Event() removed: EventEmitter<any>;
+@Event() removed: EventEmitter<any>;  ||  @Event() selected: EventEmitter<any>;
+@Event() selected: EventEmitter<any>;  ||  @Event() focused: EventEmitter<void>;
+@Event() focused: EventEmitter<void>;  ||  @Event() blured: EventEmitter<void>;
+@Event() blured: EventEmitter<void>;  ||  @Event() inputChanged: EventEmitter<string>;
+@Event() inputChanged: EventEmitter<string>;  ||  @Event() cleared: EventEmitter<void>;
+@Event() cleared: EventEmitter<void>;  ||  
+@Prop() clearable: boolean = false;  ||  @Prop({ mutable: true }) disabled: boolean = false;
+@Prop({ mutable: true }) disabled: boolean = false;  ||  @Prop() readonly: boolean = false;
+@Prop() readonly: boolean = false;  ||  @Prop() empty: boolean = false;
+@Prop() empty: boolean = false;  ||  @Prop() error: boolean = false;
+@Prop() error: boolean = false;  ||  @Prop() hide: boolean = false;
+@Prop() hide: boolean = false;  ||  @Prop() loading: boolean = false;
+@Prop() loading: boolean = false;  ||  @Prop({ attribute: 'maxTagCount', mutable: true }) maxTagCount: number = 0;
+@Prop({ attribute: 'maxTagCount', mutable: true }) maxTagCount: number = 0;  ||  @Prop({ attribute: 'defaultValue', mutable: true, reflect: true }) defaultValue: string = '';
+@Prop({ attribute: 'defaultValue', mutable: true, reflect: true }) defaultValue: string = '';  ||  @Prop() placeholder: string = '';
+@Prop() placeholder: string = '';  ||  @Prop() size: 'small' | 'medium' | 'large' = 'medium';
+@Prop() size: 'small' | 'medium' | 'large' = 'medium';  ||  @Prop() mode: 'default' | 'searchable' | 'multiple' | 'tag' = 'default';
+@Prop() mode: 'default' | 'searchable' | 'multiple' | 'tag' = 'default';  ||  @Prop({ reflect: true }) required: boolean = false;
+@Prop({ reflect: true }) required: boolean = false;  ||  @Prop() name: string = '';
+@Prop() name: string = '';  ||  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity: boolean = false;
+@Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity: boolean = false;  ||  @Prop({ attribute: 'isTreeSelect', mutable: true }) isTreeSelect: boolean = false;
+@Prop({ attribute: 'isTreeSelect', mutable: true }) isTreeSelect: boolean = false;  ||  @Prop({ attribute: 'selectedOptions', mutable: true }) selectedOptions: { value: string; label?: string }[] = [];
+@Prop({ attribute: 'selectedOptions', mutable: true }) selectedOptions: { value: string; label?: string }[] = [];  ||  
+@Method()  ||  async setValue(values: string[] | string) {
+@Method()  ||  async clearValue() {
+@Method()  ||  async closeDropdown() {
+@Method()  ||  async setCustomError() {
+@Method()  ||  async clearCustomError() {
+@Method()  ||  async checkValidity(): Promise<boolean> {
+@Method()  ||  async reportValidity(): Promise<boolean> {
+=== skeleton ===
+--- sy-skeleton.tsx ---
+@Prop() type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree' = 'text';  ||  @Prop() rows: number = 0;
+@Prop() rows: number = 0;  ||  @Prop() width: string = '100%';
+@Prop() width: string = '100%';  ||  @Prop() disabled: boolean = false;
+@Prop() disabled: boolean = false;  ||  
+@Method()  ||  async stopAnimation() {
+@Method()  ||  async resetAnimation() {
+=== slider ===
+--- sy-slider.tsx ---
+@Prop() min: number = 0;  ||  @Prop() max: number = 100;
+@Prop() max: number = 100;  ||  @Prop() step: number = 1;
+@Prop() step: number = 1;  ||  @Prop() value: number = 0;
+@Prop() value: number = 0;  ||  @Prop() disabled: boolean = false;
+@Prop() disabled: boolean = false;  ||  @Prop() readonly: boolean = false;
+@Prop() readonly: boolean = false;  ||  @Prop({ attribute: 'showTooltip', mutable: true }) showTooltip: 'default' | 'always' | 'never' = 'default';
+@Prop({ attribute: 'showTooltip', mutable: true }) showTooltip: 'default' | 'always' | 'never' = 'default';  ||  @Prop({ attribute: 'tooltipPlacement', mutable: true }) tooltipPlacement: 'top' | 'bottom' | 'right' | 'left' = 'top';
+@Prop({ attribute: 'tooltipPlacement', mutable: true }) tooltipPlacement: 'top' | 'bottom' | 'right' | 'left' = 'top';  ||  @Prop() marks: { [key: number]: string } = {};
+@Prop() marks: { [key: number]: string } = {};  ||  @Prop({ attribute: 'hideMarks', mutable: true }) hideMarks: boolean = false;
+@Prop({ attribute: 'hideMarks', mutable: true }) hideMarks: boolean = false;  ||  @Prop() range: boolean = false;
+@Prop() range: boolean = false;  ||  @Prop({ attribute: 'rangeValue', mutable: true }) rangeValue: number[] = [];
+@Prop({ attribute: 'rangeValue', mutable: true }) rangeValue: number[] = [];  ||  @Prop() reverse: boolean = false;
+@Prop() reverse: boolean = false;  ||  @Prop() label: string = '';
+@Prop() label: string = '';  ||  @Prop({ attribute: 'hideTrackFill', mutable: true }) hideTrackFill: boolean = false;
+@Prop({ attribute: 'hideTrackFill', mutable: true }) hideTrackFill: boolean = false;  ||  @Prop({ attribute: 'snapToMarks', mutable: true }) snapToMarks: boolean = false;
+@Prop({ attribute: 'snapToMarks', mutable: true }) snapToMarks: boolean = false;  ||  @Prop({ reflect: true }) vertical: boolean = false;
+@Prop({ reflect: true }) vertical: boolean = false;  ||  
+=== spinner ===
+--- sy-spinner.tsx ---
+@Prop() delay = 0;  ||  @Prop() description: string = '';
+@Prop() description: string = '';  ||  @Prop({ reflect: true }) hidden: boolean = false;
+@Prop({ reflect: true }) hidden: boolean = false;  ||  @Prop({ reflect: true }) inline: boolean = false;
+@Prop({ reflect: true }) inline: boolean = false;  ||  @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
+@Prop({ reflect: true }) size: 'small' | 'medium' | 'large' | 'xlarge' = 'medium';  ||  
+=== split-panel ===
+--- sy-split-panel.tsx ---
+@Prop({ reflect: true }) disabled: boolean = false;  ||  @Prop({ reflect: true, attribute: 'hideDivider', mutable: true }) hideDivider: boolean = false;
+@Prop({ reflect: true, attribute: 'hideDivider', mutable: true }) hideDivider: boolean = false;  ||  @Prop({ reflect: true, attribute: 'minRatio', mutable: true }) minRatio: number = 0; // Ensure default value
+@Prop({ reflect: true, attribute: 'minRatio', mutable: true }) minRatio: number = 0; // Ensure default value  ||  @Prop({ reflect: true }) ratio: number = 50;
+@Prop({ reflect: true }) ratio: number = 50;  ||  @Prop({ reflect: true }) type: 'horizontal' | 'vertical' = 'horizontal';
+@Prop({ reflect: true }) type: 'horizontal' | 'vertical' = 'horizontal';  ||  
+@Event() horizontalChanged: EventEmitter<{  ||  leftRatio: number;
+@Event() verticalChanged: EventEmitter<{  ||  topRatio: number;
+=== steps ===
+--- sy-step.tsx ---
+@Prop({ reflect: true }) description: string = "";  ||  @Prop({ reflect: true }) disabled: boolean = false;
+@Prop({ reflect: true }) disabled: boolean = false;  ||  @Prop({ reflect: true }) loading: boolean = false;
+@Prop({ reflect: true }) loading: boolean = false;  ||  @Prop({ reflect: true }) status: "finish" | "current" | "wait" | "error" | "none" = "none";
+@Prop({ reflect: true }) status: "finish" | "current" | "wait" | "error" | "none" = "none";  ||  
+@Prop({ mutable: true }) small: boolean = false;  ||  @Prop({ mutable: true }) clickable: boolean = false;
+@Prop({ mutable: true }) clickable: boolean = false;  ||  @Prop({ mutable: true, reflect: true }) index: number = 0;
+@Prop({ mutable: true, reflect: true }) index: number = 0;  ||  @Prop({ mutable: true }) current: number = 0;
+@Prop({ mutable: true }) current: number = 0;  ||  @Prop({ mutable: true }) size: "small" | "medium" = "medium";
+@Prop({ mutable: true }) size: "small" | "medium" = "medium";  ||  @Prop({ mutable: true }) parentStatus: "finish" | "current" | "wait" | "error" | "none" = "none";
+@Prop({ mutable: true }) parentStatus: "finish" | "current" | "wait" | "error" | "none" = "none";  ||  @Prop({ mutable: true, reflect: true }) currentStatus: "finish" | "current" | "wait" | "error" | "none" = "none";
+@Prop({ mutable: true, reflect: true }) currentStatus: "finish" | "current" | "wait" | "error" | "none" = "none";  ||  @Prop({ mutable: true }) type: "horizontal" | "vertical" = "horizontal";
+@Prop({ mutable: true }) type: "horizontal" | "vertical" = "horizontal";  ||  @Prop({ mutable: true }) lastStep: boolean = false;
+@Prop({ mutable: true }) lastStep: boolean = false;  ||  
+--- sy-steps.tsx ---
+@Prop({ reflect: true, mutable: true }) current: number = 0;  ||  @Prop({ reflect: true }) clickable: boolean = false;
+@Prop({ reflect: true }) clickable: boolean = false;  ||  @Prop({ reflect: true }) complete: boolean = false;
+@Prop({ reflect: true }) complete: boolean = false;  ||  @Prop({ reflect: true }) type: "horizontal" | "vertical" = "horizontal";
+@Prop({ reflect: true }) type: "horizontal" | "vertical" = "horizontal";  ||  @Prop({ reflect: true }) size: "small" | "medium" = "medium";
+@Prop({ reflect: true }) size: "small" | "medium" = "medium";  ||  @Prop({ reflect: true }) startIndex: number = 0;
+@Prop({ reflect: true }) startIndex: number = 0;  ||  
+=== switch ===
+--- sy-switch.tsx ---
+@Prop({ reflect: true, mutable: true }) checked: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
+@Prop({ reflect: true, mutable: true }) disabled: boolean = false;  ||  @Prop() label: string;
+@Prop() label: string;  ||  @Prop({ reflect: true }) loading: boolean = false;
+@Prop({ reflect: true }) loading: boolean = false;  ||  @Prop({ reflect: true }) readonly: boolean = false;
+@Prop({ reflect: true }) readonly: boolean = false;  ||  @Prop({ reflect: true }) size: 'small' | 'medium' = 'medium';
+@Prop({ reflect: true }) size: 'small' | 'medium' = 'medium';  ||  @Prop() name: string = '';
+@Prop() name: string = '';  ||  
+@Event() changed: EventEmitter<boolean>;  ||  
+=== tabs ===
+--- sy-tab-content.tsx ---
+@Prop({ reflect: true }) active = false;  ||  @Prop({ reflect: true }) disabled = false;
+@Prop({ reflect: true }) disabled = false;  ||  @Prop({ reflect: true }) name!: string;
+@Prop({ reflect: true }) name!: string;  ||  
+--- sy-tab-group.tsx ---
+@Prop({ mutable: true }) active?: number;  ||  @Prop({ reflect: true }) align: 'center' | 'left' = 'left';
+@Prop({ reflect: true }) align: 'center' | 'left' = 'left';  ||  @Prop() disabled = false;
+@Prop() disabled = false;  ||  @Prop({ attribute: 'draggable' }) isdraggable = false;
+@Prop({ attribute: 'draggable' }) isdraggable = false;  ||  @Prop({ reflect: true }) position: "top" | "bottom" | "left" | "right" = "top";
+@Prop({ reflect: true }) position: "top" | "bottom" | "left" | "right" = "top";  ||  @Prop({ reflect: true }) type: "card" | "line" = "line";
+@Prop({ reflect: true }) type: "card" | "line" = "line";  ||  @Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";
+@Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";  ||  @Prop() padding: "small" | "medium" | "large" | 'none' = "none";
+@Prop() padding: "small" | "medium" | "large" | 'none' = "none";  ||  
+@Event() selected!: EventEmitter<any>;  ||  @Event() closed!: EventEmitter<any>;
+@Event() closed!: EventEmitter<any>;  ||  @Event() ordered!: EventEmitter<HTMLSyTabElement[]>;
+@Event() ordered!: EventEmitter<HTMLSyTabElement[]>;  ||  
+@Method()  ||  async closeTab(name: string) {
+--- sy-tab.tsx ---
+@Prop() closable = false;  ||  @Prop({ reflect: true }) disabled: boolean = false;
+@Prop({ reflect: true }) disabled: boolean = false;  ||  @Prop({ reflect: true }) tabkey!: string;
+@Prop({ reflect: true }) tabkey!: string;  ||  @Prop() manualClose = false;
+@Prop() manualClose = false;  ||  
+@Prop({ mutable: true }) active = false;  ||  @Prop({ mutable: true, attribute: 'parentDisabled' }) parentDisabled = false;
+@Prop({ mutable: true, attribute: 'parentDisabled' }) parentDisabled = false;  ||  @Prop({ mutable: true, attribute: 'currentDisabledStatus' }) currentDisabledStatus = false;
+@Prop({ mutable: true, attribute: 'currentDisabledStatus' }) currentDisabledStatus = false;  ||  @Prop({ mutable: true }) index!: number;
+@Prop({ mutable: true }) index!: number;  ||  @Prop({ mutable: true }) type: "card" | "line" = "line";
+@Prop({ mutable: true }) type: "card" | "line" = "line";  ||  @Prop({ mutable: true }) size: "small" | "medium" | "large" = "medium";
+@Prop({ mutable: true }) size: "small" | "medium" | "large" = "medium";  ||  @Prop({ mutable: true }) position: "top" | "bottom" | "left" | "right" = "top";
+@Prop({ mutable: true }) position: "top" | "bottom" | "left" | "right" = "top";  ||  @Prop({ mutable: true, attribute: 'inHeader' }) inHeader: boolean = false;
+@Prop({ mutable: true, attribute: 'inHeader' }) inHeader: boolean = false;  ||  
+@Event() selected!: EventEmitter<any>;  ||  @Event() closed!: EventEmitter<any>;
+@Event() closed!: EventEmitter<any>;  ||  
+@Method()  ||  async setClose(isForce: boolean = false) {
+=== tag ===
+--- sy-tag.tsx ---
+@Prop({ reflect: true }) disabled = false;  ||  @Prop({ reflect: true }) readonly = false;
+@Prop({ reflect: true }) readonly = false;  ||  @Prop({ reflect: true }) removable = false;
+@Prop({ reflect: true }) removable = false;  ||  @Prop({ reflect: true }) rounded = false;
+@Prop({ reflect: true }) rounded = false;  ||  @Prop({ reflect: true }) selectable = false;
+@Prop({ reflect: true }) selectable = false;  ||  @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';
+@Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';  ||  @Prop({ reflect: true, mutable: true }) variant: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red' = 'gray';
+@Prop({ reflect: true, mutable: true }) variant: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red' = 'gray';  ||  
+@Event() selected: EventEmitter<{ tag: HTMLSyTagElement }>;  ||  @Event() removed: EventEmitter<{ tag: HTMLSyTagElement }>;
+@Event() removed: EventEmitter<{ tag: HTMLSyTagElement }>;  ||  
+=== textarea ===
+--- sy-textarea.tsx ---
+@Prop() autofocus: boolean = false;  ||  @Prop() borderless = false;
+@Prop() borderless = false;  ||  @Prop() clearable = false;
+@Prop() clearable = false;  ||  @Prop() counter: boolean = false;
+@Prop() counter: boolean = false;  ||  @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
+@Prop({ reflect: true, mutable: true }) disabled: boolean = false;  ||  @Prop() label: string = "";
+@Prop() label: string = "";  ||  @Prop({ reflect: true }) max: number = Number.MAX_SAFE_INTEGER;
+@Prop({ reflect: true }) max: number = Number.MAX_SAFE_INTEGER;  ||  @Prop({ reflect: true }) min: number = 0;
+@Prop({ reflect: true }) min: number = 0;  ||  @Prop() placeholder: string = "";
+@Prop() placeholder: string = "";  ||  @Prop({ reflect: true }) readonly: boolean = false;
+@Prop({ reflect: true }) readonly: boolean = false;  ||  @Prop({ reflect: true }) required = false;
+@Prop({ reflect: true }) required = false;  ||  @Prop({ reflect: true }) resize: "none" | "horizontal" | "vertical" | "both" = "none";
+@Prop({ reflect: true }) resize: "none" | "horizontal" | "vertical" | "both" = "none";  ||  @Prop() rows = 4;
+@Prop() rows = 4;  ||  @Prop() size: "small" | "medium" | "large" = "medium";
+@Prop() size: "small" | "medium" | "large" = "medium";  ||  @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
+@Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';  ||  @Prop({ mutable: true, reflect: true }) value: string = "";
+@Prop({ mutable: true, reflect: true }) value: string = "";  ||  @Prop() name: string = "";
+@Prop() name: string = "";  ||  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
+@Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;  ||  
+@Event() changed: EventEmitter<{ value: string; length: number; isValid: boolean; status: string }>;  ||  @Event() blured: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+@Event() blured: EventEmitter<{ value: string; isValid: boolean; status: string }>;  ||  @Event() focused: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+@Event() focused: EventEmitter<{ value: string; isValid: boolean; status: string }>;  ||  
+@Method()  ||  async setFocus() {
+@Method()  ||  async setBlur() {
+@Method()  ||  async checkValidity(): Promise<boolean> {
+@Method()  ||  async reportValidity(): Promise<boolean> {
+@Method()  ||  async setCustomError() {
+@Method()  ||  async clearCustomError() {
+@Method()  ||  async getStatus() {
+=== toast ===
+--- sy-toast-item.tsx ---
+@Prop({ reflect: true, mutable: true }) open = false;  ||  @Prop({ reflect: true }) position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'bottomRight';
+@Prop({ reflect: true }) position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'bottomRight';  ||  @Prop({ reflect: true }) variant: 'neutral' | 'success' | 'error' | 'info' | 'warning' = 'neutral';
+@Prop({ reflect: true }) variant: 'neutral' | 'success' | 'error' | 'info' | 'warning' = 'neutral';  ||  @Prop() closable = false;
+@Prop() closable = false;  ||  @Prop() duration: number;
+@Prop() duration: number;  ||  @Prop({ attribute: 'latestTop', mutable: true }) latestTop = false;
+@Prop({ attribute: 'latestTop', mutable: true }) latestTop = false;  ||  
+@Method()  ||  async show() {
+@Method()  ||  async close() {
+--- sy-toast.tsx ---
+@Prop({ attribute: 'latestTop', mutable: true }) latestTop: boolean = false;  ||  @Prop() duration: number = 3000;
+@Prop() duration: number = 3000;  ||  
+@Method()  ||  async createToast(
+@Method() async createNeutralToast(option?: ToastOptions) { this.createToast('neutral', option); }  ||  @Method() async createSuccessToast(option?: ToastOptions) { this.createToast('success', option); }
+@Method() async createSuccessToast(option?: ToastOptions) { this.createToast('success', option); }  ||  @Method() async createErrorToast(option?: ToastOptions) { this.createToast('error', option); }
+@Method() async createErrorToast(option?: ToastOptions) { this.createToast('error', option); }  ||  @Method() async createInfoToast(option?: ToastOptions) { this.createToast('info', option); }
+@Method() async createInfoToast(option?: ToastOptions) { this.createToast('info', option); }  ||  @Method() async createWarningToast(option?: ToastOptions) { this.createToast('warning', option); }
+@Method() async createWarningToast(option?: ToastOptions) { this.createToast('warning', option); }  ||  
+@Method()  ||  async closeToast(toastItemElement: HTMLSyToastItemElement) {
+=== tooltip ===
+--- sy-tooltip.tsx ---
+@Prop({ reflect: true, attribute: 'hideArrow', mutable: true }) hideArrow: boolean = false;  ||  
+@Prop({ reflect: true, mutable: true }) open: boolean = false;  ||  
+@Prop({ reflect: true }) closedelay: number = 0;  ||  
+@Prop({ reflect: true, attribute: 'maxWidth', mutable: true }) maxWidth: number | null = null;  ||  
+@Prop({ reflect: true }) opendelay: number = 0;  ||  
+@Prop() content: string = '';  ||  
+@Prop() position: 'top' | 'topLeft' | 'topRight' | 'right' | 'rightTop' | 'rightBottom' | 'bottom' | 'bottomLeft' | 'bottomRight' | 'left' | 'leftTop' | 'leftBottom' = 'top';  ||  
+@Prop() trigger: 'hover' | 'click' | 'focus' | 'none' = 'hover';  ||  
+@Method()  ||  async close() {
+=== tree ===
+--- sy-tree-item.tsx ---
+@Prop() appendable = false;  ||  @Prop() checkable = false;
+@Prop() checkable = false;  ||  @Prop() checked = false;
+@Prop() checked = false;  ||  @Prop({ reflect: true }) clickable = false;
+@Prop({ reflect: true }) clickable = false;  ||  @Prop() disabled = false;
+@Prop() disabled = false;  ||  @Prop({ attribute: 'draggable' }) treeitemDraggable = false;
+@Prop({ attribute: 'draggable' }) treeitemDraggable = false;  ||  @Prop() dragging = false;
+@Prop() dragging = false;  ||  @Prop() editable = false;
+@Prop() editable = false;  ||  @Prop({ reflect: true }) expandable = false;
+@Prop({ reflect: true }) expandable = false;  ||  @Prop() expanded = false;
+@Prop() expanded = false;  ||  @Prop() fixed = false;
+@Prop() fixed = false;  ||  @Prop({ attribute: 'hasChild', mutable: true }) hasChild = false;
+@Prop({ attribute: 'hasChild', mutable: true }) hasChild = false;  ||  @Prop({ attribute: 'appendPlaceholder', mutable: true }) appendPlaceholder = 'New item';
+@Prop({ attribute: 'appendPlaceholder', mutable: true }) appendPlaceholder = 'New item';  ||  @Prop() icon: string = '';
+@Prop() icon: string = '';  ||  @Prop() indeterminate = false;
+@Prop() indeterminate = false;  ||  @Prop({ attribute: 'isDesendant', mutable: true, reflect: true }) isDescendant = false;
+@Prop({ attribute: 'isDesendant', mutable: true, reflect: true }) isDescendant = false;  ||  @Prop({ attribute: 'isEditable', mutable: true }) isEditable = false;
+@Prop({ attribute: 'isEditable', mutable: true }) isEditable = false;  ||  @Prop() label = '';
+@Prop() label = '';  ||  @Prop() level = 0;
+@Prop() level = 0;  ||  @Prop() removable = false;
+@Prop() removable = false;  ||  @Prop() treeChildren: any[] = [];
+@Prop() treeChildren: any[] = [];  ||  @Prop({ attribute: 'tagMessage', mutable: true }) tagMessage = '';
+@Prop({ attribute: 'tagMessage', mutable: true }) tagMessage = '';  ||  @Prop({ attribute: 'tagVariant', mutable: true }) tagVariant: "gray" | "purple" | "blue" | "green" | "cyan" | "yellow" | "orange" | "red" | undefined = undefined;
+@Prop({ attribute: 'tagVariant', mutable: true }) tagVariant: "gray" | "purple" | "blue" | "green" | "cyan" | "yellow" | "orange" | "red" | undefined = undefined;  ||  @Prop() value = '';
+@Prop() value = '';  ||  @Prop({ attribute: 'searchTerm', mutable: true }) searchTerm = '';
+@Prop({ attribute: 'searchTerm', mutable: true }) searchTerm = '';  ||  @Prop({ attribute: 'selectedValue', mutable: true }) selectedValue = '';
+@Prop({ attribute: 'selectedValue', mutable: true }) selectedValue = '';  ||  @Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;
+@Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;  ||  @Prop({ reflect: true }) line = false;
+@Prop({ reflect: true }) line = false;  ||  
+@Event() expandChanged: EventEmitter<{ value: string; label: string; expanded: boolean }>;  ||  @Event() checkChanged: EventEmitter<{ value: string; label: string; checked: boolean }>;
+@Event() checkChanged: EventEmitter<{ value: string; label: string; checked: boolean }>;  ||  @Event() itemAdded: EventEmitter<{ parentValue: string; childLabel: string; childValue: string; childLevel: number }>;
+@Event() itemAdded: EventEmitter<{ parentValue: string; childLabel: string; childValue: string; childLevel: number }>;  ||  @Event() itemRemoved: EventEmitter<{ value: string; label: string }>;
+@Event() itemRemoved: EventEmitter<{ value: string; label: string }>;  ||  @Event() itemEdited: EventEmitter<{ value: string; label: string }>;
+@Event() itemEdited: EventEmitter<{ value: string; label: string }>;  ||  @Event() itemUpdating: EventEmitter<any>;
+@Event() itemUpdating: EventEmitter<any>;  ||  @Event() itemUpdatingReset: EventEmitter<any>;
+@Event() itemUpdatingReset: EventEmitter<any>;  ||  @Event() itemDrop: EventEmitter<{ targetKey: string; draggedKey: string; dropPosition: string; targetLevel: number }>;
+@Event() itemDrop: EventEmitter<{ targetKey: string; draggedKey: string; dropPosition: string; targetLevel: number }>;  ||  @Event() itemSelected: EventEmitter<{ value: string; label: string; checked: boolean }>;
+@Event() itemSelected: EventEmitter<{ value: string; label: string; checked: boolean }>;  ||  @Event() draggingEvent: EventEmitter<string>;
+@Event() draggingEvent: EventEmitter<string>;  ||  
+@Method()  ||  async setOverflow() {
+--- sy-tree.tsx ---
+@Prop({ mutable: true }) nodes: TreeNode[] = [];  ||  @Prop({ reflect: true }) checkable = false;
+@Prop({ reflect: true }) checkable = false;  ||  @Prop({ reflect: true }) clickable = false;
+@Prop({ reflect: true }) clickable = false;  ||  @Prop({ attribute: 'draggable' }) treeDraggable = false;
+@Prop({ attribute: 'draggable' }) treeDraggable = false;  ||  @Prop() editable = false;
+@Prop() editable = false;  ||  @Prop() expandable = false;
+@Prop() expandable = false;  ||  @Prop({ attribute: 'expandAll', mutable: true }) expandAll = false;
+@Prop({ attribute: 'expandAll', mutable: true }) expandAll = false;  ||  @Prop({ attribute: 'manualAdd', mutable: true }) manualAdd = false;
+@Prop({ attribute: 'manualAdd', mutable: true }) manualAdd = false;  ||  @Prop({ attribute: 'manualRemove', mutable: true }) manualRemove = false;
+@Prop({ attribute: 'manualRemove', mutable: true }) manualRemove = false;  ||  @Prop({ reflect: true }) line = false;
+@Prop({ reflect: true }) line = false;  ||  @Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;
+@Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;  ||  @Prop({ attribute: 'selectedValue', mutable: true }) selectedValue = '';
+@Prop({ attribute: 'selectedValue', mutable: true }) selectedValue = '';  ||  @Prop({ attribute: 'searchTerm', mutable: true }) searchTerm: string = '';
+@Prop({ attribute: 'searchTerm', mutable: true }) searchTerm: string = '';  ||  @Prop({ attribute: 'isTreeSelect', mutable: true }) isTreeSelect: boolean = false;
+@Prop({ attribute: 'isTreeSelect', mutable: true }) isTreeSelect: boolean = false;  ||  
+@Event() nodesChanged: EventEmitter<{ nodes: TreeNode[] }>;  ||  @Event() itemChecked: EventEmitter<{ value: string; label: string; checked: boolean }>;
+@Event() itemChecked: EventEmitter<{ value: string; label: string; checked: boolean }>;  ||  @Event() itemSelected: EventEmitter<{ value: string; label: string; checked: boolean }>;
+@Event() itemSelected: EventEmitter<{ value: string; label: string; checked: boolean }>;  ||  
+@Method()  ||  async setCheckState(value: string, checked: boolean) {
+@Method()  ||  async clearAllSelectedItem() {
+@Method()  ||  async manualAddChildNode(parentValue: string, childLabel: string, childValue?: string) {
+@Method()  ||  async manualRemoveNode(value: string) {
+@Method()  ||  async findNode(nodes: TreeNode[], value: string): Promise<TreeNode | null> {
+=== tree-select ===
+--- sy-tree-select.tsx ---
+@Prop({ mutable: true }) nodes: TreeNode[] = [];  ||  @Prop() checkable = false;
+@Prop() checkable = false;  ||  @Prop() clearable = false;
+@Prop() clearable = false;  ||  @Prop({ attribute: 'defaultValue', mutable: true }) defaultValue = '';
+@Prop({ attribute: 'defaultValue', mutable: true }) defaultValue = '';  ||  @Prop() disabled = false;
+@Prop() disabled = false;  ||  @Prop() status: 'error' | 'default' = 'default';
+@Prop() status: 'error' | 'default' = 'default';  ||  @Prop() expandable = false;
+@Prop() expandable = false;  ||  @Prop({ attribute: 'expandAll', mutable: true }) expandAll = false;
+@Prop({ attribute: 'expandAll', mutable: true }) expandAll = false;  ||  @Prop() line = false;
+@Prop() line = false;  ||  @Prop() loading = false;
+@Prop() loading = false;  ||  @Prop({ attribute: 'maxTagCount', mutable: true }) maxTagCount = 0;
+@Prop({ attribute: 'maxTagCount', mutable: true }) maxTagCount = 0;  ||  @Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;
+@Prop({ attribute: 'nodeWidth', mutable: true }) nodeWidth: number | null = null;  ||  @Prop() placeholder = '';
+@Prop() placeholder = '';  ||  @Prop({ attribute: 'appendParent', mutable: true }) appendParent = false;
+@Prop({ attribute: 'appendParent', mutable: true }) appendParent = false;  ||  @Prop() readonly = false;
+@Prop() readonly = false;  ||  @Prop() required = false;
+@Prop() required = false;  ||  @Prop() name = '';
+@Prop() name = '';  ||  @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
+@Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;  ||  
+@Event() changed: EventEmitter<{ selectedItem: { value: string; label: string }[]; isValid: boolean }>;  ||  
+@Method()  ||  async setCustomValidity(message: string) {
+@Method()  ||  async checkValidity(): Promise<boolean> {
+@Method()  ||  async reportValidity(): Promise<boolean> {

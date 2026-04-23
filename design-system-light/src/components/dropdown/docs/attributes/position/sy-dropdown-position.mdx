@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as PositionStories from './sy-dropdown-position.stories';
+
+<Meta of={PositionStories} />
+
+# Position
+
+The `position` attribute anchors the dropdown menu to one of the trigger's corners: `topLeft`, `topRight`, `bottomLeft`, `bottomRight`.
+
+<Canvas of={PositionStories.Default} />
+<Controls of={PositionStories.Default} />

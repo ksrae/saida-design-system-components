@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ImageStories from './sy-avatar-image.stories';
+
+<Meta of={ImageStories} />
+
+# Image
+
+The `image` attribute accepts an image URL to display inside the avatar.
+If the image fails to load, it falls back to the text/letter/icon.
+
+<Canvas of={ImageStories.Default} />
+<Controls of={ImageStories.Default} />

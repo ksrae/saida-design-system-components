@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DateStories from './sy-datepicker-date.stories';
+
+<Meta of={DateStories} />
+
+# Initial Date / Time
+
+Use the `year`, `month`, `day`, `hour`, `minute`, and `second` attributes to set the initial datetime shown by the datepicker.
+
+<Canvas of={DateStories.Default} />
+<Controls of={DateStories.Default} />

@@ -1,0 +1,11 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as PathStories from './sy-icon-path.stories';
+
+<Meta of={PathStories} />
+
+# Path
+
+The `path` attribute points to an external SVG/PNG asset. Takes priority over slotted SVG.
+
+<Canvas of={PathStories.Default} />
+<Controls of={PathStories.Default} />

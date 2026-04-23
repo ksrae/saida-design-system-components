@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as Stories from './sy-modal-setcancel.stories';
+
+<Meta of={Stories} />
+
+# setCancel(value?)
+
+Fires the cancel flow. The `closed` event is emitted with `{ event: 'cancel', value }`.
+
+<Canvas of={Stories.Default} />
