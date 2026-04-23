@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyButtonProps, Button } from './sy-button.main';
 
 const buttonMeta: Meta<SyButtonProps> = {
-  title: 'Button/Overview',
+  title: 'Button/Overview (Dev)',
   component: 'sy-button',
   tags: [],
 /*   parameters: {
@@ -53,7 +53,7 @@ const buttonMeta: Meta<SyButtonProps> = {
       },
     },
     setBlur: {
-      action: 'setBlur', 
+      action: 'setBlur',
       description: 'Trigger setBlur method',
       table: {
         category: 'Methods',
@@ -62,7 +62,7 @@ const buttonMeta: Meta<SyButtonProps> = {
     },
     setClick: {
       action: 'setClick',
-      description: 'Trigger setClick method', 
+      description: 'Trigger setClick method',
       table: {
         category: 'Methods',
         type: { summary: 'function' },

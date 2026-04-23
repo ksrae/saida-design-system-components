@@ -1,0 +1,20 @@
+.sy-theme{
+    --nav-focusoutline: var(--border-brand-bold);
+    --nav-parent-background-active: var(--background-brand-default);
+    --nav-parent-background-enabled: var(--background-default);
+    --nav-parent-border-active: var(--border-brand-default);
+    --nav-parent-border-focused: var(--border-brand-bold);
+    --nav-parent-icon-active: var(--icon-brand-default);
+    --nav-parent-icon-disabled: var(--icon-subtlest);
+    --nav-parent-icon-enabled: var(--icon-default);
+    --nav-parent-icon-focused: var(--icon-default);
+    --nav-parent-icon-hover: var(--icon-brand-default);
+    --nav-parent-text-active: var(--text-brand-default);
+    --nav-parent-text-disabled: var(--text-subtlest);
+    --nav-parent-text-enabled: var(--text-default);
+    --nav-parent-text-focused: var(--text-default);
+    --nav-parent-text-hover: var(--text-brand-default);
+    --nav-submenu-background-active: var(--background-bold);
+    --nav-submenu-background-enabled: var(--background-default);
+    --nav-submenu-text-enabled: var(--text-subtler);
+}

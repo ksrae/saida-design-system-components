@@ -1,0 +1,25 @@
+.sy-theme{
+    --toast-closable-icon-enabled: var(--icon-subtler);
+    --toast-closable-icon-hover: var(--icon-bold);
+    --toast-error-background-enabled: var(--background-extended-red-default);
+    --toast-error-border-enabled: var(--border-extended-red-default);
+    --toast-error-icon-enabled: var(--icon-extended-red-bold);
+    --toast-error-text-enabled: var(--text-bold);
+    --toast-informational-background-enabled: var(--background-extended-blue-default);
+    --toast-informational-border-enabled: var(--border-extended-blue-default);
+    --toast-informational-icon-enabled: var(--icon-extended-blue-bold);
+    --toast-informational-text-enabled: var(--text-bold);
+    --toast-neutral-background-enabled: var(--background-extended-darkgray-default);
+    --toast-neutral-border-enabled: var(--border-extended-darkgray-default);
+    --toast-neutral-icon-enabled: var(--icon-extended-darkgray-bold);
+    --toast-neutral-text-enabled: var(--text-bold);
+    --toast-success-background-enabled: var(--background-extended-green-default);
+    --toast-success-border-enabled: var(--border-extended-green-default);
+    --toast-success-icon-enabled: var(--icon-extended-green-bold);
+    --toast-success-text-enabled: var(--text-bold);
+    --toast-timestamp-text-enabled: var(--text-subtle);
+    --toast-warning-background-enabled: var(--background-extended-yellow-default);
+    --toast-warning-border-enabled: var(--border-extended-yellow-default);
+    --toast-warning-icon-enabled: var(--icon-extended-yellow-bold);
+    --toast-warning-text-enabled: var(--text-bold);
+}

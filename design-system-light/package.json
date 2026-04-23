@@ -51,7 +51,7 @@
     "build-storybook": "stencil build && storybook build",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook:docs": "stencil build && storybook build --docs",
-    "storybook:docs": "storybook dev --docs -p 6006"
+    "storybook:docs": "stencil build && storybook dev --docs -p 6006"
   },
   "devDependencies": {
     "@stencil/angular-output-target": "^1.1.1",
