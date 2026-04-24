@@ -1,3 +1,0 @@
-import{j as t,M as s,C as e}from"./blocks-Q9nwDdg9.js";import{useMDXComponents as i}from"./index-DejdW_EF.js";import{D as a,a as m}from"./distribution-chart.stories-5KuJDL-1.js";import"./preload-helper-PPVm8Dsz.js";import"./iframe-nFrKWBxN.js";import"./index-BdigElPL.js";function r(n){const o={h2:"h2",...i(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{of:a}),`
-`,t.jsx(o.h2,{id:"distribution-high-chart",children:"Distribution High Chart"}),`
-`,t.jsx(e,{of:m})]})}function p(n={}){const{wrapper:o}={...i(),...n.components};return o?t.jsx(o,{...n,children:t.jsx(r,{...n})}):r(n)}export{p as default};

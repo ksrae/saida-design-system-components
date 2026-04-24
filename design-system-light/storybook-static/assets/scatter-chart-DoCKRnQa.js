@@ -1,3 +1,0 @@
-import{j as t,M as s,C as a}from"./blocks-Q9nwDdg9.js";import{useMDXComponents as e}from"./index-DejdW_EF.js";import{S as i,D as c}from"./scatter-chart.stories-De-oDcTr.js";import"./preload-helper-PPVm8Dsz.js";import"./iframe-nFrKWBxN.js";import"./index-BdigElPL.js";function r(n){const o={h2:"h2",...e(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{of:i}),`
-`,t.jsx(o.h2,{id:"scatter-high-chart",children:"Scatter High Chart"}),`
-`,t.jsx(a,{of:c})]})}function p(n={}){const{wrapper:o}={...e(),...n.components};return o?t.jsx(o,{...n,children:t.jsx(r,{...n})}):r(n)}export{p as default};

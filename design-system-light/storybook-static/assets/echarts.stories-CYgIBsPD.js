@@ -1,1 +1,0 @@
-const t={title:"StyleGuide/ECharts/Overview",tags:[""]},e={};e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:"{}",...e.parameters?.docs?.source}}};const r=["Default"],a=Object.freeze(Object.defineProperty({__proto__:null,Default:e,__namedExportsOrder:r,default:t},Symbol.toStringTag,{value:"Module"}));export{a as E};

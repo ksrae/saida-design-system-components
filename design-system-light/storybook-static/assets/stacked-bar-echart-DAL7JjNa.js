@@ -1,3 +1,0 @@
-import{j as t,M as a,C as s}from"./blocks-Q9nwDdg9.js";import{useMDXComponents as r}from"./index-DejdW_EF.js";import{e as c,D as m}from"./stacked-bar-echart.stories-Cd4jC4tu.js";import"./preload-helper-PPVm8Dsz.js";import"./iframe-nFrKWBxN.js";import"./index-BdigElPL.js";function o(e){const n={h2:"h2",...r(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(a,{of:c}),`
-`,t.jsx(n.h2,{id:"stacked-bar-echart",children:"Stacked Bar EChart"}),`
-`,t.jsx(s,{of:m})]})}function j(e={}){const{wrapper:n}={...r(),...e.components};return n?t.jsx(n,{...e,children:t.jsx(o,{...e})}):o(e)}export{j as default};

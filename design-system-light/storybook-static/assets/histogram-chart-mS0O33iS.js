@@ -1,3 +1,0 @@
-import{j as t,M as e,C as a}from"./blocks-Q9nwDdg9.js";import{useMDXComponents as s}from"./index-DejdW_EF.js";import{H as i,D as m}from"./histogram-chart.stories-N4ZnaqWe.js";import"./preload-helper-PPVm8Dsz.js";import"./iframe-nFrKWBxN.js";import"./index-BdigElPL.js";function r(o){const n={h2:"h2",...s(),...o.components};return t.jsxs(t.Fragment,{children:[t.jsx(e,{of:i}),`
-`,t.jsx(n.h2,{id:"histogram-high-chart",children:"Histogram High Chart"}),`
-`,t.jsx(a,{of:m})]})}function p(o={}){const{wrapper:n}={...s(),...o.components};return n?t.jsx(n,{...o,children:t.jsx(r,{...o})}):r(o)}export{p as default};

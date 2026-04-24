@@ -1,3 +1,0 @@
-import{j as t,M as s,C as a}from"./blocks-Q9nwDdg9.js";import{useMDXComponents as e}from"./index-DejdW_EF.js";import{H as i,D as m}from"./box-plot-chart.stories-k_qiGtK3.js";import"./preload-helper-PPVm8Dsz.js";import"./iframe-nFrKWBxN.js";import"./index-BdigElPL.js";function r(o){const n={h2:"h2",...e(),...o.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{of:i}),`
-`,t.jsx(n.h2,{id:"box-plot-high-chart",children:"Box Plot High Chart"}),`
-`,t.jsx(a,{of:m})]})}function j(o={}){const{wrapper:n}={...e(),...o.components};return n?t.jsx(n,{...o,children:t.jsx(r,{...o})}):r(o)}export{j as default};
