@@ -201,13 +201,17 @@
 
         }
 
-        &[disabled] {
+        /* The .input wrapper is a <div> so attribute selectors like `[disabled]`
+           don't apply — it only receives the `input--disabled` / `input--readonly`
+           classes from the render. Match on class, not attribute. */
+        &.input--disabled {
             background-color: var(--inputnumber-form-field-background-disabled);
             border: var(--border-small) var(--inputnumber-form-field-border-disabled);
-            cursor: auto;
+            cursor: not-allowed;
 
             input {
                 color: var(--inputnumber-form-field-text-disabled);
+                cursor: not-allowed;
             }
 
             &.input--borderless {
@@ -217,22 +221,42 @@
             .input-number-handle {
                 display: none !important;
             }
+
+            &:hover {
+                background-color: var(--inputnumber-form-field-background-disabled);
+                border: var(--border-small) var(--inputnumber-form-field-border-disabled);
+                color: var(--inputnumber-form-field-text-disabled);
+
+                .input-number-handle {
+                    display: none !important;
+                }
+            }
         }
 
-        &[readonly] {
+        &.input--readonly {
             color: var(--inputnumber-form-field-text-readonly);
             background-color: var(--inputnumber-form-field-background-readonly);
             border: var(--border-small) var(--inputnumber-form-field-border-readonly);
             outline: none;
-            /* Adjust opacity for disabled state */
-            cursor: auto;
+            cursor: default;
 
             input {
                 color: var(--inputnumber-form-field-text-readonly);
+                cursor: default;
             }
 
             .input-number-handle {
                 display: none !important;
+            }
+
+            &:hover {
+                background-color: var(--inputnumber-form-field-background-readonly);
+                border: var(--border-small) var(--inputnumber-form-field-border-readonly);
+                color: var(--inputnumber-form-field-text-readonly);
+
+                .input-number-handle {
+                    display: none !important;
+                }
             }
         }
 

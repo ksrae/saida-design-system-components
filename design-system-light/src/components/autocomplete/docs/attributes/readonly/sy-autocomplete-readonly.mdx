@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ReadonlyStories from './sy-autocomplete-readonly.stories';
+
+<Meta of={ReadonlyStories} />
+
+# Readonly
+
+The `readonly` attribute prevents typing while keeping the value visible. No suggestion list will
+open. Use for read-only display of a previously selected value.
+
+<Canvas of={ReadonlyStories.Default} />
+<Controls of={ReadonlyStories.Default} />

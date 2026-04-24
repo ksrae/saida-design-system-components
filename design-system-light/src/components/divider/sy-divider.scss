@@ -1,12 +1,15 @@
-// src/components/sy-divider/sy-divider.scss
-
-// [CSS 변수 정의]
-// 변수는 :host에 정의하는 것이 올바른 방식입니다.
+/* Divider — spec-driven styles.
+ * Spec: design-system-specs/components/divider.yaml
+ */
 :host {
   --border-small: 1px solid;
   --divider-horizontal-border-enabled: #e0e0e0;
   --divider-vertical-border-enabled: #e0e0e0;
 }
+
+/* Inset adds breathing room per spec variants. */
+:host([inset][type='horizontal']) .horizontal { margin-left: var(--spacing-medium); margin-right: var(--spacing-medium); }
+:host([inset][type='vertical']) .vertical { margin-top: var(--spacing-medium); margin-bottom: var(--spacing-medium); }
 
 // [호스트 요소 스타일]
 // 내부 div가 공간을 차지할 수 있도록 호스트 요소의 레이아웃을 설정합니다.

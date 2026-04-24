@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true
 })
 export class SyTimePicker {
-  @Element() host: HTMLSyTimepickerElement;
+  @Element() host!: HTMLSyTimepickerElement;
 
   @Prop() hour = 0;
   @Prop() minute = 0;
@@ -17,8 +17,8 @@ export class SyTimePicker {
   @Prop({ attribute: 'timeSeparator', mutable: true }) timeSeparator = ':'; // 시간 구분자 추가
   @Prop() format = 'hh:mm:ss'; // 시간 형식 지원 추가
 
-  @Event() selected: EventEmitter;
-  @Event() changed: EventEmitter;
+  @Event() selected!: EventEmitter;
+  @Event() changed!: EventEmitter;
 
   @State() selectedTime = '00:00:00';
   @State() private internalHour: number = 0;

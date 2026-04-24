@@ -12,7 +12,8 @@ export class SyFlex {
   @Prop({ reflect: true }) align: 'start' | 'end' | 'center' | 'stretch' | 'baseline' = 'start';
   @Prop({ reflect: true, attribute: 'rowGap', mutable: true }) rowGap: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
   @Prop({ reflect: true, attribute: 'columnGap', mutable: true }) columnGap: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
-  @Prop({ reflect: true }) justify: 'start' | 'center' | 'end' | 'space-between' = 'start';
+  // Spec adds `space-around` and `space-evenly` on top of the legacy values.
+  @Prop({ reflect: true }) justify: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly' = 'start';
   @Prop({ reflect: true }) direction: "horizontal" | "vertical" | "horizontal-reverse" | "vertical-reverse" = "horizontal";
   @Prop({ reflect: true }) wrap: 'nowrap' | 'wrap' | 'wrap-reverse' = 'nowrap';
   @Prop({ reflect: true }) padding: 'none' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';

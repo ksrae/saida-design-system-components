@@ -41,6 +41,13 @@
         outline: var(--border-small) var(--focus-outline);
       }
 
+      /* Form validation error (e.g., required miss). Red border overrides hover + focus. */
+      &.datepicker--invalid,
+      &.datepicker--invalid:hover,
+      &.datepicker--invalid.input--focused {
+        border: var(--border-small) var(--input-form-field-border-error) !important;
+      }
+
       &.focus-start {
         position: relative;
 

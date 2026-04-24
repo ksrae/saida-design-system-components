@@ -1,0 +1,25 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodStories from './sy-datepicker-set-custom-error.stories';
+
+<Meta of={MethodStories} />
+
+# setCustomError() / clearCustomError()
+
+Both methods drive a single UI channel — whatever the consumer put in `[slot="error"]`.
+
+| API | Effect |
+| --- | --- |
+| `setCustomError()` | Sets `validStatus = 'custom'`, `isValid = false`, and forces `touched=true`. The slot content is revealed and `el.validationMessage` becomes the slot's text content. |
+| `clearCustomError()` | Clears the custom flag; native constraints (`required`) resume ownership of validity. |
+
+Identical to `sy-autocomplete` and `sy-checkbox` — the error message lives in the markup, not in JS.
+
+```html
+<sy-datepicker required>
+  <div slot="error">
+    <p>🚫 Please select a date.</p>
+  </div>
+</sy-datepicker>
+```
+
+<Canvas of={MethodStories.Default} />

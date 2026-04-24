@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true
 })
 export class SyDateTimeCalendar {
-  @Element() host: HTMLSyDateTimeCalendarElement;
+  @Element() host!: HTMLSyDateTimeCalendarElement;
 
   @Prop() mode: 'day' | 'month' | 'year' | 'decade' = 'day';
   @Prop() datetime: {year: number, month: number, day: number, hour: number, minute: number, second: number} = {
@@ -23,7 +23,7 @@ export class SyDateTimeCalendar {
   @Prop({ attribute: 'mondayStart', mutable: true }) mondayStart: boolean = false;
   @Prop({ attribute: 'hideWeekend', mutable: true }) hideWeekend: boolean = false;
 
-  @Event() selected: EventEmitter;
+  @Event() selected!: EventEmitter;
 
   @State() private hasInitialSelection = false;
   @State() private internalDatetime: {year: number, month: number, day: number, hour: number, minute: number, second: number};

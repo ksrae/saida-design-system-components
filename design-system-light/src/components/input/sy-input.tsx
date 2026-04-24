@@ -1,6 +1,31 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-input — single-line text input with form association + slot-based error support.
+ *
+ * Spec: design-system-specs/components/input.yaml
+ *
+ * Canonical (spec-aligned) props:
+ *   - type          ('text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search')
+ *   - message       (help/validation text below field)
+ *   - minLength / maxLength (character length constraints)
+ *
+ * Legacy props kept for backward compatibility:
+ *   - variant       (maps to `type` — accepts text | password | search)
+ *   - min / max     (map to minLength / maxLength)
+ *   - label         (display label above input; not in spec but in use)
+ *
+ * Slots (spec-aligned + legacy):
+ *   - prefix-icon  (spec)   / prefix  (legacy)
+ *   - suffix-icon  (spec)   / suffix  (legacy)
+ *   - message      (spec — custom help/validation)
+ *   - error        (legacy — custom error content)
+ *
+ * Events (spec-aligned + legacy):
+ *   - input, change, focus, blur, clear   (spec)
+ *   - changed, focused, blured             (legacy)
+ */
 @Component({
   tag: 'sy-input',
   styleUrl: 'sy-input.scss',
@@ -10,8 +35,8 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
 })
 export class SyInput {
   // --- Element References ---
-  @Element() host: HTMLSyInputElement;
-  @AttachInternals() internals: ElementInternals;
+  @Element() host!: HTMLSyInputElement;
+  @AttachInternals() internals!: ElementInternals;
   private input!: HTMLInputElement;
 
   private _isUserInput: boolean = false;
@@ -23,8 +48,8 @@ export class SyInput {
   @Prop() clearable = false;
   @Prop({ reflect: true, mutable: true }) disabled = false;
   @Prop() label: string = "";
-  @Prop() max?: number;
-  @Prop() min?: number;
+  @Prop({ mutable: true }) max?: number;
+  @Prop({ mutable: true }) min?: number;
   @Prop() name: string = "";
   @Prop() placeholder: string = "";
   @Prop({ reflect: true }) readonly = false;
@@ -32,8 +57,12 @@ export class SyInput {
   @Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";
   @Prop() status: 'default' | 'warning' | 'error' | 'success' = 'default';
   @Prop({ mutable: true, reflect: true }) value: string = "";
-  @Prop({ reflect: true }) variant: "password" | "search" | "text" = "text";
+  @Prop({ reflect: true, mutable: true }) variant: "password" | "search" | "text" = "text";
   @Prop({ attribute: 'noNativeValidity', mutable: true }) noNativeValidity = false;
+
+  // --- Spec-aligned props ---
+  @Prop({ mutable: true }) type: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' = 'text';
+  @Prop() message: string = "";
 
   // --- State ---
   @State() private hasFocus = false;
@@ -41,16 +70,19 @@ export class SyInput {
   @State() private hasPrefix: boolean = false;
   @State() private hasSuffix: boolean = false;
   @State() private isValid: boolean = true;
-  @State() private validStatus: 'valueMissing' | 'tooShort' | 'tooLong' | 'custom' | '' = "";
+  @State() private validStatus: 'valueMissing' | 'tooShort' | 'tooLong' | 'typeMismatch' | 'custom' | '' = "";
   @State() private hasSlotErrorMessage: boolean = false;
   @State() private hasPopupErrorComponent: boolean = false;
   @State() private touched: boolean = false;
   @State() private formSubmitted: boolean = false;
 
-  // --- Events ---
-  @Event() changed: EventEmitter<{ value: string; isValid: boolean; status: string }>;
-  @Event() blured: EventEmitter<{ value: string; isValid: boolean; status: string }>;
-  @Event() focused: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+  // --- Events (legacy names retained; spec-aligned `input`/`change` bubble
+  //     up from the inner native <input> element — shadow:false means we don't
+  //     re-emit them from Stencil (that would conflict with native DOM events). ---
+  @Event() changed!: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+  @Event() blured!: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+  @Event() focused!: EventEmitter<{ value: string; isValid: boolean; status: string }>;
+  @Event() clear!: EventEmitter<void>;
 
   // --- Custom Validity Getters ---
   get validity(): ValidityState {
@@ -58,8 +90,8 @@ export class SyInput {
       return {
         badInput: false, customError: true, patternMismatch: false, rangeOverflow: false,
         rangeUnderflow: false, stepMismatch: false, tooLong: this.validStatus === 'tooLong',
-        tooShort: this.validStatus === 'tooShort', typeMismatch: false, valid: false,
-        valueMissing: this.validStatus === 'valueMissing',
+        tooShort: this.validStatus === 'tooShort', typeMismatch: this.validStatus === 'typeMismatch',
+        valid: false, valueMissing: this.validStatus === 'valueMissing',
       } as ValidityState;
     }
     return this.internals?.validity;
@@ -91,6 +123,22 @@ export class SyInput {
 
   componentWillLoad() {
     this.noNativeValidity = fnAssignPropFromAlias(this.host, 'no-native-validity') ?? this.noNativeValidity;
+
+    // Accept spec-aligned attribute aliases for character-length constraints.
+    const minLengthAlias = fnAssignPropFromAlias<number>(this.host, 'min-length', 'minLength');
+    if (minLengthAlias !== null && minLengthAlias !== undefined) this.min = minLengthAlias;
+    const maxLengthAlias = fnAssignPropFromAlias<number>(this.host, 'max-length', 'maxLength');
+    if (maxLengthAlias !== null && maxLengthAlias !== undefined) this.max = maxLengthAlias;
+
+    // spec `type` ↔ legacy `variant`. Keep both coherent.
+    if (this.type && this.type !== 'text') {
+      if (this.type === 'password' || this.type === 'search') {
+        this.variant = this.type;
+      }
+      // email/number/tel/url: variant stays 'text' — the native <input type> is driven by `type` directly.
+    } else if (this.variant && this.variant !== 'text') {
+      this.type = this.variant;
+    }
 
     this.initialValue = this.value;
     this.handleSlotChange();
@@ -161,26 +209,31 @@ export class SyInput {
 
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
-    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-    if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.host.querySelector('[slot="error"]');
-      const hasContent = errorSlotElement?.textContent?.trim();
-      if (hasContent) {
-        this.hasSlotErrorMessage = true;
-        e.preventDefault();
-        e.stopPropagation();
+    this.formSubmitted = true;
+    this.isValid = false;
+
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement && (errorSlotElement.textContent?.trim().length ?? 0) > 0;
+
+    if (this.noNativeValidity) {
+      // Opt-out: suppress the browser popup. Slot (if present) is the UI.
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent && e.target === this.host) {
         if (this.input) this.input.setCustomValidity('');
         this.internals?.setValidity({ customError: true }, ' ');
-      } else {
-        this.hasSlotErrorMessage = false;
       }
     } else {
+      // Default: native browser popup. Do NOT call preventDefault here —
+      // per HTML spec, if ANY `invalid` event in a form has its default
+      // prevented, the browser shows NO validation UI for the entire form.
+      // Calling preventDefault would silently kill every popup.
       this.hasSlotErrorMessage = false;
-      setTimeout(() => {
-        if (!this.isValid) this.input?.reportValidity();
-      }, 0);
     }
-    this.isValid = false;
+
+    this.updateValidityState();
   }
 
   // --- Event Handlers ---
@@ -194,6 +247,7 @@ export class SyInput {
     this.touched = true;
     this.updateValidityState();
     this.blured.emit({ value: this.value, isValid: this.isValid, status: this.validStatus });
+    // Native `change` event fires on the inner <input> at blur and bubbles up.
   };
 
   private handleInput = (e: Event) => {
@@ -202,6 +256,7 @@ export class SyInput {
     this._isUserInput = true;
     this.value = target.value;
     this.emitChangedEvent();
+    // Native `input` event bubbles up from the inner <input> automatically.
   };
 
   private handleKeydown = (e: KeyboardEvent) => {
@@ -214,6 +269,7 @@ export class SyInput {
     this._isUserInput = true;
     this.value = "";
     this.emitChangedEvent();
+    this.clear.emit();
     this.input?.focus();
   };
 
@@ -227,8 +283,13 @@ export class SyInput {
   };
 
   private handleSlotChange = () => {
-    this.hasPrefix = this.host.querySelector('[slot="prefix"]') !== null;
-    this.hasSuffix = this.host.querySelector('[slot="suffix"]') !== null;
+    // Accept both legacy and spec-aligned slot names.
+    this.hasPrefix =
+      this.host.querySelector('[slot="prefix"]') !== null ||
+      this.host.querySelector('[slot="prefix-icon"]') !== null;
+    this.hasSuffix =
+      this.host.querySelector('[slot="suffix"]') !== null ||
+      this.host.querySelector('[slot="suffix-icon"]') !== null;
 
     const errorSlot = this.host.querySelector('[slot="error"]');
     if (!errorSlot) {
@@ -250,9 +311,19 @@ export class SyInput {
     });
   }
 
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
+  }
+
   private updateValidityState() {
+    // (1) Programmatic custom error takes priority — use the slot's text as the
+    // validity message when present (so reportValidity surfaces the same copy
+    // that's on screen). Matches autocomplete's setCustomError flow.
     if (this.validStatus === 'custom' && !this.isValid) {
-      this.internals.setValidity({ customError: true }, this.getErrorMessage('custom'));
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
+      this.internals?.setValidity({ customError: true }, msg);
+      this.internals?.setFormValue(this.value, this.value);
       return;
     }
 
@@ -268,6 +339,11 @@ export class SyInput {
     } else if (this.value && this.max !== undefined && this.value.length > this.max) {
       currentIsValid = false;
       currentValidStatus = "tooLong";
+    } else if (this.value && this.input?.validity?.typeMismatch) {
+      // email / url / tel — delegate format checking to the native input, then
+      // mirror typeMismatch onto our own state so the visual error activates.
+      currentIsValid = false;
+      currentValidStatus = "typeMismatch";
     }
 
     this.isValid = currentIsValid;
@@ -278,7 +354,8 @@ export class SyInput {
 
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
-        this.internals.setValidity({ customError: true }, validityMessage);
+        const slotText = this.getSlotErrorText() || validityMessage || ' ';
+        this.internals.setValidity({ customError: true }, slotText);
       } else {
         this.internals.setValidity({ [this.validStatus]: true }, validityMessage);
       }
@@ -290,17 +367,31 @@ export class SyInput {
   private customSettingError() {
     this.isValid = false;
     this.validStatus = 'custom';
+    this.touched = true;
+    // Slot UI is the surface for programmatic errors regardless of the
+    // noNativeValidity toggle (which only gates the browser-driven popup).
+    this.hasSlotErrorMessage =
+      !!this.host.querySelector('[slot="error"]') &&
+      (this.host.querySelector('[slot="error"]')?.textContent?.trim().length ?? 0) > 0;
     this.updateValidityState();
   }
 
   private getErrorMessage(type: typeof this.validStatus) {
-    const messages = {
+    const effectiveType = this.type && this.type !== 'text' ? this.type : this.variant;
+    const typeMismatchText =
+      effectiveType === 'email' ? 'Please enter a valid email address'
+      : effectiveType === 'url' ? 'Please enter a valid URL'
+      : effectiveType === 'tel' ? 'Please enter a valid phone number'
+      : 'Please enter a valid value';
+
+    const messages: Record<string, string> = {
       valueMissing: "This field is required",
       tooShort: `Value must be at least ${this.min} characters long`,
       tooLong: `Value cannot exceed ${this.max} characters`,
-      custom: 'Invalid by custom'
+      typeMismatch: typeMismatchText,
+      custom: 'Invalid by custom',
     };
-    return messages[type] || '';
+    return messages[type as string] || '';
   }
 
   // --- Render Method ---
@@ -332,7 +423,11 @@ export class SyInput {
       'visible-error': (this.touched || this.formSubmitted) && !this.isValid
     };
 
-    const inputType = (this.variant === "password" && this.passwordvisible) || this.variant === "text" ? "text" : this.variant;
+    // Native <input type="..."> priority: password visibility toggle → spec-aligned `type` → legacy `variant`.
+    const effectiveType = this.type && this.type !== 'text' ? this.type : (this.variant as string);
+    const inputType = (effectiveType === "password" && this.passwordvisible)
+      ? "text"
+      : (effectiveType || 'text');
 
     return (
       <div class="input--item input--item-vertical">
@@ -346,6 +441,7 @@ export class SyInput {
           <div class={wrapperClasses}>
             <span class="prefix-wrapper" style={{ display: this.hasPrefix ? 'flex' : 'none' }}>
               <slot name="prefix" onSlotchange={this.handleSlotChange} />
+              <slot name="prefix-icon" onSlotchange={this.handleSlotChange} />
             </span>
             <input
               ref={(el) => (this.input = el as HTMLInputElement)}
@@ -381,6 +477,14 @@ export class SyInput {
           <div class={errorContainerClasses}>
             <slot name="error" onSlotchange={this.handleSlotChange}></slot>
           </div>
+          {(this.message || this.host.querySelector('[slot="message"]')) && (
+            <div class="input--message">
+              <slot name="message"></slot>
+              {this.message && !this.host.querySelector('[slot="message"]') && (
+                <span>{this.message}</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -422,6 +526,7 @@ export class SyInput {
         return (
           <span class="suffix-wrapper" style={{ display: this.hasSuffix ? 'flex' : 'none' }}>
             <slot name="suffix" onSlotchange={this.handleSlotChange} />
+            <slot name="suffix-icon" onSlotchange={this.handleSlotChange} />
           </span>
         );
     }

@@ -1,5 +1,17 @@
 import { Component, Prop, h, Element, Watch } from '@stencil/core';
 
+/**
+ * sy-steps — step progress indicator containing multiple sy-step items.
+ *
+ * Spec: design-system-specs/components/steps.yaml
+ *
+ * Props: current, clickable, complete, type (horizontal | vertical),
+ * size (small | medium), startIndex.
+ *
+ * The parent propagates size/type/clickable to each sy-step child via
+ * attribute push, and each child reports clicks through a `selected` event
+ * that bubbles up to update `current` here.
+ */
 @Component({
   tag: 'sy-steps',
   styleUrl: 'sy-steps.scss',

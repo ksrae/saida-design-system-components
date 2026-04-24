@@ -6,6 +6,20 @@ export interface SegmentModel {
   status?: 'default' | 'error' | 'complete';
 }
 
+/**
+ * sy-progress-bar — linear progress indicator with optional segmentation.
+ *
+ * Spec: design-system-specs/components/progress-bar.yaml
+ *
+ * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+ *   - percent, status, indeterminate
+ *   - valuePosition (camelCase prop) ↔ `value-position` (legacy attribute)
+ *   - hidePercent                    ↔ `hide-percent`
+ *   - tooltipTitle                   ↔ `tooltip-title`
+ *   - segment — JSON array string of { percent, status } entries
+ *
+ * role="progressbar" + aria-valuenow are applied for screen reader support.
+ */
 @Component({
   tag: 'sy-progress-bar',
   styleUrl: 'sy-progress-bar.scss',

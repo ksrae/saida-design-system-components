@@ -59,8 +59,28 @@ sy-tab .tab-container {
             color: var(--tabs-line-list-icon-enabled);
             flex-shrink: 0;
         }
+
+        /* Redesigned close glyph — thinner stroke, smaller footprint, quietly
+           surfaces on hover. Stays as sy-icon so sy-tab's selectable-icon
+           conventions (a11y, selected event) still apply. */
+        .tab-close-icon {
+            flex-shrink: 0;
+            margin-left: var(--spacing-3xsmall);
+            color: var(--tabs-line-list-icon-enabled);
+            opacity: 0.55;
+            transition: opacity 120ms ease, color 120ms ease;
+
+            svg { width: 10px; height: 10px; display: block; }
+
+            &:hover {
+                opacity: 1;
+                color: var(--tabs-line-list-icon-hover, currentColor);
+            }
+        }
     }
 }
+
+sy-tab:hover .tab-close-icon { opacity: 1; }
 
 /* Hover */
 sy-tab:hover .tab-container {

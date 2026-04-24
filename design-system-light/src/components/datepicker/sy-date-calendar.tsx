@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true
 })
 export class SyDateCalendar {
-  @Element() host: HTMLSyDateCalendarElement;
+  @Element() host!: HTMLSyDateCalendarElement;
 
   @State() today = new Date();
   @State() inrange = false;
@@ -43,10 +43,10 @@ export class SyDateCalendar {
   @Prop({ attribute: 'hideWeekend', mutable: true, reflect: true }) hideWeekend: boolean = false;
   @Prop({ mutable: true }) currentDate: Date = new Date();
 
-  @Event() changed: EventEmitter;
-  @Event() selected: EventEmitter;
-  @Event() entered: EventEmitter;
-  @Event({ eventName: 'mode-changed' }) modeChanged: EventEmitter;
+  @Event() changed!: EventEmitter;
+  @Event() selected!: EventEmitter;
+  @Event() entered!: EventEmitter;
+  @Event({ eventName: 'mode-changed' }) modeChanged!: EventEmitter;
 
   @State() private preMode = '';
   @State() originalDatetime!: {year: number, month: number, day: number, hour: number, minute: number, second: number};
@@ -147,10 +147,10 @@ export class SyDateCalendar {
         </div>
         <div class="calendar-footer">
           {this.mode === 'day' && !this.range ? (
-            <div>
-              <sy-divider></sy-divider>
-              <sy-button size="small" variant="borderless" onClick={this.handleToday}>Now</sy-button>
-            </div>
+            // The footer already has `border-top` in SCSS — a second `<sy-divider>` was
+            // redundant, and its default `margin: 1rem 0` overflowed the 36px-tall footer,
+            // which pushed the Now button below the calendar and caused an iframe scroll.
+            <sy-button size="small" variant="borderless" onClick={this.handleToday}>Now</sy-button>
           ) : null}
         </div>
       </div>
@@ -365,8 +365,11 @@ private generateDays() {
     const liAttrs: any = {
       class: 'current-month',
       'data-date': dataDate,
-      onMouseEnter: () => this.setHoverEvent(dataDate),
-      onMouseLeave: this.handleMouseLeave,
+      // Dashed highlight overlays are strictly a range-mode preview. Gating the hover
+      // handlers on `this.range` prevents `.highlight*` classes from being added in
+      // single-select mode, which was colliding with the solid hover border.
+      onMouseEnter: this.range ? (() => this.setHoverEvent(dataDate)) : undefined,
+      onMouseLeave: this.range ? this.handleMouseLeave : undefined,
       onClick: () => this.selectDate(year, month, day)
     };
 

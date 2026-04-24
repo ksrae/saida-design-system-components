@@ -1,6 +1,20 @@
-// sy-menu-item.tsx
 import { Component, Prop, State, h, Element, Watch, Event, EventEmitter } from '@stencil/core';
 
+/**
+ * sy-menu-item — a single item inside sy-menu.
+ *
+ * Spec: design-system-specs/components/menu.yaml (menu-item anatomy).
+ *
+ * Props:
+ *   - value     (payload emitted with itemSelected / itemChecked)
+ *   - disabled
+ *   - selectable (item becomes highlightable/checkable individually)
+ *   - checkable  (force checkbox UI; implies selectable)
+ *   - select    (controlled: visually mark as currently selected)
+ *
+ * Events: itemSelected {value,label}, itemChecked {value,label,checked}.
+ * Both bubble to the containing sy-menu which re-emits them as menu events.
+ */
 @Component({
   tag: 'sy-menu-item',
   shadow: false,

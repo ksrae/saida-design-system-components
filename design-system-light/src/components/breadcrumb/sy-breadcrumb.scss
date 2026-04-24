@@ -1,55 +1,62 @@
+/* ------------------------------------------------------------------
+ * Breadcrumb — spec-driven styles
+ * Spec: design-system-specs/components/breadcrumb.yaml
+ * ------------------------------------------------------------------ */
+
 :root,
 :host {
-     display: inline-flex;
+  display: inline-flex;
+  align-items: center;
+
+  .breadcrumb {
+    display: flex;
     align-items: center;
-    .breadcrumb--item {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        height: 22px;
+  }
+
+  .breadcrumb--item {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    color: var(--breadcrumb-previous-default-text-enabled);
+    line-height: normal;
+    user-select: none;
+
+    &:hover {
+      color: var(--breadcrumb-previous-default-text-hover);
+    }
+
+    &:focus-visible {
+      outline: var(--border-small) var(--focus-outline, var(--button-primary-border-focus));
+      outline-offset: 2px;
+    }
+
+    &.breadcrumb--item-current {
+      color: var(--breadcrumb-current-default-text-enabled);
+      cursor: default;
+    }
+
+    &.breadcrumb--item-disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+
+      &:hover {
         color: var(--breadcrumb-previous-default-text-enabled);
-        line-height: normal;
-
-        &:focus-visible {
-            border: var(--border-small) var(--button-primary-border-focus);
-            outline: var(--border-small) var(--button-primary-border-focus);
-        }
-
-        &.breadcrumb--item-current {
-            color: var(--breadcrumb-current-default-text-enabled);
-        }
-
-        &.breadcrumb--item-focused {
-
-        }
-
-        &.breadcrumb--item-disabled {
-            cursor: auto !important;
-
-            &:hover {
-                color: var(--breadcrumb-previous-default-text-enabled);
-            }
-        }
+      }
     }
+  }
 
-    .separator {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--breadcrumb-previous-withicon-icon-enabled);
-        padding:5px;
-    }
+  .separator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--breadcrumb-previous-withicon-icon-enabled);
+    padding: 5px;
+  }
 }
-
 
 :host(sy-breadcrumb-item) {
-    .breadcrumb--item:hover {
-        color: var(--breadcrumb-previous-default-text-hover);
-    }
-}
-
-:host(sy-breadcrumb-item:last-child) {
-    .breadcrumb--item {
-        cursor: pointer;
-    }
+  .breadcrumb--item:hover {
+    color: var(--breadcrumb-previous-default-text-hover);
+  }
 }

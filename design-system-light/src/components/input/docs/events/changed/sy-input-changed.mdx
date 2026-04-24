@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as EventStories from './sy-input-changed.stories';
+
+<Meta of={EventStories} />
+
+# changed
+
+Fires on every value change. Detail: `{ value, isValid, status }`.
+
+<Canvas of={EventStories.Default} />

@@ -83,6 +83,14 @@ sy-flex[justify="space-between"] .flex-container {
     justify-content: space-between;
 }
 
+sy-flex[justify="space-around"] .flex-container {
+    justify-content: space-around;
+}
+
+sy-flex[justify="space-evenly"] .flex-container {
+    justify-content: space-evenly;
+}
+
 
 /* columngap */
 sy-flex[columngap="xsmall"] .flex-container {

@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { SyBannerProps, Banner } from './sy-banner.main';
 import { clearElements } from '../../clear-element';
 
 const bannerMeta: Meta<SyBannerProps> = {
   title: 'BannerMessage/Overview',
-  component: 'sy-banner-messsage',
+  component: 'sy-banner-message',
   tags: [],
   render: (args) => {
     clearElements(bannerMeta.title);

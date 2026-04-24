@@ -1,10 +1,15 @@
 import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
-import * as ButtonJustifiedStories from "./sy-button-justified.stories";
+import * as ButtonFullWidthStories from "./sy-button-justified.stories";
 
-<Meta of={ButtonJustifiedStories} />
+<Meta of={ButtonFullWidthStories} />
 
-# Justified
-This will force the button to fit the width of its parent. Use it if necessary, depending on the page design.
+# Full Width
 
-<Canvas of={ButtonJustifiedStories.Default} />
-<Controls of={ButtonJustifiedStories.Default} />
+The `fullWidth` attribute (HTML attribute: `full-width`) forces the button to expand to the
+width of its parent container. Use this for justified layouts (e.g., action rows, form footers).
+
+The legacy attribute `justified` is accepted for backward compatibility, but new markup should
+use `full-width` per the spec.
+
+<Canvas of={ButtonFullWidthStories.Default} />
+<Controls of={ButtonFullWidthStories.Default} />

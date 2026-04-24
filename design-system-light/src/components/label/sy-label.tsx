@@ -13,9 +13,15 @@ export class SyLabel {
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop({ reflect: true }) required: boolean = false;
   @Prop({ reflect: true, attribute: 'requiredPosition', mutable: true }) requiredPosition: 'left' | 'right' = 'right';
-  @Prop({ attribute: 'for', mutable: true }) htmlFor: string = '';
+  // `htmlFor` is intentionally exposed via the `htmlfor` attribute (HTML lowercases
+  // it). `for` is a reserved word in TypeScript/JSX so we can't use it as a class
+  // property. The storybook argType renames it back to "htmlfor" for UX clarity.
+  @Prop({ attribute: 'htmlfor', mutable: true }) htmlFor: string = '';
   @Prop() value: string = '';
-  @Prop() valuePosition: 'left' | 'right' = 'left';
+  // Attribute mirrors the JS property name so `<sy-label valuePosition="right">`
+  // works verbatim in storybook stories (HTML lowercases to `valueposition`, which
+  // Stencil observes via the explicit attribute mapping).
+  @Prop({ reflect: true, attribute: 'valuePosition', mutable: true }) valuePosition: 'left' | 'right' | 'center' = 'left';
   @Prop() width: string = '';
 
   @State() private labelWidth: string = 'auto';
@@ -27,6 +33,8 @@ export class SyLabel {
 
   componentWillLoad() {
     this.requiredPosition = fnAssignPropFromAlias(this.host, 'required-position') ?? this.requiredPosition;
+    const valuePos = fnAssignPropFromAlias<'left' | 'right' | 'center'>(this.host, 'value-position');
+    if (valuePos) this.valuePosition = valuePos;
 
     // width 초기 설정
     if (this.width && this.width.length) {

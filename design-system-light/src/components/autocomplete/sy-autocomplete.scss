@@ -1,212 +1,329 @@
-    @use "../../assets/style/global/font" as font;
+@use "../../assets/style/global/font" as font;
 
-    /* Autocomplete Input */
-    :root,
-    :host {
-      display: flex;
-      flex-direction: column;
-      // background-color: var(--autocomplete-input-background-enabled);
-      /* Size */
-      --autocomplete-size-large: var(--component-large);
-      --autocomplete-size-medium: var(--component-medium);
-      --autocomplete-size-small: var(--component-small);
+/* ------------------------------------------------------------------
+ * Autocomplete — spec-driven styles
+ * Spec: design-system-specs/components/autocomplete.yaml
+ * Anatomy mapping:
+ *   .autocomplete-container -> root
+ *   .autocomplete-wrapper   -> field-wrap (hosts field + error-container)
+ *   .autocomplete           -> field
+ *   input                   -> wrapper + placeholder (native input)
+ *   sy-autocomplete-option  -> autocomplete-menu (cloned to body at runtime)
+ * ------------------------------------------------------------------ */
 
-      /* Input spacing */
-      --autocomplete-spacing-large: var(--spacing-small);
-      --autocomplete-spacing-medium: var(--spacing-xsmall);
-      --autocomplete-spacing-small: var(--spacing-2xsmall);
-      .autocomplete {
-        flex: 1;
-        height: var(--autocomplete-size-medium);
-        border: var(--border-small) var(--autocomplete-input-border-enabled);
-        padding: 0 var(--autocomplete-spacing-medium);
-        color: var(--autocomplete-input-text-enabled);
-        background-color: var(--autocomplete-input-background-enabled);
-        border-radius: var(--border-radius-medium);
-        box-sizing: border-box;
-        @include font.text-style-base-regular;
-        outline: none;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        box-shadow: none;
+:root,
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
-        input {
-          flex: 1;
-          border: var(--border-small) transparent;
-          background: var(--autocomplete-input-background-enabled);
-          color: var(--autocomplete-input-text-enabled);
-          outline: none;
-          padding: 0px;
+  /* Size height tokens (per spec: component-{small|medium|large}) */
+  --autocomplete-size-large: var(--component-large);
+  --autocomplete-size-medium: var(--component-medium);
+  --autocomplete-size-small: var(--component-small);
 
-          &:focus-visible {
-            border: var(--border-small) transparent;
-            outline: var(--border-small) var(--focus-outline);
-            box-shadow: none;
-            outline-offset: 0px;
-            outline: none;
-          }
-        }
+  /* Padding tokens aligned with spec */
+  --autocomplete-padding-large: var(--spacing-2xsmall) var(--spacing-small);
+  --autocomplete-padding-medium: var(--spacing-3xsmall) var(--spacing-xsmall);
+  --autocomplete-padding-small: var(--spacing-4xsmall) var(--spacing-2xsmall);
 
-        &:hover {
-          color: var(--autocomplete-input-text-hover);
-          border: var(--border-small) var(--autocomplete-input-border-hover);
-          background-color: var(--autocomplete-input-background-hover);
-        }
+  --autocomplete-gap-large: var(--spacing-2xsmall);
+  --autocomplete-gap-medium: var(--spacing-3xsmall);
+  --autocomplete-gap-small: var(--spacing-3xsmall);
 
-        &[type="number"] {
-          padding-right: 30px;
-        }
+  /* NOTE: do NOT give the container a fixed height. The error slot renders as
+     a sibling of the field in normal flow, so the container must grow to
+     enclose both — otherwise the error message overflows and overlaps
+     whatever sits below the autocomplete (e.g. a submit button). The field
+     itself owns its fixed height via `.autocomplete`. */
+  .autocomplete-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    box-sizing: border-box;
+  }
 
-        &[type="number"]::-webkit-inner-spin-button {
-          opacity: 1 !important;
-          background: transparent !important;
-          border-width: 0px;
-          margin: 0;
-          height: 34px;
-          width: 23px;
-          cursor: pointer;
-          display: inline-block;
-          content: "";
-        }
+  .autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3xsmall);
+  }
 
-        &:focus-visible {
-          border: var(--border-small) var(--focus-outline) !important;
-          outline: var(--border-small) var(--focus-outline) !important;
-        }
+  .autocomplete {
+    flex: 1;
+    height: var(--autocomplete-size-medium);
+    border: var(--border-small) var(--autocomplete-input-border-enabled);
+    padding: var(--autocomplete-padding-medium);
+    color: var(--autocomplete-input-text-placeholder);
+    background-color: var(--autocomplete-input-background-enabled);
+    border-radius: var(--border-radius-medium);
+    box-sizing: border-box;
+    @include font.text-style-base-regular;
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: var(--autocomplete-gap-medium);
+    box-shadow: none;
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
 
-        &.autocomplete--large {
-          height: var(--autocomplete-size-large);
-          padding: 0 var(--autocomplete-spacing-large);
-          height: 40px;
-
-          input {
-            @include font.text-style-large-regular;
-          }
-        }
-
-        &.autocomplete--small {
-          height: var(--autocomplete-size-small);
-          padding: 0 var(--autocomplete-spacing-small);
-          border-radius: var(--border-radius-small);
-
-          input {
-            @include font.text-style-small-regular;
-          }
-        }
-
-        &.autocomplete--focused {
-          border: var(--border-small) var(--focus-outline) !important;
-          outline: var(--border-small) var(--focus-outline) !important;
-        }
-
-        &.autocomplete--borderless {
-          border: var(--border-small) transparent;
-        }
-
-
-        &.autocomplete--valid {
-          border: var(--border-small) var(--border-success) !important;
-
-          &:focus-visible {
-            border: var(--border-small) var(--border-success) !important;
-            outline: var(--border-small) var(--focus-outline) !important;
-          }
-        }
-
-        &.autocomplete--invalid {
-          border: var(--border-small) var(--border-error) !important;
-
-          &:focus-visible {
-            border: var(--border-small) var(--border-error) !important;
-            outline: var(--border-small) var(--focus-outline) !important;
-          }
-        }
-
-        .autocomplete--clear {
-          cursor: pointer;
-        }
-      }
-
-      // remove default clear button incase of type="search"
-      // compatable with chrome,edge,and firefox
-      input::-webkit-search-decoration,
-      input::-webkit-search-cancel-button,
-      input::-webkit-search-results-button,
-      input::-webkit-search-results-decoration {
-        opacity: 0;
-        pointer-events: none
-      }
-
-    }
-
-    /* autocomplete-option-container */
-    .autocomplete-option-container {
-      // border: var(--border-small) var(--autocomplete-default-border-enabled);
-      box-shadow: var(--box-shadow);
-      background-color: var(--autocomplete-inputlistcontainer-background-enabled);
-      border-radius: var(--border-radius-medium);
-      max-height: 300px;
-      overflow-y: auto;
-      padding-top: var(--spacing-3xsmall);
-      padding-bottom: var(--spacing-3xsmall);
-      margin: var(--spacing-3xsmall) 0;
-      max-width: 100%;
-      min-height: var(--autocomplete-size-medium);
-    }
-
-    :host(sy-autocomplete-option) {
-      position: absolute;
-      left: 0;
-      top: 0;
+    input {
+      flex: 1;
+      min-width: 0;
+      border: var(--border-small) transparent;
+      background: transparent;
+      color: inherit;
       outline: none;
-      display: block;
-      visibility: hidden;
-      z-index: var(--z-index-autocomplete);
+      padding: 0;
+      @include font.text-style-base-regular;
 
-      .option--list {
-        cursor: pointer;
-        display: block;
-        color: var(--autocomplete-input-text-enabled);
-        padding: 0 var(--spacing-xsmall);
-        height: var(--autocomplete-size-medium);
-        width: 100%;
-        box-sizing: border-box;
+      &::placeholder {
+        color: var(--autocomplete-input-text-placeholder);
+      }
 
-        &:hover {
-          background-color: var(--autocomplete-menuitem-default-background-hover);
-        }
-
-        &.option--active {
-          background-color: var(--autocomplete-menuitem-default-background-active);
-        }
-
-        &.option--selected {
-          background-color: var(--autocomplete-menuitem-default-background-selected);
-          @include font.text-style-base-medium;
-        }
-
-        .option--list-inner {
-          display: flex;
-          align-items: center;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-          height: 100%;
-        }
+      &:focus,
+      &:focus-visible {
+        outline: none;
+        border-color: transparent;
+        box-shadow: none;
       }
     }
 
-    .error-container {
-      color: var(--required);
-      display: none;
+    /* Hover */
+    &:hover:not(.autocomplete--disabled):not(.autocomplete--readonly) {
+      color: var(--autocomplete-input-text-hover);
+      border: var(--border-small) var(--autocomplete-input-border-hover);
+      background-color: var(--autocomplete-input-background-hover);
+    }
 
-      &.visible-error {
-        display: block;
+    /* Focused (state=focus per spec) */
+    &.autocomplete--focused {
+      background-color: var(--autocomplete-input-background-focus);
+      border: var(--border-small) var(--autocomplete-input-border-focus);
+      outline: var(--border-small) var(--focus-outline);
+      outline-offset: 0;
+    }
+
+    /* Filled (value present) → text-enabled color */
+    &.autocomplete--filled {
+      color: var(--autocomplete-input-text-enabled);
+
+      input::placeholder {
+        color: var(--autocomplete-input-text-placeholder);
       }
     }
 
-    :host(sy-autocomplete) {
+    /* ---------- Status variants (Figma/spec) ---------- */
+    &.autocomplete--warning {
+      background-color: var(--autocomplete-input-background-warning);
+      border: var(--border-small) var(--autocomplete-input-border-warning);
+    }
+
+    &.autocomplete--error {
+      background-color: var(--autocomplete-input-background-error);
+      border: var(--border-small) var(--autocomplete-input-border-error);
+    }
+
+    &.autocomplete--success {
+      background-color: var(--autocomplete-input-background-success);
+      border: var(--border-small) var(--autocomplete-input-border-success);
+    }
+
+    &.autocomplete--filled.autocomplete--warning { color: var(--autocomplete-input-text-warning); }
+    &.autocomplete--filled.autocomplete--error   { color: var(--autocomplete-input-text-error); }
+    &.autocomplete--filled.autocomplete--success { color: var(--autocomplete-input-text-success); }
+
+    /* ---------- Required / invalid (form validation) ---------- */
+    &.autocomplete--invalid {
+      border: var(--border-small) var(--border-error) !important;
+
+      &:focus-visible,
+      &.autocomplete--focused {
+        border: var(--border-small) var(--border-error) !important;
+        outline: var(--border-small) var(--focus-outline) !important;
+      }
+    }
+
+    /* ---------- Disabled ---------- */
+    &.autocomplete--disabled {
+      cursor: not-allowed;
+      color: var(--autocomplete-input-text-disabled, var(--text-disabled));
+      background-color: var(--autocomplete-input-background-disabled, var(--background-disabled));
+      border: var(--border-small) var(--autocomplete-input-border-disabled, var(--border-disabled));
+
+      input {
+        cursor: not-allowed;
+        color: inherit;
+      }
+    }
+
+    /* ---------- Readonly ---------- */
+    &.autocomplete--readonly {
+      cursor: default;
+      background-color: var(--autocomplete-input-background-readonly, var(--background-readonly, transparent));
+
+      input {
+        cursor: text;
+        background: transparent;
+      }
+    }
+
+    /* ---------- Size variants ---------- */
+    &.autocomplete--small {
+      height: var(--autocomplete-size-small);
+      padding: var(--autocomplete-padding-small);
+      gap: var(--autocomplete-gap-small);
+      border-radius: var(--border-radius-small);
+
+      input {
+        @include font.text-style-small-regular;
+      }
+    }
+
+    &.autocomplete--large {
+      height: var(--autocomplete-size-large);
+      padding: var(--autocomplete-padding-large);
+      gap: var(--autocomplete-gap-large);
+      border-radius: var(--border-radius-medium);
+
+      input {
+        @include font.text-style-large-regular;
+      }
+    }
+  }
+
+  /* Size-driven field height (not container — keep the outer container flexible
+     so the error slot can push following siblings down when visible). */
+  :host([size='small']) .autocomplete { height: var(--autocomplete-size-small); }
+  :host([size='large']) .autocomplete { height: var(--autocomplete-size-large); }
+
+  /* Strip native search chrome (defensive) */
+  input::-webkit-search-decoration,
+  input::-webkit-search-cancel-button,
+  input::-webkit-search-results-button,
+  input::-webkit-search-results-decoration {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Dropdown (autocomplete-option) styles
+ * Rendered in document.body at runtime (cloned).
+ * ------------------------------------------------------------------ */
+.autocomplete-option-container {
+  box-shadow: var(--shadow-dropdown, var(--box-shadow));
+  background-color: var(--autocomplete-dropdownmenu-background-enabled, var(--autocomplete-inputlistcontainer-background-enabled));
+  border-radius: var(--border-radius-medium);
+  max-height: 300px;
+  overflow-y: auto;
+  padding-top: var(--spacing-3xsmall);
+  padding-bottom: var(--spacing-3xsmall);
+  margin: var(--spacing-3xsmall) 0;
+  max-width: 100%;
+  min-height: var(--component-medium);
+}
+
+.autocomplete-option-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xsmall);
+  min-height: var(--component-medium);
+}
+
+:host(sy-autocomplete-option) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  outline: none;
+  display: block;
+  visibility: hidden;
+  z-index: var(--z-index-autocomplete, 800);
+
+  .option--list {
+    cursor: pointer;
+    display: block;
+    color: var(--autocomplete-input-text-enabled);
+    padding: 0 var(--spacing-xsmall);
+    height: var(--component-medium);
+    width: 100%;
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: var(--autocomplete-menuitem-default-background-hover);
+    }
+
+    &.option--active {
+      background-color: var(--autocomplete-menuitem-default-background-active);
+    }
+
+    &.option--selected {
+      background-color: var(--autocomplete-menuitem-default-background-selected);
+      @include font.text-style-base-medium;
+    }
+
+    .option--list-inner {
       display: flex;
-      position: relative;
+      align-items: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      height: 100%;
     }
+  }
+}
+
+/* Flat selector so the rule applies regardless of the per-component scoping path. */
+mark.option--highlight {
+  background-color: transparent;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------
+ * Error slot wrapper
+ * ------------------------------------------------------------------ */
+.error-container {
+  color: var(--required, var(--color-status-error));
+  display: none;
+
+  &.text-error-container.visible-error { display: block; }
+
+  &.popup-error-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    pointer-events: none;
+    display: block;
+  }
+}
+
+.popup-error-container > ::slotted(*) {
+  pointer-events: auto;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:host(sy-autocomplete) {
+  display: flex;
+  position: relative;
+}
+
+:host(sy-autocomplete[disabled]) {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+:host(sy-autocomplete[required]) .required {
+  @include font.text-style-small-regular;
+  color: var(--input-label-required-enabled, var(--required));
+}

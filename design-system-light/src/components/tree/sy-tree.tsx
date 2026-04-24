@@ -20,6 +20,27 @@ export interface TreeNode {
   value: string;
 }
 
+/**
+ * sy-tree — hierarchical tree view with optional check/click/drag/edit support.
+ *
+ * Spec: design-system-specs/components/tree.yaml
+ *
+ * Data model: pass a `nodes` array of TreeNode objects. Each node can declare
+ * local overrides (disabled, fixed, editable…) that take precedence over the
+ * tree-level defaults.
+ *
+ * Props (spec-aligned + legacy attribute aliases via fnAssignPropFromAlias):
+ *   - nodes, line, expandable, checkable, clickable, editable
+ *   - expandAll    ↔ `expand-all`
+ *   - manualAdd    ↔ `manual-add`, manualRemove ↔ `manual-remove`
+ *   - nodeWidth    ↔ `node-width`
+ *   - selectedValue ↔ `selected-value`, searchTerm ↔ `search-term`
+ *   - isTreeSelect (internal integration flag used by sy-tree-select)
+ *   - treeDraggable (attribute `draggable`; TS can't use `draggable` as prop name)
+ *
+ * Events: nodesChanged, itemChecked, itemSelected.
+ * Methods include programmatic add/remove/update plus clearAllSelectedItem().
+ */
 @Component({
   tag: 'sy-tree',
   styleUrl: 'sy-tree.scss',

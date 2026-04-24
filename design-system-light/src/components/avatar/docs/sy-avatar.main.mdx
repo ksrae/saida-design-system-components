@@ -7,18 +7,35 @@ import * as AvatarGroupStories from './sy-avatar-group.stories';
 # Avatar
 
 ## Definition
-Avatar components are intended to represent a person or an object.<br/> 
-By default, the two characters from the user's name will be shown.<br/>
-You can personalize avatars by adding custom icons, initials, and images.
+`sy-avatar` visually represents a person or object. By default, it shows ≤2 initial characters
+from the user's name. You can personalise it with icons, manual initials, or profile images.
+
+Content rendering priority (highest → lowest): **image → icon → text → letter**.
+
+## When to use
+- Identify users consistently across conversations, listings, comments, notifications.
+- Personalise the UI with a visible sense of identity.
+
+## When not to use
+- No personalisation is involved — the avatar becomes visual noise.
+- No meaningful representation is available (empty placeholders do not help users).
+
+## Accessibility
+- Non-clickable avatars render with `role="img"` and an `aria-label` derived from
+  `tooltipContent` (or, when unset, from image/icon/text/letter in that priority).
+- Clickable avatars render with `role="button"`, are keyboard-activable (Enter / Space),
+  and show a focus outline.
+- Disabled avatars carry `aria-disabled="true"` and don't receive keyboard focus.
 
 ## Example
 <Canvas of={AvatarStories.Default} />
 <Controls of={AvatarStories.Default} />
 
-
-# Avatar Group 
+# Avatar Group
 ## Definition
-Avatar Group renders its children as a stack by default. Use the maxCount prop to limit the number of avatars.
+Avatar Group renders its children as a stack by default. Use `maxCount` to cap the number of
+visible avatars. (See the separate `avatar-group` spec page — that component is scheduled for
+its own migration pass.)
 
 ## Example
 <Canvas of={AvatarGroupStories.Default} />

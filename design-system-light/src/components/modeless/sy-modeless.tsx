@@ -17,10 +17,34 @@ const DEFAULT_MIN_WIDTH = 1;
 const DEFAULT_MIN_HEIGHT = 1;
 
 
+/**
+ * sy-modeless — non-modal floating window (draggable/resizable/minimize/maximize).
+ *
+ * Spec: design-system-specs/components/modeless.yaml
+ *
+ * Unlike sy-modal, a modeless window does NOT block the underlying page: users
+ * can interact with content outside it. Typically used for tool palettes,
+ * inspectors, and persistent helpers. Multiple modeless instances can be
+ * managed by a parent `sy-modeless-group` for z-index / focus coordination.
+ *
+ * Props (spec-aligned + legacy aliases):
+ *   - open, closable, minimizable, maximizable, resizable, edge
+ *   - isdraggable (legacy attr `draggable`)
+ *   - minimum, maximum (current state flags; set via setMinimum/setMaximum)
+ *   - width, height (initial size); top, left (initial position)
+ *   - minWidth ↔ `min-width`, minHeight ↔ `min-height`
+ *
+ * Methods: setOpen(), setClose(), setMaximum(), setMinimum(), setRestore().
+ *
+ * Events:
+ *   - closed          { id }
+ *   - statusChanged   { id, status: 'maximum' | 'minimum' | 'restore' }
+ *   - positionChanged { id, position: {top,left,width,height} }
+ */
 @Component({
   tag: 'sy-modeless',
   styleUrl: 'sy-modeless.scss',
-  shadow: false, // Using light DOM
+  shadow: false,
   scoped: true
 })
 export class SyModeless {

@@ -4,7 +4,7 @@ import bannerMeta from '../../sy-banner.stories';
 
 const meta: Meta = {
   title: 'BannerMessage/Attributes/Variant',
-  component: 'sy-banner-messsage',
+  component: 'sy-banner-message',
   tags: [],
   render: (args) => BannerVariant(args as { variant: 'info' | 'success' | 'warning' | 'error' | 'neutral' }),
   argTypes: { variant: bannerMeta?.argTypes?.variant },

@@ -9,9 +9,12 @@ const NAVITEM = 'SY-NAV-ITEM';
 const GROUPNAV = 'SY-NAV-GROUP';
 
 /**
- * sy-nav (Stencil port, light DOM, scoped)
- * - Renders slotted navigation items
- * - Manages active states and disabled propagation
+ * sy-nav — vertical navigation list. Hosts sy-nav-item / sy-nav-sub / sy-nav-group children.
+ *
+ * Spec: design-system-specs/components/nav.yaml
+ *
+ * Props: `disabled` (propagates to all children via invokeChildMethod).
+ * Events: bubbles `selected` from children and updates the current active item.
  */
 @Component({
   tag: 'sy-nav',

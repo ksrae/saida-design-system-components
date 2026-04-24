@@ -1,7 +1,21 @@
-// src/components/sy-spinner/sy-spinner.tsx
-
 import { Component, h, Prop, State, Watch, Element, Host } from '@stencil/core';
 
+/**
+ * sy-spinner — loading indicator.
+ *
+ * Spec: design-system-specs/components/spinner.yaml
+ *
+ * Props (spec-aligned):
+ *   - size          (small | medium | large | xlarge)
+ *   - inline        (horizontal vs stacked layout)
+ *   - description   (caption text next to / below the spinner)
+ *   - delay         (ms before appearing — suppresses flash on fast loads)
+ *   - hidden        (hides the spinner entirely; reflects to attribute)
+ *
+ * The host is `display: contents` so the spinner sits inside its parent
+ * without affecting layout. The parent is given `position: relative` on
+ * connect so the absolute-positioned overlay fills the parent.
+ */
 @Component({
   tag: 'sy-spinner',
   styleUrl: 'sy-spinner.scss',

@@ -9,8 +9,8 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   formAssociated: true,
 })
 export class SyDatePicker {
-  @Element() host: HTMLSyDatepickerElement;
-  @AttachInternals() internals: ElementInternals;
+  @Element() host!: HTMLSyDatepickerElement;
+  @AttachInternals() internals!: ElementInternals;
 
   @Prop() mode: 'day' | 'month' | 'year' = 'day';
   @Prop() variant: 'date' | 'datetime' | 'range' | 'time' = 'date';
@@ -29,9 +29,10 @@ export class SyDatePicker {
   @Prop() placeholder: string = '';
   @Prop() format: string = 'yyyy-MM-dd hh:mm:ss';
   @Prop() name: string = '';
+  @Prop() noNativeValidity: boolean = false;
 
-  @Event() changed: EventEmitter;
-  @Event() selected: EventEmitter;
+  @Event() changed!: EventEmitter;
+  @Event() selected!: EventEmitter;
 
   @State() private displayPlaceholder: string = this.placeholder;
   @State() private touched = false;
@@ -145,25 +146,57 @@ watchResultChanges() {
   }
 
   @Watch('placeholder')
-  @Watch('variant')
-  watchPlaceholderVariant() {
+  watchPlaceholder() {
     this.setPlaceholder();
+  }
+
+  @Watch('variant')
+  watchVariant() {
+    // Clear any previously selected dates when the variant changes (e.g. date → range
+    // or range → date). Carrying them over produces stale state that no longer matches
+    // the new variant's expectations (e.g. range endpoints with no in-between).
+    this.startResult = '';
+    this.endResult = '';
+    this.rangestart = undefined;
+    this.rangeend = undefined;
+    this.selectedDatetime = {
+      year: undefined,
+      month: undefined,
+      day: undefined,
+      hour: undefined,
+      minute: undefined,
+      second: undefined,
+    };
+    this.lastValidStartResult = '';
+    this.lastValidEndResult = '';
+    this.touched = false;
+    this.startTouched = false;
+    this.endTouched = false;
+    this.formSubmitted = false;
+    this.active = '';
+    this.setPlaceholder();
+    this.updateValidityState();
   }
 
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
     this.formSubmitted = true;
-    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-    if (hasErrorSlot) {
-      const errorSlotElement = this.host.querySelector('[slot="error"]');
-      const hasContent = errorSlotElement?.textContent?.trim();
-      if (hasContent) {
-        this.hasSlotErrorMessage = true;
-        e.preventDefault();
-        e.stopPropagation();
+
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement && (errorSlotElement.textContent?.trim().length ?? 0) > 0;
+
+    // Clear-cut toggle — consistent across every form-associated SAIDA control:
+    //   noNativeValidity=true  → native popup suppressed, slot = UI
+    //   noNativeValidity=false → browser shows native popup. DO NOT call
+    //     preventDefault — per HTML spec, one preventDefaulted invalid event
+    //     suppresses popups on every form control in the form.
+    if (this.noNativeValidity) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent) {
         this.internals?.setValidity({ customError: true }, ' ');
-      } else {
-        this.hasSlotErrorMessage = false;
       }
     } else {
       this.hasSlotErrorMessage = false;
@@ -328,24 +361,34 @@ get willValidate(): boolean {
   }
 
   render() {
+    // Visual invalid gate: show red borders only after the user has touched the field
+    // or submitted the form (matches sy-input / sy-checkbox / sy-autocomplete convention).
+    const showInvalid = (this.touched || this.formSubmitted) && !this.isValid;
+    // Propagate invalid state to the inner sy-input so its own SCSS paints the red border
+    // via its `status="error"` path — this covers non-range variants where the datepicker
+    // does not draw its own wrapper border.
+    const inputStatus: 'default' | 'error' = showInvalid ? 'error' : 'default';
+
     const inputGroupClass = {
       'input-group': true,
       'input--focused': this.isInputFocused,
       'focus-start': this.isInputFocused && this.active === 'start',
       'focus-end': this.isInputFocused && this.active === 'end',
+      'datepicker--invalid': showInvalid,
     };
 
     const containerClass = {
       "container": true,
       "range-visible": this.variant === 'range',
       "range-hidden": this.variant !== 'range',
+      'datepicker--invalid': showInvalid,
     };
 
     const errorContainerClass = {
       'error-container': true,
       'popup-error-container': this.hasPopupErrorComponent,
       'text-error-container': !this.hasPopupErrorComponent,
-      'visible-error': (this.touched || this.formSubmitted) && !this.isValid
+      'visible-error': showInvalid,
     };
 
     return (
@@ -358,6 +401,7 @@ get willValidate(): boolean {
             disabled={this.disabled}
             readonly={this.readonly}
             borderless={this.variant === 'range'}
+            status={inputStatus}
             value={this.startResult}
             onFocused={this.handleStartFocused}
             onBlured={(e: Event) => this.handleBlur('start', e)}
@@ -376,6 +420,7 @@ get willValidate(): boolean {
               disabled={this.disabled}
               readonly={this.readonly}
               borderless={true}
+              status={inputStatus}
               value={this.endResult}
               onFocused={this.handleEndFocused}
               onBlured={(e: Event) => this.handleBlur('end', e)}
@@ -1855,9 +1900,15 @@ get willValidate(): boolean {
     }, 0);
   }
 
-  // Form validation methods
+  /* ============================================================================
+   *  Shared form-error pattern (see sy-autocomplete / sy-checkbox for reference).
+   *  Slot [slot="error"] is the one error UI. Both `required` violation and
+   *  programmatic setCustomError() surface it. getValidStatus() exposes the
+   *  underlying constraint to app code.
+   * ============================================================================ */
+
   @Method()
-  async getStatus() {
+  async getValidStatus(): Promise<string> {
     return this.isValid ? '' : this.validStatus;
   }
 
@@ -1865,12 +1916,18 @@ get willValidate(): boolean {
   async setCustomError() {
     this.isValid = false;
     this.validStatus = 'custom';
+    // Force visual invalid state immediately without waiting for blur/submit.
+    this.touched = true;
+    this.startTouched = true;
+    this.endTouched = true;
+    this.updateValidityState();
   }
 
   @Method()
   async clearCustomError() {
-    if(!this.isValid && this.validStatus === 'custom') {
+    if (this.validStatus === 'custom') {
       this.validStatus = '';
+      this.isValid = true;
     }
     this.updateValidityState();
   }
@@ -1887,56 +1944,58 @@ get willValidate(): boolean {
     return this.internals.reportValidity();
   }
 
-private updateValidityState() {
-  if (this.validStatus === 'custom' && !this.isValid) {
-    this.internals.setValidity(
-      { customError: true },
-      this.getErrorMessage('custom')
-    );
-    return;
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
   }
 
-  this.isValid = true;
-  this.validStatus = "";
-
-  if (this.required) {
-    let hasValue = false;
+  private computeFormValue(): string {
     if (this.variant === 'range') {
-      hasValue = !!(this.startResult && this.endResult);
+      return JSON.stringify({ start: this.startResult, end: this.endResult });
+    }
+    return this.startResult;
+  }
+
+  private updateValidityState() {
+    // (1) Programmatic custom error takes priority.
+    if (this.validStatus === 'custom' && !this.isValid) {
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
+      this.internals?.setValidity({ customError: true }, msg);
+      this.internals?.setFormValue(this.computeFormValue(), this.computeFormValue());
+      return;
+    }
+
+    // (2) Native constraint validation.
+    this.isValid = true;
+    this.validStatus = '';
+
+    if (this.required) {
+      const hasValue = this.variant === 'range'
+        ? !!(this.startResult && this.endResult)
+        : !!this.startResult;
+      if (!hasValue) {
+        this.isValid = false;
+        this.validStatus = 'valueMissing';
+      }
+    }
+
+    const formValue = this.computeFormValue();
+    this.internals?.setFormValue(formValue, formValue);
+
+    if (!this.isValid) {
+      if (this.hasSlotErrorMessage) {
+        const slotText = this.getSlotErrorText() || this.getErrorMessage(this.validStatus) || ' ';
+        this.internals?.setValidity({ customError: true }, slotText);
+      } else {
+        this.internals?.setValidity(
+          { [this.validStatus]: true },
+          this.getErrorMessage(this.validStatus)
+        );
+      }
     } else {
-      hasValue = !!this.startResult;
-    }
-    if (!hasValue) {
-      this.isValid = false;
-      this.validStatus = "valueMissing";
+      this.internals?.setValidity({});
     }
   }
-
-  // ElementInternals로 폼 값 설정
-  let formValue = '';
-  if (this.variant === 'range') {
-    formValue = JSON.stringify({
-      start: this.startResult,
-      end: this.endResult
-    });
-  } else {
-    formValue = this.startResult;
-  }
-
-  this.internals.setFormValue(formValue, formValue);
-
-  // 유효성 상태 설정
-  if (!this.isValid) {
-    const validityMessage = this.getErrorMessage(this.validStatus);
-    if (this.hasSlotErrorMessage) {
-      this.internals.setValidity({ customError: true }, validityMessage);
-    } else {
-      this.internals.setValidity({ [this.validStatus]: true }, validityMessage);
-    }
-  } else {
-    this.internals.setValidity({});
-  }
-}
 
   private extractSeparators(): { dateSeparator: string; timeSeparator: string } {
     const format = this.format || 'yyyy-MM-dd hh:mm:ss';
@@ -1962,9 +2021,10 @@ private updateValidityState() {
   }
 
 private getErrorMessage(type: 'valueMissing' | 'custom' | ''): string {
+  if (type === '') return '';
   const messages = {
-    valueMissing: "This field is required",
-    custom: 'Invalid by custom'
+    valueMissing: 'This field is required',
+    custom: 'Invalid input'
   };
   return messages[type] || '';
 }

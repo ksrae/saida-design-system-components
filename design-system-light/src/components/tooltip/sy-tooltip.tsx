@@ -1,6 +1,20 @@
 import { Component, Prop, State, Element, Watch, h, Method } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-tooltip — contextual tooltip anchored to a trigger element.
+ *
+ * Spec: design-system-specs/components/tooltip.yaml
+ *
+ * Props (spec-aligned + legacy aliases):
+ *   - content, position (12 directions), trigger (hover|click|focus|none)
+ *   - open, opendelay, closedelay
+ *   - hideArrow    ↔ `hide-arrow`
+ *   - maxWidth     ↔ `max-width`
+ *
+ * The tooltip is portaled to document.body so it escapes parent
+ * `overflow: hidden` / stacking contexts.
+ */
 @Component({
   tag: 'sy-tooltip',
   styleUrl: 'sy-tooltip.scss',

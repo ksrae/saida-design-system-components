@@ -1,27 +1,54 @@
 @use "../../assets/style/global/font" as font;
 
-:host {
+/*
+ * This file learned the hard way that `:host` does NOT reliably match in this
+ * project's Stencil scoped setup — Stencil scopes the `:host` pseudo-class into
+ * a host-scoping CSS class, but the custom element instance does not always end
+ * up carrying that class (reproducible when the header is nested inside another
+ * scoped component such as sy-tab-group). The symptom was the entire header
+ * ignoring its `width: 100%` and shrinking to content.
+ *
+ * The reliable patterns, confirmed by experiment and matching sy-tab-group.scss:
+ *   1. HOST sizing/coloring: use the TAG NAME selector `sy-global-header { … }`.
+ *      Tag selectors are never rewritten by Stencil's scoping, so they always
+ *      match the custom element.
+ *   2. CHILD elements rendered by the component: use plain CLASS selectors
+ *      (`.header-wrapper { … }`). Stencil auto-adds the `sc-sy-global-header`
+ *      class to every rendered child, and also rewrites class selectors in this
+ *      stylesheet to require that class — so they match the rendered DOM.
+ *   3. AVOID `:host { … }` and `sy-global-header .class { … }` combos — neither
+ *      matches reliably in this setup.
+ */
+
+/* ---------- HOST (tag selector — always matches) ---------- */
+sy-global-header {
   display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: var(--header-medium);
   background-color: var(--globalheader-default-container-background-enabled);
   border-bottom: 1px solid var(--globalheader-default-container-border-enabled);
   color: var(--text-subtler);
 }
 
-:host([sticky]) {
+sy-global-header[sticky] {
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: var(--header-shadow);
 }
 
-// wrapper에서 flex 처리
+/* ---------- INNER LAYOUT (plain class selectors — Stencil scopes them) ---------- */
+
 .header-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  width: 100%;
+  min-width: 0;
   padding-right: var(--spacing-small);
   box-sizing: border-box;
 }
@@ -38,6 +65,7 @@
     height: 44px;
 
     img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -65,18 +93,21 @@
   }
 }
 
+/* `flex: 1 1 0` (flex-basis: 0) gives the tab strip ONLY the leftover space
+ * between title and end, never the combined natural width of its tabs. That's
+ * what keeps the header at full container width while tabs overflow inside. */
 .header-tab {
   display: flex;
   align-items: center;
-  flex-grow: 1;
-  overflow: hidden;
+  flex: 1 1 0;
   min-width: 0;
+  overflow: hidden;
 
-  // Light DOM에서 slot="tabs" div를 flex로 만들기
   [slot="tabs"] {
     display: flex;
     align-items: center;
-    flex-grow: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     overflow: hidden;
   }
 
@@ -99,7 +130,6 @@
   flex-shrink: 0;
   gap: var(--spacing-3xsmall);
 
-  // Light DOM에서 slot="actions" div를 flex로 만들기
   [slot="actions"] {
     display: flex;
     align-items: center;

@@ -8,11 +8,12 @@ import { hexToRgb, rgbToHex, rgbToHsb, hsbToRgb, isValidFormat } from './color-u
   shadow: false,
 })
 export class SyColorpickerContent {
-  @Element() host: HTMLSyColorpickerContentElement;
+  @Element() host!: HTMLSyColorpickerContentElement;
 
   @Prop() value: string = '#ff0000';
   @Prop({ mutable: true }) opacity: number = 1;
-  @Prop({ attribute: 'hodeOpacity' }) hideOpacity: boolean = false;
+  // Fix typo: attribute spec was `hodeOpacity` — corrected to `hideOpacity`.
+  @Prop({ attribute: 'hideOpacity' }) hideOpacity: boolean = false;
   @Prop({ mutable: true }) format: 'hex' | 'rgb' | 'hsb' = 'hex';
   @Prop() disabled: boolean = false;
   @Prop() readonly: boolean = false;
@@ -23,11 +24,10 @@ export class SyColorpickerContent {
   @State() private rgb: [number, number, number] = [255, 0, 0];
   @State() private hsb: [number, number, number] = [0, 100, 100];
 
-  @Event() colorChange: EventEmitter<{ value: string; opacity: number; format: string }>;
+  @Event() colorChange!: EventEmitter<{ value: string; opacity: number; format: string }>;
 
   private isUpdatingInternally = false;
-  // private canvasElement: HTMLCanvasElement;
-  private boundSyncCanvasSize: () => void;
+  private boundSyncCanvasSize?: () => void;
   private canvasListenerAdded: boolean = false;
   private canvasMouseDownHandler = (event: MouseEvent) => this.handleCanvasMouseDown(event);
   private canvasMouseMoveHandler = (event: MouseEvent) => this.updateColorFromCanvasPosition(event);

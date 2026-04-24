@@ -59,6 +59,8 @@
 .banner-container {
   width: 100%;
   padding: var(--spacing-small) var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
 
   &.info {
     color: var(--banner-informational-text-enabled);

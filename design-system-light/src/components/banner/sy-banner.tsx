@@ -1,26 +1,49 @@
-// src/components/banner/banner.element.tsx
-
 import { Component, h, Prop, State, Watch, Element, JSX } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-banner-message — persistent page-level notification.
+ *
+ * Spec: design-system-specs/components/banner-message.yaml
+ * Anatomy:
+ *   .banner-container
+ *     └─ .banner-content
+ *          ├─ .banner-group
+ *          │     ├─ sy-icon (variant icon)
+ *          │     └─ .banner-message-group
+ *          │            ├─ .banner-message-area (title + message)
+ *          │            └─ .banner-footer (slot="footer")
+ *          └─ .banner-close (sy-icon when closable)
+ *
+ * Behaviour:
+ *   - Auto-prepends itself to document.body on mount for top-of-page placement.
+ *   - Singleton: creating a new banner removes every existing sy-banner-message element.
+ *   - Not a form-associated element.
+ *
+ * NOTE: Prior tag name was `sy-banner-messsage` (triple 's' typo). This component now
+ * exposes the corrected tag `sy-banner-message`. Spec Tech Debt §1 marks the rename
+ * as HIGH PRIORITY — commercial-grade code shouldn't ship typos in the public tag surface.
+ */
 @Component({
-  tag: 'sy-banner-messsage',
+  tag: 'sy-banner-message',
   styleUrl: 'sy-banner.scss',
   shadow: false,
   scoped: true,
 })
 export class SyBannerMessage {
-  @Element() host: HTMLSyBannerMesssageElement;
+  @Element() host!: HTMLSyBannerMessageElement;
 
+  // --- Public Properties (spec: props) ---
   @Prop({ reflect: true }) closable: boolean = false;
-  @Prop({ attribute: 'showIcon', mutable: true }) showIcon: boolean = false; // HTML attribute는 소문자를 권장합니다.
+  @Prop({ attribute: 'showIcon', mutable: true }) showIcon: boolean = false;
   @Prop({ mutable: true }) neutralIcon: string = '';
   @Prop() message: string = '';
   @Prop() header: string = '';
-  @Prop() variant: 'info' | 'success' | 'warning' | 'error' | 'neutral' = 'info';
+  @Prop({ reflect: true }) variant: 'info' | 'success' | 'warning' | 'error' | 'neutral' = 'info';
 
-  @State() private iconVariant: string;
+  @State() private iconVariant: string = '';
 
+  // --- Watchers ---
   @Watch('variant')
   @Watch('neutralIcon')
   @Watch('showIcon')
@@ -32,7 +55,7 @@ export class SyBannerMessage {
   }
 
   componentWillLoad() {
-    this.showIcon = fnAssignPropFromAlias(this.host, 'show-icon') ?? this.showIcon;
+    this.showIcon = fnAssignPropFromAlias<boolean>(this.host, 'show-icon') ?? this.showIcon;
     this.neutralIcon = fnAssignPropFromAlias<string>(this.host, 'neutral-icon') ?? this.neutralIcon;
     this.updateIconVariant();
   }
@@ -41,11 +64,9 @@ export class SyBannerMessage {
     this.createBanner();
   }
 
+  // --- Icon resolution ---
   private updateIconVariant(): void {
-    if (!this.showIcon) {
-      this.iconVariant = '';
-      return;
-    }
+    if (!this.showIcon) { this.iconVariant = ''; return; }
 
     switch (this.variant) {
       case 'info':
@@ -66,11 +87,10 @@ export class SyBannerMessage {
     }
   }
 
+  // --- DOM lifecycle (singleton + auto-prepend) ---
   private createBanner(): void {
-    document.querySelectorAll('sy-banner-messsage').forEach((banner: any) => {
-      if (banner !== this.host) {
-        banner.remove();
-      }
+    document.querySelectorAll('sy-banner-message').forEach((banner: any) => {
+      if (banner !== this.host) banner.remove();
     });
     if (document.body.firstChild !== this.host) {
       document.body.prepend(this.host);
@@ -78,14 +98,26 @@ export class SyBannerMessage {
   }
 
   private removeBanner = (): void => {
-    document.body.removeChild(this.host);
+    if (this.host.parentElement === document.body) {
+      document.body.removeChild(this.host);
+    }
   };
 
   render(): JSX.Element {
-    const showIconCondition = (this.showIcon && this.variant !== 'neutral') || (this.showIcon && this.variant === 'neutral' && this.neutralIcon);
+    const showIconCondition =
+      (this.showIcon && this.variant !== 'neutral') ||
+      (this.showIcon && this.variant === 'neutral' && this.neutralIcon);
+
+    // The banner is a critical system-wide announcement — expose it to assistive tech
+    // via the native alert live region (announces on insert without requiring focus).
+    const liveRole = this.variant === 'error' ? 'alert' : 'status';
 
     return (
-      <div class={`banner-container ${this.variant} ${this.closable ? 'closable' : ''}`}>
+      <div
+        class={`banner-container ${this.variant} ${this.closable ? 'closable' : ''}`}
+        role={liveRole}
+        aria-live={this.variant === 'error' ? 'assertive' : 'polite'}
+      >
         <div class="banner-content">
           <div class="banner-group">
             {showIconCondition && this.iconVariant && (
@@ -98,17 +130,22 @@ export class SyBannerMessage {
             )}
             <div class="banner-message-group">
               <div class="banner-message-area">
-                <div class="banner-title">{this.header}</div>
-                <div class="banner-message">{this.message}</div>
+                {this.header && <div class="banner-title">{this.header}</div>}
+                {this.message && <div class="banner-message">{this.message}</div>}
               </div>
               <div class="banner-footer">
-                <slot name="footer"/>
+                <slot name="footer" />
               </div>
             </div>
           </div>
           <div class="banner-close">
             {this.closable && (
-              <sy-icon onSelected={this.removeBanner} size="large" selectable>
+              <sy-icon
+                onSelected={this.removeBanner}
+                size="large"
+                selectable
+                aria-label="Dismiss banner"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M135.5 169C126.1 159.6 126.1 144.4 135.5 135.1C144.9 125.8 160.1 125.7 169.4 135.1L320.4 286.1L471.4 135.1C480.8 125.7 496 125.7 505.3 135.1C514.6 144.5 514.7 159.7 505.3 169L354.3 320L505.3 471C514.7 480.4 514.7 495.6 505.3 504.9C495.9 514.2 480.7 514.3 471.4 504.9L320.4 353.9L169.4 504.9C160 514.3 144.8 514.3 135.5 504.9C126.2 495.5 126.1 480.3 135.5 471L286.5 320L135.5 169z"/></svg>
               </sy-icon>
             )}

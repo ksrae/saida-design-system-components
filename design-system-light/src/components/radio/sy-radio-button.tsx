@@ -1,7 +1,14 @@
-// sy-radio-button.tsx
-
 import { Component, Prop, State, Event, EventEmitter, h, Element, Listen } from '@stencil/core';
 
+/**
+ * sy-radio-button — segmented-button style radio item used inside sy-radio-group.
+ *
+ * Spec: design-system-specs/components/radio-button.yaml
+ *
+ * Props: value (required), checked, disabled, size, variant (outlined | solid).
+ * Size and variant are pushed down from the sy-radio-group parent.
+ * Clicking emits `selected` with the value; the group aggregates.
+ */
 @Component({
   tag: 'sy-radio-button',
   styleUrl: 'sy-radio-button.scss',

@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as DisabledStories from './sy-autocomplete-disabled.stories';
+
+<Meta of={DisabledStories} />
+
+# Disabled
+
+The `disabled` attribute makes the autocomplete non-interactive. The input cannot be focused, no
+dropdown is shown, and the field uses the disabled visual tokens.
+
+<Canvas of={DisabledStories.Default} />
+<Controls of={DisabledStories.Default} />

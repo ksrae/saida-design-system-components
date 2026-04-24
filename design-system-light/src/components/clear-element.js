@@ -23,11 +23,13 @@ export const clearElements = (pageName) => {
     removePopover();
     removeTooltip();
     removeTreeSelect();
+    removeColorPicker();
   }
 }
 
 const removeBanner = () => {
-  const data = document.querySelectorAll('sy-banner-messsage');
+  // Matches the corrected tag + the legacy typo for backwards compat.
+  const data = document.querySelectorAll('sy-banner-message, sy-banner-messsage');
   data.forEach(item => {
     if (item && item.parentNode) {
       item.parentNode.removeChild(item);
@@ -112,6 +114,13 @@ const removeTooltip = () => {
 
 const removeTreeSelect = () => {
   const item = document.querySelector('.sy-tree-select-option-container');
+  if (item && item.parentNode) {
+    item.parentNode.removeChild(item);
+  }
+};
+
+const removeColorPicker = () => {
+  const item = document.querySelector('.sy-colorpicker');
   if (item && item.parentNode) {
     item.parentNode.removeChild(item);
   }

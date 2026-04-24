@@ -1,7 +1,18 @@
 @use "../../assets/style/global/font" as font;
 
+/* ------------------------------------------------------------------
+ * Badge — spec-driven styles
+ * Spec: design-system-specs/components/badge.yaml
+ *
+ * Sizes (per spec):
+ *   number  small: 16px   medium: 20px
+ *   dot     small:  6px   medium:  8px
+ *
+ * Position offsets are negative half-size to overlap parent edge.
+ * ------------------------------------------------------------------ */
+
 :host {
-  /* Token Size */
+  /* Badge-specific token defaults (kept here so consumers can override per-instance) */
   --badge-size-medium: 20px;
   --badge-size-small: 16px;
   --badge-dot-size-medium: 8px;
@@ -10,147 +21,47 @@
   display: flex;
 }
 
-:host(sy-badge) .container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 :host([standalone]) {
-  display: inline-flex; /* standalone일 때 인라인 플렉스로 설정 */
+  display: inline-flex;
 }
 
 :host([standalone]) .badge-content {
   display: none;
 }
 
-.badge {
+.container {
+  position: relative;
   display: flex;
-  font-weight: bold;
-  visibility: hidden;
-  position: absolute; /* 배지 자체는 절대 위치 설정 */
   align-items: center;
   justify-content: center;
-  @include font.text-style-small-regular;
-  border-radius: var(--border-radius-full);
-  background-color: var(--badge-error-background-enabled);
-  color: var(--badge-error-text-enabled);
+}
 
-  sy-icon {
-    color: var(--badge-error-icon-enabled);
+.badge-content {
+  display: flex;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  font-weight: bold;
+  visibility: hidden;
+  box-sizing: border-box;
+  border-radius: var(--border-radius-full);
+  @include font.text-style-small-regular;
+
+  &.visible {
+    visibility: visible;
   }
 
+  /* Overflow text (≥2 chars) needs horizontal padding so "+n" doesn't crop */
   &.badge-over {
     padding: 0 var(--spacing-2xsmall);
   }
 
-  &.small {
-    min-width: var(--badge-size-small);
-    height: var(--badge-size-small);
-
-    &.dot {
-      min-width: auto;
-      width: var(--badge-dot-size-small);
-      height: var(--badge-dot-size-small);
-      border-radius: var(--border-radius-full);
-      padding: 0;
-    }
-  }
-
-  &.medium {
-    min-width: var(--badge-size-medium);
-    height: var(--badge-size-medium);
-
-    &.dot {
-      min-width: auto;
-      width: var(--badge-dot-size-medium);
-      height: var(--badge-dot-size-medium);
-      border-radius: var(--border-radius-full);
-      padding: 0;
-    }
-  }
-
-  &.topLeft {
-    top: -10px;
-    left: -10px;
-
-    &.small {
-      top: -8px;
-      left: -8px;
-
-      &.dot {
-        min-width: auto;
-        top: -3px;
-        left: -3px;
-      }
-    }
-
-    &.dot {
-      min-width: auto;
-      top: -4px;
-      left: -4px;
-    }
-  }
-
-  &.topRight {
-    top: -10px;
-    right: -10px;
-
-    &.small {
-      top: -8px;
-      right: -8px;
-
-      &.dot {
-        top: -3px;
-        right: -3px;
-      }
-    }
-
-    &.dot {
-      top: -4px;
-      right: -4px;
-    }
-  }
-
-  &.bottomLeft {
-    bottom: -10px;
-    left: -10px;
-
-    &.small {
-      bottom: -8px;
-      left: -8px;
-
-      &.dot {
-        bottom: -3px;
-        left: -3px;
-      }
-    }
-
-    &.dot {
-      bottom: -4px;
-      left: -4px;
-    }
-  }
-
-  &.bottomRight {
-    bottom: -10px;
-    right: -10px;
-
-    &.small {
-      bottom: -8px;
-      right: -8px;
-
-      &.dot {
-        bottom: -3px;
-        right: -3px;
-      }
-    }
-
-    &.dot {
-      bottom: -4px;
-      right: -4px;
-    }
+  sy-icon {
+    color: inherit;
   }
 }
 
@@ -158,69 +69,93 @@
   position: relative;
 }
 
-.badge.visible {
-  visibility: visible;
+/* ---------------- Size (number type) ---------------- */
+
+.badge.small {
+  min-width: var(--badge-size-small);
+  height: var(--badge-size-small);
+
+  &.dot {
+    min-width: auto;
+    width: var(--badge-dot-size-small);
+    height: var(--badge-dot-size-small);
+    padding: 0;
+  }
 }
 
-:host(sy-badge[size="medium"]) {
-  width: var(--component-medium);
-  height: var(--component-medium);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.badge.medium {
+  min-width: var(--badge-size-medium);
+  height: var(--badge-size-medium);
+
+  &.dot {
+    min-width: auto;
+    width: var(--badge-dot-size-medium);
+    height: var(--badge-dot-size-medium);
+    padding: 0;
+  }
 }
 
-:host(sy-badge[size="small"]) {
-  width: var(--component-medium);
-  height: var(--component-medium);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ---------------- Position offsets (not applied when standalone) ---------------- */
+
+.badge.topRight { top: -10px; right: -10px; }
+.badge.topLeft  { top: -10px; left: -10px; }
+.badge.bottomRight { bottom: -10px; right: -10px; }
+.badge.bottomLeft  { bottom: -10px; left: -10px; }
+
+.badge.small {
+  &.topRight { top: -8px; right: -8px; }
+  &.topLeft  { top: -8px; left: -8px; }
+  &.bottomRight { bottom: -8px; right: -8px; }
+  &.bottomLeft  { bottom: -8px; left: -8px; }
+
+  &.dot {
+    &.topRight { top: -3px; right: -3px; }
+    &.topLeft  { top: -3px; left: -3px; }
+    &.bottomRight { bottom: -3px; right: -3px; }
+    &.bottomLeft  { bottom: -3px; left: -3px; }
+  }
 }
 
-/* Colors */
-.badge-red {
+.badge.medium.dot {
+  &.topRight { top: -4px; right: -4px; }
+  &.topLeft  { top: -4px; left: -4px; }
+  &.bottomRight { bottom: -4px; right: -4px; }
+  &.bottomLeft  { bottom: -4px; left: -4px; }
+}
+
+/* ---------------- Semantic color variants ---------------- */
+
+.badge.badge-red {
   background-color: var(--badge-error-background-enabled);
   color: var(--badge-error-text-enabled);
 
-  sy-icon {
-    color: var(--badge-error-icon-enabled);
-  }
+  sy-icon { color: var(--badge-error-icon-enabled); }
 }
 
-.badge-yellow {
+.badge.badge-yellow {
   background-color: var(--badge-warning-background-enabled);
   color: var(--badge-warning-text-enabled);
 
-  sy-icon {
-    color: var(--badge-warning-icon-enabled);
-  }
+  sy-icon { color: var(--badge-warning-icon-enabled); }
 }
 
-.badge-green {
+.badge.badge-green {
   background-color: var(--badge-success-background-enabled);
   color: var(--badge-success-text-enabled);
 
-  sy-icon {
-    color: var(--badge-success-icon-enabled);
-  }
+  sy-icon { color: var(--badge-success-icon-enabled); }
 }
 
-.badge-blue {
+.badge.badge-blue {
   background-color: var(--badge-info-background-enabled);
   color: var(--badge-info-text-enabled);
 
-  sy-icon {
-    color: var(--badge-info-icon-enabled);
-  }
+  sy-icon { color: var(--badge-info-icon-enabled); }
 }
 
-.badge-gray {
+.badge.badge-gray {
   background-color: var(--badge-neutral-background-enabled);
   color: var(--badge-neutral-text-enabled);
 
-  sy-icon {
-    color: var(--badge-neutral-icon-enabled);
-  }
+  sy-icon { color: var(--badge-neutral-icon-enabled); }
 }
-

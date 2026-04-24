@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true
 })
 export class SyCalendar {
-  @Element() host: HTMLSyCalendarElement;
+  @Element() host!: HTMLSyCalendarElement;
 
   @Prop() mode: 'day' | 'month' | 'year' = 'day';
   @Prop() variant: 'date' | 'datetime' | 'range' | 'time' = 'date';
@@ -28,8 +28,8 @@ export class SyCalendar {
   @Prop({ attribute: 'mondayStart', mutable: true }) mondayStart: boolean = false;
   @Prop({ attribute: 'hideWeekend', mutable: true }) hideWeekend: boolean = false;
 
-  @Event() selected: EventEmitter;
-  @Event() closed: EventEmitter;
+  @Event() selected!: EventEmitter;
+  @Event() closed!: EventEmitter;
 
   private readonly todayDate = new Date();
 

@@ -1,0 +1,37 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as ParentIdStories from './sy-drawer-parentid.stories';
+
+<Meta of={ParentIdStories} />
+
+# parentid
+
+The `parentid` attribute mounts the drawer **inside** the element whose `id` matches,
+instead of the default `document.body`. This scopes the sliding panel and its backdrop
+to a specific page region — useful for split layouts, preview panes, or dashboards where
+the drawer should not cover the entire viewport.
+
+## Behaviour
+
+- **Empty (default)**: drawer appends to `document.body` and uses `position: fixed`.
+- **Set to a valid id**: drawer appends to `document.getElementById(parentid)` and uses
+  `position: absolute`. If the target element's `position` is `static`, the drawer
+  auto-upgrades it to `relative` so the drawer has a positioning context.
+- **Set to an invalid id**: falls back to `document.body` with a console warning.
+
+## Example
+
+```html
+<div id="preview-pane" style="position: relative; width: 600px; height: 400px;">
+  <!-- content -->
+</div>
+
+<sy-drawer parentid="preview-pane" position="right" size="medium" closable>
+  <span slot="header">Settings</span>
+  <span slot="body">…</span>
+</sy-drawer>
+```
+
+`parentid` can be changed at runtime; the drawer relocates the next time it is opened
+(or immediately if it is already open).
+
+<Canvas of={ParentIdStories.Default} />

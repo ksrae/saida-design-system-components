@@ -1,6 +1,31 @@
-import { Component, Prop, State, Element, Watch, Method, h } from '@stencil/core';
+import { Component, Prop, State, Element, Watch, Method, Event, EventEmitter, h } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-modal — centered modal dialog with optional maximize/drag.
+ *
+ * Spec: design-system-specs/components/modal.yaml
+ *
+ * Variants:
+ *   - `dialog` — simple centered confirmation/form modal.
+ *   - `modal`  — draggable + optionally resizable window with maximize support
+ *               via `enableModalMaximize`.
+ *
+ * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+ *   - open, closable, variant
+ *   - cancelText ↔ `cancel-text`, okText ↔ `ok-text`
+ *   - enableModalMaximize ↔ `enable-modal-maximize`
+ *   - hideFooter ↔ `hide-footer`, maskClosable ↔ `mask-closable`
+ *   - width (px, 0 = auto), height (px, 0 = auto, `modal` variant)
+ *   - top, left (px, '-1' or unset = auto-center)
+ *
+ * Slots: header, body, footer — each replaces the default when supplied.
+ *
+ * Methods: setOpen(), setClose(value?), setCancel(value?), setOk(value?),
+ * setMaximum() (variant=modal only).
+ *
+ * Event: closed — { event: 'ok'|'cancel'|'close', value, maximized, position }.
+ */
 @Component({
   tag: 'sy-modal',
   styleUrl: 'sy-modal.scss',
@@ -8,7 +33,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true,
 })
 export class SyModal {
-  @Element() host: HTMLSyModalElement;
+  @Element() host!: HTMLSyModalElement;
 
   // Props
   @Prop({ attribute: 'cancelText', mutable: true }) cancelText: string = '';
@@ -19,9 +44,19 @@ export class SyModal {
   @Prop({ attribute: 'okText', mutable: true }) okText: string = '';
   @Prop({ mutable: true }) open: boolean = false;
   @Prop() width: number = 0;
+  /** Custom height in pixels (`modal` variant only). 0 = auto. */
+  @Prop() height: number = 0;
   @Prop() top: string = '-1';
   @Prop() left: string = '-1';
   @Prop() variant: 'modal' | 'dialog' = 'dialog';
+
+  /** Fires when the modal closes. `detail.event` distinguishes ok / cancel / close. */
+  @Event() closed!: EventEmitter<{
+    event: 'ok' | 'cancel' | 'close';
+    value: any;
+    maximized: boolean;
+    position: { top: string; left: string };
+  }>;
 
   // State
   @State() maximized: boolean = false;
@@ -114,6 +149,14 @@ export class SyModal {
   @Watch('width')
   handleWidthChange() {
     this.modalWidth = this.width > 0 ? `${this.width}px` : 'auto';
+  }
+
+  @Watch('height')
+  handleHeightChange() {
+    if (this.variant !== 'modal') return;
+    const container = this.host.querySelector('.modal-container') as HTMLElement | null;
+    if (!container) return;
+    container.style.height = this.height > 0 ? `${this.height}px` : 'auto';
   }
 
   disconnectedCallback() {
@@ -308,19 +351,12 @@ export class SyModal {
       };
     }
 
-    this.host.dispatchEvent(
-      new CustomEvent('closed', {
-        detail: {
-          event: eventName,
-          value: value ?? '',
-          maximized: this.maximized,
-          position: position
-        },
-        bubbles: true,
-        composed: true,
-        cancelable: false,
-      })
-    );
+    this.closed.emit({
+      event: eventName,
+      value: value ?? '',
+      maximized: this.maximized,
+      position,
+    });
   }
 
   private onMouseDown = (event: MouseEvent) => {

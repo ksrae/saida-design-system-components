@@ -4,7 +4,7 @@ import bannerMeta from '../../sy-banner.stories';
 
 const meta: Meta = {
   title: 'BannerMessage/Attributes/Closable',
-  component: 'sy-banner-messsage',
+  component: 'sy-banner-message',
   tags: [],
   render: (args) => BannerClosable(args as { closable: boolean }),
   argTypes: { closable: bannerMeta?.argTypes?.closable },

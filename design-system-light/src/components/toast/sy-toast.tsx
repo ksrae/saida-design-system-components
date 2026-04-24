@@ -11,6 +11,19 @@ export interface ToastOptions {
   footerSlot?: string | HTMLElement;
 }
 
+/**
+ * sy-toast — toast manager. Programmatic factory for sy-toast-item popups.
+ *
+ * Spec: design-system-specs/components/toast.yaml
+ *
+ * Usage: call `createToast(variant, options)` or the variant-specific helpers
+ * (`createSuccessToast`, etc.). Each call spawns a new `sy-toast-item`
+ * appended to document.body; stacking is governed by `latestTop`.
+ *
+ * Props:
+ *   - duration   (ms, default auto-dismiss window for spawned toasts)
+ *   - latestTop  (new toasts appear above older ones) — legacy `latest-top`
+ */
 @Component({
   tag: 'sy-toast',
   styleUrl: 'sy-toast.scss',

@@ -20,8 +20,9 @@ const labelMeta: Meta<SyLabelProps> = {
       },
     },
     htmlFor: {
+      name: 'htmlfor',
       control: "text",
-      description: "Sets the id of the element that the label is bound to.",
+      description: "Sets the id of the element that the label is bound to. `for` is a reserved word in JS/TS, so the attribute is `htmlfor` (HTML is case-insensitive, so `htmlFor` in markup also works).",
       table: {
         category: "Parameter",
         defaultValue: { summary: "" },

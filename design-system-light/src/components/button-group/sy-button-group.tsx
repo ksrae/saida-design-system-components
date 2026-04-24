@@ -1,6 +1,8 @@
 import { Component, h, Prop, Element, Watch } from '@stencil/core';
 import { fnGetChildrenByTagName } from '../../utils/utils';
 
+/** State payload sent to each child `sy-button` so it can render the group-appropriate
+ *  borders/radius (first/middle/last). Exported for the button component. */
 export interface ButtonGroupState {
   buttonGroup: boolean;
   vertical: boolean;
@@ -8,6 +10,18 @@ export interface ButtonGroupState {
   last: boolean;
 }
 
+/**
+ * sy-button-group — visually unified set of related buttons.
+ *
+ * Spec: design-system-specs/components/button-group.yaml
+ * Anatomy:
+ *   .button-group[.button-group--vertical]
+ *     └─ <slot> → sy-button × N
+ *
+ * Uses a MutationObserver to detect added/removed buttons and pushes their
+ * first/middle/last position to each via `setButtonGroupState()`.
+ * Not a form-associated element.
+ */
 @Component({
   tag: 'sy-button-group',
   styleUrl: 'sy-button-group.scss',
@@ -15,61 +29,57 @@ export interface ButtonGroupState {
   scoped: true,
 })
 export class SyButtonGroup {
-  @Element() host: HTMLSyButtonGroupElement;
+  @Element() host!: HTMLSyButtonGroupElement;
+
+  // --- Public Properties (spec: props) ---
   @Prop({ reflect: true }) vertical: boolean = false;
 
-  private containerEl: HTMLDivElement; // Ref로 참조할 div 요소를 담을 변수
-  private mutationObserver: MutationObserver;
+  // --- Private ---
+  private containerEl!: HTMLDivElement;
+  private mutationObserver: MutationObserver | null = null;
   private buttons: HTMLElement[] = [];
 
-  // componentDidRender는 초기 렌더링 및 모든 후속 렌더링 후에 호출됩니다.
   componentDidRender() {
-    // MutationObserver가 아직 설정되지 않았고, containerEl이 Ref를 통해 할당되었다면
     if (!this.mutationObserver && this.containerEl) {
-      this.mutationObserver = new MutationObserver(() => {
-        // 자식 노드에 변화가 생기면 updateButtons를 다시 호출
-        this.updateButtons();
-      });
-      // 감시 대상을 Ref로 직접 지정
+      this.mutationObserver = new MutationObserver(() => this.updateButtons());
       this.mutationObserver.observe(this.containerEl, { childList: true });
     }
-    // 렌더링이 완료될 때마다 버튼 상태를 업데이트
     this.updateButtons();
   }
 
   disconnectedCallback() {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
+      this.mutationObserver = null;
     }
   }
 
   @Watch('vertical')
   handleVerticalChange() {
-    // vertical이 바뀌어도 자식 버튼 배열은 그대로라 haveButtonsChanged가 false가 됩니다.
-    // 캐시를 비워 다음 updateButtons 호출 시 강제로 자식 상태를 재적용합니다.
+    // Child list hasn't changed when orientation flips, so haveButtonsChanged would
+    // return false. Bust the cache so updateButtons pushes new state to every child.
     this.buttons = [];
     this.updateButtons();
   }
 
   private updateButtons() {
     const children = fnGetChildrenByTagName(this.containerEl, 'sy-button') as HTMLElement[];
+    if (!this.haveButtonsChanged(children)) return;
 
-    if (this.haveButtonsChanged(children)) {
-      this.buttons = children;
-      if (this.buttons.length === 0) return;
+    this.buttons = children;
+    if (this.buttons.length === 0) return;
 
-      this.buttons.forEach((button, index) => {
-        if (typeof (button as any).setButtonGroupState === 'function') {
-          const state: ButtonGroupState = {
-            buttonGroup: true,
-            vertical: this.vertical,
-            first: index === 0,
-            last: index === this.buttons.length - 1,
-          };
-          (button as any).setButtonGroupState(state);
-        }
-      });
-    }
+    this.buttons.forEach((button, index) => {
+      if (typeof (button as any).setButtonGroupState === 'function') {
+        const state: ButtonGroupState = {
+          buttonGroup: true,
+          vertical: this.vertical,
+          first: index === 0,
+          last: index === this.buttons.length - 1,
+        };
+        (button as any).setButtonGroupState(state);
+      }
+    });
   }
 
   private haveButtonsChanged(newButtons: HTMLElement[]): boolean {
@@ -87,8 +97,9 @@ export class SyButtonGroup {
           'button-group': true,
           'button-group--vertical': this.vertical,
         }}
-        // [핵심 수정] ref 속성을 사용하여 이 div에 대한 참조를 this.containerEl에 할당합니다.
-        ref={(el) => this.containerEl = el as HTMLDivElement}
+        role="group"
+        aria-orientation={this.vertical ? 'vertical' : 'horizontal'}
+        ref={(el) => (this.containerEl = el as HTMLDivElement)}
       >
         <slot />
       </div>

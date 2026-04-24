@@ -13,6 +13,12 @@
   pointer-events: none;
 }
 
+/* Scoped drawer — when `parentid` points to a container, the host mounts into
+ * that container and must position itself against it instead of the viewport. */
+:host([parentid]) {
+  position: absolute;
+}
+
 :host[open] {
   display: block;
 }
@@ -166,4 +172,17 @@
     color: var(--drawer-header-icon-enabled);
     cursor: pointer;
   }
+}
+
+/* Pulse animation applied briefly when preventClose intercepts a close attempt
+ * (spec: states_and_behaviors.prevent-close — "drawer pulses briefly to alert user"). */
+@keyframes sy-drawer-pulse {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(-4px, 0); }
+  50%      { transform: translate(4px, 0); }
+  75%      { transform: translate(-4px, 0); }
+}
+
+.drawer-container.drawer--pulse {
+  animation: sy-drawer-pulse 250ms ease-in-out;
 }

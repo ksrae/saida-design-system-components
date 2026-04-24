@@ -48,6 +48,34 @@ const menuMeta: Meta<SyMenuProps> = {
         type: { summary: 'hover | click | contextmenu' },
       },
     },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables the entire menu interaction.',
+      table: {
+        category: 'Parameter',
+        defaultValue: { summary: false as any },
+        type: { summary: 'boolean' },
+      },
+    },
+    direction: {
+      control: 'radio',
+      options: ['left', 'right'],
+      description: 'Direction in which submenus expand from their parent item.',
+      table: {
+        category: 'Parameter',
+        defaultValue: { summary: 'right' },
+        type: { summary: 'left | right' },
+      },
+    },
+    loading: {
+      control: 'boolean',
+      description: 'Show a spinner in place of items while they load.',
+      table: {
+        category: 'Parameter',
+        defaultValue: { summary: false as any },
+        type: { summary: 'boolean' },
+      },
+    },
     itemChecked: {
       type: 'function',
       description: 'Triggered when any item is checked.',

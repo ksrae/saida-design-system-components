@@ -1,17 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
-import { SyButtonProps, ButtonAttribute } from '../../sy-button.main';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import { SyButtonProps, ButtonFullWidth } from '../../sy-button.main';
 import buttonMeta from '../../sy-button.stories';
 
+// NOTE: "Justified" folder kept for URL stability; the underlying prop is now
+// `fullWidth` (attribute: `full-width`) per spec. The legacy `justified` attribute
+// still works via fnAssignPropFromAlias inside the component for back-compat.
 const meta: Meta<SyButtonProps> = {
-  title: 'Button/Attributes/Justified',
+  title: 'Button/Attributes/Full Width',
   component: 'sy-button',
   tags: [],
-  render: (args) => ButtonAttribute(args),
+  render: (args) => ButtonFullWidth(args),
   argTypes: {
-    justified: buttonMeta?.argTypes?.justified
+    fullWidth: buttonMeta?.argTypes?.fullWidth
   },
   args: {
-    justified: false
+    fullWidth: true
   },
 };
 
@@ -19,5 +22,3 @@ export default meta;
 
 type Story = StoryObj<SyButtonProps>;
 export const Default: Story = {};
-
-

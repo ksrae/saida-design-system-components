@@ -3,7 +3,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { Components } from '../../../components';
 
-export interface SyBannerProps extends Components.SyBannerMesssage {
+// Stencil generates `SyBannerMessage` from the fixed tag `sy-banner-message`.
+export interface SyBannerProps extends Components.SyBannerMessage {
   slotFooter?: string;
 }
 
@@ -11,16 +12,16 @@ const defaultMsg = 'Banners are used for global alerts (e.g., system outages, up
 const defaultHeader = 'Banner Header';
 
 const renderBanner = (args: Partial<SyBannerProps>, slotFooter?: string) => html`
-  <sy-banner-messsage
+  <sy-banner-message
     ?closable=${!!args.closable}
-    ?showIcon=${!!args.showIcon}
+    .showIcon=${!!args.showIcon}
     .neutralIcon=${args.neutralIcon ?? ''}
     header=${ifDefined(args.header)}
     message=${ifDefined(args.message)}
     variant=${ifDefined(args.variant)}
   >
     ${slotFooter ? unsafeHTML(slotFooter) : ''}
-  </sy-banner-messsage>
+  </sy-banner-message>
 `;
 
 export const BannerClosable    = (args: { closable: boolean })   => renderBanner({ ...args, header: defaultHeader, message: defaultMsg, variant: 'info' });

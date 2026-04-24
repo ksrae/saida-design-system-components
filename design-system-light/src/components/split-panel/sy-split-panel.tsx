@@ -1,6 +1,19 @@
 import { Component, Prop, State, Element, Event, EventEmitter, Watch, h } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-split-panel — two-pane container with a drag handle to resize the split.
+ *
+ * Spec: design-system-specs/components/split-panel.yaml
+ *
+ * Props (spec-aligned + legacy aliases):
+ *   - ratio (left/top pane share, 0-100)
+ *   - minRatio ↔ `min-ratio` (floor for both panes)
+ *   - type (horizontal | vertical)
+ *   - disabled, hideDivider ↔ `hide-divider`
+ *
+ * Events: horizontalChanged / verticalChanged (emitted while the divider moves).
+ */
 @Component({
   tag: 'sy-split-panel',
   styleUrl: 'sy-split-panel.scss',

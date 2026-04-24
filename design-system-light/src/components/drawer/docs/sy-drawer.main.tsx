@@ -94,6 +94,42 @@ export const DrawerOpen = (args: { open: boolean }) => html`
   </sy-drawer>
 `;
 
+/* Scoped drawer — mounts into the element whose id matches `parentid` instead of
+ * document.body. Position is absolute within that parent, not fixed to the viewport. */
+export const DrawerParentId = () => {
+  const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
+  return html`
+    <div
+      id="drawer-scope-box"
+      style="position: relative; width: 600px; height: 400px; border: 2px dashed #888; padding: 16px; background: #fafafa; overflow: hidden;"
+    >
+      <p style="margin:0 0 12px;">
+        This box has id=<b>drawer-scope-box</b>. The drawer below uses
+        <code>parentid="drawer-scope-box"</code> and opens scoped inside it,
+        not over the whole viewport.
+      </p>
+      <sy-button
+        @click=${() => { if (drawerRef.value) drawerRef.value.open = true; }}
+      >Click to Open (scoped)</sy-button>
+    </div>
+    <sy-drawer
+      ${ref(drawerRef)}
+      parentid="drawer-scope-box"
+      position="right"
+      size="medium"
+      closable
+    >
+      <span slot="header">Scoped Drawer</span>
+      <span slot="body">
+        This drawer is constrained to <code>#drawer-scope-box</code>.
+        <br/>It uses <code>position: absolute</code> against that box, so the
+        backdrop and panel never cover content outside of it.
+      </span>
+      <span slot="footer">Footer</span>
+    </sy-drawer>
+  `;
+};
+
 export const DrawerOpened = () => {
   const drawerRef: Ref<HTMLSyDrawerElement> = createRef();
   const handleOpened = () => {

@@ -1,72 +1,96 @@
-import { Component, Element, Prop, State, Watch, h } from "@stencil/core";
-import { fnAssignPropFromAlias } from "../../utils/utils";
+import { Component, Element, Prop, State, Watch, h } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-badge — small visual indicator for status, counts, or labels.
+ *
+ * Spec: design-system-specs/components/badge.yaml
+ * Anatomy:
+ *   .container              ← wrapper (position: relative)
+ *     ├─ .badge-content (slot) ← parent element (icon/button/avatar), hidden when standalone
+ *     └─ .badge              ← the badge itself (dot or number)
+ *
+ * Not a form-associated element. No events / methods.
+ */
 @Component({
   tag: 'sy-badge',
   styleUrl: 'sy-badge.scss',
   shadow: false,
   scoped: true,
 })
-export class Sybadge {
-  @Element() host: HTMLSyBadgeElement;
+export class SyBadge {
+  @Element() host!: HTMLSyBadgeElement;
 
-  @Prop({ reflect: true }) dot = false;
-  @Prop({ reflect: true }) hidden = false;
+  // --- Public Properties (spec: props) ---
+  @Prop({ reflect: true }) dot: boolean = false;
+  @Prop({ reflect: true }) hidden: boolean = false;
   @Prop({ reflect: true }) standalone: boolean = false;
   @Prop({ reflect: true, attribute: 'overflowCount', mutable: true }) overflowCount: number = Infinity;
   @Prop({ reflect: true }) value: number = 0;
-  @Prop() position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'topRight';
-  @Prop() size: 'small' | 'medium' = 'medium';
-  @Prop() variant: 'red' | 'yellow' | 'green' | 'blue' | 'gray' = 'red';
+  @Prop({ reflect: true }) position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' = 'topRight';
+  @Prop({ reflect: true }) size: 'small' | 'medium' = 'medium';
+  @Prop({ reflect: true }) variant: 'red' | 'yellow' | 'green' | 'blue' | 'gray' = 'red';
 
-  @State() private displayValue!: string;
+  @State() private displayValue: string = '';
 
+  // --- Lifecycle ---
   componentWillLoad() {
-    this.overflowCount = fnAssignPropFromAlias<number>(this.host, 'overflow-count') ?? this.overflowCount;
-    this.setValue();
+    this.overflowCount =
+      fnAssignPropFromAlias<number>(this.host, 'overflow-count') ?? this.overflowCount;
+    this.computeDisplayValue();
   }
-  // updated
+
   @Watch('dot')
   @Watch('value')
   @Watch('overflowCount')
   handleValueChange() {
-    this.setValue();
+    this.computeDisplayValue();
   }
 
-  componentDidRender() {
-    // this.setValue();
+  // --- Helpers ---
+  private computeDisplayValue() {
+    if (this.dot) { this.displayValue = ''; return; }
+    const numValue = Math.floor(Number(this.value) || 0);
+    if (this.overflowCount !== Infinity && numValue > this.overflowCount) {
+      this.displayValue = `${this.overflowCount}+`;
+    } else {
+      this.displayValue = `${numValue}`;
+    }
   }
 
+  // --- Render ---
   render() {
-    const classNames = {
+    const classNames: Record<string, boolean> = {
       badge: true,
       dot: this.dot,
       visible: !this.hidden,
       standalone: this.standalone,
-      'badge-over': this.displayValue?.length >= 2,
-      'badge-red': this.variant === 'red',
-      'badge-yellow': this.variant === 'yellow',
-      'badge-green': this.variant === 'green',
-      'badge-blue': this.variant === 'blue',
-      'badge-gray': this.variant === 'gray',
+      'badge-over': this.displayValue.length >= 2,
+      [`badge-${this.variant}`]: true,
       [this.size]: true,
       [this.position]: !this.standalone,
     };
 
+    const badgeClass = Object.keys(classNames).filter(k => classNames[k]).join(' ');
+
+    // Screen-reader label: "3 unread" is more useful than just "3".
+    // Dot badges announce the presence of an indicator via role="status".
+    const ariaLabel = this.dot
+      ? 'Indicator'
+      : (this.hidden ? undefined : this.displayValue);
+
     return (
       <div class="container">
         <span class="badge-content"><slot></slot></span>
-        <div class={Object.keys(classNames).filter(key => classNames[key]).join(' ')}>
+        <div
+          class={badgeClass}
+          role="status"
+          aria-label={ariaLabel}
+          aria-hidden={this.hidden ? 'true' : 'false'}
+        >
           {this.displayValue}
         </div>
       </div>
     );
-  }
-
-  private setValue() {
-    // this.overflowCount = this.overflowCount !== null ? parseFloat(this.overflowCount as any) : Infinity;
-
-    const numValue = Math.floor(this.value);
-    this.displayValue = this.dot ? '' : this.overflowCount !== Infinity && numValue > this.overflowCount ? `${this.overflowCount}+` : `${numValue}`;
   }
 }

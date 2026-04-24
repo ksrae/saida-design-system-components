@@ -1,6 +1,24 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Watch, Method } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-tree-item — leaf renderer used internally by sy-tree.
+ *
+ * Spec: design-system-specs/components/tree.yaml (tree-item anatomy).
+ *
+ * Not meant to be authored directly — sy-tree materializes items from its
+ * `nodes` data. Extensive props exist so the parent can push per-node state
+ * (expanded, checked, editing, dragging, tag labels, etc.) down.
+ *
+ * Legacy attribute aliases resolved via fnAssignPropFromAlias:
+ *   has-child, append-placeholder, is-descendant, is-editable, tag-message,
+ *   tag-variant, search-term, selected-value, node-width.
+ *
+ * `treeitemDraggable` maps to the `draggable` attribute (TS reserved name).
+ *
+ * Note: the attribute `isDesendant` (typo) is preserved for legacy markup
+ * compatibility but the canonical property is `isDescendant`.
+ */
 @Component({
   tag: 'sy-tree-item',
   styleUrl: 'sy-tree-item.scss',

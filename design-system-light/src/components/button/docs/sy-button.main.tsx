@@ -16,8 +16,10 @@ export interface SyButtonProps extends Components.SyButton {
 const renderButton = (args: Partial<SyButtonProps>) => html`
   <sy-button
     ?disabled=${!!args.disabled}
-    ?justified=${!!args.justified}
+    .fullWidth=${!!(args as any).fullWidth}
+    .iconOnly=${!!(args as any).iconOnly}
     ?loading=${!!args.loading}
+    tooltip=${ifDefined((args as any).tooltip)}
     size=${ifDefined(args.size)}
     type=${ifDefined(args.type)}
     variant=${ifDefined(args.variant)}
@@ -29,10 +31,17 @@ export const Button = (args: SyButtonProps) => renderButton(args);
 // Single shared renderer used by every single-prop attribute story.
 export const ButtonAttribute = (args: Partial<SyButtonProps>) => renderButton(args);
 export const ButtonDisabled  = (args: Partial<SyButtonProps>) => renderButton(args);
-export const ButtonJustified = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonFullWidth = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonIconOnly  = (args: Partial<SyButtonProps>) => renderButton(args);
 export const ButtonLoading   = (args: Partial<SyButtonProps>) => renderButton(args);
 export const ButtonSize      = (args: Partial<SyButtonProps>) => renderButton(args);
+export const ButtonTooltip   = (args: Partial<SyButtonProps>) => renderButton(args);
 export const ButtonVariant   = (args: Partial<SyButtonProps>) => renderButton(args);
+
+/** Backwards-compatible alias — the legacy `justified` prop name used to live here.
+ *  The attribute `full-width` is now the canonical spec surface, but the old story
+ *  imports still resolve. */
+export const ButtonJustified = ButtonFullWidth;
 
 export const ButtonSlot = (args: { slot?: string }) => html`
   <sy-button>${unsafeHTML(args.slot ?? 'Button')}</sy-button>

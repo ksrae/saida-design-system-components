@@ -6,7 +6,23 @@ import * as AutocompleteStories from './sy-autocomplete.stories';
 # Autocomplete
 
 ## Definition
-The Autocomplete element allows users to search for and display items, including words from the input, based on the source data.component that provides search suggestions as users type, with support for filtering, debouncing, and custom data sources.
+`sy-autocomplete` provides real-time suggestions or completions as the user types into an input
+field. It enhances user experience by helping them find and pick from a potentially large list
+quickly.
+
+It is a **form-associated custom element** — it plugs into any plain HTML `<form>` across
+frameworks (React, Vue, Angular, vanilla) with `FormData`, `required`, `reset`, and custom
+validity all working natively.
+
+## When to use
+- Users pick from a large list where scanning is hard (countries, products, tags).
+- Search fields where suggestions speed up data entry.
+- Forms expecting standardised input (codes, names) that benefit from lookahead.
+
+## When not to use
+- The list is small enough to scan; use **Select** or **Radio** instead.
+- Input is free-form and suggestions add no value.
+- Suggestion source is slow or unreliable and would hurt perceived responsiveness.
 
 ## Example
 <Canvas of={AutocompleteStories.Default} />

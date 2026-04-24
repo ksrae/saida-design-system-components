@@ -1,148 +1,167 @@
-  :host {
-    display: block;
+/* ------------------------------------------------------------------
+ * Avatar-Group — spec-driven styles
+ * Spec: design-system-specs/components/avatar-group.yaml
+ *
+ * Stack overlap sizes (per spec):
+ *   small:  -4px   medium: -6px   large: -8px
+ * Grid positive spacing (per spec):
+ *   small: 4xsmall medium: 3xsmall large: 2xsmall
+ * ------------------------------------------------------------------ */
+
+:host {
+  display: block;
+}
+
+.sy-avatar-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.avatar-group-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.avatar-container {
+  display: flex;
+  align-items: center;
+}
+
+.remain-avatars-list {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.more-avatars {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--avatar-lightgray-background-enabled);
+  color: var(--avatar-lightgray-text-enabled);
+  border: var(--border-small, 1px solid) var(--avatar-lightgray-border-enabled);
+  border-radius: 50%;
+  text-align: center;
+  font-size: var(--avatar-font-size);
+  box-sizing: border-box;
+  user-select: none;
+
+  &:focus-visible {
+    outline: var(--border-small) var(--focus-outline);
+    outline-offset: 2px;
   }
+}
 
-  .sy-avatar-group {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-  }
+/* ---------------- Size variants ---------------- */
 
-  .avatar-group-inner {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-  }
-
-  .avatar-container {
-    display: flex;
-    align-items: center;
-  }
-
-  .remain-avatars-list {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-
-    .more-avatars {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--avatar-lightgray-background-enabled);
-      border-radius: 50%;
-      text-align: center;
-      font-size: var(--avatar-font-size);
-      width: var(--avatar-size);
-      height: var(--avatar-size);
-      line-height: var(--avatar-size);
-      border: 1px solid var(--avatar-lightgray-border-enabled);
-      color: var(--avatar-lightgray-text-enabled);
-    }
-
-  .avatar-overflow {
-    cursor: pointer;
-  }
-
+:host([size='small']) {
   .more-avatars {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--avatar-lightgray-background-enabled);
-    border-radius: 50%;
-    text-align: center;
-    font-size: var(--avatar-font-size);
-    width: var(--avatar-size);
-    height: var(--avatar-size);
-    line-height: var(--avatar-size);
-    border: 1px solid var(--avatar-lightgray-border-enabled);
-    color: var(--avatar-lightgray-text-enabled);
-  }
-
-  /* size에 따른 아바타 크기 및 간격 설정 */
-  :host([size='small']) {
     width: var(--component-small);
     height: var(--component-small);
-
-    .more-avatars {
-      width: var(--component-small);
-      height: var(--component-small);
-    }
+    line-height: var(--component-small);
   }
+}
 
-  :host([size='medium']) {
+:host([size='medium']) {
+  .more-avatars {
     width: var(--component-medium);
     height: var(--component-medium);
-
-    .more-avatars {
-      width: var(--component-medium);
-      height: var(--component-medium);
-    }
+    line-height: var(--component-medium);
   }
+}
 
-  :host([size='large']) {
+:host([size='large']) {
+  .more-avatars {
     width: var(--component-large);
     height: var(--component-large);
+    line-height: var(--component-large);
+  }
+}
 
-    .more-avatars {
-      width: var(--component-large);
-      height: var(--component-large);
-    }
+/* ---------------- Stack variant (negative overlap) ---------------- */
+
+:host([variant='stack']) .avatar-group-inner {
+  flex-wrap: nowrap;
+}
+
+:host([variant='stack']) .avatar-container:first-child {
+  margin-left: 0 !important;
+}
+
+:host([variant='stack'][size='small']) {
+  .avatar-container:not(:first-child) { margin-left: -4px; }
+  .remain-avatars-list               { margin-left: -4px; }
+}
+
+:host([variant='stack'][size='medium']) {
+  .avatar-container:not(:first-child) { margin-left: -6px; }
+  .remain-avatars-list               { margin-left: -6px; }
+}
+
+:host([variant='stack'][size='large']) {
+  .avatar-container:not(:first-child) { margin-left: -8px; }
+  .remain-avatars-list               { margin-left: -8px; }
+}
+
+/* ---------------- Grid variant (positive spacing) ---------------- */
+
+:host([variant='grid'][size='small']) {
+  .avatar-group-inner { gap: var(--spacing-4xsmall); }
+  .avatar-container,
+  .remain-avatars-list { margin-left: 0; }
+}
+
+:host([variant='grid'][size='medium']) {
+  .avatar-group-inner { gap: var(--spacing-3xsmall); }
+  .avatar-container,
+  .remain-avatars-list { margin-left: 0; }
+}
+
+:host([variant='grid'][size='large']) {
+  .avatar-group-inner { gap: var(--spacing-2xsmall); }
+  .avatar-container,
+  .remain-avatars-list { margin-left: 0; }
+}
+
+/* ---------------- Clickable +n badge ---------------- */
+
+:host([clickable]) .more-avatars {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--avatar-lightgray-background-hover, var(--avatar-lightgray-background-enabled));
+  }
+}
+
+/* ---------------- Overflow dropdown ---------------- */
+
+.more-avatars-container {
+  display: none;
+  width: 140px;
+  background: var(--menu-dropdownmenu-background-enabled);
+  border-radius: var(--border-radius-small);
+  box-shadow: var(--box-shadow);
+}
+
+.more-avatars-container-inner {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-3xsmall) var(--spacing-xsmall);
+  gap: var(--spacing-3xsmall);
+
+  &:hover {
+    background-color: var(--menu-menuitem-default-background-hover, rgba(0,0,0,0.04));
   }
 
-  /* stack 모드에서는 아바타가 겹치도록 설정 */
-  :host([variant='stack']) .avatar-group-inner {
-    flex-wrap: nowrap;
+  &:focus-visible {
+    outline: var(--border-small) var(--focus-outline);
+    outline-offset: -2px;
   }
 
-  :host([variant='stack']) .avatar-container:first-child {
-    margin-left: 0 !important;
-  }
-
-  :host([variant='stack'][size='small']) .avatar-container:not(:first-child) {
-    margin-left: -4px;
-  }
-
-  :host([variant='stack'][size='medium']) .avatar-container:not(:first-child) {
-    margin-left: -6px;
-  }
-
-  :host([variant='stack'][size='large']) .avatar-container:not(:first-child) {
-    margin-left: -8px;
-  }
-
-  :host([variant='stack']) .remain-avatars-list {
-    margin-left: -6px;
-  }
-
-  /* grid 모드에서는 아바타가 겹치지 않고 일정 간격을 두고 배치됨 */
-  :host([variant='grid']) {
-    // display: grid;
-    // grid-template-columns: repeat(auto-fill, minmax(var(--avatar-size), 1fr));
-    gap: 4px;
-  }
-
-  /* 아바타의 컨테이너 */
-  // .avatar-container {
-  //   width: var(--avatar-size);
-  //   height: var(--avatar-size);
-  // }
-
-  /* more-avatars는 아바타 크기와 동일하게 설정 */
-
-  /* 아바타 드롭다운 메뉴 내부 스타일 */
-  .more-avatars-container {
-    display: none;
-  }
-
-  .more-avatars-container-inner {
+  span {
     display: flex;
     align-items: center;
-    padding: var(--spacing-3xsmall) var(--spacing-xsmall);
-    gap: var(--spacing-3xsmall);
-
-    span {
-      display: flex;
-      align-items: center;
-    }
   }
+}

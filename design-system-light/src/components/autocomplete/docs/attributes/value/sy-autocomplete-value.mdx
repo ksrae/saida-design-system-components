@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as ValueStories from './sy-autocomplete-value.stories';
+
+<Meta of={ValueStories} />
+
+# Value
+
+The `value` attribute reflects the current input value. It is two-way bindable via the property
+(`el.value = 'Apple'`) and is what the component reports to the host `<form>` under the
+`name` key.
+
+<Canvas of={ValueStories.Default} />
+<Controls of={ValueStories.Default} />

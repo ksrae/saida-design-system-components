@@ -133,11 +133,49 @@ const inputMeta: Meta<SyInputProps> = {
     variant: {
       control: "select",
       options: ["password", "search", "text"],
-      description: "The variant of the input.",
+      description: "The variant of the input. Legacy alias for `type`.",
       table: {
         category: "Parameter",
         defaultValue: { summary: "text" },
         type: { summary: "password | search | text" },
+      },
+    },
+    type: {
+      control: "select",
+      options: ["text", "password", "email", "number", "tel", "url", "search"],
+      description: "The native input type (spec-aligned). Supersedes `variant`.",
+      table: {
+        category: "Parameter",
+        defaultValue: { summary: "text" },
+        type: { summary: "text | password | email | number | tel | url | search" },
+      },
+    },
+    message: {
+      control: "text",
+      description: "Help or validation message displayed below the input.",
+      table: {
+        category: "Parameter",
+        defaultValue: { summary: "" },
+        type: { summary: "string" },
+      },
+    },
+    name: {
+      control: "text",
+      description: "Name attribute for form submission.",
+      table: {
+        category: "Parameter",
+        defaultValue: { summary: "" },
+        type: { summary: "string" },
+      },
+    },
+    noNativeValidity: {
+      control: "boolean",
+      name: "noNativeValidity (no-native-validity)",
+      description: "Disable the browser's native validity popup.",
+      table: {
+        category: "Parameter",
+        defaultValue: { summary: false as any },
+        type: { summary: "boolean" },
       },
     },
     slotPrefix: {
@@ -160,23 +198,38 @@ const inputMeta: Meta<SyInputProps> = {
     },
     setFocus: {
       type: "function",
-      description: "Trigger focus event.",
-      table: {
-        category: "Function",
-        type: {
-          summary: `setFocus()`,
-        },
-      },
+      description: "Focus the input programmatically.",
+      table: { category: "Function", type: { summary: `setFocus(): Promise<void>` } },
     },
     setBlur: {
       type: "function",
-      description: "Trigger blur event.",
-      table: {
-        category: "Function",
-        type: {
-          summary: `setBlur()`,
-        },
-      },
+      description: "Blur the input programmatically.",
+      table: { category: "Function", type: { summary: `setBlur(): Promise<void>` } },
+    },
+    checkValidity: {
+      type: "function",
+      description: "Return the current validity state without reporting.",
+      table: { category: "Function", type: { summary: `checkValidity(): Promise<boolean>` } },
+    },
+    reportValidity: {
+      type: "function",
+      description: "Validate and show a native validation popup if invalid.",
+      table: { category: "Function", type: { summary: `reportValidity(): Promise<boolean>` } },
+    },
+    setCustomError: {
+      type: "function",
+      description: "Mark the input invalid with a custom error.",
+      table: { category: "Function", type: { summary: `setCustomError(): Promise<void>` } },
+    },
+    clearCustomError: {
+      type: "function",
+      description: "Clear a previously-set custom error.",
+      table: { category: "Function", type: { summary: `clearCustomError(): Promise<void>` } },
+    },
+    getStatus: {
+      type: "function",
+      description: "Return the current validation status key (empty when valid).",
+      table: { category: "Function", type: { summary: `getStatus(): Promise<string>` } },
     },
  /*    setValue: {
       type: "function",
@@ -210,12 +263,20 @@ const inputMeta: Meta<SyInputProps> = {
     },
     focused: {
       type: "function",
-      description: "Triggered to set value.",
+      description: "Triggered when the input gains focus.",
       table: {
         category: "Callback",
         type: {
           summary: `.addEventListener('focused', (e) => {})`,
         },
+      },
+    },
+    clear: {
+      type: "function",
+      description: "Triggered when the clear button is pressed (clearable inputs only).",
+      table: {
+        category: "Callback",
+        type: { summary: `.addEventListener('clear', (e) => {})` },
       },
     },
   },

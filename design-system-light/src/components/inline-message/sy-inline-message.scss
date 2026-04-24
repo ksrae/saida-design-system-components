@@ -32,7 +32,8 @@
       }
     }
 
-    .info {
+    .info,
+    .informational {
       sy-icon{
         color:var(--inlinemessage-informational-icon-enabled);
       }
@@ -61,7 +62,8 @@
 
 
 
-:host(sy-inline-message[variant="info"]){
+:host(sy-inline-message[variant="info"]),
+:host(sy-inline-message[variant="informational"]){
   border: var(--border-small) var(--inlinemessage-informational-border-enabled);
   background-color: var(--inlinemessage-informational-background-enabled);
   color: var(--inlinemessage-informational-text-enabled);

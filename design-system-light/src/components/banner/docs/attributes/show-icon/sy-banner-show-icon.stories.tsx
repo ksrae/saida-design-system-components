@@ -4,7 +4,7 @@ import bannerMeta from '../../sy-banner.stories';
 
 const meta: Meta = {
   title: 'BannerMessage/Attributes/Show Icon',
-  component: 'sy-banner-messsage',
+  component: 'sy-banner-message',
   tags: [],
   render: (args) => BannerShowIcon(args as { showIcon: boolean }),
   argTypes: { showIcon: bannerMeta?.argTypes?.showIcon },

@@ -1,10 +1,22 @@
-// src/components/select/select.tsx
-
 import { Component, Prop, State, h, Element, Watch, Event, EventEmitter, Host, AttachInternals, Method, Listen } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 const OPTION = 'SY-OPTION';
 
+/**
+ * sy-select — dropdown select with single/multi selection and form-association.
+ *
+ * Spec: design-system-specs/components/select.yaml
+ *
+ * Validation follows the same pattern as sy-input / sy-textarea:
+ *   - `noNativeValidity=false` (default) → browser native popup on submit.
+ *     DO NOT preventDefault() the invalid event (HTML spec: a single
+ *     preventDefaulted invalid suppresses popups on the entire form).
+ *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+ *     becomes the error UI.
+ *   - `setCustomError()` → programmatic; forces slot UI visible
+ *     (touched + hasSlotErrorMessage set).
+ */
 @Component({
   tag: 'sy-select',
   styleUrl: 'sy-select.scss',
@@ -1400,20 +1412,33 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
     return this.internals.reportValidity();
   }
 
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
+  }
+
   private updateValidityState() {
+    // (1) Programmatic custom error takes priority — use slot text as the
+    // validity message so reportValidity surfaces the same copy that's on
+    // screen. Matches autocomplete's setCustomError flow.
     if (this.validStatus === 'custom' && !this.isValid) {
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || 'Custom validation error';
+      this.internals.setValidity({ customError: true }, msg);
       return;
     }
+
     this.isValid = true;
     this.validStatus = '';
     if (this.required && (!this.selectedOptions || this.selectedOptions.length === 0)) {
       this.isValid = false;
       this.validStatus = 'valueMissing';
     }
+
     const validityMessage = this.getErrorMessage(this.validStatus);
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
-        this.internals.setValidity({ customError: true }, ' ');
+        const slotText = this.getSlotErrorText() || validityMessage || ' ';
+        this.internals.setValidity({ customError: true }, slotText);
       } else {
         this.internals.setValidity({ [this.validStatus]: true }, validityMessage);
       }
@@ -1425,34 +1450,46 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
   private customSettingError() {
     this.isValid = false;
     this.validStatus = 'custom';
-    this.internals.setValidity({ customError: true }, 'Custom validation error');
+    // Force visual invalid state immediately — developer-triggered errors
+    // shouldn't wait for the user to interact with the select.
+    this.touched = true;
+    // Slot UI becomes the surface for programmatic errors regardless of the
+    // noNativeValidity toggle.
+    const errorSlot = this.host.querySelector('[slot="error"]');
+    this.hasSlotErrorMessage =
+      !!errorSlot && ((errorSlot.textContent?.trim().length ?? 0) > 0 || errorSlot.children.length > 0);
+    this.updateValidityState();
   }
 
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
-    // Mark that a submission/validation attempt occurred so errors become visible
     this.formSubmitted = true;
+    this.isValid = false;
 
-    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-    if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.host.querySelector('[slot="error"]');
-      const hasContent = errorSlotElement?.textContent?.trim();
-      if (hasContent) {
-        this.hasSlotErrorMessage = true;
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement && (errorSlotElement.textContent?.trim().length ?? 0) > 0;
+
+    // Same clear-cut toggle used across every form-associated component:
+    //   noNativeValidity=true  → native popup suppressed, slot = UI
+    //   noNativeValidity=false → browser shows native popup; do NOT call
+    //     preventDefault (per HTML spec, one preventDefaulted invalid event
+    //     suppresses popups on the entire form).
+    if (this.noNativeValidity) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent) {
         this.host.setAttribute('has-custom-error', '');
-        e.preventDefault();
-        e.stopPropagation();
         this.internals.setValidity({ customError: true }, ' ');
       } else {
-        this.hasSlotErrorMessage = false;
         this.host.removeAttribute('has-custom-error');
       }
     } else {
       this.hasSlotErrorMessage = false;
       this.host.removeAttribute('has-custom-error');
     }
-    this.isValid = false;
-    // Re-evaluate validity so render reflects formSubmitted state immediately
+
     this.updateValidityState();
   }
 

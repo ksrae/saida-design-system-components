@@ -4,7 +4,7 @@ import bannerMeta from '../../sy-banner.stories';
 
 const meta: Meta = {
   title: 'BannerMessage/Attributes/Neutral Icon',
-  component: 'sy-banner-messsage',
+  component: 'sy-banner-message',
   tags: [],
   render: (args) => BannerNeutralIcon(args as { neutralIcon: string }),
   argTypes: { neutralIcon: bannerMeta?.argTypes?.neutralIcon },

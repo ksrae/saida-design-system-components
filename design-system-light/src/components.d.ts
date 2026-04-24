@@ -31,7 +31,15 @@ export namespace Components {
           * @default 0
          */
         "debounceTime": number;
-        "getStatus": () => Promise<string>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "getValidStatus": () => Promise<string>;
+        /**
+          * @default false
+         */
+        "highlightMatches": boolean;
         /**
           * @default false
          */
@@ -41,6 +49,10 @@ export namespace Components {
          */
         "min": number;
         /**
+          * @default ''
+         */
+        "name": string;
+        /**
           * @default false
          */
         "noNativeValidity": boolean;
@@ -48,26 +60,37 @@ export namespace Components {
           * @default ''
          */
         "placeholder": string;
+        /**
+          * @default false
+         */
+        "readonly": boolean;
         "reportValidity": () => Promise<boolean>;
         /**
           * @default false
          */
         "required": boolean;
         "setBlur": () => Promise<void>;
+        /**
+          * Force the component into an app-driven invalid state (ValidityState.customError). The error UI is whatever the consumer declared in [slot="error"]; if the slot is empty, a neutral default message is supplied to ElementInternals so the native report bubble still has something to show.
+         */
         "setCustomError": () => Promise<void>;
         "setFocus": () => Promise<void>;
         /**
-          * @default "medium"
+          * @default 'medium'
          */
-        "size": "small" | "medium" | "large";
+        "size": 'small' | 'medium' | 'large';
         /**
           * @default []
          */
         "source": string[];
         /**
-          * @default "focus"
+          * @default 'default'
          */
-        "trigger": "focus" | "input";
+        "status": 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default 'focus'
+         */
+        "trigger": 'focus' | 'input';
         /**
           * @default ''
          */
@@ -81,13 +104,37 @@ export namespace Components {
         /**
           * @default false
          */
+        "caseSensitive": boolean;
+        "forceUpdate": () => Promise<void>;
+        /**
+          * @default false
+         */
+        "highlightMatches": boolean;
+        /**
+          * @default false
+         */
         "loading": boolean;
+        /**
+          * @default ''
+         */
+        "searchTerm": string;
         "setEvent": (index: number) => Promise<void>;
         /**
           * @default []
          */
         "source": string[];
     }
+    /**
+     * sy-avatar — visual representation of a person/object.
+     * Spec: design-system-specs/components/avatar.yaml
+     * Anatomy:
+     *   .avatar-item (container)  ← size + variant + state
+     *     └─ content slot         ← image | icon | letter | initials-from-text
+     * Content priority (highest → lowest): image → icon → text → letter.
+     * Not a form-associated element (no `formCallbacks`, no `setCustomError`).
+     * React / Vue / Angular reserved keywords (`key`, `ref`, `id`) are avoided in the prop
+     * surface.
+     */
     interface SyAvatar {
         /**
           * @default false
@@ -122,14 +169,22 @@ export namespace Components {
          */
         "tooltipContent": string;
         /**
-          * @default "lightgray"
+          * @default 'lightgray'
          */
-        "variant": "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
+        "variant": | 'lightgray' | 'red' | 'orange' | 'yellow' | 'lime' | 'green'
+    | 'teal' | 'blue' | 'purple' | 'magenta' | 'darkgray';
     }
     /**
-     * sy-avatar-group (Stencil port, light DOM, scoped)
-     * - Renders slotted <sy-avatar> children
-     * - If children count > maxCount, shows +N and a dropdown list appended to body
+     * sy-avatar-group — layout container for multiple <sy-avatar> children.
+     * Spec: design-system-specs/components/avatar-group.yaml
+     * Anatomy:
+     *   .sy-avatar-group
+     *     └─ .avatar-group-inner
+     *          ├─ .avatar-container  (× maxCount)
+     *          └─ .remain-avatars-list            ← only when children > maxCount
+     *               ├─ .more-avatars ("+n" badge)
+     *               └─ .more-avatars-container   (appended to body on hover)
+     * Not a form-associated element.
      */
     interface SyAvatarGroup {
         /**
@@ -149,6 +204,15 @@ export namespace Components {
          */
         "variant": 'stack' | 'grid';
     }
+    /**
+     * sy-badge — small visual indicator for status, counts, or labels.
+     * Spec: design-system-specs/components/badge.yaml
+     * Anatomy:
+     *   .container              ← wrapper (position: relative)
+     *     ├─ .badge-content (slot) ← parent element (icon/button/avatar), hidden when standalone
+     *     └─ .badge              ← the badge itself (dot or number)
+     * Not a form-associated element. No events / methods.
+     */
     interface SyBadge {
         /**
           * @default false
@@ -183,7 +247,27 @@ export namespace Components {
          */
         "variant": 'red' | 'yellow' | 'green' | 'blue' | 'gray';
     }
-    interface SyBannerMesssage {
+    /**
+     * sy-banner-message — persistent page-level notification.
+     * Spec: design-system-specs/components/banner-message.yaml
+     * Anatomy:
+     *   .banner-container
+     *     └─ .banner-content
+     *          ├─ .banner-group
+     *          │     ├─ sy-icon (variant icon)
+     *          │     └─ .banner-message-group
+     *          │            ├─ .banner-message-area (title + message)
+     *          │            └─ .banner-footer (slot="footer")
+     *          └─ .banner-close (sy-icon when closable)
+     * Behaviour:
+     *   - Auto-prepends itself to document.body on mount for top-of-page placement.
+     *   - Singleton: creating a new banner removes every existing sy-banner-message element.
+     *   - Not a form-associated element.
+     * NOTE: Prior tag name was `sy-banner-messsage` (triple 's' typo). This component now
+     * exposes the corrected tag `sy-banner-message`. Spec Tech Debt §1 marks the rename
+     * as HIGH PRIORITY — commercial-grade code shouldn't ship typos in the public tag surface.
+     */
+    interface SyBannerMessage {
         /**
           * @default false
          */
@@ -209,12 +293,34 @@ export namespace Components {
          */
         "variant": 'info' | 'success' | 'warning' | 'error' | 'neutral';
     }
+    /**
+     * sy-breadcrumb — navigational trail indicating current page's location in a hierarchy.
+     * Spec: design-system-specs/components/breadcrumb.yaml
+     * Anatomy:
+     *   <nav aria-label="Breadcrumb">
+     *     └─ <span> (container ref for MutationObserver)
+     *          └─ <slot> → sy-breadcrumb-item × N
+     * Behaviour:
+     *   - Propagates the `separator` prop to every child item via `parentSeparator`.
+     *   - Auto-marks the last child with `isLast=true` so it renders no trailing separator.
+     *   - MutationObserver keeps child props in sync when items are added/removed dynamically.
+     * Not a form-associated element.
+     */
     interface SyBreadcrumb {
         /**
           * @default 'slash'
          */
         "separator": 'slash' | 'arrow';
     }
+    /**
+     * sy-breadcrumb-item — a single link in a breadcrumb trail.
+     * Spec: design-system-specs/components/breadcrumb.yaml (child component)
+     * Accessibility:
+     *   - Renders `role="link"` and is keyboard-focusable (Enter/Space fire `selected`).
+     *   - The active (current page) item carries `aria-current="page"` and is not focusable.
+     *   - Disabled items carry `aria-disabled="true"` and are not focusable.
+     *   - Separator icons are decorative (`aria-hidden="true"`).
+     */
     interface SyBreadcrumbItem {
         /**
           * @default false
@@ -224,30 +330,53 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
+        /**
+          * Public so that the parent breadcrumb can re-trigger a render after updating props.
+         */
         "forceUpdate": () => Promise<void>;
         /**
+          * Set by the parent `sy-breadcrumb`. When true, no trailing separator is rendered.
           * @default false
          */
         "isLast": boolean;
         /**
+          * Set by the parent `sy-breadcrumb` to inherit its separator.
           * @default 'slash'
          */
         "parentSeparator": 'slash' | 'arrow';
+        /**
+          * Per-item override of the parent breadcrumb's separator choice.
+         */
         "separator"?: 'slash' | 'arrow';
     }
+    /**
+     * sy-button — trigger for actions or form submission.
+     * Spec: design-system-specs/components/button.yaml
+     * Form-associated: participates in native <form> submit/reset flows via ElementInternals.
+     * Install a capture-phase submit guard on document so custom SAIDA form controls
+     * (checkbox, radio, select, input, …) can block submission even when the browser's
+     * form-association wiring is late.
+     */
     interface SyButton {
         /**
           * @default false
          */
         "disabled": boolean;
         /**
+          * Native formnovalidate — skip form validation when this button submits.
           * @default false
          */
         "formnovalidate": boolean;
         /**
+          * Expand the button to the parent container's full width. Spec name: `full-width`.
           * @default false
          */
-        "justified": boolean;
+        "fullWidth": boolean;
+        /**
+          * Render the button without its text label (icon-only). Spec name: `icon-only`.
+          * @default false
+         */
+        "iconOnly": boolean;
         /**
           * @default false
          */
@@ -261,6 +390,12 @@ export namespace Components {
          */
         "size": 'small' | 'medium' | 'large';
         /**
+          * Tooltip text exposed via the native `title` attribute. Required for icon-only buttons.
+          * @default ''
+         */
+        "tooltip": string;
+        /**
+          * Native button type — drives form submit/reset behaviour.
           * @default 'button'
          */
         "type": 'button' | 'submit' | 'reset';
@@ -269,6 +404,16 @@ export namespace Components {
          */
         "variant": 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    /**
+     * sy-button-group — visually unified set of related buttons.
+     * Spec: design-system-specs/components/button-group.yaml
+     * Anatomy:
+     *   .button-group[.button-group--vertical]
+     *     └─ <slot> → sy-button × N
+     * Uses a MutationObserver to detect added/removed buttons and pushes their
+     * first/middle/last position to each via `setButtonGroupState()`.
+     * Not a form-associated element.
+     */
     interface SyButtonGroup {
         /**
           * @default false
@@ -310,6 +455,20 @@ export namespace Components {
         "variant": 'date' | 'datetime' | 'range' | 'time';
         "year": number;
     }
+    /**
+     * sy-card — visual grouping of related content with optional header, body, and footer slots.
+     * Spec: design-system-specs/components/card.yaml
+     * Anatomy:
+     *   .card[.card-backdrop]
+     *     ├─ [slot="cover"]    (optional media)
+     *     ├─ .card-header-wrapper
+     *     │     ├─ sy-icon (collapse chevron, only when collapsible + header present)
+     *     │     └─ [slot="header"]
+     *     ├─ .card-content[.collapsed]
+     *     │     └─ [slot]  (default slot — body)
+     *     └─ [slot="footer"]
+     * Not a form-associated element.
+     */
     interface SyCard {
         /**
           * @default false
@@ -328,6 +487,26 @@ export namespace Components {
          */
         "openDelay": number;
     }
+    /**
+     * sy-checkbox — two-state toggle (checked / unchecked), with optional indeterminate.
+     * Spec: design-system-specs/components/checkbox.yaml
+     * Anatomy:
+     *   .checkbox-wrapper
+     *     ├─ <label> → <input type="checkbox"> + .checkbox-visual-label (✓ / –) + <slot> (label text)
+     *     └─ .error-container → <slot name="error">
+     * Form-associated: participates in <form> via ElementInternals.
+     * Custom-error pattern (shared across all SAIDA form controls — see autocomplete comment):
+     *   1. Declarative slot — author writes the error UI once:
+     *        <sy-checkbox required>
+     *          I agree
+     *          <div slot="error">You must agree to continue</div>
+     *        </sy-checkbox>
+     *      When `required` is violated and the user has touched the field or submitted
+     *      the form, the slot content becomes visible.
+     *   2. Programmatic — app code decides an invalid state at any time:
+     *        el.setCustomError();   // reveals the same slot
+     *        el.clearCustomError(); // reverts to native-only validation
+     */
     interface SyCheckbox {
         "checkValidity": () => Promise<boolean>;
         /**
@@ -343,6 +522,7 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
+        "getValidStatus": () => Promise<string>;
         /**
           * @default false
          */
@@ -351,6 +531,10 @@ export namespace Components {
           * @default ''
          */
         "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
         /**
           * @default false
          */
@@ -363,6 +547,10 @@ export namespace Components {
         "setBlur": () => Promise<void>;
         "setCustomError": () => Promise<void>;
         "setFocus": () => Promise<void>;
+        /**
+          * @default 'on'
+         */
+        "value": string;
     }
     interface SyCollapse {
         /**
@@ -415,16 +603,32 @@ export namespace Components {
         "open": () => Promise<void>;
         "toggle": () => Promise<void>;
     }
+    /**
+     * sy-colorpicker — select a color via HEX / RGB / HSB with optional alpha.
+     * Spec: design-system-specs/components/color-picker.yaml
+     * Anatomy:
+     *   .color-picker-button    (hidden in inline mode)
+     *     ├─ .color-preview      (swatch of current value)
+     *     └─ .color-text          (optional textual representation)
+     *     └─ sy-popover → sy-colorpicker-content  (the interactive panel)
+     * Spec vs code naming reconciliation (rule: document-first, extend with legacy aliases):
+     *   - spec `hideAlpha` ↔ code `hideOpacity` (accept both attributes)
+     *   - spec format enum `HEX|RGB|HSB` (uppercase) ↔ code `hex|rgb|hsb` (lowercase).
+     *     The value is normalised to lowercase internally so consumers can use either.
+     * Not a form-associated element (spec has no `formCallbacks`).
+     */
     interface SyColorpicker {
         /**
           * @default false
          */
         "disabled": boolean;
         /**
+          * Current color format. Accepts uppercase (spec) or lowercase (legacy code) — normalised internally.
           * @default 'hex'
          */
         "format": 'hex' | 'hsb' | 'rgb';
         /**
+          * Hide the alpha/opacity slider. Alias of the spec name `hideAlpha`.
           * @default false
          */
         "hideOpacity": boolean;
@@ -544,7 +748,7 @@ export namespace Components {
           * @default 'yyyy-MM-dd hh:mm:ss'
          */
         "format": string;
-        "getStatus": () => Promise<"" | "valueMissing" | "custom">;
+        "getValidStatus": () => Promise<string>;
         /**
           * @default false
          */
@@ -564,6 +768,10 @@ export namespace Components {
           * @default ''
          */
         "name": string;
+        /**
+          * @default false
+         */
+        "noNativeValidity": boolean;
         /**
           * @default ''
          */
@@ -585,21 +793,76 @@ export namespace Components {
         "variant": 'date' | 'datetime' | 'range' | 'time';
         "year": string;
     }
+    /**
+     * sy-divider — a thin horizontal or vertical separator line.
+     * Spec: design-system-specs/components/divider.yaml
+     * Anatomy:
+     *   .horizontal | .vertical (inner line element)
+     * Accessibility:
+     *   - Host gets `role="separator"` and `aria-orientation` reflecting the type.
+     * Not a form-associated element.
+     */
     interface SyDivider {
+        /**
+          * @default ''
+         */
+        "color": string;
+        /**
+          * @default false
+         */
+        "inset": boolean;
+        /**
+          * @default 1
+         */
+        "thickness": number;
         /**
           * @default 'horizontal'
          */
         "type": 'horizontal' | 'vertical';
     }
+    /**
+     * sy-drawer — sliding edge panel for secondary navigation / content.
+     * Spec: design-system-specs/components/drawer.yaml
+     * Anatomy:
+     *   .drawer-wrapper
+     *     ├─ .drawer-mask      (backdrop, hidden when maskless=true)
+     *     └─ .drawer-container (the sliding panel)
+     *           ├─ .drawer-header  (slot="header" + close button)
+     *           ├─ .drawer-body    (slot="body")
+     *           └─ .drawer-footer  (slot="footer")
+     * Spec vs code naming reconciliation (rule 6: document-first, accept legacy aliases):
+     *   - spec `placement`    ↔ code `position`
+     *   - spec `opened`       ↔ code `open`
+     *   - spec `maskClosable` ↔ accepted as attribute, drives backdrop-click close
+     * Mounting target (SAIDA extension):
+     *   - By default the drawer appends itself to `document.body` so `position: fixed`
+     *     resolves against the viewport.
+     *   - When the `parentid` attribute is set, the drawer mounts into
+     *     `document.getElementById(parentid)` instead and uses `position: absolute`
+     *     so it can be scoped inside a specific page region (e.g., split-panel side).
+     *     If the target's computed `position` is `static`, the host auto-upgrades it
+     *     to `relative` so the drawer's `position: absolute` has a containing block.
+     * Not a form-associated element.
+     */
     interface SyDrawer {
         /**
           * @default false
          */
         "closable": boolean;
         /**
+          * When true, drawer closes on browser history navigation. Spec default: true.
+          * @default true
+         */
+        "closeOnNavigation": boolean;
+        /**
           * @default 100
          */
         "customSize": number;
+        /**
+          * When true, clicking the backdrop closes the drawer. Spec: `maskClosable`.
+          * @default true
+         */
+        "maskClosable": boolean;
         /**
           * @default false
          */
@@ -608,6 +871,11 @@ export namespace Components {
           * @default false
          */
         "open": boolean;
+        /**
+          * ID of a parent element that should contain this drawer instead of document.body. When set, `position: absolute` is used so the drawer is scoped to that region. When empty (default), the drawer uses `position: fixed` and mounts on document.body.
+          * @default ''
+         */
+        "parentId": string;
         /**
           * @default 'right'
          */
@@ -621,6 +889,17 @@ export namespace Components {
          */
         "size": 'small' | 'medium' | 'large' | 'custom';
     }
+    /**
+     * sy-dropdown — trigger that reveals a list of options (hosted `<sy-menu>`).
+     * Spec: design-system-specs/components/dropdown.yaml
+     * Anatomy:
+     *   .dropdown--container  (role="button", opens the menu)
+     *     ├─ .dropdown--header ([slot="title"] trigger label)
+     *     ├─ sy-icon (chevron / angle-down)
+     *     └─ <slot> (sy-menu as the actual menu)
+     * The menu's `itemSelected` bubbles up; dropdown re-emits it as a typed `selected` event.
+     * Not a form-associated element.
+     */
     interface SyDropdown {
         /**
           * @default false
@@ -639,16 +918,45 @@ export namespace Components {
          */
         "size": 'small' | 'medium' | 'large';
         /**
+          * @default ''
+         */
+        "tooltip": string;
+        /**
           * @default 'click'
          */
         "trigger": 'hover' | 'click';
     }
+    /**
+     * sy-empty — placeholder UI for zero-state content (no data, no search results, etc).
+     * Spec: design-system-specs/components/empty.yaml
+     * Anatomy:
+     *   .empty-wrapper
+     *     └─ .empty
+     *          ├─ [slot="icon"] or default sy-icon
+     *          ├─ .description (text message, hidden when `description=false`)
+     *          └─ <slot>  (optional action buttons / extra content)
+     * Spec vs legacy code naming:
+     *   - spec `text: string` (the message) ↔ legacy code `description: string` (the message)
+     *   - spec `description: boolean` (visibility flag)
+     * Resolution: expose `text` as the new primary (document-first) while the legacy
+     * `description` string still works — if the author passes a non-boolean string it
+     * is treated as the message text. New markup should use `text` + `description=boolean`.
+     * Not a form-associated element.
+     */
     interface SyEmpty {
         /**
-          * Empty 컴포넌트에 표시될 설명 텍스트입니다. Lit의
-          * @property에 해당합니다.
+          * Legacy: was a string message; spec defines it as a boolean visibility flag. Non-empty strings are accepted for back-compat and promoted to `text`.
+          * @default true
          */
-        "description": string;
+        "description": string | boolean;
+        /**
+          * @default ''
+         */
+        "icon": string;
+        /**
+          * @default 'No Data'
+         */
+        "text": string;
     }
     interface SyFlex {
         /**
@@ -670,7 +978,7 @@ export namespace Components {
         /**
           * @default 'start'
          */
-        "justify": 'start' | 'center' | 'end' | 'space-between';
+        "justify": 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly';
         /**
           * @default 'medium'
          */
@@ -688,7 +996,37 @@ export namespace Components {
          */
         "wrap": 'nowrap' | 'wrap' | 'wrap-reverse';
     }
+    /**
+     * sy-global-header — persistent top-of-page navigation bar.
+     * Spec: design-system-specs/components/global-header.yaml
+     * Anatomy:
+     *   .header-wrapper
+     *     ├─ .header-title   (logo slot + app title)
+     *     ├─ .header-tab     ([slot="tabs"] + overflow menu when tabs don't fit)
+     *     └─ .header-end     (search + information + notification + [slot="actions"])
+     * Tab integration — IMPORTANT, do not break:
+     *   - When used inside <sy-tab-group>, the header discovers the parent group in
+     *     componentWillLoad and uses it to:
+     *       (a) mark each slotted <sy-tab> with `inHeader=true` and its `index`,
+     *       (b) delegate activation to `parent.setActive(index)` when a tab is picked
+     *           from the overflow menu,
+     *       (c) trigger the parent's own `updateOverflowTabs` after mount.
+     *   - The tab strip uses a ResizeObserver on `.header-tab` to recompute overflow
+     *     when the header's available width changes (e.g., window resize, side-panel
+     *     toggle). Missing/stale targets are defended against so we never throw.
+     * Spec vs legacy naming (rule 6: document-first, accept legacy aliases):
+     *   - spec `show-help`          ↔ legacy `information`
+     *   - spec `show-notifications` ↔ legacy `notification`
+     *   - spec `show-search`        ↔ legacy `search`
+     *   - spec `title`              ↔ legacy `title` (attribute) / `appTitle` (JS property)
+     * The legacy names stay as the code-canonical props (storybook stories depend on
+     * them); spec-aligned attributes are resolved via `fnAssignPropFromAlias`.
+     * Not a form-associated element.
+     */
     interface SyGlobalHeader {
+        /**
+          * @default ''
+         */
         "appTitle": string;
         /**
           * @default false
@@ -706,6 +1044,9 @@ export namespace Components {
           * @default false
          */
         "sticky": boolean;
+        /**
+          * Public method — also used internally. Computes which tabs fit in the available width and stashes the rest in `overflowTabs` (rendered via the ··· menu). Re-entrancy guard via `updateInProgress` because both the ResizeObserver and explicit calls can trigger this in rapid succession.
+         */
         "updateOverflowTabs": () => Promise<void>;
     }
     interface SyIcon {
@@ -724,13 +1065,42 @@ export namespace Components {
         "size": 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
         "svgMarkup"?: string;
     }
+    /**
+     * sy-inline-message — contextual feedback anchored to a triggering element.
+     * Spec: design-system-specs/components/inline-message.yaml
+     * Anatomy:
+     *   .inline-massage-container
+     *     ├─ sy-icon             (variant icon, toggleable via `icon`)
+     *     └─ .inline-group
+     *          ├─ <slot>          (message text)
+     *          └─ .inline-message-button-area  (action slot or btnLabel-driven button)
+     * Legacy aliases (accepted via fnAssignPropFromAlias so older markup keeps working):
+     *   - spec `icon`        ↔ legacy `show-icon` / `showIcon`
+     *   - spec `placement`   ↔ legacy `position`
+     *   - spec `action`      ↔ legacy `btn-label`/`btnLabel` (boolean toggle + label string stays usable)
+     *   - spec variant `informational` ↔ legacy `info`
+     * Not form-associated. Positioning auto-switches axis when there's not enough
+     * space on the preferred side.
+     */
     interface SyInlineMessage {
+        /**
+          * @default false
+         */
+        "action": boolean;
         /**
           * @default ''
          */
         "btnLabel": string;
         /**
-          * @default ''
+          * Programmatically hide the inline message.
+         */
+        "hide": () => Promise<void>;
+        /**
+          * @default true
+         */
+        "icon": boolean;
+        /**
+          * @default 'Inline message'
          */
         "message": string;
         /**
@@ -740,11 +1110,13 @@ export namespace Components {
         /**
           * @default 'bottom'
          */
-        "position": 'top' | 'bottom' | 'left' | 'right';
+        "placement": 'top' | 'bottom' | 'left' | 'right';
+        "position"?: 'top' | 'bottom' | 'left' | 'right';
         /**
-          * @default false
+          * Programmatically show the inline message.
          */
-        "showIcon": boolean;
+        "show": () => Promise<void>;
+        "showIcon"?: boolean;
         /**
           * @default false
          */
@@ -754,10 +1126,30 @@ export namespace Components {
          */
         "trigger": 'click' | 'focusout';
         /**
-          * @default 'info'
+          * @default 'informational'
          */
-        "variant": 'info' | 'success' | 'warning' | 'error';
+        "variant": 'informational' | 'info' | 'success' | 'warning' | 'error';
     }
+    /**
+     * sy-input — single-line text input with form association + slot-based error support.
+     * Spec: design-system-specs/components/input.yaml
+     * Canonical (spec-aligned) props:
+     *   - type          ('text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search')
+     *   - message       (help/validation text below field)
+     *   - minLength / maxLength (character length constraints)
+     * Legacy props kept for backward compatibility:
+     *   - variant       (maps to `type` — accepts text | password | search)
+     *   - min / max     (map to minLength / maxLength)
+     *   - label         (display label above input; not in spec but in use)
+     * Slots (spec-aligned + legacy):
+     *   - prefix-icon  (spec)   / prefix  (legacy)
+     *   - suffix-icon  (spec)   / suffix  (legacy)
+     *   - message      (spec — custom help/validation)
+     *   - error        (legacy — custom error content)
+     * Events (spec-aligned + legacy):
+     *   - input, change, focus, blur, clear   (spec)
+     *   - changed, focused, blured             (legacy)
+     */
     interface SyInput {
         /**
           * @default false
@@ -777,12 +1169,16 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
-        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong">;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "tooShort" | "tooLong" | "typeMismatch">;
         /**
           * @default ""
          */
         "label": string;
         "max"?: number;
+        /**
+          * @default ""
+         */
+        "message": string;
         "min"?: number;
         /**
           * @default ""
@@ -817,6 +1213,10 @@ export namespace Components {
          */
         "status": 'default' | 'warning' | 'error' | 'success';
         /**
+          * @default 'text'
+         */
+        "type": 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
+        /**
           * @default ""
          */
         "value": string;
@@ -825,6 +1225,20 @@ export namespace Components {
          */
         "variant": "password" | "search" | "text";
     }
+    /**
+     * sy-input-number — numeric input with stepper buttons, rounding, and form association.
+     * Spec: design-system-specs/components/input-number.yaml
+     * API fully matches spec: value, min, max, step, size, status, borderless,
+     * readonly, decimal-places, rounding, label, name, autofocus, disabled, required,
+     * no-native-validity. Events (changed, blured, focused) and methods (setFocus,
+     * setBlur, stepUp, stepDown, checkValidity, reportValidity, setCustomError,
+     * clearCustomError, getStatus) are spec-aligned.
+     * Validation semantics:
+     *   - required → valueMissing
+     *   - non-numeric text → typeMismatch
+     *   - min/max violation → rangeUnderflow / rangeOverflow
+     *   - off-step value → stepMismatch (tolerates floating-point noise)
+     */
     interface SyInputNumber {
         /**
           * @default false
@@ -841,7 +1255,7 @@ export namespace Components {
           * @default false
          */
         "disabled": boolean;
-        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch" | "typeMismatch">;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom" | "typeMismatch" | "rangeUnderflow" | "rangeOverflow" | "stepMismatch">;
         /**
           * @default ""
          */
@@ -919,7 +1333,7 @@ export namespace Components {
         /**
           * @default 'left'
          */
-        "valuePosition": 'left' | 'right';
+        "valuePosition": 'left' | 'right' | 'center';
         /**
           * @default ''
          */
@@ -1902,17 +2316,40 @@ export namespace Components {
         "disabled": boolean;
         "name": string;
     }
+    /**
+     * sy-tab-group — tab navigation container.
+     * Spec: design-system-specs/components/tabs.yaml
+     * Public API (spec-aligned) & legacy aliases:
+     *   - `index` (spec)           ↔ `active` (legacy, code-canonical)
+     *   - `placement` (spec)       ↔ `position` (legacy, code-canonical)
+     *   - `centered` (spec)        ↔ `align="center"` (legacy)
+     *   - `add-new-tab` (spec)     ↔ tech-debt (event hook: tabAdded)
+     *   - `setActiveTab(i)` (spec) ↔ `setActive(i)` (legacy)
+     *   - `tabSelected` event      ↔ `selected` (legacy, emitted alongside)
+     *   - `tabClosed` event        ↔ `closed`   (legacy, emitted alongside)
+     * Tab integration with sy-global-header: when a header is nested inside the
+     * group, the header renders the tab row and handles its own overflow logic —
+     * see `updateOverflowTabs` early-return.
+     */
     interface SyTabGroup {
         "active"?: number;
+        /**
+          * @default false
+         */
+        "addNewTab": boolean;
         /**
           * @default 'left'
          */
         "align": 'center' | 'left';
-        "closeTab": (name: string) => Promise<void>;
+        "closeTab": (nameOrIndex: string | number) => Promise<void>;
         /**
           * @default false
          */
         "disabled": boolean;
+        /**
+          * Get the index of the currently selected tab (spec-aligned API).
+         */
+        "getActiveTab": () => Promise<number | undefined>;
         /**
           * @default false
          */
@@ -1925,6 +2362,10 @@ export namespace Components {
           * @default "top"
          */
         "position": "top" | "bottom" | "left" | "right";
+        /**
+          * Programmatically select a tab by index (spec-aligned API).
+         */
+        "setActiveTab": (index: number) => Promise<void>;
         /**
           * @default "medium"
          */
@@ -2424,6 +2865,10 @@ export interface SyAvatarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyAvatarElement;
 }
+export interface SyAvatarGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyAvatarGroupElement;
+}
 export interface SyBreadcrumbItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyBreadcrumbItemElement;
@@ -2463,6 +2908,10 @@ export interface SyDatepickerCustomEvent<T> extends CustomEvent<T> {
 export interface SyDrawerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyDrawerElement;
+}
+export interface SyDropdownCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyDropdownElement;
 }
 export interface SyGlobalHeaderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2614,6 +3063,17 @@ declare global {
   };
         "disableStatus": { disabled: boolean };
     }
+    /**
+     * sy-avatar — visual representation of a person/object.
+     * Spec: design-system-specs/components/avatar.yaml
+     * Anatomy:
+     *   .avatar-item (container)  ← size + variant + state
+     *     └─ content slot         ← image | icon | letter | initials-from-text
+     * Content priority (highest → lowest): image → icon → text → letter.
+     * Not a form-associated element (no `formCallbacks`, no `setCustomError`).
+     * React / Vue / Angular reserved keywords (`key`, `ref`, `id`) are avoided in the prop
+     * surface.
+     */
     interface HTMLSyAvatarElement extends Components.SyAvatar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyAvatarElementEventMap>(type: K, listener: (this: HTMLSyAvatarElement, ev: SyAvatarCustomEvent<HTMLSyAvatarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2628,29 +3088,94 @@ declare global {
         prototype: HTMLSyAvatarElement;
         new (): HTMLSyAvatarElement;
     };
+    interface HTMLSyAvatarGroupElementEventMap {
+        "selected": {
+    letter: string;
+    text: string;
+    icon: string;
+    image: string;
+  };
+    }
     /**
-     * sy-avatar-group (Stencil port, light DOM, scoped)
-     * - Renders slotted <sy-avatar> children
-     * - If children count > maxCount, shows +N and a dropdown list appended to body
+     * sy-avatar-group — layout container for multiple <sy-avatar> children.
+     * Spec: design-system-specs/components/avatar-group.yaml
+     * Anatomy:
+     *   .sy-avatar-group
+     *     └─ .avatar-group-inner
+     *          ├─ .avatar-container  (× maxCount)
+     *          └─ .remain-avatars-list            ← only when children > maxCount
+     *               ├─ .more-avatars ("+n" badge)
+     *               └─ .more-avatars-container   (appended to body on hover)
+     * Not a form-associated element.
      */
     interface HTMLSyAvatarGroupElement extends Components.SyAvatarGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyAvatarGroupElementEventMap>(type: K, listener: (this: HTMLSyAvatarGroupElement, ev: SyAvatarGroupCustomEvent<HTMLSyAvatarGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyAvatarGroupElementEventMap>(type: K, listener: (this: HTMLSyAvatarGroupElement, ev: SyAvatarGroupCustomEvent<HTMLSyAvatarGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLSyAvatarGroupElement: {
         prototype: HTMLSyAvatarGroupElement;
         new (): HTMLSyAvatarGroupElement;
     };
+    /**
+     * sy-badge — small visual indicator for status, counts, or labels.
+     * Spec: design-system-specs/components/badge.yaml
+     * Anatomy:
+     *   .container              ← wrapper (position: relative)
+     *     ├─ .badge-content (slot) ← parent element (icon/button/avatar), hidden when standalone
+     *     └─ .badge              ← the badge itself (dot or number)
+     * Not a form-associated element. No events / methods.
+     */
     interface HTMLSyBadgeElement extends Components.SyBadge, HTMLStencilElement {
     }
     var HTMLSyBadgeElement: {
         prototype: HTMLSyBadgeElement;
         new (): HTMLSyBadgeElement;
     };
-    interface HTMLSyBannerMesssageElement extends Components.SyBannerMesssage, HTMLStencilElement {
+    /**
+     * sy-banner-message — persistent page-level notification.
+     * Spec: design-system-specs/components/banner-message.yaml
+     * Anatomy:
+     *   .banner-container
+     *     └─ .banner-content
+     *          ├─ .banner-group
+     *          │     ├─ sy-icon (variant icon)
+     *          │     └─ .banner-message-group
+     *          │            ├─ .banner-message-area (title + message)
+     *          │            └─ .banner-footer (slot="footer")
+     *          └─ .banner-close (sy-icon when closable)
+     * Behaviour:
+     *   - Auto-prepends itself to document.body on mount for top-of-page placement.
+     *   - Singleton: creating a new banner removes every existing sy-banner-message element.
+     *   - Not a form-associated element.
+     * NOTE: Prior tag name was `sy-banner-messsage` (triple 's' typo). This component now
+     * exposes the corrected tag `sy-banner-message`. Spec Tech Debt §1 marks the rename
+     * as HIGH PRIORITY — commercial-grade code shouldn't ship typos in the public tag surface.
+     */
+    interface HTMLSyBannerMessageElement extends Components.SyBannerMessage, HTMLStencilElement {
     }
-    var HTMLSyBannerMesssageElement: {
-        prototype: HTMLSyBannerMesssageElement;
-        new (): HTMLSyBannerMesssageElement;
+    var HTMLSyBannerMessageElement: {
+        prototype: HTMLSyBannerMessageElement;
+        new (): HTMLSyBannerMessageElement;
     };
+    /**
+     * sy-breadcrumb — navigational trail indicating current page's location in a hierarchy.
+     * Spec: design-system-specs/components/breadcrumb.yaml
+     * Anatomy:
+     *   <nav aria-label="Breadcrumb">
+     *     └─ <span> (container ref for MutationObserver)
+     *          └─ <slot> → sy-breadcrumb-item × N
+     * Behaviour:
+     *   - Propagates the `separator` prop to every child item via `parentSeparator`.
+     *   - Auto-marks the last child with `isLast=true` so it renders no trailing separator.
+     *   - MutationObserver keeps child props in sync when items are added/removed dynamically.
+     * Not a form-associated element.
+     */
     interface HTMLSyBreadcrumbElement extends Components.SyBreadcrumb, HTMLStencilElement {
     }
     var HTMLSyBreadcrumbElement: {
@@ -2660,6 +3185,15 @@ declare global {
     interface HTMLSyBreadcrumbItemElementEventMap {
         "selected": HTMLSyBreadcrumbItemElement;
     }
+    /**
+     * sy-breadcrumb-item — a single link in a breadcrumb trail.
+     * Spec: design-system-specs/components/breadcrumb.yaml (child component)
+     * Accessibility:
+     *   - Renders `role="link"` and is keyboard-focusable (Enter/Space fire `selected`).
+     *   - The active (current page) item carries `aria-current="page"` and is not focusable.
+     *   - Disabled items carry `aria-disabled="true"` and are not focusable.
+     *   - Separator icons are decorative (`aria-hidden="true"`).
+     */
     interface HTMLSyBreadcrumbItemElement extends Components.SyBreadcrumbItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyBreadcrumbItemElementEventMap>(type: K, listener: (this: HTMLSyBreadcrumbItemElement, ev: SyBreadcrumbItemCustomEvent<HTMLSyBreadcrumbItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2674,12 +3208,30 @@ declare global {
         prototype: HTMLSyBreadcrumbItemElement;
         new (): HTMLSyBreadcrumbItemElement;
     };
+    /**
+     * sy-button — trigger for actions or form submission.
+     * Spec: design-system-specs/components/button.yaml
+     * Form-associated: participates in native <form> submit/reset flows via ElementInternals.
+     * Install a capture-phase submit guard on document so custom SAIDA form controls
+     * (checkbox, radio, select, input, …) can block submission even when the browser's
+     * form-association wiring is late.
+     */
     interface HTMLSyButtonElement extends Components.SyButton, HTMLStencilElement {
     }
     var HTMLSyButtonElement: {
         prototype: HTMLSyButtonElement;
         new (): HTMLSyButtonElement;
     };
+    /**
+     * sy-button-group — visually unified set of related buttons.
+     * Spec: design-system-specs/components/button-group.yaml
+     * Anatomy:
+     *   .button-group[.button-group--vertical]
+     *     └─ <slot> → sy-button × N
+     * Uses a MutationObserver to detect added/removed buttons and pushes their
+     * first/middle/last position to each via `setButtonGroupState()`.
+     * Not a form-associated element.
+     */
     interface HTMLSyButtonGroupElement extends Components.SyButtonGroup, HTMLStencilElement {
     }
     var HTMLSyButtonGroupElement: {
@@ -2704,6 +3256,20 @@ declare global {
         prototype: HTMLSyCalendarElement;
         new (): HTMLSyCalendarElement;
     };
+    /**
+     * sy-card — visual grouping of related content with optional header, body, and footer slots.
+     * Spec: design-system-specs/components/card.yaml
+     * Anatomy:
+     *   .card[.card-backdrop]
+     *     ├─ [slot="cover"]    (optional media)
+     *     ├─ .card-header-wrapper
+     *     │     ├─ sy-icon (collapse chevron, only when collapsible + header present)
+     *     │     └─ [slot="header"]
+     *     ├─ .card-content[.collapsed]
+     *     │     └─ [slot]  (default slot — body)
+     *     └─ [slot="footer"]
+     * Not a form-associated element.
+     */
     interface HTMLSyCardElement extends Components.SyCard, HTMLStencilElement {
     }
     var HTMLSyCardElement: {
@@ -2711,10 +3277,30 @@ declare global {
         new (): HTMLSyCardElement;
     };
     interface HTMLSyCheckboxElementEventMap {
-        "changed": { value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; };
+        "changed": { value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean };
         "focused": boolean;
         "blured": boolean;
     }
+    /**
+     * sy-checkbox — two-state toggle (checked / unchecked), with optional indeterminate.
+     * Spec: design-system-specs/components/checkbox.yaml
+     * Anatomy:
+     *   .checkbox-wrapper
+     *     ├─ <label> → <input type="checkbox"> + .checkbox-visual-label (✓ / –) + <slot> (label text)
+     *     └─ .error-container → <slot name="error">
+     * Form-associated: participates in <form> via ElementInternals.
+     * Custom-error pattern (shared across all SAIDA form controls — see autocomplete comment):
+     *   1. Declarative slot — author writes the error UI once:
+     *        <sy-checkbox required>
+     *          I agree
+     *          <div slot="error">You must agree to continue</div>
+     *        </sy-checkbox>
+     *      When `required` is violated and the user has touched the field or submitted
+     *      the form, the slot content becomes visible.
+     *   2. Programmatic — app code decides an invalid state at any time:
+     *        el.setCustomError();   // reveals the same slot
+     *        el.clearCustomError(); // reverts to native-only validation
+     */
     interface HTMLSyCheckboxElement extends Components.SyCheckbox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyCheckboxElementEventMap>(type: K, listener: (this: HTMLSyCheckboxElement, ev: SyCheckboxCustomEvent<HTMLSyCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2755,6 +3341,20 @@ declare global {
     interface HTMLSyColorpickerElementEventMap {
         "changed": { value: string; format: string; opacity: number };
     }
+    /**
+     * sy-colorpicker — select a color via HEX / RGB / HSB with optional alpha.
+     * Spec: design-system-specs/components/color-picker.yaml
+     * Anatomy:
+     *   .color-picker-button    (hidden in inline mode)
+     *     ├─ .color-preview      (swatch of current value)
+     *     └─ .color-text          (optional textual representation)
+     *     └─ sy-popover → sy-colorpicker-content  (the interactive panel)
+     * Spec vs code naming reconciliation (rule: document-first, extend with legacy aliases):
+     *   - spec `hideAlpha` ↔ code `hideOpacity` (accept both attributes)
+     *   - spec format enum `HEX|RGB|HSB` (uppercase) ↔ code `hex|rgb|hsb` (lowercase).
+     *     The value is normalised to lowercase internally so consumers can use either.
+     * Not a form-associated element (spec has no `formCallbacks`).
+     */
     interface HTMLSyColorpickerElement extends Components.SyColorpicker, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyColorpickerElementEventMap>(type: K, listener: (this: HTMLSyColorpickerElement, ev: SyColorpickerCustomEvent<HTMLSyColorpickerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2841,6 +3441,15 @@ declare global {
         prototype: HTMLSyDatepickerElement;
         new (): HTMLSyDatepickerElement;
     };
+    /**
+     * sy-divider — a thin horizontal or vertical separator line.
+     * Spec: design-system-specs/components/divider.yaml
+     * Anatomy:
+     *   .horizontal | .vertical (inner line element)
+     * Accessibility:
+     *   - Host gets `role="separator"` and `aria-orientation` reflecting the type.
+     * Not a form-associated element.
+     */
     interface HTMLSyDividerElement extends Components.SyDivider, HTMLStencilElement {
     }
     var HTMLSyDividerElement: {
@@ -2851,6 +3460,30 @@ declare global {
         "opened": void;
         "closed": void;
     }
+    /**
+     * sy-drawer — sliding edge panel for secondary navigation / content.
+     * Spec: design-system-specs/components/drawer.yaml
+     * Anatomy:
+     *   .drawer-wrapper
+     *     ├─ .drawer-mask      (backdrop, hidden when maskless=true)
+     *     └─ .drawer-container (the sliding panel)
+     *           ├─ .drawer-header  (slot="header" + close button)
+     *           ├─ .drawer-body    (slot="body")
+     *           └─ .drawer-footer  (slot="footer")
+     * Spec vs code naming reconciliation (rule 6: document-first, accept legacy aliases):
+     *   - spec `placement`    ↔ code `position`
+     *   - spec `opened`       ↔ code `open`
+     *   - spec `maskClosable` ↔ accepted as attribute, drives backdrop-click close
+     * Mounting target (SAIDA extension):
+     *   - By default the drawer appends itself to `document.body` so `position: fixed`
+     *     resolves against the viewport.
+     *   - When the `parentid` attribute is set, the drawer mounts into
+     *     `document.getElementById(parentid)` instead and uses `position: absolute`
+     *     so it can be scoped inside a specific page region (e.g., split-panel side).
+     *     If the target's computed `position` is `static`, the host auto-upgrades it
+     *     to `relative` so the drawer's `position: absolute` has a containing block.
+     * Not a form-associated element.
+     */
     interface HTMLSyDrawerElement extends Components.SyDrawer, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyDrawerElementEventMap>(type: K, listener: (this: HTMLSyDrawerElement, ev: SyDrawerCustomEvent<HTMLSyDrawerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2865,12 +3498,51 @@ declare global {
         prototype: HTMLSyDrawerElement;
         new (): HTMLSyDrawerElement;
     };
+    interface HTMLSyDropdownElementEventMap {
+        "selected": any;
+    }
+    /**
+     * sy-dropdown — trigger that reveals a list of options (hosted `<sy-menu>`).
+     * Spec: design-system-specs/components/dropdown.yaml
+     * Anatomy:
+     *   .dropdown--container  (role="button", opens the menu)
+     *     ├─ .dropdown--header ([slot="title"] trigger label)
+     *     ├─ sy-icon (chevron / angle-down)
+     *     └─ <slot> (sy-menu as the actual menu)
+     * The menu's `itemSelected` bubbles up; dropdown re-emits it as a typed `selected` event.
+     * Not a form-associated element.
+     */
     interface HTMLSyDropdownElement extends Components.SyDropdown, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyDropdownElementEventMap>(type: K, listener: (this: HTMLSyDropdownElement, ev: SyDropdownCustomEvent<HTMLSyDropdownElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyDropdownElementEventMap>(type: K, listener: (this: HTMLSyDropdownElement, ev: SyDropdownCustomEvent<HTMLSyDropdownElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLSyDropdownElement: {
         prototype: HTMLSyDropdownElement;
         new (): HTMLSyDropdownElement;
     };
+    /**
+     * sy-empty — placeholder UI for zero-state content (no data, no search results, etc).
+     * Spec: design-system-specs/components/empty.yaml
+     * Anatomy:
+     *   .empty-wrapper
+     *     └─ .empty
+     *          ├─ [slot="icon"] or default sy-icon
+     *          ├─ .description (text message, hidden when `description=false`)
+     *          └─ <slot>  (optional action buttons / extra content)
+     * Spec vs legacy code naming:
+     *   - spec `text: string` (the message) ↔ legacy code `description: string` (the message)
+     *   - spec `description: boolean` (visibility flag)
+     * Resolution: expose `text` as the new primary (document-first) while the legacy
+     * `description` string still works — if the author passes a non-boolean string it
+     * is treated as the message text. New markup should use `text` + `description=boolean`.
+     * Not a form-associated element.
+     */
     interface HTMLSyEmptyElement extends Components.SyEmpty, HTMLStencilElement {
     }
     var HTMLSyEmptyElement: {
@@ -2888,6 +3560,33 @@ declare global {
         "actionClick": any;
         "selected": any;
     }
+    /**
+     * sy-global-header — persistent top-of-page navigation bar.
+     * Spec: design-system-specs/components/global-header.yaml
+     * Anatomy:
+     *   .header-wrapper
+     *     ├─ .header-title   (logo slot + app title)
+     *     ├─ .header-tab     ([slot="tabs"] + overflow menu when tabs don't fit)
+     *     └─ .header-end     (search + information + notification + [slot="actions"])
+     * Tab integration — IMPORTANT, do not break:
+     *   - When used inside <sy-tab-group>, the header discovers the parent group in
+     *     componentWillLoad and uses it to:
+     *       (a) mark each slotted <sy-tab> with `inHeader=true` and its `index`,
+     *       (b) delegate activation to `parent.setActive(index)` when a tab is picked
+     *           from the overflow menu,
+     *       (c) trigger the parent's own `updateOverflowTabs` after mount.
+     *   - The tab strip uses a ResizeObserver on `.header-tab` to recompute overflow
+     *     when the header's available width changes (e.g., window resize, side-panel
+     *     toggle). Missing/stale targets are defended against so we never throw.
+     * Spec vs legacy naming (rule 6: document-first, accept legacy aliases):
+     *   - spec `show-help`          ↔ legacy `information`
+     *   - spec `show-notifications` ↔ legacy `notification`
+     *   - spec `show-search`        ↔ legacy `search`
+     *   - spec `title`              ↔ legacy `title` (attribute) / `appTitle` (JS property)
+     * The legacy names stay as the code-canonical props (storybook stories depend on
+     * them); spec-aligned attributes are resolved via `fnAssignPropFromAlias`.
+     * Not a form-associated element.
+     */
     interface HTMLSyGlobalHeaderElement extends Components.SyGlobalHeader, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyGlobalHeaderElementEventMap>(type: K, listener: (this: HTMLSyGlobalHeaderElement, ev: SyGlobalHeaderCustomEvent<HTMLSyGlobalHeaderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2920,8 +3619,27 @@ declare global {
         new (): HTMLSyIconElement;
     };
     interface HTMLSyInlineMessageElementEventMap {
+        "actionClick": MouseEvent;
         "btnClick": MouseEvent;
+        "dismiss": void;
     }
+    /**
+     * sy-inline-message — contextual feedback anchored to a triggering element.
+     * Spec: design-system-specs/components/inline-message.yaml
+     * Anatomy:
+     *   .inline-massage-container
+     *     ├─ sy-icon             (variant icon, toggleable via `icon`)
+     *     └─ .inline-group
+     *          ├─ <slot>          (message text)
+     *          └─ .inline-message-button-area  (action slot or btnLabel-driven button)
+     * Legacy aliases (accepted via fnAssignPropFromAlias so older markup keeps working):
+     *   - spec `icon`        ↔ legacy `show-icon` / `showIcon`
+     *   - spec `placement`   ↔ legacy `position`
+     *   - spec `action`      ↔ legacy `btn-label`/`btnLabel` (boolean toggle + label string stays usable)
+     *   - spec variant `informational` ↔ legacy `info`
+     * Not form-associated. Positioning auto-switches axis when there's not enough
+     * space on the preferred side.
+     */
     interface HTMLSyInlineMessageElement extends Components.SyInlineMessage, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyInlineMessageElementEventMap>(type: K, listener: (this: HTMLSyInlineMessageElement, ev: SyInlineMessageCustomEvent<HTMLSyInlineMessageElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2940,7 +3658,28 @@ declare global {
         "changed": { value: string; isValid: boolean; status: string };
         "blured": { value: string; isValid: boolean; status: string };
         "focused": { value: string; isValid: boolean; status: string };
+        "clear": void;
     }
+    /**
+     * sy-input — single-line text input with form association + slot-based error support.
+     * Spec: design-system-specs/components/input.yaml
+     * Canonical (spec-aligned) props:
+     *   - type          ('text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search')
+     *   - message       (help/validation text below field)
+     *   - minLength / maxLength (character length constraints)
+     * Legacy props kept for backward compatibility:
+     *   - variant       (maps to `type` — accepts text | password | search)
+     *   - min / max     (map to minLength / maxLength)
+     *   - label         (display label above input; not in spec but in use)
+     * Slots (spec-aligned + legacy):
+     *   - prefix-icon  (spec)   / prefix  (legacy)
+     *   - suffix-icon  (spec)   / suffix  (legacy)
+     *   - message      (spec — custom help/validation)
+     *   - error        (legacy — custom error content)
+     * Events (spec-aligned + legacy):
+     *   - input, change, focus, blur, clear   (spec)
+     *   - changed, focused, blured             (legacy)
+     */
     interface HTMLSyInputElement extends Components.SyInput, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyInputElementEventMap>(type: K, listener: (this: HTMLSyInputElement, ev: SyInputCustomEvent<HTMLSyInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2960,6 +3699,20 @@ declare global {
         "blured": { value: number | null; isValid: boolean; status: string };
         "focused": { value: number | null; isValid: boolean; status: string };
     }
+    /**
+     * sy-input-number — numeric input with stepper buttons, rounding, and form association.
+     * Spec: design-system-specs/components/input-number.yaml
+     * API fully matches spec: value, min, max, step, size, status, borderless,
+     * readonly, decimal-places, rounding, label, name, autofocus, disabled, required,
+     * no-native-validity. Events (changed, blured, focused) and methods (setFocus,
+     * setBlur, stepUp, stepDown, checkValidity, reportValidity, setCustomError,
+     * clearCustomError, getStatus) are spec-aligned.
+     * Validation semantics:
+     *   - required → valueMissing
+     *   - non-numeric text → typeMismatch
+     *   - min/max violation → rangeUnderflow / rangeOverflow
+     *   - off-step value → stepMismatch (tolerates floating-point noise)
+     */
     interface HTMLSyInputNumberElement extends Components.SyInputNumber, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyInputNumberElementEventMap>(type: K, listener: (this: HTMLSyInputNumberElement, ev: SyInputNumberCustomEvent<HTMLSyInputNumberElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3369,7 +4122,25 @@ declare global {
         "selected": any;
         "closed": any;
         "ordered": HTMLSyTabElement[];
+        "tabSelected": { index: number; value: string };
+        "tabClosed": { index: number; value: string };
+        "tabAdded": void;
     }
+    /**
+     * sy-tab-group — tab navigation container.
+     * Spec: design-system-specs/components/tabs.yaml
+     * Public API (spec-aligned) & legacy aliases:
+     *   - `index` (spec)           ↔ `active` (legacy, code-canonical)
+     *   - `placement` (spec)       ↔ `position` (legacy, code-canonical)
+     *   - `centered` (spec)        ↔ `align="center"` (legacy)
+     *   - `add-new-tab` (spec)     ↔ tech-debt (event hook: tabAdded)
+     *   - `setActiveTab(i)` (spec) ↔ `setActive(i)` (legacy)
+     *   - `tabSelected` event      ↔ `selected` (legacy, emitted alongside)
+     *   - `tabClosed` event        ↔ `closed`   (legacy, emitted alongside)
+     * Tab integration with sy-global-header: when a header is nested inside the
+     * group, the header renders the tab row and handles its own overflow logic —
+     * see `updateOverflowTabs` early-return.
+     */
     interface HTMLSyTabGroupElement extends Components.SyTabGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTabGroupElementEventMap>(type: K, listener: (this: HTMLSyTabGroupElement, ev: SyTabGroupCustomEvent<HTMLSyTabGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3525,7 +4296,7 @@ declare global {
         "sy-avatar": HTMLSyAvatarElement;
         "sy-avatar-group": HTMLSyAvatarGroupElement;
         "sy-badge": HTMLSyBadgeElement;
-        "sy-banner-messsage": HTMLSyBannerMesssageElement;
+        "sy-banner-message": HTMLSyBannerMessageElement;
         "sy-breadcrumb": HTMLSyBreadcrumbElement;
         "sy-breadcrumb-item": HTMLSyBreadcrumbItemElement;
         "sy-button": HTMLSyButtonElement;
@@ -3607,11 +4378,23 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "highlightMatches"?: boolean;
+        /**
+          * @default false
+         */
         "loading"?: boolean;
         /**
           * @default 0
          */
         "min"?: number;
+        /**
+          * @default ''
+         */
+        "name"?: string;
         /**
           * @default false
          */
@@ -3625,19 +4408,27 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readonly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
-          * @default "medium"
+          * @default 'medium'
          */
-        "size"?: "small" | "medium" | "large";
+        "size"?: 'small' | 'medium' | 'large';
         /**
           * @default []
          */
         "source"?: string[];
         /**
-          * @default "focus"
+          * @default 'default'
          */
-        "trigger"?: "focus" | "input";
+        "status"?: 'default' | 'warning' | 'error' | 'success';
+        /**
+          * @default 'focus'
+         */
+        "trigger"?: 'focus' | 'input';
         /**
           * @default ''
          */
@@ -3651,14 +4442,37 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "caseSensitive"?: boolean;
+        /**
+          * @default false
+         */
+        "highlightMatches"?: boolean;
+        /**
+          * @default false
+         */
         "loading"?: boolean;
         "onActiveChanged"?: (event: SyAutocompleteOptionCustomEvent<number>) => void;
         "onSelected"?: (event: SyAutocompleteOptionCustomEvent<string>) => void;
+        /**
+          * @default ''
+         */
+        "searchTerm"?: string;
         /**
           * @default []
          */
         "source"?: string[];
     }
+    /**
+     * sy-avatar — visual representation of a person/object.
+     * Spec: design-system-specs/components/avatar.yaml
+     * Anatomy:
+     *   .avatar-item (container)  ← size + variant + state
+     *     └─ content slot         ← image | icon | letter | initials-from-text
+     * Content priority (highest → lowest): image → icon → text → letter.
+     * Not a form-associated element (no `formCallbacks`, no `setCustomError`).
+     * React / Vue / Angular reserved keywords (`key`, `ref`, `id`) are avoided in the prop
+     * surface.
+     */
     interface SyAvatar {
         /**
           * @default false
@@ -3700,14 +4514,22 @@ declare namespace LocalJSX {
          */
         "tooltipContent"?: string;
         /**
-          * @default "lightgray"
+          * @default 'lightgray'
          */
-        "variant"?: "lightgray"| "red" | "orange" | "yellow" | "lime" | "green" | "teal" | "blue" | "purple" | "magenta" | "darkgray";
+        "variant"?: | 'lightgray' | 'red' | 'orange' | 'yellow' | 'lime' | 'green'
+    | 'teal' | 'blue' | 'purple' | 'magenta' | 'darkgray';
     }
     /**
-     * sy-avatar-group (Stencil port, light DOM, scoped)
-     * - Renders slotted <sy-avatar> children
-     * - If children count > maxCount, shows +N and a dropdown list appended to body
+     * sy-avatar-group — layout container for multiple <sy-avatar> children.
+     * Spec: design-system-specs/components/avatar-group.yaml
+     * Anatomy:
+     *   .sy-avatar-group
+     *     └─ .avatar-group-inner
+     *          ├─ .avatar-container  (× maxCount)
+     *          └─ .remain-avatars-list            ← only when children > maxCount
+     *               ├─ .more-avatars ("+n" badge)
+     *               └─ .more-avatars-container   (appended to body on hover)
+     * Not a form-associated element.
      */
     interface SyAvatarGroup {
         /**
@@ -3718,6 +4540,12 @@ declare namespace LocalJSX {
           * @default Infinity as any
          */
         "maxCount"?: number;
+        "onSelected"?: (event: SyAvatarGroupCustomEvent<{
+    letter: string;
+    text: string;
+    icon: string;
+    image: string;
+  }>) => void;
         /**
           * @default 'medium'
          */
@@ -3727,6 +4555,15 @@ declare namespace LocalJSX {
          */
         "variant"?: 'stack' | 'grid';
     }
+    /**
+     * sy-badge — small visual indicator for status, counts, or labels.
+     * Spec: design-system-specs/components/badge.yaml
+     * Anatomy:
+     *   .container              ← wrapper (position: relative)
+     *     ├─ .badge-content (slot) ← parent element (icon/button/avatar), hidden when standalone
+     *     └─ .badge              ← the badge itself (dot or number)
+     * Not a form-associated element. No events / methods.
+     */
     interface SyBadge {
         /**
           * @default false
@@ -3761,7 +4598,27 @@ declare namespace LocalJSX {
          */
         "variant"?: 'red' | 'yellow' | 'green' | 'blue' | 'gray';
     }
-    interface SyBannerMesssage {
+    /**
+     * sy-banner-message — persistent page-level notification.
+     * Spec: design-system-specs/components/banner-message.yaml
+     * Anatomy:
+     *   .banner-container
+     *     └─ .banner-content
+     *          ├─ .banner-group
+     *          │     ├─ sy-icon (variant icon)
+     *          │     └─ .banner-message-group
+     *          │            ├─ .banner-message-area (title + message)
+     *          │            └─ .banner-footer (slot="footer")
+     *          └─ .banner-close (sy-icon when closable)
+     * Behaviour:
+     *   - Auto-prepends itself to document.body on mount for top-of-page placement.
+     *   - Singleton: creating a new banner removes every existing sy-banner-message element.
+     *   - Not a form-associated element.
+     * NOTE: Prior tag name was `sy-banner-messsage` (triple 's' typo). This component now
+     * exposes the corrected tag `sy-banner-message`. Spec Tech Debt §1 marks the rename
+     * as HIGH PRIORITY — commercial-grade code shouldn't ship typos in the public tag surface.
+     */
+    interface SyBannerMessage {
         /**
           * @default false
          */
@@ -3787,12 +4644,34 @@ declare namespace LocalJSX {
          */
         "variant"?: 'info' | 'success' | 'warning' | 'error' | 'neutral';
     }
+    /**
+     * sy-breadcrumb — navigational trail indicating current page's location in a hierarchy.
+     * Spec: design-system-specs/components/breadcrumb.yaml
+     * Anatomy:
+     *   <nav aria-label="Breadcrumb">
+     *     └─ <span> (container ref for MutationObserver)
+     *          └─ <slot> → sy-breadcrumb-item × N
+     * Behaviour:
+     *   - Propagates the `separator` prop to every child item via `parentSeparator`.
+     *   - Auto-marks the last child with `isLast=true` so it renders no trailing separator.
+     *   - MutationObserver keeps child props in sync when items are added/removed dynamically.
+     * Not a form-associated element.
+     */
     interface SyBreadcrumb {
         /**
           * @default 'slash'
          */
         "separator"?: 'slash' | 'arrow';
     }
+    /**
+     * sy-breadcrumb-item — a single link in a breadcrumb trail.
+     * Spec: design-system-specs/components/breadcrumb.yaml (child component)
+     * Accessibility:
+     *   - Renders `role="link"` and is keyboard-focusable (Enter/Space fire `selected`).
+     *   - The active (current page) item carries `aria-current="page"` and is not focusable.
+     *   - Disabled items carry `aria-disabled="true"` and are not focusable.
+     *   - Separator icons are decorative (`aria-hidden="true"`).
+     */
     interface SyBreadcrumbItem {
         /**
           * @default false
@@ -3803,29 +4682,49 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * Set by the parent `sy-breadcrumb`. When true, no trailing separator is rendered.
           * @default false
          */
         "isLast"?: boolean;
         "onSelected"?: (event: SyBreadcrumbItemCustomEvent<HTMLSyBreadcrumbItemElement>) => void;
         /**
+          * Set by the parent `sy-breadcrumb` to inherit its separator.
           * @default 'slash'
          */
         "parentSeparator"?: 'slash' | 'arrow';
+        /**
+          * Per-item override of the parent breadcrumb's separator choice.
+         */
         "separator"?: 'slash' | 'arrow';
     }
+    /**
+     * sy-button — trigger for actions or form submission.
+     * Spec: design-system-specs/components/button.yaml
+     * Form-associated: participates in native <form> submit/reset flows via ElementInternals.
+     * Install a capture-phase submit guard on document so custom SAIDA form controls
+     * (checkbox, radio, select, input, …) can block submission even when the browser's
+     * form-association wiring is late.
+     */
     interface SyButton {
         /**
           * @default false
          */
         "disabled"?: boolean;
         /**
+          * Native formnovalidate — skip form validation when this button submits.
           * @default false
          */
         "formnovalidate"?: boolean;
         /**
+          * Expand the button to the parent container's full width. Spec name: `full-width`.
           * @default false
          */
-        "justified"?: boolean;
+        "fullWidth"?: boolean;
+        /**
+          * Render the button without its text label (icon-only). Spec name: `icon-only`.
+          * @default false
+         */
+        "iconOnly"?: boolean;
         /**
           * @default false
          */
@@ -3835,6 +4734,12 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium' | 'large';
         /**
+          * Tooltip text exposed via the native `title` attribute. Required for icon-only buttons.
+          * @default ''
+         */
+        "tooltip"?: string;
+        /**
+          * Native button type — drives form submit/reset behaviour.
           * @default 'button'
          */
         "type"?: 'button' | 'submit' | 'reset';
@@ -3843,6 +4748,16 @@ declare namespace LocalJSX {
          */
         "variant"?: 'default' | 'primary' | 'secondary' | 'borderless';
     }
+    /**
+     * sy-button-group — visually unified set of related buttons.
+     * Spec: design-system-specs/components/button-group.yaml
+     * Anatomy:
+     *   .button-group[.button-group--vertical]
+     *     └─ <slot> → sy-button × N
+     * Uses a MutationObserver to detect added/removed buttons and pushes their
+     * first/middle/last position to each via `setButtonGroupState()`.
+     * Not a form-associated element.
+     */
     interface SyButtonGroup {
         /**
           * @default false
@@ -3886,6 +4801,20 @@ declare namespace LocalJSX {
         "variant"?: 'date' | 'datetime' | 'range' | 'time';
         "year": number;
     }
+    /**
+     * sy-card — visual grouping of related content with optional header, body, and footer slots.
+     * Spec: design-system-specs/components/card.yaml
+     * Anatomy:
+     *   .card[.card-backdrop]
+     *     ├─ [slot="cover"]    (optional media)
+     *     ├─ .card-header-wrapper
+     *     │     ├─ sy-icon (collapse chevron, only when collapsible + header present)
+     *     │     └─ [slot="header"]
+     *     ├─ .card-content[.collapsed]
+     *     │     └─ [slot]  (default slot — body)
+     *     └─ [slot="footer"]
+     * Not a form-associated element.
+     */
     interface SyCard {
         /**
           * @default false
@@ -3904,6 +4833,26 @@ declare namespace LocalJSX {
          */
         "openDelay"?: number;
     }
+    /**
+     * sy-checkbox — two-state toggle (checked / unchecked), with optional indeterminate.
+     * Spec: design-system-specs/components/checkbox.yaml
+     * Anatomy:
+     *   .checkbox-wrapper
+     *     ├─ <label> → <input type="checkbox"> + .checkbox-visual-label (✓ / –) + <slot> (label text)
+     *     └─ .error-container → <slot name="error">
+     * Form-associated: participates in <form> via ElementInternals.
+     * Custom-error pattern (shared across all SAIDA form controls — see autocomplete comment):
+     *   1. Declarative slot — author writes the error UI once:
+     *        <sy-checkbox required>
+     *          I agree
+     *          <div slot="error">You must agree to continue</div>
+     *        </sy-checkbox>
+     *      When `required` is violated and the user has touched the field or submitted
+     *      the form, the slot content becomes visible.
+     *   2. Programmatic — app code decides an invalid state at any time:
+     *        el.setCustomError();   // reveals the same slot
+     *        el.clearCustomError(); // reverts to native-only validation
+     */
     interface SyCheckbox {
         /**
           * @default ''
@@ -3925,8 +4874,12 @@ declare namespace LocalJSX {
           * @default ''
          */
         "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
         "onBlured"?: (event: SyCheckboxCustomEvent<boolean>) => void;
-        "onChanged"?: (event: SyCheckboxCustomEvent<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean; }>) => void;
+        "onChanged"?: (event: SyCheckboxCustomEvent<{ value: boolean; isValid: boolean; checked: boolean; indeterminate: boolean }>) => void;
         "onFocused"?: (event: SyCheckboxCustomEvent<boolean>) => void;
         /**
           * @default false
@@ -3936,6 +4889,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "required"?: boolean;
+        /**
+          * @default 'on'
+         */
+        "value"?: string;
     }
     interface SyCollapse {
         /**
@@ -3982,16 +4939,32 @@ declare namespace LocalJSX {
         "ghost"?: boolean;
         "onChanged"?: (event: SyCollapsePanelCustomEvent<CollapsePanelChangeDetail>) => void;
     }
+    /**
+     * sy-colorpicker — select a color via HEX / RGB / HSB with optional alpha.
+     * Spec: design-system-specs/components/color-picker.yaml
+     * Anatomy:
+     *   .color-picker-button    (hidden in inline mode)
+     *     ├─ .color-preview      (swatch of current value)
+     *     └─ .color-text          (optional textual representation)
+     *     └─ sy-popover → sy-colorpicker-content  (the interactive panel)
+     * Spec vs code naming reconciliation (rule: document-first, extend with legacy aliases):
+     *   - spec `hideAlpha` ↔ code `hideOpacity` (accept both attributes)
+     *   - spec format enum `HEX|RGB|HSB` (uppercase) ↔ code `hex|rgb|hsb` (lowercase).
+     *     The value is normalised to lowercase internally so consumers can use either.
+     * Not a form-associated element (spec has no `formCallbacks`).
+     */
     interface SyColorpicker {
         /**
           * @default false
          */
         "disabled"?: boolean;
         /**
+          * Current color format. Accepts uppercase (spec) or lowercase (legacy code) — normalised internally.
           * @default 'hex'
          */
         "format"?: 'hex' | 'hsb' | 'rgb';
         /**
+          * Hide the alpha/opacity slider. Alias of the spec name `hideAlpha`.
           * @default false
          */
         "hideOpacity"?: boolean;
@@ -4135,6 +5108,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "name"?: string;
+        /**
+          * @default false
+         */
+        "noNativeValidity"?: boolean;
         "onChanged"?: (event: SyDatepickerCustomEvent<any>) => void;
         "onSelected"?: (event: SyDatepickerCustomEvent<any>) => void;
         /**
@@ -4156,21 +5133,76 @@ declare namespace LocalJSX {
         "variant"?: 'date' | 'datetime' | 'range' | 'time';
         "year": string;
     }
+    /**
+     * sy-divider — a thin horizontal or vertical separator line.
+     * Spec: design-system-specs/components/divider.yaml
+     * Anatomy:
+     *   .horizontal | .vertical (inner line element)
+     * Accessibility:
+     *   - Host gets `role="separator"` and `aria-orientation` reflecting the type.
+     * Not a form-associated element.
+     */
     interface SyDivider {
+        /**
+          * @default ''
+         */
+        "color"?: string;
+        /**
+          * @default false
+         */
+        "inset"?: boolean;
+        /**
+          * @default 1
+         */
+        "thickness"?: number;
         /**
           * @default 'horizontal'
          */
         "type"?: 'horizontal' | 'vertical';
     }
+    /**
+     * sy-drawer — sliding edge panel for secondary navigation / content.
+     * Spec: design-system-specs/components/drawer.yaml
+     * Anatomy:
+     *   .drawer-wrapper
+     *     ├─ .drawer-mask      (backdrop, hidden when maskless=true)
+     *     └─ .drawer-container (the sliding panel)
+     *           ├─ .drawer-header  (slot="header" + close button)
+     *           ├─ .drawer-body    (slot="body")
+     *           └─ .drawer-footer  (slot="footer")
+     * Spec vs code naming reconciliation (rule 6: document-first, accept legacy aliases):
+     *   - spec `placement`    ↔ code `position`
+     *   - spec `opened`       ↔ code `open`
+     *   - spec `maskClosable` ↔ accepted as attribute, drives backdrop-click close
+     * Mounting target (SAIDA extension):
+     *   - By default the drawer appends itself to `document.body` so `position: fixed`
+     *     resolves against the viewport.
+     *   - When the `parentid` attribute is set, the drawer mounts into
+     *     `document.getElementById(parentid)` instead and uses `position: absolute`
+     *     so it can be scoped inside a specific page region (e.g., split-panel side).
+     *     If the target's computed `position` is `static`, the host auto-upgrades it
+     *     to `relative` so the drawer's `position: absolute` has a containing block.
+     * Not a form-associated element.
+     */
     interface SyDrawer {
         /**
           * @default false
          */
         "closable"?: boolean;
         /**
+          * When true, drawer closes on browser history navigation. Spec default: true.
+          * @default true
+         */
+        "closeOnNavigation"?: boolean;
+        /**
           * @default 100
          */
         "customSize"?: number;
+        /**
+          * When true, clicking the backdrop closes the drawer. Spec: `maskClosable`.
+          * @default true
+         */
+        "maskClosable"?: boolean;
         /**
           * @default false
          */
@@ -4181,6 +5213,11 @@ declare namespace LocalJSX {
           * @default false
          */
         "open"?: boolean;
+        /**
+          * ID of a parent element that should contain this drawer instead of document.body. When set, `position: absolute` is used so the drawer is scoped to that region. When empty (default), the drawer uses `position: fixed` and mounts on document.body.
+          * @default ''
+         */
+        "parentId"?: string;
         /**
           * @default 'right'
          */
@@ -4194,6 +5231,17 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium' | 'large' | 'custom';
     }
+    /**
+     * sy-dropdown — trigger that reveals a list of options (hosted `<sy-menu>`).
+     * Spec: design-system-specs/components/dropdown.yaml
+     * Anatomy:
+     *   .dropdown--container  (role="button", opens the menu)
+     *     ├─ .dropdown--header ([slot="title"] trigger label)
+     *     ├─ sy-icon (chevron / angle-down)
+     *     └─ <slot> (sy-menu as the actual menu)
+     * The menu's `itemSelected` bubbles up; dropdown re-emits it as a typed `selected` event.
+     * Not a form-associated element.
+     */
     interface SyDropdown {
         /**
           * @default false
@@ -4203,6 +5251,7 @@ declare namespace LocalJSX {
           * @default false
          */
         "disabled"?: boolean;
+        "onSelected"?: (event: SyDropdownCustomEvent<any>) => void;
         /**
           * @default 'bottomLeft'
          */
@@ -4212,16 +5261,45 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium' | 'large';
         /**
+          * @default ''
+         */
+        "tooltip"?: string;
+        /**
           * @default 'click'
          */
         "trigger"?: 'hover' | 'click';
     }
+    /**
+     * sy-empty — placeholder UI for zero-state content (no data, no search results, etc).
+     * Spec: design-system-specs/components/empty.yaml
+     * Anatomy:
+     *   .empty-wrapper
+     *     └─ .empty
+     *          ├─ [slot="icon"] or default sy-icon
+     *          ├─ .description (text message, hidden when `description=false`)
+     *          └─ <slot>  (optional action buttons / extra content)
+     * Spec vs legacy code naming:
+     *   - spec `text: string` (the message) ↔ legacy code `description: string` (the message)
+     *   - spec `description: boolean` (visibility flag)
+     * Resolution: expose `text` as the new primary (document-first) while the legacy
+     * `description` string still works — if the author passes a non-boolean string it
+     * is treated as the message text. New markup should use `text` + `description=boolean`.
+     * Not a form-associated element.
+     */
     interface SyEmpty {
         /**
-          * Empty 컴포넌트에 표시될 설명 텍스트입니다. Lit의
-          * @property에 해당합니다.
+          * Legacy: was a string message; spec defines it as a boolean visibility flag. Non-empty strings are accepted for back-compat and promoted to `text`.
+          * @default true
          */
-        "description"?: string;
+        "description"?: string | boolean;
+        /**
+          * @default ''
+         */
+        "icon"?: string;
+        /**
+          * @default 'No Data'
+         */
+        "text"?: string;
     }
     interface SyFlex {
         /**
@@ -4243,7 +5321,7 @@ declare namespace LocalJSX {
         /**
           * @default 'start'
          */
-        "justify"?: 'start' | 'center' | 'end' | 'space-between';
+        "justify"?: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly';
         /**
           * @default 'medium'
          */
@@ -4261,7 +5339,37 @@ declare namespace LocalJSX {
          */
         "wrap"?: 'nowrap' | 'wrap' | 'wrap-reverse';
     }
+    /**
+     * sy-global-header — persistent top-of-page navigation bar.
+     * Spec: design-system-specs/components/global-header.yaml
+     * Anatomy:
+     *   .header-wrapper
+     *     ├─ .header-title   (logo slot + app title)
+     *     ├─ .header-tab     ([slot="tabs"] + overflow menu when tabs don't fit)
+     *     └─ .header-end     (search + information + notification + [slot="actions"])
+     * Tab integration — IMPORTANT, do not break:
+     *   - When used inside <sy-tab-group>, the header discovers the parent group in
+     *     componentWillLoad and uses it to:
+     *       (a) mark each slotted <sy-tab> with `inHeader=true` and its `index`,
+     *       (b) delegate activation to `parent.setActive(index)` when a tab is picked
+     *           from the overflow menu,
+     *       (c) trigger the parent's own `updateOverflowTabs` after mount.
+     *   - The tab strip uses a ResizeObserver on `.header-tab` to recompute overflow
+     *     when the header's available width changes (e.g., window resize, side-panel
+     *     toggle). Missing/stale targets are defended against so we never throw.
+     * Spec vs legacy naming (rule 6: document-first, accept legacy aliases):
+     *   - spec `show-help`          ↔ legacy `information`
+     *   - spec `show-notifications` ↔ legacy `notification`
+     *   - spec `show-search`        ↔ legacy `search`
+     *   - spec `title`              ↔ legacy `title` (attribute) / `appTitle` (JS property)
+     * The legacy names stay as the code-canonical props (storybook stories depend on
+     * them); spec-aligned attributes are resolved via `fnAssignPropFromAlias`.
+     * Not a form-associated element.
+     */
     interface SyGlobalHeader {
+        /**
+          * @default ''
+         */
         "appTitle"?: string;
         /**
           * @default false
@@ -4300,16 +5408,43 @@ declare namespace LocalJSX {
         "size"?: 'xxsmall' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge';
         "svgMarkup"?: string;
     }
+    /**
+     * sy-inline-message — contextual feedback anchored to a triggering element.
+     * Spec: design-system-specs/components/inline-message.yaml
+     * Anatomy:
+     *   .inline-massage-container
+     *     ├─ sy-icon             (variant icon, toggleable via `icon`)
+     *     └─ .inline-group
+     *          ├─ <slot>          (message text)
+     *          └─ .inline-message-button-area  (action slot or btnLabel-driven button)
+     * Legacy aliases (accepted via fnAssignPropFromAlias so older markup keeps working):
+     *   - spec `icon`        ↔ legacy `show-icon` / `showIcon`
+     *   - spec `placement`   ↔ legacy `position`
+     *   - spec `action`      ↔ legacy `btn-label`/`btnLabel` (boolean toggle + label string stays usable)
+     *   - spec variant `informational` ↔ legacy `info`
+     * Not form-associated. Positioning auto-switches axis when there's not enough
+     * space on the preferred side.
+     */
     interface SyInlineMessage {
+        /**
+          * @default false
+         */
+        "action"?: boolean;
         /**
           * @default ''
          */
         "btnLabel"?: string;
         /**
-          * @default ''
+          * @default true
+         */
+        "icon"?: boolean;
+        /**
+          * @default 'Inline message'
          */
         "message"?: string;
+        "onActionClick"?: (event: SyInlineMessageCustomEvent<MouseEvent>) => void;
         "onBtnClick"?: (event: SyInlineMessageCustomEvent<MouseEvent>) => void;
+        "onDismiss"?: (event: SyInlineMessageCustomEvent<void>) => void;
         /**
           * @default false
          */
@@ -4317,10 +5452,8 @@ declare namespace LocalJSX {
         /**
           * @default 'bottom'
          */
+        "placement"?: 'top' | 'bottom' | 'left' | 'right';
         "position"?: 'top' | 'bottom' | 'left' | 'right';
-        /**
-          * @default false
-         */
         "showIcon"?: boolean;
         /**
           * @default false
@@ -4331,10 +5464,30 @@ declare namespace LocalJSX {
          */
         "trigger"?: 'click' | 'focusout';
         /**
-          * @default 'info'
+          * @default 'informational'
          */
-        "variant"?: 'info' | 'success' | 'warning' | 'error';
+        "variant"?: 'informational' | 'info' | 'success' | 'warning' | 'error';
     }
+    /**
+     * sy-input — single-line text input with form association + slot-based error support.
+     * Spec: design-system-specs/components/input.yaml
+     * Canonical (spec-aligned) props:
+     *   - type          ('text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search')
+     *   - message       (help/validation text below field)
+     *   - minLength / maxLength (character length constraints)
+     * Legacy props kept for backward compatibility:
+     *   - variant       (maps to `type` — accepts text | password | search)
+     *   - min / max     (map to minLength / maxLength)
+     *   - label         (display label above input; not in spec but in use)
+     * Slots (spec-aligned + legacy):
+     *   - prefix-icon  (spec)   / prefix  (legacy)
+     *   - suffix-icon  (spec)   / suffix  (legacy)
+     *   - message      (spec — custom help/validation)
+     *   - error        (legacy — custom error content)
+     * Events (spec-aligned + legacy):
+     *   - input, change, focus, blur, clear   (spec)
+     *   - changed, focused, blured             (legacy)
+     */
     interface SyInput {
         /**
           * @default false
@@ -4357,6 +5510,10 @@ declare namespace LocalJSX {
          */
         "label"?: string;
         "max"?: number;
+        /**
+          * @default ""
+         */
+        "message"?: string;
         "min"?: number;
         /**
           * @default ""
@@ -4368,6 +5525,7 @@ declare namespace LocalJSX {
         "noNativeValidity"?: boolean;
         "onBlured"?: (event: SyInputCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
         "onChanged"?: (event: SyInputCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
+        "onClear"?: (event: SyInputCustomEvent<void>) => void;
         "onFocused"?: (event: SyInputCustomEvent<{ value: string; isValid: boolean; status: string }>) => void;
         /**
           * @default ""
@@ -4390,6 +5548,10 @@ declare namespace LocalJSX {
          */
         "status"?: 'default' | 'warning' | 'error' | 'success';
         /**
+          * @default 'text'
+         */
+        "type"?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
+        /**
           * @default ""
          */
         "value"?: string;
@@ -4398,6 +5560,20 @@ declare namespace LocalJSX {
          */
         "variant"?: "password" | "search" | "text";
     }
+    /**
+     * sy-input-number — numeric input with stepper buttons, rounding, and form association.
+     * Spec: design-system-specs/components/input-number.yaml
+     * API fully matches spec: value, min, max, step, size, status, borderless,
+     * readonly, decimal-places, rounding, label, name, autofocus, disabled, required,
+     * no-native-validity. Events (changed, blured, focused) and methods (setFocus,
+     * setBlur, stepUp, stepDown, checkValidity, reportValidity, setCustomError,
+     * clearCustomError, getStatus) are spec-aligned.
+     * Validation semantics:
+     *   - required → valueMissing
+     *   - non-numeric text → typeMismatch
+     *   - min/max violation → rangeUnderflow / rangeOverflow
+     *   - off-step value → stepMismatch (tolerates floating-point noise)
+     */
     interface SyInputNumber {
         /**
           * @default false
@@ -4485,7 +5661,7 @@ declare namespace LocalJSX {
         /**
           * @default 'left'
          */
-        "valuePosition"?: 'left' | 'right';
+        "valuePosition"?: 'left' | 'right' | 'center';
         /**
           * @default ''
          */
@@ -5450,8 +6626,27 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "name": string;
     }
+    /**
+     * sy-tab-group — tab navigation container.
+     * Spec: design-system-specs/components/tabs.yaml
+     * Public API (spec-aligned) & legacy aliases:
+     *   - `index` (spec)           ↔ `active` (legacy, code-canonical)
+     *   - `placement` (spec)       ↔ `position` (legacy, code-canonical)
+     *   - `centered` (spec)        ↔ `align="center"` (legacy)
+     *   - `add-new-tab` (spec)     ↔ tech-debt (event hook: tabAdded)
+     *   - `setActiveTab(i)` (spec) ↔ `setActive(i)` (legacy)
+     *   - `tabSelected` event      ↔ `selected` (legacy, emitted alongside)
+     *   - `tabClosed` event        ↔ `closed`   (legacy, emitted alongside)
+     * Tab integration with sy-global-header: when a header is nested inside the
+     * group, the header renders the tab row and handles its own overflow logic —
+     * see `updateOverflowTabs` early-return.
+     */
     interface SyTabGroup {
         "active"?: number;
+        /**
+          * @default false
+         */
+        "addNewTab"?: boolean;
         /**
           * @default 'left'
          */
@@ -5467,6 +6662,9 @@ declare namespace LocalJSX {
         "onClosed"?: (event: SyTabGroupCustomEvent<any>) => void;
         "onOrdered"?: (event: SyTabGroupCustomEvent<HTMLSyTabElement[]>) => void;
         "onSelected"?: (event: SyTabGroupCustomEvent<any>) => void;
+        "onTabAdded"?: (event: SyTabGroupCustomEvent<void>) => void;
+        "onTabClosed"?: (event: SyTabGroupCustomEvent<{ index: number; value: string }>) => void;
+        "onTabSelected"?: (event: SyTabGroupCustomEvent<{ index: number; value: string }>) => void;
         /**
           * @default "none"
          */
@@ -5962,7 +7160,7 @@ declare namespace LocalJSX {
         "sy-avatar": SyAvatar;
         "sy-avatar-group": SyAvatarGroup;
         "sy-badge": SyBadge;
-        "sy-banner-messsage": SyBannerMesssage;
+        "sy-banner-message": SyBannerMessage;
         "sy-breadcrumb": SyBreadcrumb;
         "sy-breadcrumb-item": SyBreadcrumbItem;
         "sy-button": SyButton;
@@ -6037,38 +7235,312 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "sy-autocomplete": LocalJSX.SyAutocomplete & JSXBase.HTMLAttributes<HTMLSyAutocompleteElement>;
             "sy-autocomplete-option": LocalJSX.SyAutocompleteOption & JSXBase.HTMLAttributes<HTMLSyAutocompleteOptionElement>;
+            /**
+             * sy-avatar — visual representation of a person/object.
+             * Spec: design-system-specs/components/avatar.yaml
+             * Anatomy:
+             *   .avatar-item (container)  ← size + variant + state
+             *     └─ content slot         ← image | icon | letter | initials-from-text
+             * Content priority (highest → lowest): image → icon → text → letter.
+             * Not a form-associated element (no `formCallbacks`, no `setCustomError`).
+             * React / Vue / Angular reserved keywords (`key`, `ref`, `id`) are avoided in the prop
+             * surface.
+             */
             "sy-avatar": LocalJSX.SyAvatar & JSXBase.HTMLAttributes<HTMLSyAvatarElement>;
             /**
-             * sy-avatar-group (Stencil port, light DOM, scoped)
-             * - Renders slotted <sy-avatar> children
-             * - If children count > maxCount, shows +N and a dropdown list appended to body
+             * sy-avatar-group — layout container for multiple <sy-avatar> children.
+             * Spec: design-system-specs/components/avatar-group.yaml
+             * Anatomy:
+             *   .sy-avatar-group
+             *     └─ .avatar-group-inner
+             *          ├─ .avatar-container  (× maxCount)
+             *          └─ .remain-avatars-list            ← only when children > maxCount
+             *               ├─ .more-avatars ("+n" badge)
+             *               └─ .more-avatars-container   (appended to body on hover)
+             * Not a form-associated element.
              */
             "sy-avatar-group": LocalJSX.SyAvatarGroup & JSXBase.HTMLAttributes<HTMLSyAvatarGroupElement>;
+            /**
+             * sy-badge — small visual indicator for status, counts, or labels.
+             * Spec: design-system-specs/components/badge.yaml
+             * Anatomy:
+             *   .container              ← wrapper (position: relative)
+             *     ├─ .badge-content (slot) ← parent element (icon/button/avatar), hidden when standalone
+             *     └─ .badge              ← the badge itself (dot or number)
+             * Not a form-associated element. No events / methods.
+             */
             "sy-badge": LocalJSX.SyBadge & JSXBase.HTMLAttributes<HTMLSyBadgeElement>;
-            "sy-banner-messsage": LocalJSX.SyBannerMesssage & JSXBase.HTMLAttributes<HTMLSyBannerMesssageElement>;
+            /**
+             * sy-banner-message — persistent page-level notification.
+             * Spec: design-system-specs/components/banner-message.yaml
+             * Anatomy:
+             *   .banner-container
+             *     └─ .banner-content
+             *          ├─ .banner-group
+             *          │     ├─ sy-icon (variant icon)
+             *          │     └─ .banner-message-group
+             *          │            ├─ .banner-message-area (title + message)
+             *          │            └─ .banner-footer (slot="footer")
+             *          └─ .banner-close (sy-icon when closable)
+             * Behaviour:
+             *   - Auto-prepends itself to document.body on mount for top-of-page placement.
+             *   - Singleton: creating a new banner removes every existing sy-banner-message element.
+             *   - Not a form-associated element.
+             * NOTE: Prior tag name was `sy-banner-messsage` (triple 's' typo). This component now
+             * exposes the corrected tag `sy-banner-message`. Spec Tech Debt §1 marks the rename
+             * as HIGH PRIORITY — commercial-grade code shouldn't ship typos in the public tag surface.
+             */
+            "sy-banner-message": LocalJSX.SyBannerMessage & JSXBase.HTMLAttributes<HTMLSyBannerMessageElement>;
+            /**
+             * sy-breadcrumb — navigational trail indicating current page's location in a hierarchy.
+             * Spec: design-system-specs/components/breadcrumb.yaml
+             * Anatomy:
+             *   <nav aria-label="Breadcrumb">
+             *     └─ <span> (container ref for MutationObserver)
+             *          └─ <slot> → sy-breadcrumb-item × N
+             * Behaviour:
+             *   - Propagates the `separator` prop to every child item via `parentSeparator`.
+             *   - Auto-marks the last child with `isLast=true` so it renders no trailing separator.
+             *   - MutationObserver keeps child props in sync when items are added/removed dynamically.
+             * Not a form-associated element.
+             */
             "sy-breadcrumb": LocalJSX.SyBreadcrumb & JSXBase.HTMLAttributes<HTMLSyBreadcrumbElement>;
+            /**
+             * sy-breadcrumb-item — a single link in a breadcrumb trail.
+             * Spec: design-system-specs/components/breadcrumb.yaml (child component)
+             * Accessibility:
+             *   - Renders `role="link"` and is keyboard-focusable (Enter/Space fire `selected`).
+             *   - The active (current page) item carries `aria-current="page"` and is not focusable.
+             *   - Disabled items carry `aria-disabled="true"` and are not focusable.
+             *   - Separator icons are decorative (`aria-hidden="true"`).
+             */
             "sy-breadcrumb-item": LocalJSX.SyBreadcrumbItem & JSXBase.HTMLAttributes<HTMLSyBreadcrumbItemElement>;
+            /**
+             * sy-button — trigger for actions or form submission.
+             * Spec: design-system-specs/components/button.yaml
+             * Form-associated: participates in native <form> submit/reset flows via ElementInternals.
+             * Install a capture-phase submit guard on document so custom SAIDA form controls
+             * (checkbox, radio, select, input, …) can block submission even when the browser's
+             * form-association wiring is late.
+             */
             "sy-button": LocalJSX.SyButton & JSXBase.HTMLAttributes<HTMLSyButtonElement>;
+            /**
+             * sy-button-group — visually unified set of related buttons.
+             * Spec: design-system-specs/components/button-group.yaml
+             * Anatomy:
+             *   .button-group[.button-group--vertical]
+             *     └─ <slot> → sy-button × N
+             * Uses a MutationObserver to detect added/removed buttons and pushes their
+             * first/middle/last position to each via `setButtonGroupState()`.
+             * Not a form-associated element.
+             */
             "sy-button-group": LocalJSX.SyButtonGroup & JSXBase.HTMLAttributes<HTMLSyButtonGroupElement>;
             "sy-calendar": LocalJSX.SyCalendar & JSXBase.HTMLAttributes<HTMLSyCalendarElement>;
+            /**
+             * sy-card — visual grouping of related content with optional header, body, and footer slots.
+             * Spec: design-system-specs/components/card.yaml
+             * Anatomy:
+             *   .card[.card-backdrop]
+             *     ├─ [slot="cover"]    (optional media)
+             *     ├─ .card-header-wrapper
+             *     │     ├─ sy-icon (collapse chevron, only when collapsible + header present)
+             *     │     └─ [slot="header"]
+             *     ├─ .card-content[.collapsed]
+             *     │     └─ [slot]  (default slot — body)
+             *     └─ [slot="footer"]
+             * Not a form-associated element.
+             */
             "sy-card": LocalJSX.SyCard & JSXBase.HTMLAttributes<HTMLSyCardElement>;
+            /**
+             * sy-checkbox — two-state toggle (checked / unchecked), with optional indeterminate.
+             * Spec: design-system-specs/components/checkbox.yaml
+             * Anatomy:
+             *   .checkbox-wrapper
+             *     ├─ <label> → <input type="checkbox"> + .checkbox-visual-label (✓ / –) + <slot> (label text)
+             *     └─ .error-container → <slot name="error">
+             * Form-associated: participates in <form> via ElementInternals.
+             * Custom-error pattern (shared across all SAIDA form controls — see autocomplete comment):
+             *   1. Declarative slot — author writes the error UI once:
+             *        <sy-checkbox required>
+             *          I agree
+             *          <div slot="error">You must agree to continue</div>
+             *        </sy-checkbox>
+             *      When `required` is violated and the user has touched the field or submitted
+             *      the form, the slot content becomes visible.
+             *   2. Programmatic — app code decides an invalid state at any time:
+             *        el.setCustomError();   // reveals the same slot
+             *        el.clearCustomError(); // reverts to native-only validation
+             */
             "sy-checkbox": LocalJSX.SyCheckbox & JSXBase.HTMLAttributes<HTMLSyCheckboxElement>;
             "sy-collapse": LocalJSX.SyCollapse & JSXBase.HTMLAttributes<HTMLSyCollapseElement>;
             "sy-collapse-panel": LocalJSX.SyCollapsePanel & JSXBase.HTMLAttributes<HTMLSyCollapsePanelElement>;
+            /**
+             * sy-colorpicker — select a color via HEX / RGB / HSB with optional alpha.
+             * Spec: design-system-specs/components/color-picker.yaml
+             * Anatomy:
+             *   .color-picker-button    (hidden in inline mode)
+             *     ├─ .color-preview      (swatch of current value)
+             *     └─ .color-text          (optional textual representation)
+             *     └─ sy-popover → sy-colorpicker-content  (the interactive panel)
+             * Spec vs code naming reconciliation (rule: document-first, extend with legacy aliases):
+             *   - spec `hideAlpha` ↔ code `hideOpacity` (accept both attributes)
+             *   - spec format enum `HEX|RGB|HSB` (uppercase) ↔ code `hex|rgb|hsb` (lowercase).
+             *     The value is normalised to lowercase internally so consumers can use either.
+             * Not a form-associated element (spec has no `formCallbacks`).
+             */
             "sy-colorpicker": LocalJSX.SyColorpicker & JSXBase.HTMLAttributes<HTMLSyColorpickerElement>;
             "sy-colorpicker-content": LocalJSX.SyColorpickerContent & JSXBase.HTMLAttributes<HTMLSyColorpickerContentElement>;
             "sy-date-calendar": LocalJSX.SyDateCalendar & JSXBase.HTMLAttributes<HTMLSyDateCalendarElement>;
             "sy-date-time-calendar": LocalJSX.SyDateTimeCalendar & JSXBase.HTMLAttributes<HTMLSyDateTimeCalendarElement>;
             "sy-datepicker": LocalJSX.SyDatepicker & JSXBase.HTMLAttributes<HTMLSyDatepickerElement>;
+            /**
+             * sy-divider — a thin horizontal or vertical separator line.
+             * Spec: design-system-specs/components/divider.yaml
+             * Anatomy:
+             *   .horizontal | .vertical (inner line element)
+             * Accessibility:
+             *   - Host gets `role="separator"` and `aria-orientation` reflecting the type.
+             * Not a form-associated element.
+             */
             "sy-divider": LocalJSX.SyDivider & JSXBase.HTMLAttributes<HTMLSyDividerElement>;
+            /**
+             * sy-drawer — sliding edge panel for secondary navigation / content.
+             * Spec: design-system-specs/components/drawer.yaml
+             * Anatomy:
+             *   .drawer-wrapper
+             *     ├─ .drawer-mask      (backdrop, hidden when maskless=true)
+             *     └─ .drawer-container (the sliding panel)
+             *           ├─ .drawer-header  (slot="header" + close button)
+             *           ├─ .drawer-body    (slot="body")
+             *           └─ .drawer-footer  (slot="footer")
+             * Spec vs code naming reconciliation (rule 6: document-first, accept legacy aliases):
+             *   - spec `placement`    ↔ code `position`
+             *   - spec `opened`       ↔ code `open`
+             *   - spec `maskClosable` ↔ accepted as attribute, drives backdrop-click close
+             * Mounting target (SAIDA extension):
+             *   - By default the drawer appends itself to `document.body` so `position: fixed`
+             *     resolves against the viewport.
+             *   - When the `parentid` attribute is set, the drawer mounts into
+             *     `document.getElementById(parentid)` instead and uses `position: absolute`
+             *     so it can be scoped inside a specific page region (e.g., split-panel side).
+             *     If the target's computed `position` is `static`, the host auto-upgrades it
+             *     to `relative` so the drawer's `position: absolute` has a containing block.
+             * Not a form-associated element.
+             */
             "sy-drawer": LocalJSX.SyDrawer & JSXBase.HTMLAttributes<HTMLSyDrawerElement>;
+            /**
+             * sy-dropdown — trigger that reveals a list of options (hosted `<sy-menu>`).
+             * Spec: design-system-specs/components/dropdown.yaml
+             * Anatomy:
+             *   .dropdown--container  (role="button", opens the menu)
+             *     ├─ .dropdown--header ([slot="title"] trigger label)
+             *     ├─ sy-icon (chevron / angle-down)
+             *     └─ <slot> (sy-menu as the actual menu)
+             * The menu's `itemSelected` bubbles up; dropdown re-emits it as a typed `selected` event.
+             * Not a form-associated element.
+             */
             "sy-dropdown": LocalJSX.SyDropdown & JSXBase.HTMLAttributes<HTMLSyDropdownElement>;
+            /**
+             * sy-empty — placeholder UI for zero-state content (no data, no search results, etc).
+             * Spec: design-system-specs/components/empty.yaml
+             * Anatomy:
+             *   .empty-wrapper
+             *     └─ .empty
+             *          ├─ [slot="icon"] or default sy-icon
+             *          ├─ .description (text message, hidden when `description=false`)
+             *          └─ <slot>  (optional action buttons / extra content)
+             * Spec vs legacy code naming:
+             *   - spec `text: string` (the message) ↔ legacy code `description: string` (the message)
+             *   - spec `description: boolean` (visibility flag)
+             * Resolution: expose `text` as the new primary (document-first) while the legacy
+             * `description` string still works — if the author passes a non-boolean string it
+             * is treated as the message text. New markup should use `text` + `description=boolean`.
+             * Not a form-associated element.
+             */
             "sy-empty": LocalJSX.SyEmpty & JSXBase.HTMLAttributes<HTMLSyEmptyElement>;
             "sy-flex": LocalJSX.SyFlex & JSXBase.HTMLAttributes<HTMLSyFlexElement>;
+            /**
+             * sy-global-header — persistent top-of-page navigation bar.
+             * Spec: design-system-specs/components/global-header.yaml
+             * Anatomy:
+             *   .header-wrapper
+             *     ├─ .header-title   (logo slot + app title)
+             *     ├─ .header-tab     ([slot="tabs"] + overflow menu when tabs don't fit)
+             *     └─ .header-end     (search + information + notification + [slot="actions"])
+             * Tab integration — IMPORTANT, do not break:
+             *   - When used inside <sy-tab-group>, the header discovers the parent group in
+             *     componentWillLoad and uses it to:
+             *       (a) mark each slotted <sy-tab> with `inHeader=true` and its `index`,
+             *       (b) delegate activation to `parent.setActive(index)` when a tab is picked
+             *           from the overflow menu,
+             *       (c) trigger the parent's own `updateOverflowTabs` after mount.
+             *   - The tab strip uses a ResizeObserver on `.header-tab` to recompute overflow
+             *     when the header's available width changes (e.g., window resize, side-panel
+             *     toggle). Missing/stale targets are defended against so we never throw.
+             * Spec vs legacy naming (rule 6: document-first, accept legacy aliases):
+             *   - spec `show-help`          ↔ legacy `information`
+             *   - spec `show-notifications` ↔ legacy `notification`
+             *   - spec `show-search`        ↔ legacy `search`
+             *   - spec `title`              ↔ legacy `title` (attribute) / `appTitle` (JS property)
+             * The legacy names stay as the code-canonical props (storybook stories depend on
+             * them); spec-aligned attributes are resolved via `fnAssignPropFromAlias`.
+             * Not a form-associated element.
+             */
             "sy-global-header": LocalJSX.SyGlobalHeader & JSXBase.HTMLAttributes<HTMLSyGlobalHeaderElement>;
             "sy-icon": LocalJSX.SyIcon & JSXBase.HTMLAttributes<HTMLSyIconElement>;
+            /**
+             * sy-inline-message — contextual feedback anchored to a triggering element.
+             * Spec: design-system-specs/components/inline-message.yaml
+             * Anatomy:
+             *   .inline-massage-container
+             *     ├─ sy-icon             (variant icon, toggleable via `icon`)
+             *     └─ .inline-group
+             *          ├─ <slot>          (message text)
+             *          └─ .inline-message-button-area  (action slot or btnLabel-driven button)
+             * Legacy aliases (accepted via fnAssignPropFromAlias so older markup keeps working):
+             *   - spec `icon`        ↔ legacy `show-icon` / `showIcon`
+             *   - spec `placement`   ↔ legacy `position`
+             *   - spec `action`      ↔ legacy `btn-label`/`btnLabel` (boolean toggle + label string stays usable)
+             *   - spec variant `informational` ↔ legacy `info`
+             * Not form-associated. Positioning auto-switches axis when there's not enough
+             * space on the preferred side.
+             */
             "sy-inline-message": LocalJSX.SyInlineMessage & JSXBase.HTMLAttributes<HTMLSyInlineMessageElement>;
+            /**
+             * sy-input — single-line text input with form association + slot-based error support.
+             * Spec: design-system-specs/components/input.yaml
+             * Canonical (spec-aligned) props:
+             *   - type          ('text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search')
+             *   - message       (help/validation text below field)
+             *   - minLength / maxLength (character length constraints)
+             * Legacy props kept for backward compatibility:
+             *   - variant       (maps to `type` — accepts text | password | search)
+             *   - min / max     (map to minLength / maxLength)
+             *   - label         (display label above input; not in spec but in use)
+             * Slots (spec-aligned + legacy):
+             *   - prefix-icon  (spec)   / prefix  (legacy)
+             *   - suffix-icon  (spec)   / suffix  (legacy)
+             *   - message      (spec — custom help/validation)
+             *   - error        (legacy — custom error content)
+             * Events (spec-aligned + legacy):
+             *   - input, change, focus, blur, clear   (spec)
+             *   - changed, focused, blured             (legacy)
+             */
             "sy-input": LocalJSX.SyInput & JSXBase.HTMLAttributes<HTMLSyInputElement>;
+            /**
+             * sy-input-number — numeric input with stepper buttons, rounding, and form association.
+             * Spec: design-system-specs/components/input-number.yaml
+             * API fully matches spec: value, min, max, step, size, status, borderless,
+             * readonly, decimal-places, rounding, label, name, autofocus, disabled, required,
+             * no-native-validity. Events (changed, blured, focused) and methods (setFocus,
+             * setBlur, stepUp, stepDown, checkValidity, reportValidity, setCustomError,
+             * clearCustomError, getStatus) are spec-aligned.
+             * Validation semantics:
+             *   - required → valueMissing
+             *   - non-numeric text → typeMismatch
+             *   - min/max violation → rangeUnderflow / rangeOverflow
+             *   - off-step value → stepMismatch (tolerates floating-point noise)
+             */
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
             "sy-label": LocalJSX.SyLabel & JSXBase.HTMLAttributes<HTMLSyLabelElement>;
             "sy-menu": LocalJSX.SyMenu & JSXBase.HTMLAttributes<HTMLSyMenuElement>;
@@ -6126,6 +7598,21 @@ declare module "@stencil/core" {
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
             "sy-tab": LocalJSX.SyTab & JSXBase.HTMLAttributes<HTMLSyTabElement>;
             "sy-tab-content": LocalJSX.SyTabContent & JSXBase.HTMLAttributes<HTMLSyTabContentElement>;
+            /**
+             * sy-tab-group — tab navigation container.
+             * Spec: design-system-specs/components/tabs.yaml
+             * Public API (spec-aligned) & legacy aliases:
+             *   - `index` (spec)           ↔ `active` (legacy, code-canonical)
+             *   - `placement` (spec)       ↔ `position` (legacy, code-canonical)
+             *   - `centered` (spec)        ↔ `align="center"` (legacy)
+             *   - `add-new-tab` (spec)     ↔ tech-debt (event hook: tabAdded)
+             *   - `setActiveTab(i)` (spec) ↔ `setActive(i)` (legacy)
+             *   - `tabSelected` event      ↔ `selected` (legacy, emitted alongside)
+             *   - `tabClosed` event        ↔ `closed`   (legacy, emitted alongside)
+             * Tab integration with sy-global-header: when a header is nested inside the
+             * group, the header renders the tab row and handles its own overflow logic —
+             * see `updateOverflowTabs` early-return.
+             */
             "sy-tab-group": LocalJSX.SyTabGroup & JSXBase.HTMLAttributes<HTMLSyTabGroupElement>;
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;

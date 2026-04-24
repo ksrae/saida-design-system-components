@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as HighlightStories from './sy-autocomplete-highlight-matches.stories';
+
+<Meta of={HighlightStories} />
+
+# Highlight Matches
+
+When `highlightMatches` is enabled, the portion of each suggestion that matches the user input is
+emphasised with a `<mark>` tag. Honours the `caseSensitive` flag.
+
+<Canvas of={HighlightStories.Default} />
+<Controls of={HighlightStories.Default} />

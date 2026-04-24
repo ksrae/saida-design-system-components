@@ -1,149 +1,162 @@
 @use "../../assets/style/global/font" as font;
 
-    :host {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      border-radius: var(--avatar-border-radius, 50%);
+/* ------------------------------------------------------------------
+ * Avatar — spec-driven styles
+ * Spec: design-system-specs/components/avatar.yaml
+ *
+ * Per spec :: variants each color has:
+ *   .avatar{fills} → background
+ *   .avatar{strokes} → border
+ *   .AB{fills} → text color
+ * ------------------------------------------------------------------ */
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  width: auto;
+  overflow: hidden;
+  border-radius: var(--border-radius-full, 50%);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .avatar-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    border-radius: var(--border-radius-full, 50%);
+    border: var(--border-small, 1px solid) transparent;
+    overflow: hidden;
+    user-select: none;
+    transition: opacity 120ms ease;
+
+    /* Sizes — per spec 24 / 32 / 40 via component tokens */
+    &.avatar--small {
+      width: var(--component-small);
+      height: var(--component-small);
+
+      .letter { @include font.text-style-small-regular; }
+    }
+
+    &.avatar--medium {
+      width: var(--component-medium);
+      height: var(--component-medium);
+
+      .letter { @include font.text-style-base-regular; }
+    }
+
+    &.avatar--large {
+      width: var(--component-large);
+      height: var(--component-large);
+
+      .letter { @include font.text-style-large-regular; }
+    }
+
+    /* Color variants — background + border + text, all via tokens */
+    &.avatar--lightgray {
+      background-color: var(--avatar-lightgray-background-enabled);
+      border-color: var(--avatar-lightgray-border-enabled);
       color: var(--avatar-lightgray-text-enabled);
-      width: -webkit-fill-available;
-      text-align: center;
-      vertical-align: middle;
-      box-sizing: border-box;
-      cursor: auto;
-      width: auto;
-      border: 1px solid var(--avatar-lightgray-border-enabled);
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-
-      .avatar-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-
-        /* Size */
-        &.avatar--small {
-          width: calc(var(--component-small));
-          height: calc(var(--component-small));
-
-          .letter {
-            @include font.text-style-small-regular;
-          }
-        }
-
-        &.avatar--medium {
-          width: var(--component-medium);
-          height: var(--component-medium);
-
-          .letter {
-            @include font.text-style-base-regular;
-            display: flex;
-            align-items: center;
-          }
-        }
-
-        &.avatar--large {
-          width: var(--component-large);
-          height: var(--component-large);
-
-          .letter {
-              @include font.text-style-large-regular;
-          }
-        }
-
-        /* Colors */
-        &.avatar--lightgray {
-          background-color: var(--avatar-lightgray-background-enabled);
-        }
-
-        &.avatar--red {
-          background-color: var(--avatar-red-background-enabled);
-        }
-
-        &.avatar--orange {
-          background-color: var(--avatar-orange-background-enabled);
-        }
-
-        &.avatar--yellow {
-          background-color: var(--avatar-yellow-background-enabled);
-        }
-
-        &.avatar--lime {
-          background-color: var(--avatar-lime-background-enabled);
-        }
-
-        &.avatar--green {
-          background-color: var(--avatar-green-background-enabled);
-        }
-
-        &.avatar--teal {
-          background-color: var(--avatar-teal-background-enabled);
-        }
-
-        &.avatar--blue {
-          background-color: var(--avatar-blue-background-enabled);
-        }
-
-        &.avatar--purple {
-          background-color: var(--avatar-purple-background-enabled);
-        }
-
-        &.avatar--magenta {
-          background-color: var(--avatar-magenta-background-enabled);
-        }
-
-        &.avatar--darkgray {
-          background-color: var(--avatar-darkgray-background-enabled);
-        }
-
-        /* Disabled */
-        &.disabled {
-          opacity: 50%;
-        }
-      }
-
-      .icon,
-      .letter {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      .icon {
-        font-size: var(--avatar-font-size);
-      }
-
-      .letter {
-        font-size: var(--avatar-font-size);
-        line-height: var(--avatar-size, 32px);
-        overflow: hidden;
-        text-align: center;
-        text-overflow: ellipsis;
-        white-space: pre-wrap;
-      }
+    }
+    &.avatar--red {
+      background-color: var(--avatar-red-background-enabled);
+      border-color: var(--avatar-red-border-enabled);
+      color: var(--avatar-red-text-enabled);
+    }
+    &.avatar--orange {
+      background-color: var(--avatar-orange-background-enabled);
+      border-color: var(--avatar-orange-border-enabled);
+      color: var(--avatar-orange-text-enabled);
+    }
+    &.avatar--yellow {
+      background-color: var(--avatar-yellow-background-enabled);
+      border-color: var(--avatar-yellow-border-enabled);
+      color: var(--avatar-yellow-text-enabled);
+    }
+    &.avatar--lime {
+      background-color: var(--avatar-lime-background-enabled);
+      border-color: var(--avatar-lime-border-enabled);
+      color: var(--avatar-lime-text-enabled);
+    }
+    &.avatar--green {
+      background-color: var(--avatar-green-background-enabled);
+      border-color: var(--avatar-green-border-enabled);
+      color: var(--avatar-green-text-enabled);
+    }
+    &.avatar--teal {
+      background-color: var(--avatar-teal-background-enabled);
+      border-color: var(--avatar-teal-border-enabled);
+      color: var(--avatar-teal-text-enabled);
+    }
+    &.avatar--blue {
+      background-color: var(--avatar-blue-background-enabled);
+      border-color: var(--avatar-blue-border-enabled);
+      color: var(--avatar-blue-text-enabled);
+    }
+    &.avatar--purple {
+      background-color: var(--avatar-purple-background-enabled);
+      border-color: var(--avatar-purple-border-enabled);
+      color: var(--avatar-purple-text-enabled);
+    }
+    &.avatar--magenta {
+      background-color: var(--avatar-magenta-background-enabled);
+      border-color: var(--avatar-magenta-border-enabled);
+      color: var(--avatar-magenta-text-enabled);
+    }
+    &.avatar--darkgray {
+      background-color: var(--avatar-darkgray-background-enabled);
+      border-color: var(--avatar-darkgray-border-enabled);
+      color: var(--avatar-darkgray-text-enabled);
     }
 
-    :host([shape='square']) {
-      border-radius: 0;
-    }
-
-
-    :host([disabled]) {
-      cursor: auto !important;
-    }
-
-    :host([clickable]) {
+    /* States */
+    &.avatar--clickable {
       cursor: pointer;
+
+      &:focus-visible {
+        outline: var(--border-small) var(--focus-outline);
+        outline-offset: 2px;
+      }
     }
+
+    &.avatar--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  .letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  sy-icon {
+    color: inherit;
+    display: inline-flex;
+  }
+}
+
+:host([disabled]) {
+  cursor: not-allowed;
+}
+
+:host([clickable]:not([disabled])) {
+  cursor: pointer;
+}

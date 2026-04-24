@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { SyButtonProps, Button } from './sy-button.main';
 import { clearElements } from '../../clear-element';
 
@@ -23,13 +23,33 @@ const buttonMeta: Meta<SyButtonProps> = {
         type: { summary: 'boolean' }
       }
     },
-    justified: {
+    fullWidth: {
       control: 'boolean',
-      description: 'Sets button’s size to parent.',
+      name: 'fullWidth (full-width)',
+      description: 'Expand the button to fill its parent container width.',
       table: {
         category: 'Parameter',
         defaultValue: {summary: false as any},
         type: { summary: 'boolean' }
+      }
+    },
+    iconOnly: {
+      control: 'boolean',
+      name: 'iconOnly (icon-only)',
+      description: 'Render the button as icon-only (no text label). Use with `tooltip` for accessibility.',
+      table: {
+        category: 'Parameter',
+        defaultValue: {summary: false as any},
+        type: { summary: 'boolean' }
+      }
+    },
+    tooltip: {
+      control: 'text',
+      description: 'Tooltip text shown on hover. Required for icon-only buttons.',
+      table: {
+        category: 'Parameter',
+        defaultValue: {summary: ''},
+        type: { summary: 'string' }
       }
     },
     loading: {
@@ -135,7 +155,9 @@ export const Default: Story = {
     size: 'medium',
     disabled: false,
     loading: false,
-    justified: false,
+    fullWidth: false,
+    iconOnly: false,
+    tooltip: '',
     type: 'button',
   },
 };

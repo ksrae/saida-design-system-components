@@ -1,7 +1,17 @@
-// src/components/sy-divider/sy-divider.tsx
-
 import { Component, h, Prop, Element } from '@stencil/core';
 
+/**
+ * sy-divider — a thin horizontal or vertical separator line.
+ *
+ * Spec: design-system-specs/components/divider.yaml
+ * Anatomy:
+ *   .horizontal | .vertical (inner line element)
+ *
+ * Accessibility:
+ *   - Host gets `role="separator"` and `aria-orientation` reflecting the type.
+ *
+ * Not a form-associated element.
+ */
 @Component({
   tag: 'sy-divider',
   styleUrl: 'sy-divider.scss',
@@ -9,25 +19,43 @@ import { Component, h, Prop, Element } from '@stencil/core';
   scoped: true,
 })
 export class SyDivider {
-  @Element() host: HTMLSyDividerElement;
+  @Element() host!: HTMLSyDividerElement;
 
-  @Prop() type: 'horizontal' | 'vertical' = 'horizontal';
+  // --- Public Properties (spec: attributes) ---
+  @Prop({ reflect: true }) type: 'horizontal' | 'vertical' = 'horizontal';
+  @Prop({ reflect: true }) inset: boolean = false;
+  @Prop() thickness: number = 1;
+  @Prop() color: string = '';
 
   connectedCallback() {
     this.host.setAttribute('role', 'separator');
+    this.host.setAttribute('aria-orientation', this.type);
   }
 
   render() {
-    // 원본 Lit 코드의 classMap 로직을 1:1로 재현
-    const dividerClasses = {
+    const classes: Record<string, boolean> = {
       horizontal: this.type === 'horizontal',
       vertical: this.type === 'vertical',
+      'divider--inset': this.inset,
       'divider--small': true,
     };
 
-    // 원본 Lit 코드와 100% 동일하게, 내부에 div를 렌더링합니다.
+    // Inline style overrides token defaults when custom thickness/color are given.
+    const inlineStyle: { [key: string]: string } = {};
+    if (this.thickness && this.thickness !== 1) {
+      if (this.type === 'horizontal') inlineStyle.borderTopWidth = `${this.thickness}px`;
+      else inlineStyle.borderLeftWidth = `${this.thickness}px`;
+    }
+    if (this.color) {
+      if (this.type === 'horizontal') inlineStyle.borderTopColor = this.color;
+      else inlineStyle.borderLeftColor = this.color;
+    }
+
     return (
-      <div class={Object.keys(dividerClasses).filter(key => dividerClasses[key]).join(' ')}></div>
+      <div
+        class={Object.keys(classes).filter((key) => classes[key]).join(' ')}
+        style={inlineStyle}
+      ></div>
     );
   }
 }

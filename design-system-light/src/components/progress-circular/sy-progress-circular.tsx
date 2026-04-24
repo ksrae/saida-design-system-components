@@ -6,6 +6,17 @@ export interface SegmentModel {
   status?: 'default' | 'error' | 'complete';
 }
 
+/**
+ * sy-progress-circular — circular progress indicator with optional segments.
+ *
+ * Spec: design-system-specs/components/progress-circular.yaml
+ *
+ * Props (spec-aligned + legacy aliases):
+ *   - percent, status, size, indeterminate
+ *   - hideText     ↔ `hide-text`
+ *   - tooltipTitle ↔ `tooltip-title`
+ *   - segment — JSON string with ascending cumulative percent stops.
+ */
 @Component({
   tag: 'sy-progress-circular',
   styleUrl: 'sy-progress-circular.scss',

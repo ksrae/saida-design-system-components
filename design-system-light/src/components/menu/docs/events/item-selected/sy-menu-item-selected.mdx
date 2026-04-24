@@ -1,0 +1,11 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as EventStories from './sy-menu-item-selected.stories';
+
+<Meta of={EventStories} />
+
+# itemSelected
+
+Bubbled from a leaf `sy-menu-item` when it's clicked in non-checkable mode.
+Detail: `{ value, label }`.
+
+<Canvas of={EventStories.Default} />

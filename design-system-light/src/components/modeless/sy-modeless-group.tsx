@@ -7,6 +7,19 @@ export interface ModelessGroupModel {
   option?: Partial<Pick<HTMLSyModelessElement, 'draggable' | 'resizable' | 'edge' | 'closable' | 'maximizable' | 'minimizable' | 'top' | 'left' | 'width' | 'height'>>,
 }
 
+/**
+ * sy-modeless-group — imperative manager for multiple sy-modeless windows.
+ *
+ * Spec: design-system-specs/components/modeless.yaml
+ *
+ * API is method-driven (no slotted markup): the app calls `create(id, title,
+ * content, option)` and receives a new sy-modeless appended to this host.
+ * `closeAll()` tears them all down — used in storybook page transitions so
+ * old windows don't linger across navigations.
+ *
+ * Children are tracked in `modelessList` so the group can coordinate z-index
+ * / focus among them.
+ */
 @Component({
   tag: 'sy-modeless-group',
   styleUrl: 'sy-modeless.scss',

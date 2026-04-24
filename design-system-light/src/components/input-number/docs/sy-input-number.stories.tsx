@@ -160,6 +160,25 @@ const inputNumberMeta: Meta<SyInputNumberProps> = {
         type: { summary: 'string' }
       },
     },
+    name: {
+      control: "text",
+      description: "Name attribute for form submission.",
+      table: {
+        category: "Parameter",
+        defaultValue: { summary: "" },
+        type: { summary: "string" },
+      },
+    },
+    noNativeValidity: {
+      control: "boolean",
+      name: "noNativeValidity (no-native-validity)",
+      description: "Disable the browser's native validity popup.",
+      table: {
+        category: "Parameter",
+        defaultValue: { summary: false as any },
+        type: { summary: "boolean" },
+      },
+    },
     setFocus: {
       type: "function",
       description: "Trigger focus event manually.",
@@ -182,13 +201,43 @@ const inputNumberMeta: Meta<SyInputNumberProps> = {
     },
     setClear: {
       type: "function",
-      description: "Trigger clear event manually.",
-      table: {
-        category: "Function",
-        type: {
-          summary: `setClear()`,
-        },
-      },
+      description: "Clear the value programmatically.",
+      table: { category: "Function", type: { summary: `setClear(): Promise<void>` } },
+    },
+    stepUp: {
+      type: "function",
+      description: "Increment the value by n steps (default 1).",
+      table: { category: "Function", type: { summary: `stepUp(n?: number): Promise<void>` } },
+    },
+    stepDown: {
+      type: "function",
+      description: "Decrement the value by n steps (default 1).",
+      table: { category: "Function", type: { summary: `stepDown(n?: number): Promise<void>` } },
+    },
+    checkValidity: {
+      type: "function",
+      description: "Return the current validity state without reporting.",
+      table: { category: "Function", type: { summary: `checkValidity(): Promise<boolean>` } },
+    },
+    reportValidity: {
+      type: "function",
+      description: "Validate and show a native validation popup if invalid.",
+      table: { category: "Function", type: { summary: `reportValidity(): Promise<boolean>` } },
+    },
+    setCustomError: {
+      type: "function",
+      description: "Mark the input invalid with a custom error.",
+      table: { category: "Function", type: { summary: `setCustomError(): Promise<void>` } },
+    },
+    clearCustomError: {
+      type: "function",
+      description: "Clear a previously-set custom error.",
+      table: { category: "Function", type: { summary: `clearCustomError(): Promise<void>` } },
+    },
+    getStatus: {
+      type: "function",
+      description: "Return the current validation status key (empty when valid).",
+      table: { category: "Function", type: { summary: `getStatus(): Promise<string>` } },
     },
     changed: {
       type: "function",

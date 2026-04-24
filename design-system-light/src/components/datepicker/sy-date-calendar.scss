@@ -162,7 +162,10 @@
 			}
 		}
 
-		.current-month[selected] {
+		/* Non-range single-select highlight. The TSX sets `data-selected` (not the
+		 * bare `selected` attribute which used to leave this rule inert and the
+		 * selected date with no visible fill). */
+		.current-month[data-selected] {
 			.date-item {
 				border-radius: var(--border-radius-small);
 				color: var(--date-time-picker-calendar-menu-item-text-selected);
@@ -175,28 +178,33 @@
 			}
 		}
 
+		/* Range endpoints — must be visibly darker than the connecting `[data-inrange]`
+		 * bar so users can tell the start/end apart from the in-between dates. We use
+		 * `--background-brand-contrast-subtle` (purple-400), which is darker than the
+		 * bar's `--background-brand-default` (purple-50) but softer than the old
+		 * `--menu-item-background-selected` (purple-500) that overwhelmed the date text. */
 		.current-month[data-rangestart],
 		.current-month[data-rangeend] {
 			.date-item {
-				background-color: var(--date-time-picker-calendar-menu-item-background-selected);
+				background-color: var(--background-brand-contrast-subtle);
 				color: var(--date-time-picker-calendar-menu-item-text-selected);
 
 				&:hover {
-					background-color: var(--date-time-picker-calendar-menu-item-background-selected);
+					background-color: var(--background-brand-contrast-subtle);
 					color: var(--date-time-picker-calendar-menu-item-text-selected);
 				}
-			}		
+			}
 		}
 
 		.current-month.highlight-start[data-rangestart],
 		.current-month.highlight-start[data-rangeend] {
 			&:hover {
 				.date-item {
-					background-color: var(--date-time-picker-calendar-menu-item-background-selected);
+					background-color: var(--background-brand-contrast-subtle);
 					color: var(--date-time-picker-calendar-menu-item-text-selected);
-				}					
-			}	
-		}		
+				}
+			}
+		}
 
 		.current-month[data-rangestart] {
 			position: relative;
@@ -354,8 +362,8 @@
 			}
 		}
 
-		.calendar-grid li[selected],
-		.calendar-grid li[selected][data-today] {
+		.calendar-grid li[data-selected],
+		.calendar-grid li[data-selected][data-today] {
 			.date-item {
 				background-color: var(--date-time-picker-calendar-menu-item-background-selected);
 				color: var(--date-time-picker-calendar-menu-item-text-selected);
@@ -397,6 +405,27 @@
 		box-sizing: border-box;
 		border-top: 1px solid var(--date-time-picker-calendar-container-body-border-enabled);
 	}
+}
+
+/* Non-range mode: mouse-over a date cell should show a fully-closed 4-sided
+ * solid border around the cell. The range-mode hover uses `.highlight*` classes
+ * with one-side-dashed borders to preview the connecting range, which is not
+ * what we want outside of range selection. Scoping the rule to `:not([range])`
+ * keeps range-mode visuals intact. */
+:host(:not([range])) .calendar-grid .current-month:hover .date-item {
+	border: 1px solid var(--date-time-picker-input-field-border-hover);
+	border-radius: var(--border-radius-small);
+}
+
+/* Defense-in-depth: the dashed range-preview overlays are rendered through `:after`
+ * pseudo-elements on `.highlight` / `.highlight-start` / `.highlight-end`. Those
+ * classes are only added by JS in range mode, but if any future edge case leaks them
+ * into a non-range datepicker, this suppresses the dashed visuals so the solid
+ * hover border isn't mixed with dashed strokes. */
+:host(:not([range])) .calendar-grid .current-month.highlight::after,
+:host(:not([range])) .calendar-grid .current-month.highlight-start::after,
+:host(:not([range])) .calendar-grid .current-month.highlight-end::after {
+	display: none !important;
 }
 
 :host([mode='year']) .calendar-content {

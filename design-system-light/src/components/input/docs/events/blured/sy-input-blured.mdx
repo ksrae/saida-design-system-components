@@ -1,0 +1,10 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as EventStories from './sy-input-blured.stories';
+
+<Meta of={EventStories} />
+
+# blured
+
+Fires when the input loses focus. Detail: `{ value, isValid, status }`.
+
+<Canvas of={EventStories.Default} />

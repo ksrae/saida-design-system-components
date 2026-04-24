@@ -1,10 +1,19 @@
-import { Component, Prop, State, h, Element } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h, Element } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 /**
- * sy-avatar-group (Stencil port, light DOM, scoped)
- * - Renders slotted <sy-avatar> children
- * - If children count > maxCount, shows +N and a dropdown list appended to body
+ * sy-avatar-group — layout container for multiple <sy-avatar> children.
+ *
+ * Spec: design-system-specs/components/avatar-group.yaml
+ * Anatomy:
+ *   .sy-avatar-group
+ *     └─ .avatar-group-inner
+ *          ├─ .avatar-container  (× maxCount)
+ *          └─ .remain-avatars-list            ← only when children > maxCount
+ *               ├─ .more-avatars ("+n" badge)
+ *               └─ .more-avatars-container   (appended to body on hover)
+ *
+ * Not a form-associated element.
  */
 @Component({
   tag: 'sy-avatar-group',
@@ -15,19 +24,30 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
 export class SyAvatarGroup {
   @Element() host!: HTMLSyAvatarGroupElement;
 
+  // --- Public Properties (spec: props) ---
   @Prop({ reflect: true }) clickable: boolean = false;
   @Prop({ reflect: true, attribute: 'maxCount', mutable: true }) maxCount: number = Infinity as any;
   @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';
   @Prop({ reflect: true }) variant: 'stack' | 'grid' = 'stack';
 
+  // --- Private State ---
   @State() private isHovering: boolean = false;
   @State() private hoverItemIndex: number | null = null;
 
-  // 원본 아바타 데이터를 캐시하여 중복 계산 방지
+  // Cache the original children's avatar data so we can re-render them without
+  // disturbing the user's slot markup.
   private originalAvatarData: any[] = [];
   private overflowContainer: HTMLElement | null = null;
 
-  // bind in constructor-like pattern
+  // --- Events (spec: api.events.selected) ---
+  @Event() selected!: EventEmitter<{
+    letter: string;
+    text: string;
+    icon: string;
+    image: string;
+  }>;
+
+  // Bound listeners (stable references for add/removeEventListener).
   private boundHandleOutsideClick = () => this.handleOutsideClick();
   private handleOverflowMouseEnter = () => { this.isHovering = true; };
   private handleOverflowMouseLeave = () => {
@@ -35,20 +55,27 @@ export class SyAvatarGroup {
     this.handleLeaveMoreAvatar();
   };
 
+  // --- Lifecycle ---
   connectedCallback() {
     document.addEventListener('click', this.boundHandleOutsideClick, true);
   }
 
   componentWillLoad() {
-    this.maxCount = fnAssignPropFromAlias(this.host, 'max-count') ?? this.maxCount;
-    // 초기 아바타 데이터 수집
+    this.maxCount = fnAssignPropFromAlias<number>(this.host, 'max-count') ?? this.maxCount;
     this.collectOriginalAvatarData();
   }
 
+  disconnectedCallback() {
+    document.removeEventListener('click', this.boundHandleOutsideClick, true);
+    if (this.overflowContainer && this.overflowContainer.parentElement === document.body) {
+      try { document.body.removeChild(this.overflowContainer); } catch (_e) { /* noop */ }
+    }
+  }
+
+  // --- Helpers ---
   private collectOriginalAvatarData() {
-    // slot이 정의되기 전에 직접 자식 sy-avatar들을 찾음
-    const avatarElements = Array.from(this.host.children).filter(child =>
-      child.tagName.toLowerCase() === 'sy-avatar'
+    const avatarElements = Array.from(this.host.children).filter(
+      child => child.tagName.toLowerCase() === 'sy-avatar'
     ) as HTMLSyAvatarElement[];
 
     this.originalAvatarData = avatarElements.map(a => ({
@@ -61,118 +88,11 @@ export class SyAvatarGroup {
       tooltipContent: a.tooltipContent,
     }));
   }
-  disconnectedCallback() {
-    document.removeEventListener('click', this.boundHandleOutsideClick, true);
-    if (this.overflowContainer && this.overflowContainer.parentElement === document.body) {
-      try { document.body.removeChild(this.overflowContainer); } catch (e) {}
-    }
-  }
 
-  render() {
-    return (
-      <div class={{ 'sy-avatar-group': true, [`variant-${this.variant}`]: true }}>
-        <div style={{ display: 'none' }}>
-          <slot onSlotchange={() => this.requestUpdate()}></slot>
-        </div>
-        {this.renderGroupedAvatars()}
-      </div>
-    );
-  }
-
-  // helper to request an update from non-React context
   private requestUpdate() {
-    // slot 변경 시 원본 데이터를 다시 수집
     this.collectOriginalAvatarData();
-    // Stencil updates automatically when @State/@Prop change; force a render via a dummy state toggle
+    // Trigger a re-render by touching a state field.
     this.hoverItemIndex = this.hoverItemIndex;
-  }
-
-  private renderGroupedAvatars() {
-    // 캐시된 원본 데이터가 없으면 다시 수집
-    if (this.originalAvatarData.length === 0) {
-      this.collectOriginalAvatarData();
-    }
-
-    const avatarData = this.originalAvatarData;
-    const count = avatarData.length;
-    if (count === 0) return null;
-
-    if (count > (this.maxCount as number)) {
-      const displayed = avatarData.slice(0, this.maxCount as number);
-      const remaining = avatarData.slice(this.maxCount as number);
-
-      return (
-        <div class="avatar-group-inner">
-          {displayed.map((ad, idx) => (
-            <span class="avatar-container" data-index={String(idx)}>
-              <sy-avatar
-                disabled={ad.disabled}
-                image={ad.image}
-                icon={ad.icon}
-                letter={ad.letter}
-                text={ad.text}
-                variant={ad.variant}
-                size={this.size}
-                clickable={this.clickable}
-                tooltipContent={ad.tooltipContent}
-              ></sy-avatar>
-            </span>
-          ))}
-
-          <div class="remain-avatars-list">
-            <span
-              class="more-avatars"
-              onMouseEnter={() => this.handleEnterMoreAvatar()}
-              onMouseLeave={() => this.handleLeaveMoreAvatar()}
-            >{`+${remaining.length}`}</span>
-            <div class="more-avatars-container" style={{ display: 'none' }}>
-              {remaining.map((ad, idx) => (
-                <div
-                  class={`more-avatars-container-inner avatar--${idx}`}
-                  style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-3xsmall) var(--spacing-xsmall)', gap: 'var(--spacing-3xsmall)', cursor: this.clickable ? 'pointer' : 'default' }}
-                  onMouseEnter={() => { this.hoverItemIndex = idx; }}
-                  onMouseLeave={() => { this.hoverItemIndex = null; }}
-                  onClick={() => this.handleOverflowItemClick(ad)}
-                >
-                  <sy-avatar
-                    disabled={ad.disabled}
-                    image={ad.image}
-                    icon={ad.icon}
-                    letter={ad.letter}
-                    text={ad.text}
-                    variant={ad.variant}
-                    size="small"
-                    clickable={this.clickable}
-                    tooltipContent={ad.tooltipContent}
-                  ></sy-avatar>
-                  <span data-sy-typography data-sytype="roboto-regular">{this.getAvatarDisplayText(ad)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div class="avatar-group-inner">
-        {avatarData.map((ad, idx) => (
-          <span class="avatar-container" data-index={String(idx)}>
-            <sy-avatar
-              disabled={ad.disabled}
-              image={ad.image}
-              icon={ad.icon}
-              letter={ad.letter}
-              text={ad.text}
-              variant={ad.variant}
-              size={this.size}
-              clickable={this.clickable}
-              tooltipContent={ad.tooltipContent}
-            ></sy-avatar>
-          </span>
-        ))}
-      </div>
-    );
   }
 
   private getAvatarDisplayText(avatar: any) {
@@ -187,33 +107,28 @@ export class SyAvatarGroup {
     return 'Avatar';
   }
 
-  // If avatar children dispatch 'disableStatus' events in future, this can be wired up.
-
+  // --- Interaction ---
   private handleOverflowItemClick(avatarData: any) {
     if (!this.clickable) return;
-
-    // 가상의 아바타 요소를 생성하여 selected 이벤트 발생
     const eventDetail = {
       letter: avatarData.letter || '',
       text: avatarData.text || '',
       icon: avatarData.icon || '',
       image: avatarData.image || '',
     };
-
-    // 드롭다운 메뉴 닫기
     this.handleLeaveMoreAvatar();
-
-    // 커스텀 이벤트 발생 (avatar-group에서 발생)
-    const selectedEvent = new CustomEvent('selected', {
-      detail: eventDetail,
-      bubbles: true,
-      composed: true,
-    });
-    this.host.dispatchEvent(selectedEvent);
+    this.selected.emit(eventDetail);
   }
 
+  private handleOverflowItemKeydown = (e: KeyboardEvent, avatarData: any) => {
+    if (!this.clickable) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this.handleOverflowItemClick(avatarData);
+    }
+  };
+
   private handleOutsideClick() {
-    // If there's a sy-menu inside (from more-avatars), call its delayedMenuClose
     const menuElement = document.querySelector('sy-menu') as unknown as HTMLSyMenuElement | null;
     if (menuElement) {
       menuElement.delayedMenuClose?.();
@@ -221,7 +136,6 @@ export class SyAvatarGroup {
   }
 
   private handleEnterMoreAvatar() {
-    // Light DOM에서는 shadowRoot가 없으므로 host 요소에서 직접 검색
     const more = this.host.querySelector('.more-avatars') as HTMLElement | null;
     if (!more) return;
     const rect = more.getBoundingClientRect();
@@ -260,8 +174,127 @@ export class SyAvatarGroup {
             document.body.removeChild(this.overflowContainer);
           }
           this.host.appendChild(this.overflowContainer);
-        } catch (e) {}
+        } catch (_e) { /* noop */ }
       }
     }, 100);
+  }
+
+  // --- Render ---
+  render() {
+    return (
+      <div
+        class={{ 'sy-avatar-group': true, [`variant-${this.variant}`]: true }}
+        role="list"
+        aria-label="Avatar group"
+      >
+        <div style={{ display: 'none' }}>
+          <slot onSlotchange={() => this.requestUpdate()}></slot>
+        </div>
+        {this.renderGroupedAvatars()}
+      </div>
+    );
+  }
+
+  private renderGroupedAvatars() {
+    if (this.originalAvatarData.length === 0) this.collectOriginalAvatarData();
+
+    const avatarData = this.originalAvatarData;
+    const count = avatarData.length;
+    if (count === 0) return null;
+
+    const limit = this.maxCount as number;
+
+    if (count > limit) {
+      const displayed = avatarData.slice(0, limit);
+      const remaining = avatarData.slice(limit);
+
+      return (
+        <div class="avatar-group-inner">
+          {displayed.map((ad, idx) => (
+            <span class="avatar-container" role="listitem" data-index={String(idx)}>
+              <sy-avatar
+                disabled={ad.disabled}
+                image={ad.image}
+                icon={ad.icon}
+                letter={ad.letter}
+                text={ad.text}
+                variant={ad.variant}
+                size={this.size}
+                clickable={this.clickable}
+                tooltipContent={ad.tooltipContent}
+              ></sy-avatar>
+            </span>
+          ))}
+
+          <div class="remain-avatars-list">
+            <span
+              class="more-avatars"
+              role="button"
+              tabindex={this.clickable ? 0 : -1}
+              aria-label={`Show ${remaining.length} more avatar${remaining.length === 1 ? '' : 's'}`}
+              onMouseEnter={() => this.handleEnterMoreAvatar()}
+              onMouseLeave={() => this.handleLeaveMoreAvatar()}
+              onFocus={() => this.handleEnterMoreAvatar()}
+              onBlur={() => this.handleLeaveMoreAvatar()}
+            >{`+${remaining.length}`}</span>
+            <div class="more-avatars-container" style={{ display: 'none' }}>
+              {remaining.map((ad, idx) => (
+                <div
+                  class={`more-avatars-container-inner avatar--${idx}`}
+                  role={this.clickable ? 'button' : 'listitem'}
+                  tabindex={this.clickable ? 0 : -1}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 'var(--spacing-3xsmall) var(--spacing-xsmall)',
+                    gap: 'var(--spacing-3xsmall)',
+                    cursor: this.clickable ? 'pointer' : 'default',
+                  }}
+                  onMouseEnter={() => { this.hoverItemIndex = idx; }}
+                  onMouseLeave={() => { this.hoverItemIndex = null; }}
+                  onClick={() => this.handleOverflowItemClick(ad)}
+                  onKeyDown={(e: KeyboardEvent) => this.handleOverflowItemKeydown(e, ad)}
+                >
+                  <sy-avatar
+                    disabled={ad.disabled}
+                    image={ad.image}
+                    icon={ad.icon}
+                    letter={ad.letter}
+                    text={ad.text}
+                    variant={ad.variant}
+                    size="small"
+                    clickable={this.clickable}
+                    tooltipContent={ad.tooltipContent}
+                  ></sy-avatar>
+                  <span data-sy-typography data-sytype="roboto-regular">
+                    {this.getAvatarDisplayText(ad)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div class="avatar-group-inner">
+        {avatarData.map((ad, idx) => (
+          <span class="avatar-container" role="listitem" data-index={String(idx)}>
+            <sy-avatar
+              disabled={ad.disabled}
+              image={ad.image}
+              icon={ad.icon}
+              letter={ad.letter}
+              text={ad.text}
+              variant={ad.variant}
+              size={this.size}
+              clickable={this.clickable}
+              tooltipContent={ad.tooltipContent}
+            ></sy-avatar>
+          </span>
+        ))}
+      </div>
+    );
   }
 }

@@ -1,7 +1,26 @@
-// src/components/sy-empty/sy-empty.tsx
+import { Component, h, Prop, Element } from '@stencil/core';
+import { fnHasSlotContentByName } from '../../utils/utils';
 
-import { Component, h, Prop } from '@stencil/core';
-
+/**
+ * sy-empty — placeholder UI for zero-state content (no data, no search results, etc).
+ *
+ * Spec: design-system-specs/components/empty.yaml
+ * Anatomy:
+ *   .empty-wrapper
+ *     └─ .empty
+ *          ├─ [slot="icon"] or default sy-icon
+ *          ├─ .description (text message, hidden when `description=false`)
+ *          └─ <slot>  (optional action buttons / extra content)
+ *
+ * Spec vs legacy code naming:
+ *   - spec `text: string` (the message) ↔ legacy code `description: string` (the message)
+ *   - spec `description: boolean` (visibility flag)
+ * Resolution: expose `text` as the new primary (document-first) while the legacy
+ * `description` string still works — if the author passes a non-boolean string it
+ * is treated as the message text. New markup should use `text` + `description=boolean`.
+ *
+ * Not a form-associated element.
+ */
 @Component({
   tag: 'sy-empty',
   styleUrl: 'sy-empty.scss',
@@ -9,30 +28,56 @@ import { Component, h, Prop } from '@stencil/core';
   scoped: true,
 })
 export class SyEmpty {
+  @Element() host!: HTMLSyEmptyElement;
 
-  /**
-   * Empty 컴포넌트에 표시될 설명 텍스트입니다.
-   * Lit의 @property에 해당합니다.
-   */
-  @Prop() description: string;
+  // --- Public Properties (spec: attributes) ---
+  @Prop({ mutable: true }) text: string = 'No Data';
+  @Prop() icon: string = '';
+  /** Legacy: was a string message; spec defines it as a boolean visibility flag.
+   *  Non-empty strings are accepted for back-compat and promoted to `text`. */
+  @Prop({ mutable: true }) description: string | boolean = true;
 
-  /**
-   * Lit의 render() 메서드에 해당하며, JSX 문법을 사용합니다.
-   */
+  componentWillLoad() {
+    // Back-compat: if `description` arrives as a non-empty string that isn't "true"/"false",
+    // treat it as the legacy message text and leave `description` as truthy.
+    if (typeof this.description === 'string') {
+      const trimmed = this.description.trim().toLowerCase();
+      if (trimmed !== 'true' && trimmed !== 'false' && trimmed.length > 0) {
+        if (!this.text || this.text === 'No Data') {
+          this.text = this.description as string;
+        }
+        this.description = true;
+      }
+    }
+  }
+
+  private shouldShowText(): boolean {
+    if (this.description === false) return false;
+    if (typeof this.description === 'string' && this.description.trim().toLowerCase() === 'false') return false;
+    return !!this.text && this.text.length > 0;
+  }
+
   render() {
-    return (
-      <div class="empty-wrapper">
-        <div class="empty">
-          {/* sy-icon 컴포넌트와 SVG 아이콘 */}
-          <sy-icon size="xxxlarge">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-              <path d="M139.3 158C140.3 150 147.1 144 155.2 144L484.9 144C492.9 144 499.7 150 500.8 158L525.8 352L440.6 352C427.2 352 414.7 358.7 407.3 369.8L387.2 400L252.9 400L232.8 369.8C225.4 358.7 212.9 352 199.5 352L114.3 352L139.3 158zM112 400L195.2 400L215.3 430.2C222.7 441.3 235.2 448 248.6 448L391.5 448C404.9 448 417.4 441.3 424.8 430.2L444.9 400L528.1 400L528.1 480C528.1 488.8 520.9 496 512.1 496L128 496C119.2 496 112 488.8 112 480L112 400zM155.2 96C123 96 95.8 119.9 91.7 151.8L64.2 364.9L64 366.5L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 366.5L575.8 365L548.3 151.9C544.2 119.9 517 96 484.8 96L155.2 96z" />
-            </svg>
-          </sy-icon>
+    const hasIconSlot = fnHasSlotContentByName(this.host, 'icon');
 
-          {this.description && (
-            <span class="description">{this.description}</span>
+    return (
+      <div class="empty-wrapper" role="status" aria-live="polite">
+        <div class="empty">
+          {hasIconSlot ? (
+            <slot name="icon" />
+          ) : (
+            <sy-icon size="xxxlarge">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                <path d="M139.3 158C140.3 150 147.1 144 155.2 144L484.9 144C492.9 144 499.7 150 500.8 158L525.8 352L440.6 352C427.2 352 414.7 358.7 407.3 369.8L387.2 400L252.9 400L232.8 369.8C225.4 358.7 212.9 352 199.5 352L114.3 352L139.3 158zM112 400L195.2 400L215.3 430.2C222.7 441.3 235.2 448 248.6 448L391.5 448C404.9 448 417.4 441.3 424.8 430.2L444.9 400L528.1 400L528.1 480C528.1 488.8 520.9 496 512.1 496L128 496C119.2 496 112 488.8 112 480L112 400zM155.2 96C123 96 95.8 119.9 91.7 151.8L64.2 364.9L64 366.5L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 366.5L575.8 365L548.3 151.9C544.2 119.9 517 96 484.8 96L155.2 96z" />
+              </svg>
+            </sy-icon>
           )}
+
+          {this.shouldShowText() && (
+            <span class="description">{this.text}</span>
+          )}
+
+          <slot />
         </div>
       </div>
     );

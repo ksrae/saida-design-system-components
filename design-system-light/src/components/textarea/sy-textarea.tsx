@@ -1,6 +1,25 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-textarea — multi-line text input with form-association and slot-based custom error.
+ *
+ * Spec: design-system-specs/components/textarea.yaml
+ *
+ * Validation model (same pattern as sy-input / sy-input-number):
+ *   - `noNativeValidity=false` (default) → browser shows native constraint
+ *     popup on submit. DO NOT call preventDefault() on the invalid event —
+ *     per HTML spec a single preventDefaulted invalid event suppresses
+ *     popups on the entire form.
+ *   - `noNativeValidity=true` → native popup suppressed; `[slot="error"]`
+ *     becomes the error UI.
+ *   - `setCustomError()` → programmatic; forces the slot UI visible
+ *     (touched=true, hasSlotErrorMessage=true).
+ *
+ * Props: value, min (minlength), max (maxlength), rows, counter, borderless,
+ * clearable, resize, size, status, required, readonly, disabled, name,
+ * noNativeValidity, placeholder, label.
+ */
 @Component({
   tag: 'sy-textarea',
   styleUrl: 'sy-textarea.scss',
@@ -154,13 +173,17 @@ export class SyTextarea {
   async setCustomError() {
     this.isValid = false;
     this.validStatus = 'custom';
-
-    // 슬롯 에러가 있으면 has-custom-error 속성 추가
+    // Force immediate visual invalid state without waiting for blur/submit.
+    this.touched = true;
+    // Slot UI becomes the surface for programmatic errors regardless of the
+    // noNativeValidity toggle.
+    const errorSlot = this.host.querySelector('[slot="error"]');
+    this.hasSlotErrorMessage =
+      !!errorSlot && ((errorSlot.textContent?.trim().length ?? 0) > 0 || errorSlot.children.length > 0);
     if (this.hasSlotErrorMessage) {
       this.host.setAttribute('has-custom-error', '');
     }
-    this.textarea?.setCustomValidity('');
-    this.internals?.setValidity({ customError: true }, ' ');
+    this.updateValidityState();
   }
 
   @Method()
@@ -195,33 +218,34 @@ export class SyTextarea {
   // Listen invalid event
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
-    // Mark that a submission/validation attempt occurred so errors become visible
     this.formSubmitted = true;
+    this.isValid = false;
 
-    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-    if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.host.querySelector('[slot="error"]');
-      const hasContent = errorSlotElement?.textContent?.trim();
-      if (hasContent) {
-        this.hasSlotErrorMessage = true;
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement && (errorSlotElement.textContent?.trim().length ?? 0) > 0;
+
+    // Clear-cut toggle — consistent with sy-input / sy-input-number:
+    //   noNativeValidity=true  → suppress browser popup, slot becomes the UI
+    //   noNativeValidity=false → let the browser show its native popup
+    // Never call preventDefault on the default path: per HTML spec, a single
+    // preventDefaulted invalid event suppresses popups on the entire form.
+    if (this.noNativeValidity) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent) {
         this.host.setAttribute('has-custom-error', '');
-        e.preventDefault();
-        e.stopPropagation();
         if (this.textarea) this.textarea.setCustomValidity('');
         this.internals?.setValidity({ customError: true }, ' ');
       } else {
-        this.hasSlotErrorMessage = false;
         this.host.removeAttribute('has-custom-error');
       }
     } else {
       this.hasSlotErrorMessage = false;
       this.host.removeAttribute('has-custom-error');
-      setTimeout(() => {
-        if (!this.isValid) this.textarea?.reportValidity();
-      }, 0);
     }
-    this.isValid = false;
-    // Re-evaluate validity so render reflects formSubmitted state immediately
+
     this.updateValidityState();
   }
 
@@ -318,8 +342,22 @@ export class SyTextarea {
     return (type === 'custom' || type === '' ? '' : validityMessage[type]) || '';
   }
 
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
+  }
+
   private updateValidityState() {
-    if (this.validStatus === 'custom' && !this.isValid) return;
+    // (1) Programmatic custom error takes priority — slot text drives the
+    // validity message so reportValidity surfaces the same copy the user
+    // sees on screen. Mirrors autocomplete's setCustomError flow.
+    if (this.validStatus === 'custom' && !this.isValid) {
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
+      this.internals?.setValidity({ customError: true }, msg);
+      this.internals?.setFormValue(this.value || '');
+      return;
+    }
+
     this.isValid = true;
     this.validStatus = '';
 
@@ -338,17 +376,15 @@ export class SyTextarea {
 
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
-        // 슬롯 에러가 있으면 has-custom-error 속성 추가
         this.host.setAttribute('has-custom-error', '');
+        const slotText = this.getSlotErrorText() || validityMessage || ' ';
         this.textarea?.setCustomValidity('');
-        this.internals?.setValidity({ customError: true }, ' ');
+        this.internals?.setValidity({ customError: true }, slotText);
       } else {
-        // 슬롯 에러가 없으면 has-custom-error 속성 제거
         this.host.removeAttribute('has-custom-error');
         if (this.textarea) this.internals?.setValidity({ [this.validStatus]: true } as any, validityMessage, this.textarea);
       }
     } else {
-      // 유효한 상태일 때는 has-custom-error 속성 제거
       this.host.removeAttribute('has-custom-error');
       this.internals?.setValidity({});
     }

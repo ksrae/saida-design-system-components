@@ -1,5 +1,15 @@
 import { Component, h, Prop, State, Element, Watch, Method } from '@stencil/core';
 
+/**
+ * sy-skeleton — content placeholder with shimmer animation.
+ *
+ * Spec: design-system-specs/components/skeleton.yaml
+ *
+ * Props: type, rows, width, disabled.
+ * Spec's canonical name is `gallery` but the code-canonical value is the
+ * legacy `gallary` (typo preserved to avoid breaking existing consumers).
+ * Both spellings are accepted at runtime.
+ */
 @Component({
   tag: 'sy-skeleton',
   styleUrl: 'sy-skeleton.scss',
@@ -7,10 +17,11 @@ import { Component, h, Prop, State, Element, Watch, Method } from '@stencil/core
   shadow: false,
 })
 export class SySkeleton {
-  @Element() host: HTMLSySkeletonElement;
+  @Element() host!: HTMLSySkeletonElement;
 
-  // --- Props (Lit의 @property와 동일) ---
-  @Prop() type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree' = 'text';
+  // `gallery` is the spec-aligned spelling; `gallary` stays for legacy
+  // compatibility. Normalized in componentWillLoad.
+  @Prop({ mutable: true }) type: 'text' | 'avatar' | 'image' | 'gallary' | 'gallery' | 'button' | 'table' | 'tree' = 'text';
   @Prop() rows: number = 0;
   @Prop() width: string = '100%';
   @Prop() disabled: boolean = false;
@@ -27,7 +38,9 @@ export class SySkeleton {
   // --- Lifecycle Hooks ---
 
   componentWillLoad() {
-    // 렌더링 전에 초기 너비 설정
+    // Normalize the spec-aligned `gallery` to the code-canonical `gallary`
+    // so downstream render switch matches either spelling.
+    if ((this.type as string) === 'gallery') this.type = 'gallary';
     this.skeletonWidth = this.getSizeValue(this.width);
   }
 

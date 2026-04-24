@@ -1,6 +1,23 @@
 import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-popconfirm — confirm/cancel popover anchored to a parent trigger.
+ *
+ * Spec: design-system-specs/components/popconfirm.yaml
+ *
+ * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+ *   - position (12 directions), trigger (click | none)
+ *   - arrow, closable, sticky
+ *   - opendelay, closedelay
+ *   - confirmText ↔ `confirm-text`, cancelText ↔ `cancel-text`
+ *
+ * Events:
+ *   - visibleChanged (boolean — popup open state)
+ *   - selected ('ok' | 'cancel' — which button was pressed)
+ *
+ * Methods: setOpen(), setClose().
+ */
 @Component({
   tag: 'sy-popconfirm',
   styleUrl: 'sy-popconfirm.scss',

@@ -1,8 +1,22 @@
-// sy-radio-group.tsx
-
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-radio-group — form-associated wrapper for sy-radio / sy-radio-button children.
+ *
+ * Spec: design-system-specs/components/radio.yaml
+ *
+ * Validation follows the same pattern as sy-input:
+ *   - `noNativeValidity=false` (default) → browser native popup on submit.
+ *     We do NOT preventDefault() the invalid event.
+ *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+ *     is the error UI.
+ *   - `setCustomError()` → programmatic; forces the slot UI visible.
+ *
+ * Props (spec-aligned + legacy aliases):
+ *   - defaultValue ↔ `default-value`, noNativeValidity ↔ `no-native-validity`
+ *   - disabled, readonly, required, size, position, variant, name
+ */
 @Component({
   tag: 'sy-radio-group',
   styleUrl: 'sy-radio-group.scss',
@@ -250,32 +264,30 @@ export class SyRadioGroup {
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
     this.formSubmitted = true;
+    this.isValid = false;
 
-    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-    if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.host.querySelector('[slot="error"]');
-      const hasContent = errorSlotElement?.textContent?.trim() || errorSlotElement?.children.length > 0;
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement &&
+      ((errorSlotElement.textContent?.trim().length ?? 0) > 0 || errorSlotElement.children.length > 0);
 
-      if (hasContent) {
-        this.hasSlotErrorMessage = true;
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (this.radioList.length > 0) {
-          const firstRadio = this.radioList[0] as any;
-          setTimeout(() => {
-            firstRadio?.querySelector('input')?.focus();
-          }, 0);
-        }
-
+    // Same clear-cut toggle as sy-input / sy-input-number / sy-textarea:
+    //   noNativeValidity=true  → native popup suppressed, slot = UI
+    //   noNativeValidity=false → browser handles popup; do NOT preventDefault
+    //                            (per HTML spec, preventDefault on any invalid
+    //                            event suppresses popups on the entire form).
+    if (this.noNativeValidity) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent) {
         this.internals?.setValidity({ customError: true }, ' ');
-      } else {
-        this.hasSlotErrorMessage = false;
       }
     } else {
       this.hasSlotErrorMessage = false;
     }
-    this.isValid = false;
+
+    this.updateValidityState();
   }
 
   // --- Event Handlers ---
@@ -387,15 +399,30 @@ export class SyRadioGroup {
     }
   }
 
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
+  }
+
   private customSettingError() {
     this.isValid = false;
     this.validStatus = 'custom';
+    // Force visual invalid state immediately — developer-triggered errors
+    // shouldn't wait for the user to interact with any radio.
+    this.touched = true;
+    // Slot UI becomes the surface for programmatic errors regardless of the
+    // noNativeValidity toggle.
+    const errorSlot = this.host.querySelector('[slot="error"]');
+    this.hasSlotErrorMessage =
+      !!errorSlot && ((errorSlot.textContent?.trim().length ?? 0) > 0 || errorSlot.children.length > 0);
     this.updateValidityState();
   }
 
   private updateValidityState() {
     if (this.validStatus === 'custom' && !this.isValid) {
-      this.internals.setValidity({ customError: true }, this.getErrorMessage('custom'));
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
+      this.internals?.setValidity({ customError: true }, msg);
+      this.internals?.setFormValue(this.selectedValue, this.selectedValue);
       return;
     }
 
@@ -415,7 +442,8 @@ export class SyRadioGroup {
 
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
-        this.internals.setValidity({ customError: true }, validityMessage);
+        const slotText = this.getSlotErrorText() || validityMessage || ' ';
+        this.internals.setValidity({ customError: true }, slotText);
       } else {
         this.internals.setValidity({ [this.validStatus]: true }, validityMessage);
       }

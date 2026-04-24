@@ -1,7 +1,15 @@
-// src/components/sy-tag/sy-tag.tsx
-
 import { Component, h, Prop, State, Watch, Event, EventEmitter, Element } from '@stencil/core';
 
+/**
+ * sy-tag — compact label with optional selectable / removable behavior.
+ *
+ * Spec: design-system-specs/components/tag.yaml
+ *
+ * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+ * Events: selected (toggle), removed (X click).
+ * When `selectable` is enabled, the visual variant is forced to `purple` to
+ * distinguish interactive tags from static ones.
+ */
 @Component({
   tag: 'sy-tag',
   styleUrl: 'sy-tag.scss',
@@ -9,7 +17,7 @@ import { Component, h, Prop, State, Watch, Event, EventEmitter, Element } from '
   scoped: true,
 })
 export class SyTag {
-  @Element() host: HTMLSyTagElement;
+  @Element() host!: HTMLSyTagElement;
 
   @Prop({ reflect: true }) disabled = false;
   @Prop({ reflect: true }) readonly = false;

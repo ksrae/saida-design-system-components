@@ -1,0 +1,11 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as EventStories from './sy-menu-item-checked.stories';
+
+<Meta of={EventStories} />
+
+# itemChecked
+
+Fires when a checkable menu item is toggled. Detail: `{ value, label, checked }`.
+Only fires when the menu is in `checkable` mode.
+
+<Canvas of={EventStories.Default} />

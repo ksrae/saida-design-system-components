@@ -1,6 +1,18 @@
-// sy-menu.tsx
 import { Component, Prop, State, h, Element, Watch, Method, Event, EventEmitter } from '@stencil/core';
 
+/**
+ * sy-menu — portaled dropdown menu triggered by a parent element.
+ *
+ * Spec: design-system-specs/components/menu.yaml
+ *
+ * Children: sy-menu-item (leaf), sy-menu-sub (nested submenu), sy-menu-group
+ * (labeled section). The menu is portaled to escape clipping and re-positioned
+ * on window scroll/resize.
+ *
+ * Props: open, disabled, checkable, loading, position (4 corners),
+ * trigger (click | hover | contextmenu), direction (left | right for submenus).
+ * Events: opened (boolean), itemSelected, itemChecked.
+ */
 @Component({
 	tag: 'sy-menu',
 	styleUrl: 'sy-menu.scss',
@@ -33,6 +45,8 @@ export class SyMenu {
 	@Prop({ mutable: true }) trigger: 'click' | 'hover' | 'contextmenu' = 'hover';
 	@Prop() direction: 'left' | 'right' = 'right';
 	@Prop({ mutable: true }) disabled: boolean = false;
+	/** Spinner overlay while items are being fetched (spec-aligned). */
+	@Prop({ reflect: true }) loading: boolean = false;
 
 	@State() opendelay: number = this.DefaultOpendelay;
 	@State() closedelay: number = this.DefaultClosedelay;

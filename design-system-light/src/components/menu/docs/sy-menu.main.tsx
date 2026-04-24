@@ -540,3 +540,58 @@ export const MenuItemSelected = () => {
   `;
 };
 
+const wrapperStyle = `
+  <style>
+    .container {
+      position: relative;
+      padding: 4px 8px;
+      width: fit-content;
+      height: 32px;
+      border: 1px solid rgba(0 0 0 / 0.24);
+      display: flex;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      border-radius: 3px;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+  </style>
+`;
+
+export const MenuDisabled = (args: { disabled: boolean }) => html`
+  ${unsafeHTML(wrapperStyle)}
+  <div class="container">
+    <span>Menu</span>
+    <sy-menu ?disabled=${args.disabled} trigger="click">
+      <sy-menu-item value="1">Item1</sy-menu-item>
+      <sy-menu-item value="2">Item2</sy-menu-item>
+    </sy-menu>
+  </div>
+`;
+
+export const MenuDirection = (args: { direction: 'left' | 'right' }) => html`
+  ${unsafeHTML(wrapperStyle)}
+  <div class="container">
+    <span>Menu</span>
+    <sy-menu trigger="click" direction=${args.direction}>
+      <sy-menu-sub menuSubTitle="Submenu">
+        <sy-menu-item value="1">Item 1</sy-menu-item>
+        <sy-menu-item value="2">Item 2</sy-menu-item>
+      </sy-menu-sub>
+      <sy-menu-item value="3">Item 3</sy-menu-item>
+    </sy-menu>
+  </div>
+`;
+
+export const MenuLoading = (args: { loading: boolean }) => html`
+  ${unsafeHTML(wrapperStyle)}
+  <div class="container">
+    <span>Menu</span>
+    <sy-menu trigger="click" open ?loading=${args.loading}>
+      <sy-menu-item value="1">Item 1</sy-menu-item>
+      <sy-menu-item value="2">Item 2</sy-menu-item>
+    </sy-menu>
+  </div>
+`;
+

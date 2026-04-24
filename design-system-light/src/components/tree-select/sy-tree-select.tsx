@@ -1,7 +1,24 @@
-import { Component, Prop, State, Event, EventEmitter, h, Element, Watch, Method, AttachInternals } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h, Element, Watch, Method, AttachInternals, Listen } from '@stencil/core';
 import { TreeNode } from '../tree/sy-tree';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-tree-select — dropdown selector backed by a tree (single or multi-select).
+ *
+ * Spec: design-system-specs/components/tree-select.yaml
+ *
+ * Form-associated: submits `name` → selected value(s) via ElementInternals.
+ * Validation follows the same pattern as sy-input / sy-select:
+ *   - `noNativeValidity=false` (default) → native browser popup on submit.
+ *     DO NOT preventDefault the invalid event.
+ *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+ *     becomes the error UI.
+ *   - `setCustomError()` → programmatic; forces slot UI visible.
+ *
+ * Props: nodes (TreeNode[]), checkable, clearable, defaultValue, disabled,
+ * status, expandable, expandAll, line, loading, maxTagCount, nodeWidth,
+ * placeholder, appendParent, readonly, required, name, noNativeValidity.
+ */
 @Component({
   tag: 'sy-tree-select',
   styleUrl: 'sy-tree-select.scss',
@@ -42,6 +59,8 @@ export class SyTreeSelect {
   @State() private touched = false;
   @State() private formSubmitted = false;
   @State() private isValid = true;
+  @State() private validStatus: 'valueMissing' | 'custom' | '' = '';
+  @State() private hasSlotErrorMessage = false;
   @State() private hasPopupErrorComponent = false;
 
   private treeElement: HTMLSyTreeElement | undefined;
@@ -745,17 +764,105 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
     this.updateValidityState();
   }
 
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
+  }
+
   private updateValidityState() {
+    // (1) Programmatic custom error takes priority — use the slot text as
+    // the validity message so reportValidity surfaces the same copy shown
+    // on screen. Mirrors autocomplete's setCustomError flow.
+    if (this.validStatus === 'custom' && !this.isValid) {
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
+      this.internals?.setValidity({ customError: true }, msg);
+      return;
+    }
+
+    // (2) Native constraint validation (required).
     if (this.required && this.selectedItem.length === 0) {
-      this.internals.setValidity(
-        { valueMissing: true },
-        this.getErrorMessage('valueMissing')
-      );
       this.isValid = false;
+      this.validStatus = 'valueMissing';
+      if (this.hasSlotErrorMessage) {
+        const slotText = this.getSlotErrorText() || this.getErrorMessage('valueMissing') || ' ';
+        this.internals.setValidity({ customError: true }, slotText);
+      } else {
+        this.internals.setValidity({ valueMissing: true }, this.getErrorMessage('valueMissing'));
+      }
     } else {
+      this.isValid = true;
+      this.validStatus = '';
       this.internals.setValidity({});
+    }
+  }
+
+  @Method()
+  async checkValidity(): Promise<boolean> {
+    this.updateValidityState();
+    return this.internals?.checkValidity() ?? true;
+  }
+
+  @Method()
+  async reportValidity(): Promise<boolean> {
+    this.updateValidityState();
+    return this.internals?.reportValidity() ?? true;
+  }
+
+  @Method()
+  async setCustomError() {
+    this.isValid = false;
+    this.validStatus = 'custom';
+    // Force visual invalid state immediately.
+    this.touched = true;
+    // Slot UI becomes the surface for programmatic errors regardless of the
+    // noNativeValidity toggle.
+    const errorSlot = this.host.querySelector('[slot="error"]');
+    this.hasSlotErrorMessage =
+      !!errorSlot && ((errorSlot.textContent?.trim().length ?? 0) > 0 || errorSlot.children.length > 0);
+    this.updateValidityState();
+  }
+
+  @Method()
+  async clearCustomError() {
+    if (!this.isValid && this.validStatus === 'custom') {
+      this.validStatus = '';
       this.isValid = true;
     }
+    this.updateValidityState();
+  }
+
+  @Method()
+  async getStatus() {
+    return this.isValid ? '' : this.validStatus;
+  }
+
+  @Listen('invalid', { capture: true })
+  handleInvalidEvent(e: Event) {
+    this.formSubmitted = true;
+    this.isValid = false;
+
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement &&
+      ((errorSlotElement.textContent?.trim().length ?? 0) > 0 || errorSlotElement.children.length > 0);
+
+    // Same toggle semantics as sy-input / sy-select:
+    //   noNativeValidity=true  → native popup suppressed, slot = UI
+    //   noNativeValidity=false → browser handles popup. DO NOT preventDefault
+    //     (HTML spec: a single preventDefaulted invalid event kills popups on
+    //     every form control).
+    if (this.noNativeValidity) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent) {
+        this.internals.setValidity({ customError: true }, ' ');
+      }
+    } else {
+      this.hasSlotErrorMessage = false;
+    }
+
+    this.updateValidityState();
   }
 
   private emitChangeEvent() {
@@ -815,8 +922,11 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       return false;
     });
 
-    // Unused but kept for potential future use
-    const hasSlotErrorMessage = errorNodes.some(node => {
+    // Track whether the slot has any user-supplied error content. The
+    // `updateValidityState()` / `handleInvalidEvent()` flows use this to
+    // decide whether to drive customError with slot text or fall back to
+    // the default valueMissing message.
+    this.hasSlotErrorMessage = errorNodes.some(node => {
       if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
         return true;
       }
@@ -826,10 +936,6 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       }
       return false;
     });
-
-    if (hasSlotErrorMessage) {
-      // Future use
-    }
   }
 
   private getErrorMessage(type: 'valueMissing' | 'custom' | '') {

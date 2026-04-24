@@ -125,10 +125,16 @@ export const InputReadonly = (args: {readonly: boolean}) => {
 };
 
 export const InputRequired = (args: {required: boolean}) => {
+  // Wrapped in a real <form> so clicking Submit actually triggers the native
+  // constraint-validation flow. The `required` attribute has no meaning
+  // outside a submittable form — without this wrapper, toggling `required`
+  // looks like nothing happens. No slot error here: the default browser popup
+  // is the error surface unless the author opts into slot-based custom error.
   return html`
-    <div style="width:300px;">
-      <sy-input ?required=${args.required} label="input label"></sy-input>
-    </div>
+    <form @submit=${(e: Event) => e.preventDefault()} style="width:300px; display:flex; flex-direction:column; gap:8px;">
+      <sy-input ?required=${args.required} label="input label" name="field"></sy-input>
+      <sy-button type="submit" variant="primary">Submit</sy-button>
+    </form>
   `;
 };
 
@@ -180,6 +186,141 @@ export const InputSuffix = () => {
       <sy-input>
         <sy-icon slot="suffix"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="currentColor" d="M320 112C434.9 112 528 205.1 528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112zM320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 200C306.7 200 296 210.7 296 224L296 336C296 349.3 306.7 360 320 360C333.3 360 344 349.3 344 336L344 224C344 210.7 333.3 200 320 200zM346.7 416C347.3 406.1 342.4 396.7 333.9 391.5C325.4 386.4 314.7 386.4 306.2 391.5C297.7 396.7 292.8 406.1 293.4 416C292.8 425.9 297.7 435.3 306.2 440.5C314.7 445.6 325.4 445.6 333.9 440.5C342.4 435.3 347.3 425.9 346.7 416z"/></svg></sy-icon>
       </sy-input>
+    </div>
+  `;
+};
+
+export const InputType = (args: {type: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'}) => html`
+  <div style="width:300px;">
+    <sy-input type=${args.type} placeholder=${args.type}></sy-input>
+  </div>
+`;
+
+export const InputMessage = (args: {message: string}) => html`
+  <div style="width:300px;">
+    <sy-input message=${args.message} placeholder="Enter text"></sy-input>
+  </div>
+`;
+
+export const InputName = (args: {name: string}) => html`
+  <form>
+    <div style="width:300px;">
+      <sy-input name=${args.name} value="hello"></sy-input>
+    </div>
+    <p>Form field name: <code>${args.name}</code></p>
+  </form>
+`;
+
+export const InputNoNativeValidity = (args: {noNativeValidity: boolean}) => html`
+  <form @submit=${(e: Event) => e.preventDefault()}>
+    <div style="width:300px;">
+      <sy-input .noNativeValidity=${args.noNativeValidity} required placeholder="Required">
+        <span slot="error">Custom slotted error</span>
+      </sy-input>
+      <sy-button variant="primary" type="submit">Submit</sy-button>
+    </div>
+    <p style="margin-top:8px; color:#666; font-size:12px;">
+      ${args.noNativeValidity
+        ? 'noNativeValidity=true → browser popup suppressed; the slot error is the UI.'
+        : 'noNativeValidity=false → the browser\'s native validation popup is the UI.'}
+    </p>
+  </form>
+`;
+
+export const InputClear = () => {
+  const handle = () => {
+    const out = document.getElementById('inputClearResult');
+    if (out) out.textContent = `cleared at ${new Date().toLocaleTimeString()}`;
+  };
+  return html`
+    <div style="width:300px;">
+      <sy-input clearable value="type then clear" @clear=${handle}></sy-input>
+      <p>Status: <span id="inputClearResult">(idle)</span></p>
+    </div>
+  `;
+};
+
+export const InputBlured = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('inputBluredResult');
+    const detail = (e as CustomEvent).detail ?? {};
+    if (out) out.textContent = `value=${detail.value} valid=${detail.isValid}`;
+  };
+  return html`
+    <div style="width:300px;">
+      <sy-input placeholder="focus then blur" @blured=${handle}></sy-input>
+      <p>Status: <span id="inputBluredResult">(idle)</span></p>
+    </div>
+  `;
+};
+
+export const InputFocused = () => {
+  const handle = (e: Event) => {
+    const out = document.getElementById('inputFocusedResult');
+    const detail = (e as CustomEvent).detail ?? {};
+    if (out) out.textContent = `focused — value=${detail.value}`;
+  };
+  return html`
+    <div style="width:300px;">
+      <sy-input placeholder="focus me" @focused=${handle}></sy-input>
+      <p>Status: <span id="inputFocusedResult">(idle)</span></p>
+    </div>
+  `;
+};
+
+export const InputCheckValidity = () => {
+  const elRef: Ref<HTMLSyInputElement> = createRef();
+  const check = async () => {
+    const ok = await elRef.value?.checkValidity();
+    const out = document.getElementById('inputCheckValidityResult');
+    if (out) out.textContent = String(ok);
+  };
+  return html`
+    <div style="width:300px;">
+      <sy-input ${ref(elRef)} required placeholder="Required field"></sy-input>
+      <sy-button variant="primary" @click=${check}>Call checkValidity()</sy-button>
+      <p>Valid: <span id="inputCheckValidityResult">(idle)</span></p>
+    </div>
+  `;
+};
+
+export const InputReportValidity = () => {
+  const elRef: Ref<HTMLSyInputElement> = createRef();
+  return html`
+    <div style="width:300px;">
+      <sy-input ${ref(elRef)} required placeholder="Required field"></sy-input>
+      <sy-button variant="primary" @click=${() => elRef.value?.reportValidity()}>Call reportValidity()</sy-button>
+    </div>
+  `;
+};
+
+export const InputSetCustomError = () => {
+  const elRef: Ref<HTMLSyInputElement> = createRef();
+  return html`
+    <div style="width:300px;">
+      <sy-input ${ref(elRef)} placeholder="Input">
+        <span slot="error">Something went wrong</span>
+      </sy-input>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <sy-button variant="primary" @click=${() => elRef.value?.setCustomError()}>setCustomError()</sy-button>
+        <sy-button @click=${() => elRef.value?.clearCustomError()}>clearCustomError()</sy-button>
+      </div>
+    </div>
+  `;
+};
+
+export const InputGetStatus = () => {
+  const elRef: Ref<HTMLSyInputElement> = createRef();
+  const read = async () => {
+    const s = await elRef.value?.getStatus();
+    const out = document.getElementById('inputGetStatusResult');
+    if (out) out.textContent = s || '(valid)';
+  };
+  return html`
+    <div style="width:300px;">
+      <sy-input ${ref(elRef)} required placeholder="Required"></sy-input>
+      <sy-button variant="primary" @click=${read}>getStatus()</sy-button>
+      <p>Status: <span id="inputGetStatusResult">(idle)</span></p>
     </div>
   `;
 };

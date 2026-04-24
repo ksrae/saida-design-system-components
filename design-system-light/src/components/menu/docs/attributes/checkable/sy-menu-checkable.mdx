@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as AttrStories from './sy-menu-checkable.stories';
+
+<Meta of={AttrStories} />
+
+# Checkable
+
+Enables checkbox mode — items become toggleable and the menu stays open after
+selection. Combine with the `itemChecked` event to react to toggles.
+
+<Canvas of={AttrStories.Default} />
+<Controls of={AttrStories.Default} />

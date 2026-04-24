@@ -1,6 +1,18 @@
 import { Component, Prop, h, State, Element, Watch } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-slider — numeric slider with single/range/marks support.
+ *
+ * Spec: design-system-specs/components/slider.yaml
+ *
+ * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+ *   - min, max, step, value
+ *   - range (toggles to dual-thumb) + rangeValue (initial [min,max] pair)
+ *   - marks map, hideMarks, snapToMarks
+ *   - showTooltip (default | always | never), tooltipPlacement
+ *   - hideTrackFill, reverse, vertical, label, disabled, readonly
+ */
 @Component({
   tag: 'sy-slider',
   styleUrl: 'sy-slider.scss',

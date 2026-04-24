@@ -132,7 +132,58 @@ export const TabGroupCloseTab = () => {
 export const TabClosable             = (a: { closable: boolean })             => html`<sy-tab-group><sy-tab tabkey="x" ?closable=${!!a.closable}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabDisabled             = (a: { disabled: boolean })             => html`<sy-tab-group><sy-tab tabkey="x" ?disabled=${!!a.disabled}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabTabkey               = (a: { tabkey: string })                => html`<sy-tab-group><sy-tab tabkey=${ifDefined(a.tabkey)}>Tab</sy-tab><sy-tab-content name=${ifDefined(a.tabkey)}>C</sy-tab-content></sy-tab-group>`;
-export const TabManualClose          = (a: { manualClose: boolean })          => html`<sy-tab-group><sy-tab tabkey="x" closable .manualClose=${a.manualClose}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
+/**
+ * Manual-close story demonstrates the `manualClose` opt-out:
+ * clicking the X on the tab does NOT auto-remove it. Instead the group fires
+ * `closed` with `isManualClose: true` and the host app decides what to do. Here
+ * we surface a confirmation button — clicking it calls `setClose(true)` with
+ * the force flag so the tab is removed. Clicking "Cancel" just hides the prompt.
+ */
+export const TabManualClose = (a: { manualClose: boolean }) => {
+  const state = { pendingKey: '' as string };
+
+  const onClosed = (e: CustomEvent) => {
+    if (!e.detail?.isManualClose) return; // only the manual-close path asks for confirmation
+    state.pendingKey = e.detail.tabkey;
+    const prompt = document.getElementById('tmcPrompt');
+    const label = document.getElementById('tmcLabel');
+    if (label) label.textContent = `Close tab "${e.detail.tabkey}"?`;
+    if (prompt) prompt.style.display = 'flex';
+  };
+
+  const confirmClose = async () => {
+    const tab = document.querySelector(`sy-tab[tabkey="${state.pendingKey}"]`) as any;
+    if (tab?.setClose) await tab.setClose(true); // force-close past the manualClose gate
+    const prompt = document.getElementById('tmcPrompt');
+    if (prompt) prompt.style.display = 'none';
+  };
+
+  const cancelClose = () => {
+    const prompt = document.getElementById('tmcPrompt');
+    if (prompt) prompt.style.display = 'none';
+  };
+
+  return html`
+    <sy-tab-group @closed=${onClosed}>
+      <sy-tab tabkey="one" closable .manualClose=${a.manualClose}>One</sy-tab>
+      <sy-tab tabkey="two" closable .manualClose=${a.manualClose}>Two</sy-tab>
+      <sy-tab-content name="one">Tab one content</sy-tab-content>
+      <sy-tab-content name="two">Tab two content</sy-tab-content>
+    </sy-tab-group>
+    <div
+      id="tmcPrompt"
+      style="display:none; margin-top:12px; gap:8px; align-items:center; padding:8px 12px; border:1px solid #ccc; border-radius:4px;"
+    >
+      <span id="tmcLabel" style="flex:1;">Close tab?</span>
+      <sy-button size="small" variant="primary" @click=${confirmClose}>Confirm close</sy-button>
+      <sy-button size="small" @click=${cancelClose}>Cancel</sy-button>
+    </div>
+    <p style="margin-top:8px; color:#666; font-size:12px;">
+      With <code>manualClose</code> enabled, clicking the X on a tab does NOT remove it — the group fires
+      <code>closed</code> with <code>isManualClose: true</code> and the app is responsible for the final step.
+    </p>
+  `;
+};
 export const TabActive               = (a: { active: boolean })               => html`<sy-tab-group><sy-tab tabkey="x" ?active=${!!a.active}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabParentDisabled       = (a: { parentDisabled: boolean })       => html`<sy-tab-group><sy-tab tabkey="x" .parentDisabled=${a.parentDisabled}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabCurrentDisabledStatus = (a: { currentDisabledStatus: boolean }) => html`<sy-tab-group><sy-tab tabkey="x" .currentDisabledStatus=${a.currentDisabledStatus}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;

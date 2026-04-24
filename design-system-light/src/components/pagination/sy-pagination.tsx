@@ -1,10 +1,25 @@
 import { Component, h, Prop, State, Event, EventEmitter, Watch, Element, Listen } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-pagination — page navigation with size selector and jumper.
+ *
+ * Spec: design-system-specs/components/pagination.yaml
+ *
+ * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+ *   - activePage   ↔ `active-page`
+ *   - pageSize     ↔ `page-size`
+ *   - pageSizeOptions (comma-separated string, e.g. "10,20,50") ↔ `page-size-options`
+ *   - totalItems   ↔ `total-items`
+ *   - hideonSingle ↔ `hideon-single`
+ *   - disabled, jumper, total
+ *
+ * Events: pageChanged (number), pageSizeChanged (number).
+ */
 @Component({
   tag: 'sy-pagination',
   styleUrl: 'sy-pagination.scss',
-  shadow: false, // Using light DOM
+  shadow: false,
   scoped: true
 })
 export class SyPagination {

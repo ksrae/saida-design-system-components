@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { ref, createRef, Ref } from 'lit/directives/ref.js';
 import { Components } from '../../../components';
 
 export interface SyDatepickerProps extends Components.SyDatepicker {
@@ -87,5 +88,110 @@ export const DatepickerChanged = () => {
   return html`
     <sy-datepicker @changed=${handle}></sy-datepicker>
     <p id="datepickerChangedResult">(idle)</p>
+  `;
+};
+
+/* ============================================================================
+ * Shared form-error pattern — identical to sy-autocomplete / sy-checkbox.
+ *
+ *   1. Author writes the error UI once inside [slot="error"].
+ *   2. Either a native constraint fails (required) or app code calls
+ *      el.setCustomError(): the same slot surfaces as the error.
+ *   3. el.clearCustomError() restores native-only validation.
+ * ============================================================================ */
+
+export const DatepickerSetCustomError = () => {
+  const elRef: Ref<HTMLSyDatepickerElement> = createRef();
+
+  const writeStatus = async () => {
+    const out = document.getElementById('datepickerCustomErrorOut');
+    const el = elRef.value;
+    if (!el || !out) return;
+    const valid = await el.checkValidity();
+    const status = await (el as any).getValidStatus();
+    const message = (el as any).validationMessage ?? '';
+    out.textContent = `valid=${valid}, status=${status || 'ok'}, message="${message}"`;
+  };
+
+  return html`
+    <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
+      <sy-datepicker ${ref(elRef)} placeholder="Pick a date…">
+        <div slot="error">
+          <p style="color:#c0392b; margin:4px 0 0;">🚫 Custom error: this date is blocked by the app.</p>
+        </div>
+      </sy-datepicker>
+      <div style="display:flex; gap:8px;">
+        <sy-button variant="primary"
+          @click=${() => elRef.value?.setCustomError().then(writeStatus)}>Force setCustomError()</sy-button>
+        <sy-button variant="secondary"
+          @click=${() => elRef.value?.clearCustomError().then(writeStatus)}>clearCustomError()</sy-button>
+      </div>
+      <p>Result: <span id="datepickerCustomErrorOut">(idle)</span></p>
+    </div>
+  `;
+};
+
+export const DatepickerRequiredSlotError = () => {
+  const elRef: Ref<HTMLSyDatepickerElement> = createRef();
+
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const out = document.getElementById('datepickerSlotErrorFormOut');
+    const el = elRef.value;
+    if (out && el) out.textContent = `Submitted (datepicker value on form)`;
+  };
+
+  const justValidate = async () => {
+    const out = document.getElementById('datepickerSlotErrorFormOut');
+    const el = elRef.value;
+    if (!el) return;
+    const valid = await el.reportValidity();
+    if (out) out.textContent = `reportValidity() → ${valid}`;
+  };
+
+  return html`
+    <form novalidate style="display:flex; flex-direction:column; gap:12px; width:360px;" @submit=${handleSubmit}>
+      <sy-datepicker
+        ${ref(elRef)}
+        required
+        name="deliveryDate"
+        placeholder="Pick a delivery date"
+      >
+        <div slot="error">
+          <p style="color:#c0392b; margin:4px 0 0;">🚫 Please select a delivery date.</p>
+        </div>
+      </sy-datepicker>
+      <div style="display:flex; gap:8px;">
+        <sy-button type="submit" variant="primary">Submit</sy-button>
+        <sy-button type="button" variant="secondary" @click=${justValidate}>Just Validate</sy-button>
+      </div>
+      <p>Result: <span id="datepickerSlotErrorFormOut">(idle)</span></p>
+    </form>
+  `;
+};
+
+export const DatepickerFormData = () => {
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const out = document.getElementById('datepickerFormDataOut');
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    const pairs: string[] = [];
+    data.forEach((v, k) => pairs.push(`${k}=${v}`));
+    if (out) out.textContent = pairs.join(', ') || '(empty)';
+  };
+
+  return html`
+    <form style="display:flex; flex-direction:column; gap:12px; width:360px;" @submit=${handleSubmit}>
+      <sy-datepicker name="startDate" variant="date" required placeholder="Start date">
+        <div slot="error"><p style="color:#c0392b; margin:4px 0 0;">Required</p></div>
+      </sy-datepicker>
+      <sy-datepicker name="appointment" variant="datetime" placeholder="Appointment"></sy-datepicker>
+      <div style="display:flex; gap:8px;">
+        <sy-button type="submit" variant="primary">Submit</sy-button>
+        <sy-button type="reset" variant="secondary">Reset</sy-button>
+      </div>
+      <p>FormData: <span id="datepickerFormDataOut">(idle)</span></p>
+    </form>
   `;
 };

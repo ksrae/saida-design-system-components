@@ -8,7 +8,7 @@ import { fnAssignPropFromAlias } from '../../utils/utils';
   scoped: true
 })
 export class SyRangeCalendar {
-  @Element() host: HTMLSyRangeCalendarElement;
+  @Element() host!: HTMLSyRangeCalendarElement;
 
   @Prop({ mutable: true })
   get mode(): 'day' | 'month' | 'year' {
@@ -29,7 +29,7 @@ export class SyRangeCalendar {
   @Prop({ attribute: 'mondayStart', mutable: true }) mondayStart: boolean = false;
   @Prop({ attribute: 'hideWeekend', mutable: true }) hideWeekend: boolean = false;
 
-  @Event() selected: EventEmitter;
+  @Event() selected!: EventEmitter;
 
   @State() private startCalendarDate: Date = new Date();
   @State() private endCalendarDate: Date = new Date(new Date().setMonth(new Date().getMonth() + 1));

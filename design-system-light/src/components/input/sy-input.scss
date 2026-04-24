@@ -331,6 +331,16 @@
           display: flex;
         }
       }
+
+      /* Spec-aligned help/validation message below input */
+      .input--message {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-3xsmall);
+        font-size: 0.85rem;
+        color: var(--input-form-message-text-enabled, var(--text-subtler));
+        margin-top: var(--spacing-3xsmall);
+      }
     }
 
     :host(sy-input[required]) {

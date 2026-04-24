@@ -1,0 +1,12 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodStories from './sy-autocomplete-check-validity.stories';
+
+<Meta of={MethodStories} />
+
+# checkValidity() / getValidStatus()
+
+`checkValidity()` returns a `Promise<boolean>`: the current validity of the autocomplete as a
+form-associated element. `getValidStatus()` returns the underlying constraint
+(`'valueMissing' | 'custom' | ''`).
+
+<Canvas of={MethodStories.Default} />

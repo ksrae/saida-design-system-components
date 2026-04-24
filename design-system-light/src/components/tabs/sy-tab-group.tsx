@@ -1,7 +1,26 @@
 import { Component, Prop, State, h, Element, Event, EventEmitter, Watch, Method, Listen } from '@stencil/core';
+import { fnAssignPropFromAlias } from '../../utils/utils';
 
 let tabGroupOverflowMenuSequence = 0;
 
+/**
+ * sy-tab-group — tab navigation container.
+ *
+ * Spec: design-system-specs/components/tabs.yaml
+ *
+ * Public API (spec-aligned) & legacy aliases:
+ *   - `index` (spec)           ↔ `active` (legacy, code-canonical)
+ *   - `placement` (spec)       ↔ `position` (legacy, code-canonical)
+ *   - `centered` (spec)        ↔ `align="center"` (legacy)
+ *   - `add-new-tab` (spec)     ↔ tech-debt (event hook: tabAdded)
+ *   - `setActiveTab(i)` (spec) ↔ `setActive(i)` (legacy)
+ *   - `tabSelected` event      ↔ `selected` (legacy, emitted alongside)
+ *   - `tabClosed` event        ↔ `closed`   (legacy, emitted alongside)
+ *
+ * Tab integration with sy-global-header: when a header is nested inside the
+ * group, the header renders the tab row and handles its own overflow logic —
+ * see `updateOverflowTabs` early-return.
+ */
 @Component({
   tag: 'sy-tab-group',
   styleUrl: 'sy-tab-group.scss',
@@ -12,13 +31,14 @@ export class SyTabGroup {
   @Element() host!: HTMLSyTabGroupElement;
 
   @Prop({ mutable: true }) active?: number;
-  @Prop({ reflect: true }) align: 'center' | 'left' = 'left';
+  @Prop({ reflect: true, mutable: true }) align: 'center' | 'left' = 'left';
   @Prop() disabled = false;
   @Prop({ attribute: 'draggable' }) isdraggable = false;
-  @Prop({ reflect: true }) position: "top" | "bottom" | "left" | "right" = "top";
+  @Prop({ reflect: true, mutable: true }) position: "top" | "bottom" | "left" | "right" = "top";
   @Prop({ reflect: true }) type: "card" | "line" = "line";
   @Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";
   @Prop() padding: "small" | "medium" | "large" | 'none' = "none";
+  @Prop({ mutable: true }) addNewTab: boolean = false;
 
   @State() dragover: boolean = false;
   @State() private tabMoreAreaSize: number = 48;
@@ -33,6 +53,11 @@ export class SyTabGroup {
   @Event() selected!: EventEmitter<any>;
   @Event() closed!: EventEmitter<any>;
   @Event() ordered!: EventEmitter<HTMLSyTabElement[]>;
+
+  // Spec-aligned events (emitted alongside legacy ones).
+  @Event({ eventName: 'tabSelected' }) tabSelected!: EventEmitter<{ index: number; value: string }>;
+  @Event({ eventName: 'tabClosed' }) tabClosed!: EventEmitter<{ index: number; value: string }>;
+  @Event({ eventName: 'tabAdded' }) tabAdded!: EventEmitter<void>;
 
   // private tabMoreArea!: HTMLDivElement;
   draggedItem: any;
@@ -65,6 +90,21 @@ export class SyTabGroup {
   }
 
   componentWillLoad() {
+    // Accept spec-aligned attribute aliases without breaking legacy markup.
+    const placementAlias = fnAssignPropFromAlias<'top' | 'bottom' | 'left' | 'right'>(this.host, 'placement');
+    if (placementAlias) this.position = placementAlias;
+
+    const indexAlias = fnAssignPropFromAlias<number>(this.host, 'index');
+    if (indexAlias !== null && indexAlias !== undefined && this.active === undefined) {
+      this.active = indexAlias;
+    }
+
+    const centered = fnAssignPropFromAlias<boolean>(this.host, 'centered');
+    if (centered) this.align = 'center';
+
+    const addNewTabAlias = fnAssignPropFromAlias<boolean>(this.host, 'add-new-tab', 'addNewTab');
+    if (addNewTabAlias !== null && addNewTabAlias !== undefined) this.addNewTab = addNewTabAlias;
+
     // Take a snapshot of the sy-tab / sy-tab-content children the caller
     // provided (flat or inside slot wrappers). We'll physically move them
     // into the rendered containers in componentDidLoad. This bypasses
@@ -81,9 +121,10 @@ export class SyTabGroup {
 
   private collectSlottedChildren() {
     const host = this.host;
-    // If a global-header is nested inside the group it owns the tab slot —
-    // leave everything alone in that case.
-    if (host.querySelector('sy-global-header')) return;
+    // If a global-header is nested inside the group the header owns the tab
+    // row — leave any tabs alone in that case. But we still need to collect
+    // and mount sy-tab-content children so the active tab's content shows.
+    const hasGlobalHeaderChild = host.querySelector('sy-global-header') !== null;
 
     const tabs: HTMLSyTabElement[] = [];
     const contents: HTMLSyTabContentElement[] = [];
@@ -91,8 +132,10 @@ export class SyTabGroup {
     const walk = (root: Element) => {
       Array.from(root.children).forEach((child) => {
         const tag = child.tagName;
+        // Skip anything inside the header — its tabs/contents are managed there.
+        if (tag === 'SY-GLOBAL-HEADER') return;
         if (tag === 'SY-TAB' && child.getAttribute('slot') !== 'extra') {
-          tabs.push(child as HTMLSyTabElement);
+          if (!hasGlobalHeaderChild) tabs.push(child as HTMLSyTabElement);
         } else if (tag === 'SY-TAB-CONTENT') {
           contents.push(child as HTMLSyTabContentElement);
         } else if (child.getAttribute('slot') === 'tabs' || child.getAttribute('slot') === 'contents') {
@@ -110,7 +153,9 @@ export class SyTabGroup {
     // up with stray div.slot="tabs" nodes fighting with our rendered .tabs.
     Array.from(host.children).forEach((child) => {
       const slot = child.getAttribute('slot');
-      if (slot === 'tabs' || slot === 'contents') {
+      if (slot === 'tabs' && !hasGlobalHeaderChild) {
+        host.removeChild(child);
+      } else if (slot === 'contents') {
         host.removeChild(child);
       }
     });
@@ -284,13 +329,28 @@ export class SyTabGroup {
   }
 
   @Method()
-  async closeTab(name: string) {
+  async closeTab(nameOrIndex: string | number) {
     const tabs = this.refreshTabs();
-    const tab = tabs.find((currentTab: HTMLSyTabElement) => currentTab.tabkey === name);
+    const tab =
+      typeof nameOrIndex === 'number'
+        ? tabs[nameOrIndex]
+        : tabs.find((currentTab: HTMLSyTabElement) => currentTab.tabkey === nameOrIndex);
     if (tab) {
       await tab.setClose();
       this.removeTab(tab.tabkey);
     }
+  }
+
+  /** Programmatically select a tab by index (spec-aligned API). */
+  @Method()
+  async setActiveTab(index: number): Promise<void> {
+    this.setActive(index);
+  }
+
+  /** Get the index of the currently selected tab (spec-aligned API). */
+  @Method()
+  async getActiveTab(): Promise<number | undefined> {
+    return this.active;
   }
 
   private renderHeader() {
@@ -311,6 +371,21 @@ export class SyTabGroup {
       </div>,
       <div class="extra-area">
         <slot name="extra" />
+        {this.addNewTab && (
+          <div
+            class="tab-add-button"
+            role="button"
+            aria-label="Add tab"
+            tabindex={0}
+            onClick={() => this.tabAdded.emit()}
+          >
+            <sy-icon size="medium">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                <path fill="currentColor" d="M344 152C344 138.7 333.3 128 320 128C306.7 128 296 138.7 296 152L296 296L152 296C138.7 296 128 306.7 128 320C128 333.3 138.7 344 152 344L296 344L296 488C296 501.3 306.7 512 320 512C333.3 512 344 501.3 344 488L344 344L488 344C501.3 344 512 333.3 512 320C512 306.7 501.3 296 488 296L344 296L344 152z"/>
+              </svg>
+            </sy-icon>
+          </div>
+        )}
       </div>,
       this.overflowTabs.length ? (
         <div
@@ -655,6 +730,7 @@ private updateOverflowTabs() {
     e.stopPropagation();
     this.active = e.detail.index;
     this.selected.emit(e.detail);
+    this.tabSelected.emit({ index: e.detail.index, value: e.detail.tabkey });
   }
 
   private handleTabClose(e: any) {
@@ -697,6 +773,7 @@ private updateOverflowTabs() {
           }
         }, 1);
         this.selected.emit({ tabkey: activeTab.tabkey, index: activeTab.index });
+        this.tabSelected.emit({ index: activeTab.index, value: activeTab.tabkey });
       }
     }
   }
@@ -841,5 +918,6 @@ private updateOverflowTabs() {
 
   private closeEvent(e: any) {
     this.closed.emit(e.detail);
+    this.tabClosed.emit({ index: e.detail.index, value: e.detail.tabkey });
   }
 }

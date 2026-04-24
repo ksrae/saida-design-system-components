@@ -1,0 +1,37 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodStories from './sy-checkbox-set-custom-error.stories';
+
+<Meta of={MethodStories} />
+
+# setCustomError() / clearCustomError()
+
+Both methods drive a single UI channel — whatever the consumer put in `[slot="error"]`.
+
+| API | Effect |
+| --- | --- |
+| `setCustomError()` | Sets `validStatus = 'custom'`, `isValid = false`. The slot content is revealed and `el.validationMessage` becomes the slot's text content (or `'Invalid input'` if the slot is empty). |
+| `clearCustomError()` | Clears the custom flag; native constraints (`required`) resume ownership of validity. |
+
+The error message lives in the markup, not in JS. JS only decides *when* to surface it.
+
+```html
+<sy-checkbox required>
+  I accept
+  <div slot="error">
+    <p>🚫 You must accept before continuing.</p>
+  </div>
+</sy-checkbox>
+```
+
+```js
+// Business rule decides something is wrong
+el.setCustomError();
+
+// Rule is satisfied again
+el.clearCustomError();
+```
+
+The same slot is shown automatically when `required` fails after the user has touched the
+field or submitted the form — see *Form Integration / Required + Slot Error*.
+
+<Canvas of={MethodStories.Default} />

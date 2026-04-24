@@ -35,9 +35,17 @@ const buttonMeta: Meta<SyButtonProps> = {
       control: 'boolean',
       description: 'Show loading spinner',
     },
-    justified: {
+    fullWidth: {
       control: 'boolean',
-      description: 'Full width button',
+      description: 'Full width button (attribute: full-width)',
+    },
+    iconOnly: {
+      control: 'boolean',
+      description: 'Icon-only button (attribute: icon-only)',
+    },
+    tooltip: {
+      control: 'text',
+      description: 'Tooltip text shown on hover',
     },
     type: {
       control: 'select',
@@ -83,7 +91,9 @@ const buttonMeta: Meta<SyButtonProps> = {
     size: 'medium',
     disabled: false,
     loading: false,
-    justified: false,
+    fullWidth: false,
+    iconOnly: false,
+    tooltip: '',
     type: 'button',
   },
 };

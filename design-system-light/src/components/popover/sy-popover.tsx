@@ -1,8 +1,18 @@
 import { Component, Prop, State, Element, Method, Watch, h } from '@stencil/core';
 
 /**
- * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
- * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+ * sy-popover — overlay anchored to a parent trigger element.
+ *
+ * Spec: design-system-specs/components/popover.yaml
+ *
+ * Props:
+ *   - position (12 directions: top/bottom/left/right + corner variants)
+ *   - trigger (hover | click | focus | null)
+ *   - open, opendelay (ms), closedelay (ms)
+ *   - arrow (show pointer), sticky (disable auto-close)
+ *
+ * The popover is portaled to document.body so it escapes parent overflow/
+ * stacking contexts. Global scroll/resize listeners keep it positioned.
  */
 @Component({
   tag: 'sy-popover',

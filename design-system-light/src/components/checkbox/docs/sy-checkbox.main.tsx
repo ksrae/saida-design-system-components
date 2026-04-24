@@ -155,3 +155,113 @@ export const CheckboxForm = () => {
     </div>
   `;
 };
+
+/* ============================================================================
+ * Slot-based custom-error pattern — identical to sy-autocomplete / sy-input etc.
+ *
+ * Pattern (applies to every SAIDA form-associated component):
+ *   1. Author writes the error UI once inside [slot="error"].
+ *   2. Either a native constraint fails (required) or app code calls
+ *      el.setCustomError(): the same slot surfaces as the error.
+ *   3. el.clearCustomError() restores native-only validation.
+ * ============================================================================ */
+
+/* Programmatic setCustomError demo with slot-declared message + result panel. */
+export const CheckboxSetCustomError = () => {
+  const elRef: Ref<HTMLSyCheckboxElement> = createRef();
+
+  const writeStatus = async () => {
+    const out = document.getElementById('chkCustomErrorOut');
+    const el = elRef.value;
+    if (!el || !out) return;
+    const valid = await el.checkValidity();
+    const status = await (el as any).getValidStatus();
+    const message = (el as any).validationMessage ?? '';
+    out.textContent = `valid=${valid}, status=${status || 'ok'}, message="${message}"`;
+  };
+
+  return html`
+    <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
+      <sy-checkbox ${ref(elRef)}>
+        I agree to the custom rule
+        <div slot="error">
+          <p style="color:#c0392b; margin:4px 0 0;">🚫 Custom error: this selection was rejected by the app.</p>
+        </div>
+      </sy-checkbox>
+      <div style="display:flex; gap:8px;">
+        <sy-button variant="primary"
+          @click=${() => elRef.value?.setCustomError().then(writeStatus)}>Force setCustomError()</sy-button>
+        <sy-button variant="secondary"
+          @click=${() => elRef.value?.clearCustomError().then(writeStatus)}>clearCustomError()</sy-button>
+      </div>
+      <p>Result: <span id="chkCustomErrorOut">(idle)</span></p>
+    </div>
+  `;
+};
+
+/* Required + declarative slot error — matches the canonical HTML consumer pattern. */
+export const CheckboxRequiredSlotError = () => {
+  const elRef: Ref<HTMLSyCheckboxElement> = createRef();
+
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const out = document.getElementById('chkSlotErrorFormOut');
+    const el = elRef.value;
+    if (out && el) out.textContent = `Submitted: checked=${(el as any).checked}`;
+  };
+
+  const justValidate = async () => {
+    const out = document.getElementById('chkSlotErrorFormOut');
+    const el = elRef.value;
+    if (!el) return;
+    const valid = await el.reportValidity();
+    if (out) out.textContent = `reportValidity() → ${valid}`;
+  };
+
+  return html`
+    <form novalidate style="display:flex; flex-direction:column; gap:12px; width:360px;" @submit=${handleSubmit}>
+      <sy-checkbox ${ref(elRef)} required name="terms">
+        I accept the terms and conditions
+        <div slot="error">
+          <p style="color:#c0392b; margin:4px 0 0;">🚫 You must accept the terms to continue.</p>
+        </div>
+      </sy-checkbox>
+      <div style="display:flex; gap:8px;">
+        <sy-button type="submit" variant="primary">Submit</sy-button>
+        <sy-button type="button" variant="secondary" @click=${justValidate}>Just Validate</sy-button>
+      </div>
+      <p>Result: <span id="chkSlotErrorFormOut">(idle)</span></p>
+    </form>
+  `;
+};
+
+/* FormData integration — confirms the checkbox participates natively in <form>. */
+export const CheckboxFormData = () => {
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const out = document.getElementById('chkFormDataOut');
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    const pairs: string[] = [];
+    data.forEach((v, k) => pairs.push(`${k}=${v}`));
+    if (out) out.textContent = pairs.join(', ') || '(empty)';
+  };
+
+  return html`
+    <form style="display:flex; flex-direction:column; gap:12px; width:360px;" @submit=${handleSubmit}>
+      <sy-checkbox name="newsletter" value="yes">Subscribe to newsletter</sy-checkbox>
+      <sy-checkbox name="beta" value="enrolled">Join beta program</sy-checkbox>
+      <sy-checkbox name="agree" value="accepted" required>
+        I accept the terms
+        <div slot="error">
+          <p style="color:#c0392b; margin:4px 0 0;">Required</p>
+        </div>
+      </sy-checkbox>
+      <div style="display:flex; gap:8px;">
+        <sy-button type="submit" variant="primary">Submit</sy-button>
+        <sy-button type="reset" variant="secondary">Reset</sy-button>
+      </div>
+      <p>FormData: <span id="chkFormDataOut">(idle)</span></p>
+    </form>
+  `;
+};

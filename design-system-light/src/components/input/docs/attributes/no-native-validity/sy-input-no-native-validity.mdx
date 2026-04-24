@@ -1,0 +1,12 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as AttrStories from './sy-input-no-native-validity.stories';
+
+<Meta of={AttrStories} />
+
+# No Native Validity
+
+Disables the browser's native validity popup so a slot-based custom error can
+be shown instead.
+
+<Canvas of={AttrStories.Default} />
+<Controls of={AttrStories.Default} />

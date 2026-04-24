@@ -1,6 +1,23 @@
 import { Component, Prop, State, Event, EventEmitter, h, Element, Method, Watch, Listen, AttachInternals } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
+/**
+ * sy-input-number — numeric input with stepper buttons, rounding, and form association.
+ *
+ * Spec: design-system-specs/components/input-number.yaml
+ *
+ * API fully matches spec: value, min, max, step, size, status, borderless,
+ * readonly, decimal-places, rounding, label, name, autofocus, disabled, required,
+ * no-native-validity. Events (changed, blured, focused) and methods (setFocus,
+ * setBlur, stepUp, stepDown, checkValidity, reportValidity, setCustomError,
+ * clearCustomError, getStatus) are spec-aligned.
+ *
+ * Validation semantics:
+ *   - required → valueMissing
+ *   - non-numeric text → typeMismatch
+ *   - min/max violation → rangeUnderflow / rangeOverflow
+ *   - off-step value → stepMismatch (tolerates floating-point noise)
+ */
 @Component({
   tag: 'sy-input-number',
   styleUrl: 'sy-input-number.scss',
@@ -230,27 +247,29 @@ export class SyInputNumber {
   @Listen('invalid', { capture: true })
   handleInvalidEvent(e: Event) {
     this.formSubmitted = true;
+    this.isValid = false;
 
-    const hasErrorSlot = !!this.host.querySelector('[slot="error"]');
-    if (this.noNativeValidity || hasErrorSlot) {
-      const errorSlotElement = this.host.querySelector('[slot="error"]');
-      const hasContent = errorSlotElement?.textContent?.trim();
-      if (hasContent) {
-        this.hasSlotErrorMessage = true;
-        e.preventDefault();
-        e.stopPropagation();
+    const errorSlotElement = this.host.querySelector('[slot="error"]');
+    const slotHasContent =
+      !!errorSlotElement && (errorSlotElement.textContent?.trim().length ?? 0) > 0;
+
+    if (this.noNativeValidity) {
+      // Opt-out: suppress the browser popup. Slot (if present) is the UI.
+      e.preventDefault();
+      e.stopPropagation();
+      this.hasSlotErrorMessage = slotHasContent;
+      if (slotHasContent && e.target === this.host) {
         if (this.input) this.input.setCustomValidity('');
         this.internals?.setValidity({ customError: true }, ' ');
-      } else {
-        this.hasSlotErrorMessage = false;
       }
     } else {
+      // Default: native browser popup. Do NOT call preventDefault here —
+      // per HTML spec, if ANY `invalid` event in a form has its default
+      // prevented, the browser shows NO validation UI for the entire form.
+      // Calling preventDefault would silently kill every popup.
       this.hasSlotErrorMessage = false;
-      setTimeout(() => {
-        if (!this.isValid) this.input?.reportValidity();
-      }, 0);
     }
-    this.isValid = false;
+
     this.updateValidityState();
   }
 
@@ -424,9 +443,19 @@ export class SyInputNumber {
     }
   }
 
+  private getSlotErrorText(): string {
+    const slotEl = this.host.querySelector('[slot="error"]');
+    return (slotEl?.textContent ?? '').trim();
+  }
+
   private updateValidityState() {
+    // (1) Programmatic custom error takes priority — the message shown for
+    // `reportValidity()` / form submission is the slot's own text if present,
+    // else a neutral default. Mirrors autocomplete's setCustomError flow.
     if (this.validStatus === 'custom' && !this.isValid) {
-      this.internals.setValidity({ customError: true }, this.getErrorMessage('custom'));
+      const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
+      this.internals?.setValidity({ customError: true }, msg);
+      this.internals?.setFormValue(String(this.value ?? ''), String(this.value ?? ''));
       return;
     }
 
@@ -467,7 +496,8 @@ export class SyInputNumber {
 
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
-        this.internals.setValidity({ customError: true }, validityMessage);
+        const slotText = this.getSlotErrorText() || validityMessage || ' ';
+        this.internals.setValidity({ customError: true }, slotText);
       } else {
         this.internals.setValidity({ [this.validStatus]: true }, validityMessage);
       }
@@ -479,6 +509,14 @@ export class SyInputNumber {
   private customSettingError() {
     this.isValid = false;
     this.validStatus = 'custom';
+    // Force visual invalid state immediately — developer-triggered errors
+    // shouldn't wait for the user to blur or submit the form.
+    this.touched = true;
+    // Slot UI is the surface for programmatic errors, regardless of the
+    // noNativeValidity toggle (which only gates the browser-driven popup).
+    this.hasSlotErrorMessage =
+      !!this.host.querySelector('[slot="error"]') &&
+      (this.host.querySelector('[slot="error"]')?.textContent?.trim().length ?? 0) > 0;
     this.updateValidityState();
   }
 
