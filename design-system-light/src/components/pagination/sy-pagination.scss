@@ -25,6 +25,10 @@
             display: inline-flex;
             align-items: center;
             color: var(--pagination-index-inactive-text-enabled);
+            /* Pin the Total label to the bottom-left of the wrapper. The
+               parent's `align-items: center` would otherwise centre this
+               beneath the pager; align-self only affects this child. */
+            align-self: flex-start;
         }
 
         .pagination {

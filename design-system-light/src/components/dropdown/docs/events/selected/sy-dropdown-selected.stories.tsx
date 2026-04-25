@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { DropdownSelected } from '../../sy-dropdown.main';
 
 const meta: Meta = {

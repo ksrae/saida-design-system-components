@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyTextareaProps, Textarea } from './sy-textarea.main';
 import { clearElements } from '../../clear-element';
 
@@ -27,7 +27,6 @@ const textareaMeta: Meta<SyTextareaProps> = {
     size: { control: 'radio', options: ['small','medium','large'], description: 'Size variant.', table: { category: 'Parameter', defaultValue: { summary: 'medium' }, type: { summary: 'small | medium | large' } } },
     status: { control: 'select', options: ['default','warning','error','success'], description: 'Status variant.', table: { category: 'Parameter', defaultValue: { summary: 'default' }, type: { summary: 'default | warning | error | success' } } },
     value: { control: 'text', description: 'Text value.', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
-    name: { control: 'text', description: 'Form field name.', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
     noNativeValidity: { control: 'boolean', name: 'noNativeValidity', description: 'Disable native validation.', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     changed: { type: 'function', description: 'Emitted on input change.', table: { category: 'Callback', type: { summary: `.addEventListener('changed', (e) => {})` } } },
     blured: { type: 'function', description: 'Emitted on blur.', table: { category: 'Callback', type: { summary: `.addEventListener('blured', (e) => {})` } } },
@@ -42,6 +41,6 @@ export const Default: Story = {
   args: {
     autofocus: false, borderless: false, clearable: false, counter: false, disabled: false,
     label: 'Textarea', max: 100, min: 0, placeholder: 'Enter text', readonly: false, required: false,
-    resize: 'none', rows: 4, size: 'medium', status: 'default', value: '', name: '', noNativeValidity: false,
+    resize: 'none', rows: 4, size: 'medium', status: 'default', value: '', noNativeValidity: false,
   },
 };

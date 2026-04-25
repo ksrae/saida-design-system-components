@@ -95,6 +95,14 @@ sy-tab-group .tabs {
     flex: 1 1 auto;
 }
 
+/* Center alignment must reach inside `.tabs` too. The container's
+   `justify-content: center` alone has no visible effect because `.tabs`
+   takes `flex: 1 1 auto` and absorbs all available space — so we also
+   center the tabs *within* `.tabs` when the group is align="center". */
+sy-tab-group .tab-group-container.align-center .tabs {
+    justify-content: center;
+}
+
 sy-tab-group .left-layout .tabs,
 sy-tab-group .right-layout .tabs {
     flex-direction: column;
@@ -256,11 +264,6 @@ sy-tab-group[position="right"] sy-tab {
     max-width: 150px;
     margin-right: 0;
     width: 100%;
-}
-
-/* Center align */
-sy-tab-group[align="center"] sy-tab-content {
-    text-align: left;
 }
 
 /* Drag ghost */

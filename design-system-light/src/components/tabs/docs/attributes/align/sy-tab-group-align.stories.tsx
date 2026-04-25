@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { TabGroupAlign } from '../../sy-tab-group.main';
 import tabGroupMeta from '../../sy-tab-group.stories';
 

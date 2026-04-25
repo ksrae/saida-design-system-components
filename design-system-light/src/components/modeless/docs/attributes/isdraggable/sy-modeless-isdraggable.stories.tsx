@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
-import { ModelessIsdraggable } from '../../sy-modeless.main';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
+import { ModelessDraggable } from '../../sy-modeless.main';
 import modelessMeta from '../../sy-modeless.stories';
 
 const meta: Meta = {
-  title: 'Modeless/Attributes/Isdraggable',
+  title: 'Modeless/Attributes/Draggable',
   component: 'sy-modeless',
   tags: [],
-  render: (args) => ModelessIsdraggable(args as { isdraggable: boolean }),
-  argTypes: { isdraggable: modelessMeta?.argTypes?.isdraggable },
-  args: { isdraggable: false },
+  render: (args) => ModelessDraggable(args as { draggable: boolean }),
+  argTypes: { draggable: modelessMeta?.argTypes?.draggable },
+  args: { draggable: true },
 };
 
 export default meta;

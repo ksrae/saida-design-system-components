@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyModelessProps, Modeless } from './sy-modeless.main';
 import { clearElements } from '../../clear-element';
 
@@ -9,7 +9,7 @@ const modelessMeta: Meta<SyModelessProps> = {
   render: (args) => { clearElements(modelessMeta.title); return Modeless(args); },
   argTypes: {
     open: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
-    isdraggable: { control: 'boolean', name: 'draggable', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
+    draggable: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     resizable: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     closable: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     minimizable: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
@@ -31,4 +31,26 @@ const modelessMeta: Meta<SyModelessProps> = {
 
 export default modelessMeta;
 type Story = StoryObj<SyModelessProps>;
-export const Default: Story = { args: { open: true, resizable: true, closable: true, minimizable: true, maximizable: true, width: 240, height: 160 } as any };
+
+// Every arg is given an explicit initial value so Storybook renders the
+// actual switch/number input rather than a "Set boolean" / "Set object"
+// placeholder button for unset controls.
+export const Default: Story = {
+  args: {
+    open: false,
+    draggable: false,
+    resizable: true,
+    closable: true,
+    minimizable: true,
+    maximizable: true,
+    edge: false,
+    maximum: false,
+    minimum: false,
+    top: 0,
+    left: 0,
+    width: 240,
+    height: 160,
+    minWidth: 0,
+    minHeight: 0,
+  } as any,
+};

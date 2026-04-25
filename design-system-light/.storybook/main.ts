@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/web-components-vite';
+import type { StorybookConfig } from '@stencil/storybook-plugin';
 
 const config: StorybookConfig = {
   stories: [
@@ -15,9 +15,7 @@ const config: StorybookConfig = {
     // '@storybook/addon-designs',
   ],
   framework: {
-    // 여기도 마찬가지로 단순 문자열로 변경합니다.
-    name: "@storybook/web-components-vite",
-    options: {}
+    name: "@stencil/storybook-plugin"
   },
   staticDirs: [{ from: '../src/assets', to: '/assets' }, './image', './style-guide'],
 };

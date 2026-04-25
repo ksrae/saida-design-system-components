@@ -29,7 +29,7 @@ const DEFAULT_MIN_HEIGHT = 1;
  *
  * Props (spec-aligned + legacy aliases):
  *   - open, closable, minimizable, maximizable, resizable, edge
- *   - isdraggable (legacy attr `draggable`)
+ *   - draggable
  *   - minimum, maximum (current state flags; set via setMinimum/setMaximum)
  *   - width, height (initial size); top, left (initial position)
  *   - minWidth ↔ `min-width`, minHeight ↔ `min-height`
@@ -52,7 +52,16 @@ export class SyModeless {
 
   // --- Public Properties ---
   @Prop({ reflect: true, mutable: true }) open = false;
-  @Prop({ reflect: false, attribute: 'draggable' }) isdraggable = false;
+  /**
+   * When true, the header is shown and the user can drag the modeless by it.
+   * The public attribute is `draggable`, but the JS-side prop is named
+   * `isDraggable` to avoid shadowing `HTMLElement.prototype.draggable` (which
+   * would trigger the Stencil "reserved public name" warning and risk
+   * cross-browser surprises). A `dragstart` handler on the host suppresses the
+   * native HTML5 drag that the `draggable` attribute would otherwise enable,
+   * so only the custom mousedown-driven drag runs.
+   */
+  @Prop({ reflect: true, attribute: 'draggable' }) isDraggable = false;
   @Prop() resizable = false;
   @Prop() closable = false;
   @Prop() minimizable = false;
@@ -217,7 +226,7 @@ export class SyModeless {
   }
 
   private onDragStart = (event: MouseEvent): void => {
-    if (!this.isdraggable || this.status !== 'restore' || event.button !== 0) {
+    if (!this.isDraggable || this.status !== 'restore' || event.button !== 0) {
       return;
     }
 
@@ -248,10 +257,13 @@ export class SyModeless {
     let newLeft = this.startLeft + dx;
 
     if (this.edge) {
-      const { innerWidth, innerHeight, scrollX, scrollY } = window;
+      // With useFixedPositioning, host coords are viewport-relative — no
+      // scroll offset and no scrollbar gutter to subtract. Clamp purely to
+      // the viewport box so the host can never overflow it.
+      const { clientWidth: viewportWidth, clientHeight: viewportHeight } = document.documentElement;
       const { width: elementWidth, height: elementHeight } = this.position;
-      newLeft = Math.max(scrollX, Math.min(newLeft, innerWidth + scrollX - elementWidth));
-      newTop = Math.max(scrollY, Math.min(newTop, innerHeight + scrollY - elementHeight));
+      newLeft = Math.max(0, Math.min(newLeft, viewportWidth - elementWidth));
+      newTop = Math.max(0, Math.min(newTop, viewportHeight - elementHeight));
     }
 
     this.position = { ...this.position, top: newTop, left: newLeft };
@@ -340,12 +352,13 @@ export class SyModeless {
     }
 
     if (this.edge) {
-      const { scrollX, scrollY } = window;
+      // Resize is always against the viewport box (no scroll offsets) — the
+      // host is position:fixed in edge-mode so coords are viewport-relative.
       const { clientWidth: viewportWidth, clientHeight: viewportHeight } = document.documentElement;
-      if (newLeft < scrollX) { newWidth += newLeft - scrollX; newLeft = scrollX; }
-      if (newTop < scrollY) { newHeight += newTop - scrollY; newTop = scrollY; }
-      if (newLeft + newWidth > scrollX + viewportWidth) { newWidth = scrollX + viewportWidth - newLeft; }
-      if (newTop + newHeight > scrollY + viewportHeight) { newHeight = scrollY + viewportHeight - newTop; }
+      if (newLeft < 0) { newWidth += newLeft; newLeft = 0; }
+      if (newTop < 0) { newHeight += newTop; newTop = 0; }
+      if (newLeft + newWidth > viewportWidth) { newWidth = viewportWidth - newLeft; }
+      if (newTop + newHeight > viewportHeight) { newHeight = viewportHeight - newTop; }
     }
 
     this.position = { top: newTop, left: newLeft, width: newWidth, height: newHeight };
@@ -375,26 +388,54 @@ export class SyModeless {
   }
 
   // --- Private Methods ---
+  /**
+   * Edge-mode uses `position: fixed` because a `position: absolute` element
+   * contributes to `document.body`'s `scrollWidth`/`scrollHeight`. Near a
+   * viewport edge that triggers a scrollbar, which shrinks `clientWidth`/
+   * `clientHeight`, which retightens the clamp, which moves the modeless
+   * away from the edge, which removes the scrollbar — an infinite reflow
+   * loop. With `position: fixed` the host doesn't affect document scroll
+   * dimensions at all, so the loop cannot start.
+   */
+  private get useFixedPositioning(): boolean {
+    return this.edge;
+  }
+
   private appendToRoot(): void {
     if (!this.addedToBody) {
       this.addedToBody = true;
       document.body.appendChild(this.host);
-      this.host.style.position = 'absolute';
+      this.host.style.position = this.useFixedPositioning ? 'fixed' : 'absolute';
       this.setInitialPosition();
       setTimeout(() => {
         this._updateMinDimensions();
         this.handleActivation();
+        // The `maximum` / `minimum` @Watch only fires on subsequent value
+        // changes, not on the value the host was initialized with. So when a
+        // modeless is opened with `maximum` (or `minimum`) already true, we
+        // have to apply the corresponding state explicitly here. Without
+        // this, `<sy-modeless open maximum maximizable>` would open in the
+        // default restored size instead of maximized.
+        if (this.maximum && this.maximizable) {
+          this.handleMaximum();
+        } else if (this.minimum && this.minimizable) {
+          this.handleMinimum();
+        }
       }, 0);
     }
   }
 
   private setInitialPosition(): void {
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
+    // Use clientWidth/clientHeight (excludes scrollbar gutter) so positions
+    // computed here cannot push the host past the body content box and
+    // trigger a scrollbar on the document.
+    const { clientWidth: windowWidth, clientHeight: windowHeight } = document.documentElement;
     const width = Math.max(this.minWidth, this.width);
     const height = Math.max(this.minHeight, this.height);
-    const scrollTop = window.scrollY;
-    const scrollLeft = window.scrollX;
+    // For edge-mode (position:fixed) coords are viewport-relative, so we
+    // must NOT add the document's scroll offset.
+    const scrollTop = this.useFixedPositioning ? 0 : window.scrollY;
+    const scrollLeft = this.useFixedPositioning ? 0 : window.scrollX;
 
     let top: number;
     let left: number;
@@ -499,7 +540,7 @@ export class SyModeless {
       this.setInitialPosition();
       return;
     }
-    this.host.style.position = 'absolute';
+    this.host.style.position = this.useFixedPositioning ? 'fixed' : 'absolute';
     this.restoreBodyScroll();
     this.updatePosition();
     this.updateMinimizedPositions();
@@ -526,11 +567,15 @@ export class SyModeless {
 
   private setNewPosition(): void {
     const rect = this.host.getBoundingClientRect();
+    // For position:fixed (edge-mode) coords are viewport-relative; for
+    // position:absolute we store document-relative coords (rect + scroll).
+    const scrollX = this.useFixedPositioning ? 0 : window.scrollX;
+    const scrollY = this.useFixedPositioning ? 0 : window.scrollY;
     this.position = {
       width: rect.width,
       height: rect.height,
-      left: rect.left + window.scrollX,
-      top: rect.top + window.scrollY,
+      left: rect.left + scrollX,
+      top: rect.top + scrollY,
     };
     this.emitPosition();
   }
@@ -591,11 +636,11 @@ export class SyModeless {
   // --- Render Method ---
   render() {
     return (
-      <Host>
+      <Host onDragStart={(e: DragEvent) => e.preventDefault()}>
         <div
           class="header"
           onMouseDown={this.onDragStart}
-          hidden={!this.isdraggable}
+          hidden={!this.isDraggable}
         >
           <div class="title">
             <slot name="title" />
@@ -666,18 +711,24 @@ export class SyModeless {
           <slot name="content" />
         </div>
 
-        {this.resizable && (
-          <>
-            <div class="resize-handle top" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle bottom" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle left" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle right" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle bottom-right" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle bottom-left" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle top-right" onMouseDown={this.onResizeStart}></div>
-            <div class="resize-handle top-left" onMouseDown={this.onResizeStart}></div>
-          </>
-        )}
+        {/*
+          Always render the resize handles and toggle visibility via `hidden`
+          rather than conditionally rendering them. Toggling a fragment as a
+          top-level Host child does not always re-insert/remove cleanly when
+          `resizable` flips on a live host (the existing modeless was already
+          attached to document.body via appendToRoot), which is why changes
+          previously only took effect after closing and reopening. Using
+          `hidden` keeps the DOM stable so the prop change always sticks, and
+          the onResizeStart guard already returns early when !this.resizable.
+        */}
+        <div class="resize-handle top"          hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle bottom"       hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle left"         hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle right"        hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle bottom-right" hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle bottom-left"  hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle top-right"    hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
+        <div class="resize-handle top-left"     hidden={!this.resizable} onMouseDown={this.onResizeStart}></div>
       </Host>
     );
   }

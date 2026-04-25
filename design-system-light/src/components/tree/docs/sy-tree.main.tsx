@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyTreeProps extends Components.SyTree {

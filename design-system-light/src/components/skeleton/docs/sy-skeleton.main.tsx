@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SySkeletonProps extends Components.SySkeleton {}
@@ -9,8 +7,15 @@ export const Skeleton = ({ type, rows, width, disabled }: SySkeletonProps) => ht
   <sy-skeleton type=${ifDefined(type)} rows=${ifDefined(rows as any)} width=${ifDefined(width)} ?disabled=${!!disabled}></sy-skeleton>
 `;
 
-export const SkeletonType = (args: { type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree' }) => html`
-  <sy-skeleton type=${ifDefined(args.type)}></sy-skeleton>
+// `rows` is exposed alongside `type` because text-style skeletons (and
+// any future row-based variants) only show their full shape when rows
+// > 0. Without an inline rows control on the Type story, the user
+// couldn't dial row count without leaving for the Rows story.
+export const SkeletonType = (args: {
+  type: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
+  rows: number;
+}) => html`
+  <sy-skeleton type=${ifDefined(args.type)} rows=${ifDefined(args.rows as any)}></sy-skeleton>
 `;
 
 export const SkeletonRows = (args: { rows: number }) => html`

@@ -1,7 +1,5 @@
-import { html } from 'lit';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, unsafeHTML, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 export interface SyCollapseProps extends Components.SyCollapse {
   slot?: string;

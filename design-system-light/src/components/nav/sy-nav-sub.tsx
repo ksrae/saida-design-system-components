@@ -32,12 +32,14 @@ export class SyNavSub {
   @Prop({ reflect: true, mutable: true }) disabled: boolean = false;
   @Prop({ reflect: true, mutable: true }) depth: number = 0;
 
-  @State() active: boolean = false;
   @State() trigger: 'click' | 'hover' = 'click';
   @State() isGroup: boolean = false;
+  // hasChild must be @State so the toggle icon re-renders when a slot
+  // mutation reveals/removes children. As a plain field the icon would only
+  // ever reflect its initial value (false) because Stencil never re-renders.
+  @State() hasChild: boolean = false;
 
   private receiveDisabled = false;
-  private hasChild = false;
   private keydownHandler?: (e: KeyboardEvent) => void;
 
   connectedCallback() {
@@ -145,7 +147,6 @@ export class SyNavSub {
     if (this.disabled) return;
 
     this.open = true;
-    this.active = true;
     this.eventEmitter();
   }
 
@@ -162,7 +163,6 @@ export class SyNavSub {
     });
 
     this.open = false;
-    this.active = true;
     this.eventEmitter();
   }
 
@@ -211,10 +211,10 @@ export class SyNavSub {
     this.hasChild = children && children.length > 0;
   };
 
-  @Method()
-  public async setActive(active: boolean) {
-    this.active = active;
-  }
+  // setActive used to exist here but it was a no-op: there was no CSS rule
+  // bound to `.submenu-title.active`, and the spec
+  // (design-system-specs/components/nav.yaml) lists no methods on nav-sub.
+  // Removed to stop advertising a method that does nothing.
 
   private eventEmitter() {
     if (this.value) {
@@ -237,7 +237,6 @@ export class SyNavSub {
 
     const titleClasses = {
       'submenu-title': true,
-      'active': this.active,
       'open': this.open && this.hasChild,
       'close': !this.open && this.hasChild,
       'group-list': this.isGroup,

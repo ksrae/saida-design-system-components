@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/web-components-vite";
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { Menu, SyMenuProps } from './sy-menu.main';
 import { clearElements } from "../../clear-element";
 
@@ -123,19 +123,22 @@ export const Default: StoryObj<SyMenuProps> = {
   args: {
     open: false,
     checkable: false,
+    disabled: false,
+    direction: 'right',
+    loading: false,
     // opendelay: 150,
     // closedelay: 100,
     position: 'bottomLeft',
     trigger: 'hover',
     slot: `
-      <sy-menu-sub menuSubTitle="sub menu">
-        <sy-menu-group menuGroupTitle="Group">
+      <sy-menu-sub title="sub menu">
+        <sy-menu-group title="Group">
           <sy-menu-item value="2">Item2</sy-menu-item>
           <sy-menu-item value="3">Item3</sy-menu-item>
         </sy-menu-group>
           <sy-menu-item value="4">Item4</sy-menu-item>
         </sy-menu-sub>
-        <sy-menu-sub menuSubTitle="sub menu with actions">
+        <sy-menu-sub title="sub menu with actions">
           <sy-menu-item value="6">Item6</sy-menu-item>
           <sy-menu-item value="7">Item7</sy-menu-item>
         </sy-menu-sub>

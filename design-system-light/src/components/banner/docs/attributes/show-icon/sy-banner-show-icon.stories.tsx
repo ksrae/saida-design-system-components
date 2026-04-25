@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { BannerShowIcon } from '../../sy-banner.main';
 import bannerMeta from '../../sy-banner.stories';
 

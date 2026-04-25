@@ -178,7 +178,15 @@ export class SyProgressCircular {
 
   render() {
     return (
-      <Host>
+      <Host
+        // Surface tooltipTitle as the host's native `title` attribute so the
+        // browser shows it on hover. The previous implementation only
+        // gated a `<slot name="tooltip">` on tooltipTitle, with no actual
+        // text rendered — typing a value into the prop did nothing visible.
+        // Mirroring sy-progress-bar's `title={tooltipTitle}` gives the
+        // tooltip its expected hover behavior.
+        title={this.tooltipTitle || undefined}
+      >
         <div class="progress-container">
           {this.tooltipTitle && this.tooltipTitle.trim() !== '' ? <slot name="tooltip" /> : null}
           <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" class={this.indeterminate ? 'indeterminate' : ''}>

@@ -1,5 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { html, ifDefined } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyProgressBarProps extends Components.SyProgressBar {}
@@ -36,8 +35,15 @@ export const ProgressBarHidePercent = (args: { hidePercent: boolean }) => html`
   <sy-progress-bar .hidePercent=${args.hidePercent} .percent=${50}></sy-progress-bar>
 `;
 
+// `segment` is a JSON-array string like
+//   [{"percent":30,"status":"complete"},{"percent":70,"status":"error"}]
+// Each entry's `percent` is the cumulative position where that band ends,
+// and `status` colors the band ('default' | 'error' | 'complete'). Render
+// at percent=80 by default so the user can see two finished segments
+// (complete up to 30, error 30→70) plus the partial third band the
+// component fills in automatically up to the current percent.
 export const ProgressBarSegment = (args: { segment: string }) => html`
-  <sy-progress-bar segment=${ifDefined(args.segment)} .percent=${50}></sy-progress-bar>
+  <sy-progress-bar segment=${ifDefined(args.segment)} .percent=${80}></sy-progress-bar>
 `;
 
 export const ProgressBarTooltipTitle = (args: { tooltipTitle: string }) => html`

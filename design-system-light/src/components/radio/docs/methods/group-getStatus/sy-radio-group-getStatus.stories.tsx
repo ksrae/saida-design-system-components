@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { RadioGroupGetStatus } from '../../sy-radio-group.main';
 
 const meta: Meta = {

@@ -11,11 +11,12 @@ function setPageName(pageName) {
 export const clearElements = (pageName) => {
   const isClear = setPageName(pageName);
 
+  removeMenus();
+
   if (isClear) {
     removeBanner();
     removeDrawer();
     removeInlineMessage();
-    removeMenus();
     removeModal();
     removeModelessGroup();
     removeModeless();
@@ -45,7 +46,9 @@ const removeDrawer = () => {
 };
 
 const removeMenus = () => {
-  const data = document.querySelectorAll('sy-menu');
+  const data = Array.from(document.body.children).filter(
+    item => item.tagName && item.tagName.toLowerCase() === 'sy-menu'
+  );
   data.forEach(item => {
     if (item && item.parentNode) {
       item.parentNode.removeChild(item);
@@ -89,7 +92,13 @@ const removeModelessGroup = () => {
 const removeModeless = () => {
   const data = document.querySelectorAll('sy-modeless');
   data.forEach(item => {
-    item.setClose();
+    // setClose() only sets open=false (which hides via CSS) but leaves the
+    // host element in document.body, so subsequent stories see ghost modeless
+    // elements piling up. Remove the element after closing.
+    try { item.setClose && item.setClose(); } catch (_) { /* ignore */ }
+    if (item.parentNode) {
+      item.parentNode.removeChild(item);
+    }
   });
 };
 

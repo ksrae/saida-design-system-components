@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { AvatarGroupClickable } from '../../sy-avatar.main';
 import avatarGroupMeta from '../../sy-avatar-group.stories';
 

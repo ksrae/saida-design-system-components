@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { RadioGroupDefaultValue } from '../../sy-radio-group.main';
 import radioGroupMeta from '../../sy-radio-group.stories';
 

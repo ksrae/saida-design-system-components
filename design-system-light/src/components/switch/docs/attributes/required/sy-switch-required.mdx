@@ -1,0 +1,13 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as RequiredStories from './sy-switch-required.stories';
+
+<Meta of={RequiredStories} />
+
+# Required
+
+The `required` attribute makes the switch required for form submission. The
+form will not submit while the switch is off — same behaviour as
+`sy-checkbox[required]`. Toggle the switch on and submission proceeds.
+
+<Canvas of={RequiredStories.Default} />
+<Controls of={RequiredStories.Default} />

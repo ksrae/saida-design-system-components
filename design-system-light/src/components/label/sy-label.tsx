@@ -13,10 +13,7 @@ export class SyLabel {
   @Prop({ reflect: true }) disabled: boolean = false;
   @Prop({ reflect: true }) required: boolean = false;
   @Prop({ reflect: true, attribute: 'requiredPosition', mutable: true }) requiredPosition: 'left' | 'right' = 'right';
-  // `htmlFor` is intentionally exposed via the `htmlfor` attribute (HTML lowercases
-  // it). `for` is a reserved word in TypeScript/JSX so we can't use it as a class
-  // property. The storybook argType renames it back to "htmlfor" for UX clarity.
-  @Prop({ attribute: 'htmlfor', mutable: true }) htmlFor: string = '';
+  @Prop({ attribute: 'for', mutable: true }) htmlFor: string = '';
   @Prop() value: string = '';
   // Attribute mirrors the JS property name so `<sy-label valuePosition="right">`
   // works verbatim in storybook stories (HTML lowercases to `valueposition`, which
@@ -268,7 +265,7 @@ export class SyLabel {
 
     // htmlFor 속성이 명시적으로 설정되지 않은 경우에만 암시적 라벨링 적용
     const newHtmlFor = this.implicitInput.id;
-    
+
     // Only update htmlFor if it's different to avoid re-render warnings
     if (this.htmlFor !== newHtmlFor) {
       this.htmlFor = newHtmlFor;

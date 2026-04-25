@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyTabGroupProps, TabGroup } from './sy-tab-group.main';
 import { clearElements } from '../../clear-element';
 
@@ -11,7 +11,7 @@ const tabGroupMeta: Meta<SyTabGroupProps> = {
     active: { control: 'number', table: { category: 'Parameter', type: { summary: 'number' } } },
     align: { control: 'radio', options: ['left','center'], table: { category: 'Parameter', defaultValue: { summary: 'left' }, type: { summary: 'center | left' } } },
     disabled: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
-    isdraggable: { control: 'boolean', name: 'draggable', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
+    draggable: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     position: { control: 'select', options: ['top','bottom','left','right'], table: { category: 'Parameter', defaultValue: { summary: 'top' }, type: { summary: 'top | bottom | left | right' } } },
     type: { control: 'radio', options: ['line','card'], table: { category: 'Parameter', defaultValue: { summary: 'line' }, type: { summary: 'card | line' } } },
     size: { control: 'radio', options: ['small','medium','large'], table: { category: 'Parameter', defaultValue: { summary: 'medium' }, type: { summary: 'small | medium | large' } } },

@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html } from '../../../utils/story-template';
 import iconData from "./icon-data.json";
 
 // 컴포넌트는 .storybook/preview.ts에서 이미 전역 등록됨

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { NavItemValue } from '../../sy-nav-item.main';
 import navItemMeta from '../../sy-nav-item.stories';
 
@@ -8,7 +8,7 @@ const meta: Meta = {
   tags: [],
   render: (args) => NavItemValue(args as { value: string }),
   argTypes: { value: navItemMeta?.argTypes?.value },
-  args: { value: '' },
+  args: { value: 'item-1' },
 };
 
 export default meta;

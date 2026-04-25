@@ -1,5 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { html, ifDefined } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SySliderProps extends Components.SySlider {}
@@ -26,8 +25,26 @@ export const Slider = (args: SySliderProps) => html`
   </sy-slider>
 `;
 
-export const SliderMin              = (args: { min: number })                          => html`<sy-slider .min=${args.min} .max=${100} .value=${args.min}></sy-slider>`;
-export const SliderMax              = (args: { max: number })                          => html`<sy-slider .max=${args.max}></sy-slider>`;
+// Min / Max stories pass a `marks` object that ALWAYS includes the current
+// min and max as labelled tick marks. Because lit-html's property binding
+// re-evaluates on every render, the marks object is recomputed when the
+// Controls slider moves — the tick label / position updates immediately
+// without needing a separate "show marks" toggle.
+export const SliderMin              = (args: { min: number })                          => html`
+  <sy-slider
+    .min=${args.min}
+    .max=${100}
+    .value=${args.min}
+    .marks=${{ [args.min]: String(args.min), 100: '100' }}
+  ></sy-slider>
+`;
+export const SliderMax              = (args: { max: number })                          => html`
+  <sy-slider
+    .min=${0}
+    .max=${args.max}
+    .marks=${{ 0: '0', [args.max]: String(args.max) }}
+  ></sy-slider>
+`;
 export const SliderStep             = (args: { step: number })                         => html`<sy-slider .step=${args.step}></sy-slider>`;
 export const SliderValue            = (args: { value: number })                        => html`<sy-slider .value=${args.value}></sy-slider>`;
 export const SliderDisabled         = (args: { disabled: boolean })                    => html`<sy-slider ?disabled=${!!args.disabled}></sy-slider>`;
@@ -42,4 +59,10 @@ export const SliderReverse          = (args: { reverse: boolean })              
 export const SliderLabel            = (args: { label: string })                       => html`<sy-slider label=${ifDefined(args.label)}></sy-slider>`;
 export const SliderHideTrackFill    = (args: { hideTrackFill: boolean })              => html`<sy-slider .hideTrackFill=${args.hideTrackFill}></sy-slider>`;
 export const SliderSnapToMarks      = (args: { snapToMarks: boolean })                => html`<sy-slider .snapToMarks=${args.snapToMarks} .marks=${{ 0:'0', 25:'25', 50:'50', 75:'75', 100:'100' }}></sy-slider>`;
-export const SliderVertical         = (args: { vertical: boolean })                   => html`<div style="height:200px;"><sy-slider ?vertical=${!!args.vertical}></sy-slider></div>`;
+// `style` is bound as a PROPERTY (`.style=`) so the value is an object the
+// story-template hands directly to Stencil's `h()`. A literal `style="..."`
+// attribute on this template tag is parsed as a string, then Stencil tries
+// to iterate the string as `style[0] = 'h'` etc. and throws
+// "Indexed property setter is not supported on CSSStyleDeclaration." That
+// crash is why the Vertical story errored entirely.
+export const SliderVertical         = (args: { vertical: boolean })                   => html`<div .style=${{ height: '200px' }}><sy-slider ?vertical=${!!args.vertical}></sy-slider></div>`;

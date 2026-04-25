@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyButtonProps, ButtonAttribute } from '../../sy-button.main';
 import buttonMeta from '../../sy-button.stories';
 

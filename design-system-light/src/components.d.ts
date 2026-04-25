@@ -1339,12 +1339,23 @@ export namespace Components {
          */
         "width": string;
     }
+    /**
+     * sy-menu — portaled dropdown menu triggered by a parent element.
+     * Spec: design-system-specs/components/menu.yaml
+     * Children: sy-menu-item (leaf), sy-menu-sub (nested submenu), sy-menu-group
+     * (labeled section). The menu is portaled to escape clipping and re-positioned
+     * on window scroll/resize.
+     * Props: open, disabled, checkable, loading, position (4 corners),
+     * trigger (click | hover | contextmenu), direction (left | right for submenus).
+     * Events: opened (boolean), itemSelected, itemChecked.
+     */
     interface SyMenu {
         /**
           * @default false
          */
         "checkable": boolean;
         "clearSelectedItem": () => Promise<void>;
+        "close": () => Promise<void>;
         "delayedMenuClose": () => Promise<void>;
         /**
           * @default 'right'
@@ -1355,6 +1366,11 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * Spinner overlay while items are being fetched (spec-aligned).
+          * @default false
+         */
+        "loading": boolean;
+        /**
           * @default false
          */
         "open": boolean;
@@ -1362,7 +1378,10 @@ export namespace Components {
           * @default 'bottomLeft'
          */
         "position": 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+        "setClose": () => Promise<void>;
+        "setOpen": () => Promise<void>;
         "setSelectableAllItems": () => Promise<void>;
+        "toggle": () => Promise<void>;
         /**
           * @default 'hover'
          */
@@ -1374,6 +1393,18 @@ export namespace Components {
          */
         "menuGroupTitle": string;
     }
+    /**
+     * sy-menu-item — a single item inside sy-menu.
+     * Spec: design-system-specs/components/menu.yaml (menu-item anatomy).
+     * Props:
+     *   - value     (payload emitted with itemSelected / itemChecked)
+     *   - disabled
+     *   - selectable (item becomes highlightable/checkable individually)
+     *   - checkable  (force checkbox UI; implies selectable)
+     *   - select    (controlled: visually mark as currently selected)
+     * Events: itemSelected {value,label}, itemChecked {value,label,checked}.
+     * Both bubble to the containing sy-menu which re-emits them as menu events.
+     */
     interface SyMenuItem {
         /**
           * @default false
@@ -1409,7 +1440,30 @@ export namespace Components {
           * @default false
          */
         "open": boolean;
+        /**
+          * @default 'hover'
+         */
+        "trigger": 'click' | 'hover';
     }
+    /**
+     * sy-modal — centered modal dialog with optional maximize/drag.
+     * Spec: design-system-specs/components/modal.yaml
+     * Variants:
+     *   - `dialog` — simple centered confirmation/form modal.
+     *   - `modal`  — draggable + optionally resizable window with maximize support
+     *               via `enableModalMaximize`.
+     * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+     *   - open, closable, variant
+     *   - cancelText ↔ `cancel-text`, okText ↔ `ok-text`
+     *   - enableModalMaximize ↔ `enable-modal-maximize`
+     *   - hideFooter ↔ `hide-footer`, maskClosable ↔ `mask-closable`
+     *   - width (px, 0 = auto), height (px, 0 = auto, `modal` variant)
+     *   - top, left (px, '-1' or unset = auto-center)
+     * Slots: header, body, footer — each replaces the default when supplied.
+     * Methods: setOpen(), setClose(value?), setCancel(value?), setOk(value?),
+     * setMaximum() (variant=modal only).
+     * Event: closed — { event: 'ok'|'cancel'|'close', value, maximized, position }.
+     */
     interface SyModal {
         /**
           * @default ''
@@ -1424,6 +1478,11 @@ export namespace Components {
          */
         "enableModalMaximize": boolean;
         /**
+          * Custom height in pixels (`modal` variant only). 0 = auto.
+          * @default 0
+         */
+        "height": number;
+        /**
           * @default false
          */
         "hideFooter": boolean;
@@ -1435,6 +1494,10 @@ export namespace Components {
           * @default false
          */
         "maskClosable": boolean;
+        /**
+          * @default false
+         */
+        "maskless": boolean;
         /**
           * @default ''
          */
@@ -1461,6 +1524,25 @@ export namespace Components {
          */
         "width": number;
     }
+    /**
+     * sy-modeless — non-modal floating window (draggable/resizable/minimize/maximize).
+     * Spec: design-system-specs/components/modeless.yaml
+     * Unlike sy-modal, a modeless window does NOT block the underlying page: users
+     * can interact with content outside it. Typically used for tool palettes,
+     * inspectors, and persistent helpers. Multiple modeless instances can be
+     * managed by a parent `sy-modeless-group` for z-index / focus coordination.
+     * Props (spec-aligned + legacy aliases):
+     *   - open, closable, minimizable, maximizable, resizable, edge
+     *   - draggable
+     *   - minimum, maximum (current state flags; set via setMinimum/setMaximum)
+     *   - width, height (initial size); top, left (initial position)
+     *   - minWidth ↔ `min-width`, minHeight ↔ `min-height`
+     * Methods: setOpen(), setClose(), setMaximum(), setMinimum(), setRestore().
+     * Events:
+     *   - closed          { id }
+     *   - statusChanged   { id, status: 'maximum' | 'minimum' | 'restore' }
+     *   - positionChanged { id, position: {top,left,width,height} }
+     */
     interface SyModeless {
         /**
           * @default false
@@ -1475,9 +1557,10 @@ export namespace Components {
          */
         "height": number;
         /**
+          * When true, the header is shown and the user can drag the modeless by it. The public attribute is `draggable`, but the JS-side prop is named `isDraggable` to avoid shadowing `HTMLElement.prototype.draggable` (which would trigger the Stencil "reserved public name" warning and risk cross-browser surprises). A `dragstart` handler on the host suppresses the native HTML5 drag that the `draggable` attribute would otherwise enable, so only the custom mousedown-driven drag runs.
           * @default false
          */
-        "isdraggable": boolean;
+        "isDraggable": boolean;
         /**
           * @default undefined
          */
@@ -1528,6 +1611,16 @@ export namespace Components {
          */
         "width": number;
     }
+    /**
+     * sy-modeless-group — imperative manager for multiple sy-modeless windows.
+     * Spec: design-system-specs/components/modeless.yaml
+     * API is method-driven (no slotted markup): the app calls `create(id, title,
+     * content, option)` and receives a new sy-modeless appended to this host.
+     * `closeAll()` tears them all down — used in storybook page transitions so
+     * old windows don't linger across navigations.
+     * Children are tracked in `modelessList` so the group can coordinate z-index
+     * / focus among them.
+     */
     interface SyModelessGroup {
         "close": (id: string) => Promise<void>;
         "closeAll": () => Promise<void>;
@@ -1537,9 +1630,10 @@ export namespace Components {
         "updateTitle": (id: string, title: string | HTMLElement | VNode) => Promise<void>;
     }
     /**
-     * sy-nav (Stencil port, light DOM, scoped)
-     * - Renders slotted navigation items
-     * - Manages active states and disabled propagation
+     * sy-nav — vertical navigation list. Hosts sy-nav-item / sy-nav-sub / sy-nav-group children.
+     * Spec: design-system-specs/components/nav.yaml
+     * Props: `disabled` (propagates to all children via invokeChildMethod).
+     * Events: bubbles `selected` from children and updates the current active item.
      */
     interface SyNav {
         /**
@@ -1608,7 +1702,6 @@ export namespace Components {
          */
         "open": boolean;
         "parentDisabled": (disabled: boolean) => Promise<void>;
-        "setActive": (active: boolean) => Promise<void>;
         "setClose": () => Promise<void>;
         "setOpen": () => Promise<void>;
         "setTrigger": () => Promise<void>;
@@ -1663,6 +1756,18 @@ export namespace Components {
          */
         "value": string;
     }
+    /**
+     * sy-pagination — page navigation with size selector and jumper.
+     * Spec: design-system-specs/components/pagination.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - activePage   ↔ `active-page`
+     *   - pageSize     ↔ `page-size`
+     *   - pageSizeOptions (comma-separated string, e.g. "10,20,50") ↔ `page-size-options`
+     *   - totalItems   ↔ `total-items`
+     *   - hideonSingle ↔ `hideon-single`
+     *   - disabled, jumper, total
+     * Events: pageChanged (number), pageSizeChanged (number).
+     */
     interface SyPagination {
         /**
           * @default 1
@@ -1694,6 +1799,19 @@ export namespace Components {
          */
         "totalItems": number;
     }
+    /**
+     * sy-popconfirm — confirm/cancel popover anchored to a parent trigger.
+     * Spec: design-system-specs/components/popconfirm.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - position (12 directions), trigger (click | none)
+     *   - arrow, closable, sticky
+     *   - opendelay, closedelay
+     *   - confirmText ↔ `confirm-text`, cancelText ↔ `cancel-text`
+     * Events:
+     *   - visibleChanged (boolean — popup open state)
+     *   - selected ('ok' | 'cancel' — which button was pressed)
+     * Methods: setOpen(), setClose().
+     */
     interface SyPopconfirm {
         /**
           * @default false
@@ -1735,8 +1853,15 @@ export namespace Components {
         "trigger": 'click' | 'none';
     }
     /**
-     * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
-     * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+     * sy-popover — overlay anchored to a parent trigger element.
+     * Spec: design-system-specs/components/popover.yaml
+     * Props:
+     *   - position (12 directions: top/bottom/left/right + corner variants)
+     *   - trigger (hover | click | focus | null)
+     *   - open, opendelay (ms), closedelay (ms)
+     *   - arrow (show pointer), sticky (disable auto-close)
+     * The popover is portaled to document.body so it escapes parent overflow/
+     * stacking contexts. Global scroll/resize listeners keep it positioned.
      */
     interface SyPopover {
         /**
@@ -1776,6 +1901,17 @@ export namespace Components {
          */
         "trigger": 'hover' | 'click' | 'focus' | 'null';
     }
+    /**
+     * sy-progress-bar — linear progress indicator with optional segmentation.
+     * Spec: design-system-specs/components/progress-bar.yaml
+     * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+     *   - percent, status, indeterminate
+     *   - valuePosition (camelCase prop) ↔ `value-position` (legacy attribute)
+     *   - hidePercent                    ↔ `hide-percent`
+     *   - tooltipTitle                   ↔ `tooltip-title`
+     *   - segment — JSON array string of { percent, status } entries
+     * role="progressbar" + aria-valuenow are applied for screen reader support.
+     */
     interface SyProgressBar {
         /**
           * @default false
@@ -1810,6 +1946,15 @@ export namespace Components {
          */
         "valuePosition": 'progress-left' | 'progress-center' | 'progress-right' | 'center' | 'left' | 'right';
     }
+    /**
+     * sy-progress-circular — circular progress indicator with optional segments.
+     * Spec: design-system-specs/components/progress-circular.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - percent, status, size, indeterminate
+     *   - hideText     ↔ `hide-text`
+     *   - tooltipTitle ↔ `tooltip-title`
+     *   - segment — JSON string with ascending cumulative percent stops.
+     */
     interface SyProgressCircular {
         /**
           * @default false
@@ -1858,6 +2003,13 @@ export namespace Components {
          */
         "value": string;
     }
+    /**
+     * sy-radio-button — segmented-button style radio item used inside sy-radio-group.
+     * Spec: design-system-specs/components/radio-button.yaml
+     * Props: value (required), checked, disabled, size, variant (outlined | solid).
+     * Size and variant are pushed down from the sy-radio-group parent.
+     * Clicking emits `selected` with the value; the group aggregates.
+     */
     interface SyRadioButton {
         /**
           * @default false
@@ -1877,6 +2029,19 @@ export namespace Components {
          */
         "variant": 'outlined' | 'solid';
     }
+    /**
+     * sy-radio-group — form-associated wrapper for sy-radio / sy-radio-button children.
+     * Spec: design-system-specs/components/radio.yaml
+     * Validation follows the same pattern as sy-input:
+     *   - `noNativeValidity=false` (default) → browser native popup on submit.
+     *     We do NOT preventDefault() the invalid event.
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     is the error UI.
+     *   - `setCustomError()` → programmatic; forces the slot UI visible.
+     * Props (spec-aligned + legacy aliases):
+     *   - defaultValue ↔ `default-value`, noNativeValidity ↔ `no-native-validity`
+     *   - disabled, readonly, required, size, position, variant, name
+     */
     interface SyRadioGroup {
         "checkValidity": () => Promise<boolean>;
         "clearCustomError": () => Promise<void>;
@@ -1942,6 +2107,18 @@ export namespace Components {
         "rangeend"?: { year: number, month: number, day: number };
         "rangestart"?: { year: number, month: number, day: number };
     }
+    /**
+     * sy-select — dropdown select with single/multi selection and form-association.
+     * Spec: design-system-specs/components/select.yaml
+     * Validation follows the same pattern as sy-input / sy-textarea:
+     *   - `noNativeValidity=false` (default) → browser native popup on submit.
+     *     DO NOT preventDefault() the invalid event (HTML spec: a single
+     *     preventDefaulted invalid suppresses popups on the entire form).
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces slot UI visible
+     *     (touched + hasSlotErrorMessage set).
+     */
     interface SySelect {
         "checkValidity": () => Promise<boolean>;
         "clearCustomError": () => Promise<void>;
@@ -2019,6 +2196,14 @@ export namespace Components {
          */
         "size": 'small' | 'medium' | 'large';
     }
+    /**
+     * sy-skeleton — content placeholder with shimmer animation.
+     * Spec: design-system-specs/components/skeleton.yaml
+     * Props: type, rows, width, disabled.
+     * Spec's canonical name is `gallery` but the code-canonical value is the
+     * legacy `gallary` (typo preserved to avoid breaking existing consumers).
+     * Both spellings are accepted at runtime.
+     */
     interface SySkeleton {
         /**
           * @default false
@@ -2033,12 +2218,22 @@ export namespace Components {
         /**
           * @default 'text'
          */
-        "type": 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
+        "type": 'text' | 'avatar' | 'image' | 'gallary' | 'gallery' | 'button' | 'table' | 'tree';
         /**
           * @default '100%'
          */
         "width": string;
     }
+    /**
+     * sy-slider — numeric slider with single/range/marks support.
+     * Spec: design-system-specs/components/slider.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - min, max, step, value
+     *   - range (toggles to dual-thumb) + rangeValue (initial [min,max] pair)
+     *   - marks map, hideMarks, snapToMarks
+     *   - showTooltip (default | always | never), tooltipPlacement
+     *   - hideTrackFill, reverse, vertical, label, disabled, readonly
+     */
     interface SySlider {
         /**
           * @default false
@@ -2109,6 +2304,19 @@ export namespace Components {
          */
         "vertical": boolean;
     }
+    /**
+     * sy-spinner — loading indicator.
+     * Spec: design-system-specs/components/spinner.yaml
+     * Props (spec-aligned):
+     *   - size          (small | medium | large | xlarge)
+     *   - inline        (horizontal vs stacked layout)
+     *   - description   (caption text next to / below the spinner)
+     *   - delay         (ms before appearing — suppresses flash on fast loads)
+     *   - hidden        (hides the spinner entirely; reflects to attribute)
+     * The host is `display: contents` so the spinner sits inside its parent
+     * without affecting layout. The parent is given `position: relative` on
+     * connect so the absolute-positioned overlay fills the parent.
+     */
     interface SySpinner {
         /**
           * @default 0
@@ -2131,6 +2339,16 @@ export namespace Components {
          */
         "size": 'small' | 'medium' | 'large' | 'xlarge';
     }
+    /**
+     * sy-split-panel — two-pane container with a drag handle to resize the split.
+     * Spec: design-system-specs/components/split-panel.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - ratio (left/top pane share, 0-100)
+     *   - minRatio ↔ `min-ratio` (floor for both panes)
+     *   - type (horizontal | vertical)
+     *   - disabled, hideDivider ↔ `hide-divider`
+     * Events: horizontalChanged / verticalChanged (emitted while the divider moves).
+     */
     interface SySplitPanel {
         /**
           * @default false
@@ -2207,6 +2425,15 @@ export namespace Components {
          */
         "type": "horizontal" | "vertical";
     }
+    /**
+     * sy-steps — step progress indicator containing multiple sy-step items.
+     * Spec: design-system-specs/components/steps.yaml
+     * Props: current, clickable, complete, type (horizontal | vertical),
+     * size (small | medium), startIndex.
+     * The parent propagates size/type/clickable to each sy-step child via
+     * attribute push, and each child reports clicks through a `selected` event
+     * that bubbles up to update `current` here.
+     */
     interface SySteps {
         /**
           * @default false
@@ -2233,15 +2460,36 @@ export namespace Components {
          */
         "type": "horizontal" | "vertical";
     }
+    /**
+     * sy-switch — binary on/off toggle with form-association.
+     * Spec: design-system-specs/components/switch.yaml
+     * Form-associated: participates in <form> via ElementInternals. Submits the
+     * `value` (default `"on"`) under `name` only when checked, matching native
+     * checkbox convention. When `required` is set the switch must be checked or
+     * the form is invalid.
+     * Error UI: there is no native popup for sy-switch — every invalid state
+     * (required-failed, setCustomError) renders the same slot/text below the
+     * switch. Authors can supply `[slot="error"]` for custom copy; otherwise a
+     * default message is rendered.
+     * Props: checked, disabled, readonly, loading, size (small | medium), label,
+     * name, value, required.
+     * Events: `changed` — emitted with the new checked boolean.
+     */
     interface SySwitch {
+        "checkValidity": () => Promise<boolean>;
         /**
           * @default false
          */
         "checked": boolean;
+        "clearCustomError": () => Promise<void>;
         /**
           * @default false
          */
         "disabled": boolean;
+        "getValidStatus": () => Promise<string>;
+        /**
+          * @default ''
+         */
         "label": string;
         /**
           * @default false
@@ -2255,10 +2503,21 @@ export namespace Components {
           * @default false
          */
         "readonly": boolean;
+        "reportValidity": () => Promise<boolean>;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        "setCustomError": () => Promise<void>;
         /**
           * @default 'medium'
          */
         "size": 'small' | 'medium';
+        /**
+          * Value submitted as the form value when checked. Defaults to `"on"` (native convention).
+          * @default 'on'
+         */
+        "value": string;
     }
     interface SyTab {
         /**
@@ -2351,9 +2610,10 @@ export namespace Components {
          */
         "getActiveTab": () => Promise<number | undefined>;
         /**
+          * When true, tabs can be reordered by drag-and-drop. The public attribute is `draggable`, but the JS-side prop is named `isDraggable` to avoid shadowing `HTMLElement.prototype.draggable` (which would trigger the Stencil "reserved public name" warning and risk cross-browser surprises).
           * @default false
          */
-        "isdraggable": boolean;
+        "isDraggable": boolean;
         /**
           * @default "none"
          */
@@ -2375,6 +2635,14 @@ export namespace Components {
          */
         "type": "card" | "line";
     }
+    /**
+     * sy-tag — compact label with optional selectable / removable behavior.
+     * Spec: design-system-specs/components/tag.yaml
+     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+     * Events: selected (toggle), removed (X click).
+     * When `selectable` is enabled, the visual variant is forced to `purple` to
+     * distinguish interactive tags from static ones.
+     */
     interface SyTag {
         /**
           * @default false
@@ -2405,6 +2673,22 @@ export namespace Components {
          */
         "variant": 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
+    /**
+     * sy-textarea — multi-line text input with form-association and slot-based custom error.
+     * Spec: design-system-specs/components/textarea.yaml
+     * Validation model (same pattern as sy-input / sy-input-number):
+     *   - `noNativeValidity=false` (default) → browser shows native constraint
+     *     popup on submit. DO NOT call preventDefault() on the invalid event —
+     *     per HTML spec a single preventDefaulted invalid event suppresses
+     *     popups on the entire form.
+     *   - `noNativeValidity=true` → native popup suppressed; `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces the slot UI visible
+     *     (touched=true, hasSlotErrorMessage=true).
+     * Props: value, min (minlength), max (maxlength), rows, counter, borderless,
+     * clearable, resize, size, status, required, readonly, disabled, name,
+     * noNativeValidity, placeholder, label.
+     */
     interface SyTextarea {
         /**
           * @default false
@@ -2512,6 +2796,16 @@ export namespace Components {
          */
         "timeSeparator": string;
     }
+    /**
+     * sy-toast — toast manager. Programmatic factory for sy-toast-item popups.
+     * Spec: design-system-specs/components/toast.yaml
+     * Usage: call `createToast(variant, options)` or the variant-specific helpers
+     * (`createSuccessToast`, etc.). Each call spawns a new `sy-toast-item`
+     * appended to document.body; stacking is governed by `latestTop`.
+     * Props:
+     *   - duration   (ms, default auto-dismiss window for spawned toasts)
+     *   - latestTop  (new toasts appear above older ones) — legacy `latest-top`
+     */
     interface SyToast {
         "closeToast": (toastItemElement: HTMLSyToastItemElement) => Promise<void>;
         "createErrorToast": (option?: ToastOptions) => Promise<void>;
@@ -2554,6 +2848,17 @@ export namespace Components {
          */
         "variant": 'neutral' | 'success' | 'error' | 'info' | 'warning';
     }
+    /**
+     * sy-tooltip — contextual tooltip anchored to a trigger element.
+     * Spec: design-system-specs/components/tooltip.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - content, position (12 directions), trigger (hover|click|focus|none)
+     *   - open, opendelay, closedelay
+     *   - hideArrow    ↔ `hide-arrow`
+     *   - maxWidth     ↔ `max-width`
+     * The tooltip is portaled to document.body so it escapes parent
+     * `overflow: hidden` / stacking contexts.
+     */
     interface SyTooltip {
         "close": () => Promise<void>;
         /**
@@ -2597,6 +2902,23 @@ export namespace Components {
          */
         "trigger": 'hover' | 'click' | 'focus' | 'none';
     }
+    /**
+     * sy-tree — hierarchical tree view with optional check/click/drag/edit support.
+     * Spec: design-system-specs/components/tree.yaml
+     * Data model: pass a `nodes` array of TreeNode objects. Each node can declare
+     * local overrides (disabled, fixed, editable…) that take precedence over the
+     * tree-level defaults.
+     * Props (spec-aligned + legacy attribute aliases via fnAssignPropFromAlias):
+     *   - nodes, line, expandable, checkable, clickable, editable
+     *   - expandAll    ↔ `expand-all`
+     *   - manualAdd    ↔ `manual-add`, manualRemove ↔ `manual-remove`
+     *   - nodeWidth    ↔ `node-width`
+     *   - selectedValue ↔ `selected-value`, searchTerm ↔ `search-term`
+     *   - isTreeSelect (internal integration flag used by sy-tree-select)
+     *   - treeDraggable (attribute `draggable`; TS can't use `draggable` as prop name)
+     * Events: nodesChanged, itemChecked, itemSelected.
+     * Methods include programmatic add/remove/update plus clearAllSelectedItem().
+     */
     interface SyTree {
         /**
           * @default false
@@ -2660,6 +2982,19 @@ export namespace Components {
          */
         "treeDraggable": boolean;
     }
+    /**
+     * sy-tree-item — leaf renderer used internally by sy-tree.
+     * Spec: design-system-specs/components/tree.yaml (tree-item anatomy).
+     * Not meant to be authored directly — sy-tree materializes items from its
+     * `nodes` data. Extensive props exist so the parent can push per-node state
+     * (expanded, checked, editing, dragging, tag labels, etc.) down.
+     * Legacy attribute aliases resolved via fnAssignPropFromAlias:
+     *   has-child, append-placeholder, is-descendant, is-editable, tag-message,
+     *   tag-variant, search-term, selected-value, node-width.
+     * `treeitemDraggable` maps to the `draggable` attribute (TS reserved name).
+     * Note: the attribute `isDesendant` (typo) is preserved for legacy markup
+     * compatibility but the canonical property is `isDescendant`.
+     */
     interface SyTreeItem {
         /**
           * @default 'New item'
@@ -2775,6 +3110,20 @@ export namespace Components {
          */
         "value": string;
     }
+    /**
+     * sy-tree-select — dropdown selector backed by a tree (single or multi-select).
+     * Spec: design-system-specs/components/tree-select.yaml
+     * Form-associated: submits `name` → selected value(s) via ElementInternals.
+     * Validation follows the same pattern as sy-input / sy-select:
+     *   - `noNativeValidity=false` (default) → native browser popup on submit.
+     *     DO NOT preventDefault the invalid event.
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces slot UI visible.
+     * Props: nodes (TreeNode[]), checkable, clearable, defaultValue, disabled,
+     * status, expandable, expandAll, line, loading, maxTagCount, nodeWidth,
+     * placeholder, appendParent, readonly, required, name, noNativeValidity.
+     */
     interface SyTreeSelect {
         /**
           * @default false
@@ -2785,6 +3134,7 @@ export namespace Components {
           * @default false
          */
         "checkable": boolean;
+        "clearCustomError": () => Promise<void>;
         /**
           * @default false
          */
@@ -2805,6 +3155,7 @@ export namespace Components {
           * @default false
          */
         "expandable": boolean;
+        "getStatus": () => Promise<"" | "valueMissing" | "custom">;
         /**
           * @default false
          */
@@ -2846,6 +3197,7 @@ export namespace Components {
           * @default false
          */
         "required": boolean;
+        "setCustomError": () => Promise<void>;
         "setCustomValidity": (message: string) => Promise<void>;
         /**
           * @default 'default'
@@ -2940,6 +3292,10 @@ export interface SyMenuCustomEvent<T> extends CustomEvent<T> {
 export interface SyMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSyMenuItemElement;
+}
+export interface SyModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSyModalElement;
 }
 export interface SyModelessCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3738,6 +4094,16 @@ declare global {
         "itemSelected": any;
         "itemChecked": any;
     }
+    /**
+     * sy-menu — portaled dropdown menu triggered by a parent element.
+     * Spec: design-system-specs/components/menu.yaml
+     * Children: sy-menu-item (leaf), sy-menu-sub (nested submenu), sy-menu-group
+     * (labeled section). The menu is portaled to escape clipping and re-positioned
+     * on window scroll/resize.
+     * Props: open, disabled, checkable, loading, position (4 corners),
+     * trigger (click | hover | contextmenu), direction (left | right for submenus).
+     * Events: opened (boolean), itemSelected, itemChecked.
+     */
     interface HTMLSyMenuElement extends Components.SyMenu, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyMenuElementEventMap>(type: K, listener: (this: HTMLSyMenuElement, ev: SyMenuCustomEvent<HTMLSyMenuElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3762,6 +4128,18 @@ declare global {
         "itemSelected": { value: string; label: string };
         "itemChecked": { value: string; label: string; checked: boolean };
     }
+    /**
+     * sy-menu-item — a single item inside sy-menu.
+     * Spec: design-system-specs/components/menu.yaml (menu-item anatomy).
+     * Props:
+     *   - value     (payload emitted with itemSelected / itemChecked)
+     *   - disabled
+     *   - selectable (item becomes highlightable/checkable individually)
+     *   - checkable  (force checkbox UI; implies selectable)
+     *   - select    (controlled: visually mark as currently selected)
+     * Events: itemSelected {value,label}, itemChecked {value,label,checked}.
+     * Both bubble to the containing sy-menu which re-emits them as menu events.
+     */
     interface HTMLSyMenuItemElement extends Components.SyMenuItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyMenuItemElementEventMap>(type: K, listener: (this: HTMLSyMenuItemElement, ev: SyMenuItemCustomEvent<HTMLSyMenuItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3782,7 +4160,42 @@ declare global {
         prototype: HTMLSyMenuSubElement;
         new (): HTMLSyMenuSubElement;
     };
+    interface HTMLSyModalElementEventMap {
+        "closed": {
+    event: 'ok' | 'cancel' | 'close';
+    value: any;
+    maximized: boolean;
+    position: { top: string; left: string };
+  };
+    }
+    /**
+     * sy-modal — centered modal dialog with optional maximize/drag.
+     * Spec: design-system-specs/components/modal.yaml
+     * Variants:
+     *   - `dialog` — simple centered confirmation/form modal.
+     *   - `modal`  — draggable + optionally resizable window with maximize support
+     *               via `enableModalMaximize`.
+     * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+     *   - open, closable, variant
+     *   - cancelText ↔ `cancel-text`, okText ↔ `ok-text`
+     *   - enableModalMaximize ↔ `enable-modal-maximize`
+     *   - hideFooter ↔ `hide-footer`, maskClosable ↔ `mask-closable`
+     *   - width (px, 0 = auto), height (px, 0 = auto, `modal` variant)
+     *   - top, left (px, '-1' or unset = auto-center)
+     * Slots: header, body, footer — each replaces the default when supplied.
+     * Methods: setOpen(), setClose(value?), setCancel(value?), setOk(value?),
+     * setMaximum() (variant=modal only).
+     * Event: closed — { event: 'ok'|'cancel'|'close', value, maximized, position }.
+     */
     interface HTMLSyModalElement extends Components.SyModal, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSyModalElementEventMap>(type: K, listener: (this: HTMLSyModalElement, ev: SyModalCustomEvent<HTMLSyModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSyModalElementEventMap>(type: K, listener: (this: HTMLSyModalElement, ev: SyModalCustomEvent<HTMLSyModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLSyModalElement: {
         prototype: HTMLSyModalElement;
@@ -3793,6 +4206,25 @@ declare global {
         "statusChanged": { id: string; status: string };
         "positionChanged": ModelessPositionChangedDetail;
     }
+    /**
+     * sy-modeless — non-modal floating window (draggable/resizable/minimize/maximize).
+     * Spec: design-system-specs/components/modeless.yaml
+     * Unlike sy-modal, a modeless window does NOT block the underlying page: users
+     * can interact with content outside it. Typically used for tool palettes,
+     * inspectors, and persistent helpers. Multiple modeless instances can be
+     * managed by a parent `sy-modeless-group` for z-index / focus coordination.
+     * Props (spec-aligned + legacy aliases):
+     *   - open, closable, minimizable, maximizable, resizable, edge
+     *   - draggable
+     *   - minimum, maximum (current state flags; set via setMinimum/setMaximum)
+     *   - width, height (initial size); top, left (initial position)
+     *   - minWidth ↔ `min-width`, minHeight ↔ `min-height`
+     * Methods: setOpen(), setClose(), setMaximum(), setMinimum(), setRestore().
+     * Events:
+     *   - closed          { id }
+     *   - statusChanged   { id, status: 'maximum' | 'minimum' | 'restore' }
+     *   - positionChanged { id, position: {top,left,width,height} }
+     */
     interface HTMLSyModelessElement extends Components.SyModeless, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyModelessElementEventMap>(type: K, listener: (this: HTMLSyModelessElement, ev: SyModelessCustomEvent<HTMLSyModelessElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3807,6 +4239,16 @@ declare global {
         prototype: HTMLSyModelessElement;
         new (): HTMLSyModelessElement;
     };
+    /**
+     * sy-modeless-group — imperative manager for multiple sy-modeless windows.
+     * Spec: design-system-specs/components/modeless.yaml
+     * API is method-driven (no slotted markup): the app calls `create(id, title,
+     * content, option)` and receives a new sy-modeless appended to this host.
+     * `closeAll()` tears them all down — used in storybook page transitions so
+     * old windows don't linger across navigations.
+     * Children are tracked in `modelessList` so the group can coordinate z-index
+     * / focus among them.
+     */
     interface HTMLSyModelessGroupElement extends Components.SyModelessGroup, HTMLStencilElement {
     }
     var HTMLSyModelessGroupElement: {
@@ -3814,9 +4256,10 @@ declare global {
         new (): HTMLSyModelessGroupElement;
     };
     /**
-     * sy-nav (Stencil port, light DOM, scoped)
-     * - Renders slotted navigation items
-     * - Manages active states and disabled propagation
+     * sy-nav — vertical navigation list. Hosts sy-nav-item / sy-nav-sub / sy-nav-group children.
+     * Spec: design-system-specs/components/nav.yaml
+     * Props: `disabled` (propagates to all children via invokeChildMethod).
+     * Events: bubbles `selected` from children and updates the current active item.
      */
     interface HTMLSyNavElement extends Components.SyNav, HTMLStencilElement {
     }
@@ -3878,6 +4321,18 @@ declare global {
         "pageChanged": number;
         "pageSizeChanged": number;
     }
+    /**
+     * sy-pagination — page navigation with size selector and jumper.
+     * Spec: design-system-specs/components/pagination.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - activePage   ↔ `active-page`
+     *   - pageSize     ↔ `page-size`
+     *   - pageSizeOptions (comma-separated string, e.g. "10,20,50") ↔ `page-size-options`
+     *   - totalItems   ↔ `total-items`
+     *   - hideonSingle ↔ `hideon-single`
+     *   - disabled, jumper, total
+     * Events: pageChanged (number), pageSizeChanged (number).
+     */
     interface HTMLSyPaginationElement extends Components.SyPagination, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyPaginationElementEventMap>(type: K, listener: (this: HTMLSyPaginationElement, ev: SyPaginationCustomEvent<HTMLSyPaginationElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3896,6 +4351,19 @@ declare global {
         "visibleChanged": boolean;
         "selected": 'ok' | 'cancel';
     }
+    /**
+     * sy-popconfirm — confirm/cancel popover anchored to a parent trigger.
+     * Spec: design-system-specs/components/popconfirm.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - position (12 directions), trigger (click | none)
+     *   - arrow, closable, sticky
+     *   - opendelay, closedelay
+     *   - confirmText ↔ `confirm-text`, cancelText ↔ `cancel-text`
+     * Events:
+     *   - visibleChanged (boolean — popup open state)
+     *   - selected ('ok' | 'cancel' — which button was pressed)
+     * Methods: setOpen(), setClose().
+     */
     interface HTMLSyPopconfirmElement extends Components.SyPopconfirm, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyPopconfirmElementEventMap>(type: K, listener: (this: HTMLSyPopconfirmElement, ev: SyPopconfirmCustomEvent<HTMLSyPopconfirmElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3911,8 +4379,15 @@ declare global {
         new (): HTMLSyPopconfirmElement;
     };
     /**
-     * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
-     * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+     * sy-popover — overlay anchored to a parent trigger element.
+     * Spec: design-system-specs/components/popover.yaml
+     * Props:
+     *   - position (12 directions: top/bottom/left/right + corner variants)
+     *   - trigger (hover | click | focus | null)
+     *   - open, opendelay (ms), closedelay (ms)
+     *   - arrow (show pointer), sticky (disable auto-close)
+     * The popover is portaled to document.body so it escapes parent overflow/
+     * stacking contexts. Global scroll/resize listeners keep it positioned.
      */
     interface HTMLSyPopoverElement extends Components.SyPopover, HTMLStencilElement {
     }
@@ -3920,12 +4395,32 @@ declare global {
         prototype: HTMLSyPopoverElement;
         new (): HTMLSyPopoverElement;
     };
+    /**
+     * sy-progress-bar — linear progress indicator with optional segmentation.
+     * Spec: design-system-specs/components/progress-bar.yaml
+     * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+     *   - percent, status, indeterminate
+     *   - valuePosition (camelCase prop) ↔ `value-position` (legacy attribute)
+     *   - hidePercent                    ↔ `hide-percent`
+     *   - tooltipTitle                   ↔ `tooltip-title`
+     *   - segment — JSON array string of { percent, status } entries
+     * role="progressbar" + aria-valuenow are applied for screen reader support.
+     */
     interface HTMLSyProgressBarElement extends Components.SyProgressBar, HTMLStencilElement {
     }
     var HTMLSyProgressBarElement: {
         prototype: HTMLSyProgressBarElement;
         new (): HTMLSyProgressBarElement;
     };
+    /**
+     * sy-progress-circular — circular progress indicator with optional segments.
+     * Spec: design-system-specs/components/progress-circular.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - percent, status, size, indeterminate
+     *   - hideText     ↔ `hide-text`
+     *   - tooltipTitle ↔ `tooltip-title`
+     *   - segment — JSON string with ascending cumulative percent stops.
+     */
     interface HTMLSyProgressCircularElement extends Components.SyProgressCircular, HTMLStencilElement {
     }
     var HTMLSyProgressCircularElement: {
@@ -3952,6 +4447,13 @@ declare global {
     interface HTMLSyRadioButtonElementEventMap {
         "selected": string;
     }
+    /**
+     * sy-radio-button — segmented-button style radio item used inside sy-radio-group.
+     * Spec: design-system-specs/components/radio-button.yaml
+     * Props: value (required), checked, disabled, size, variant (outlined | solid).
+     * Size and variant are pushed down from the sy-radio-group parent.
+     * Clicking emits `selected` with the value; the group aggregates.
+     */
     interface HTMLSyRadioButtonElement extends Components.SyRadioButton, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyRadioButtonElementEventMap>(type: K, listener: (this: HTMLSyRadioButtonElement, ev: SyRadioButtonCustomEvent<HTMLSyRadioButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3969,6 +4471,19 @@ declare global {
     interface HTMLSyRadioGroupElementEventMap {
         "changed": { value: string; isValid: boolean; status: string };
     }
+    /**
+     * sy-radio-group — form-associated wrapper for sy-radio / sy-radio-button children.
+     * Spec: design-system-specs/components/radio.yaml
+     * Validation follows the same pattern as sy-input:
+     *   - `noNativeValidity=false` (default) → browser native popup on submit.
+     *     We do NOT preventDefault() the invalid event.
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     is the error UI.
+     *   - `setCustomError()` → programmatic; forces the slot UI visible.
+     * Props (spec-aligned + legacy aliases):
+     *   - defaultValue ↔ `default-value`, noNativeValidity ↔ `no-native-validity`
+     *   - disabled, readonly, required, size, position, variant, name
+     */
     interface HTMLSyRadioGroupElement extends Components.SyRadioGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyRadioGroupElementEventMap>(type: K, listener: (this: HTMLSyRadioGroupElement, ev: SyRadioGroupCustomEvent<HTMLSyRadioGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4009,6 +4524,18 @@ declare global {
         "inputChanged": string;
         "cleared": void;
     }
+    /**
+     * sy-select — dropdown select with single/multi selection and form-association.
+     * Spec: design-system-specs/components/select.yaml
+     * Validation follows the same pattern as sy-input / sy-textarea:
+     *   - `noNativeValidity=false` (default) → browser native popup on submit.
+     *     DO NOT preventDefault() the invalid event (HTML spec: a single
+     *     preventDefaulted invalid suppresses popups on the entire form).
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces slot UI visible
+     *     (touched + hasSlotErrorMessage set).
+     */
     interface HTMLSySelectElement extends Components.SySelect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSySelectElementEventMap>(type: K, listener: (this: HTMLSySelectElement, ev: SySelectCustomEvent<HTMLSySelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4023,18 +4550,49 @@ declare global {
         prototype: HTMLSySelectElement;
         new (): HTMLSySelectElement;
     };
+    /**
+     * sy-skeleton — content placeholder with shimmer animation.
+     * Spec: design-system-specs/components/skeleton.yaml
+     * Props: type, rows, width, disabled.
+     * Spec's canonical name is `gallery` but the code-canonical value is the
+     * legacy `gallary` (typo preserved to avoid breaking existing consumers).
+     * Both spellings are accepted at runtime.
+     */
     interface HTMLSySkeletonElement extends Components.SySkeleton, HTMLStencilElement {
     }
     var HTMLSySkeletonElement: {
         prototype: HTMLSySkeletonElement;
         new (): HTMLSySkeletonElement;
     };
+    /**
+     * sy-slider — numeric slider with single/range/marks support.
+     * Spec: design-system-specs/components/slider.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - min, max, step, value
+     *   - range (toggles to dual-thumb) + rangeValue (initial [min,max] pair)
+     *   - marks map, hideMarks, snapToMarks
+     *   - showTooltip (default | always | never), tooltipPlacement
+     *   - hideTrackFill, reverse, vertical, label, disabled, readonly
+     */
     interface HTMLSySliderElement extends Components.SySlider, HTMLStencilElement {
     }
     var HTMLSySliderElement: {
         prototype: HTMLSySliderElement;
         new (): HTMLSySliderElement;
     };
+    /**
+     * sy-spinner — loading indicator.
+     * Spec: design-system-specs/components/spinner.yaml
+     * Props (spec-aligned):
+     *   - size          (small | medium | large | xlarge)
+     *   - inline        (horizontal vs stacked layout)
+     *   - description   (caption text next to / below the spinner)
+     *   - delay         (ms before appearing — suppresses flash on fast loads)
+     *   - hidden        (hides the spinner entirely; reflects to attribute)
+     * The host is `display: contents` so the spinner sits inside its parent
+     * without affecting layout. The parent is given `position: relative` on
+     * connect so the absolute-positioned overlay fills the parent.
+     */
     interface HTMLSySpinnerElement extends Components.SySpinner, HTMLStencilElement {
     }
     var HTMLSySpinnerElement: {
@@ -4051,6 +4609,16 @@ declare global {
     bottomRatio: number;
   };
     }
+    /**
+     * sy-split-panel — two-pane container with a drag handle to resize the split.
+     * Spec: design-system-specs/components/split-panel.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - ratio (left/top pane share, 0-100)
+     *   - minRatio ↔ `min-ratio` (floor for both panes)
+     *   - type (horizontal | vertical)
+     *   - disabled, hideDivider ↔ `hide-divider`
+     * Events: horizontalChanged / verticalChanged (emitted while the divider moves).
+     */
     interface HTMLSySplitPanelElement extends Components.SySplitPanel, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSySplitPanelElementEventMap>(type: K, listener: (this: HTMLSySplitPanelElement, ev: SySplitPanelCustomEvent<HTMLSySplitPanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4071,6 +4639,15 @@ declare global {
         prototype: HTMLSyStepElement;
         new (): HTMLSyStepElement;
     };
+    /**
+     * sy-steps — step progress indicator containing multiple sy-step items.
+     * Spec: design-system-specs/components/steps.yaml
+     * Props: current, clickable, complete, type (horizontal | vertical),
+     * size (small | medium), startIndex.
+     * The parent propagates size/type/clickable to each sy-step child via
+     * attribute push, and each child reports clicks through a `selected` event
+     * that bubbles up to update `current` here.
+     */
     interface HTMLSyStepsElement extends Components.SySteps, HTMLStencilElement {
     }
     var HTMLSyStepsElement: {
@@ -4080,6 +4657,21 @@ declare global {
     interface HTMLSySwitchElementEventMap {
         "changed": boolean;
     }
+    /**
+     * sy-switch — binary on/off toggle with form-association.
+     * Spec: design-system-specs/components/switch.yaml
+     * Form-associated: participates in <form> via ElementInternals. Submits the
+     * `value` (default `"on"`) under `name` only when checked, matching native
+     * checkbox convention. When `required` is set the switch must be checked or
+     * the form is invalid.
+     * Error UI: there is no native popup for sy-switch — every invalid state
+     * (required-failed, setCustomError) renders the same slot/text below the
+     * switch. Authors can supply `[slot="error"]` for custom copy; otherwise a
+     * default message is rendered.
+     * Props: checked, disabled, readonly, loading, size (small | medium), label,
+     * name, value, required.
+     * Events: `changed` — emitted with the new checked boolean.
+     */
     interface HTMLSySwitchElement extends Components.SySwitch, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSySwitchElementEventMap>(type: K, listener: (this: HTMLSySwitchElement, ev: SySwitchCustomEvent<HTMLSySwitchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4159,6 +4751,14 @@ declare global {
         "selected": { tag: HTMLSyTagElement };
         "removed": { tag: HTMLSyTagElement };
     }
+    /**
+     * sy-tag — compact label with optional selectable / removable behavior.
+     * Spec: design-system-specs/components/tag.yaml
+     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+     * Events: selected (toggle), removed (X click).
+     * When `selectable` is enabled, the visual variant is forced to `purple` to
+     * distinguish interactive tags from static ones.
+     */
     interface HTMLSyTagElement extends Components.SyTag, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTagElementEventMap>(type: K, listener: (this: HTMLSyTagElement, ev: SyTagCustomEvent<HTMLSyTagElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4178,6 +4778,22 @@ declare global {
         "blured": { value: string; isValid: boolean; status: string };
         "focused": { value: string; isValid: boolean; status: string };
     }
+    /**
+     * sy-textarea — multi-line text input with form-association and slot-based custom error.
+     * Spec: design-system-specs/components/textarea.yaml
+     * Validation model (same pattern as sy-input / sy-input-number):
+     *   - `noNativeValidity=false` (default) → browser shows native constraint
+     *     popup on submit. DO NOT call preventDefault() on the invalid event —
+     *     per HTML spec a single preventDefaulted invalid event suppresses
+     *     popups on the entire form.
+     *   - `noNativeValidity=true` → native popup suppressed; `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces the slot UI visible
+     *     (touched=true, hasSlotErrorMessage=true).
+     * Props: value, min (minlength), max (maxlength), rows, counter, borderless,
+     * clearable, resize, size, status, required, readonly, disabled, name,
+     * noNativeValidity, placeholder, label.
+     */
     interface HTMLSyTextareaElement extends Components.SyTextarea, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTextareaElementEventMap>(type: K, listener: (this: HTMLSyTextareaElement, ev: SyTextareaCustomEvent<HTMLSyTextareaElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4210,6 +4826,16 @@ declare global {
         prototype: HTMLSyTimepickerElement;
         new (): HTMLSyTimepickerElement;
     };
+    /**
+     * sy-toast — toast manager. Programmatic factory for sy-toast-item popups.
+     * Spec: design-system-specs/components/toast.yaml
+     * Usage: call `createToast(variant, options)` or the variant-specific helpers
+     * (`createSuccessToast`, etc.). Each call spawns a new `sy-toast-item`
+     * appended to document.body; stacking is governed by `latestTop`.
+     * Props:
+     *   - duration   (ms, default auto-dismiss window for spawned toasts)
+     *   - latestTop  (new toasts appear above older ones) — legacy `latest-top`
+     */
     interface HTMLSyToastElement extends Components.SyToast, HTMLStencilElement {
     }
     var HTMLSyToastElement: {
@@ -4222,6 +4848,17 @@ declare global {
         prototype: HTMLSyToastItemElement;
         new (): HTMLSyToastItemElement;
     };
+    /**
+     * sy-tooltip — contextual tooltip anchored to a trigger element.
+     * Spec: design-system-specs/components/tooltip.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - content, position (12 directions), trigger (hover|click|focus|none)
+     *   - open, opendelay, closedelay
+     *   - hideArrow    ↔ `hide-arrow`
+     *   - maxWidth     ↔ `max-width`
+     * The tooltip is portaled to document.body so it escapes parent
+     * `overflow: hidden` / stacking contexts.
+     */
     interface HTMLSyTooltipElement extends Components.SyTooltip, HTMLStencilElement {
     }
     var HTMLSyTooltipElement: {
@@ -4233,6 +4870,23 @@ declare global {
         "itemChecked": { value: string; label: string; checked: boolean };
         "itemSelected": { value: string; label: string; checked: boolean };
     }
+    /**
+     * sy-tree — hierarchical tree view with optional check/click/drag/edit support.
+     * Spec: design-system-specs/components/tree.yaml
+     * Data model: pass a `nodes` array of TreeNode objects. Each node can declare
+     * local overrides (disabled, fixed, editable…) that take precedence over the
+     * tree-level defaults.
+     * Props (spec-aligned + legacy attribute aliases via fnAssignPropFromAlias):
+     *   - nodes, line, expandable, checkable, clickable, editable
+     *   - expandAll    ↔ `expand-all`
+     *   - manualAdd    ↔ `manual-add`, manualRemove ↔ `manual-remove`
+     *   - nodeWidth    ↔ `node-width`
+     *   - selectedValue ↔ `selected-value`, searchTerm ↔ `search-term`
+     *   - isTreeSelect (internal integration flag used by sy-tree-select)
+     *   - treeDraggable (attribute `draggable`; TS can't use `draggable` as prop name)
+     * Events: nodesChanged, itemChecked, itemSelected.
+     * Methods include programmatic add/remove/update plus clearAllSelectedItem().
+     */
     interface HTMLSyTreeElement extends Components.SyTree, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTreeElementEventMap>(type: K, listener: (this: HTMLSyTreeElement, ev: SyTreeCustomEvent<HTMLSyTreeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4259,6 +4913,19 @@ declare global {
         "itemSelected": { value: string; label: string; checked: boolean };
         "draggingEvent": string;
     }
+    /**
+     * sy-tree-item — leaf renderer used internally by sy-tree.
+     * Spec: design-system-specs/components/tree.yaml (tree-item anatomy).
+     * Not meant to be authored directly — sy-tree materializes items from its
+     * `nodes` data. Extensive props exist so the parent can push per-node state
+     * (expanded, checked, editing, dragging, tag labels, etc.) down.
+     * Legacy attribute aliases resolved via fnAssignPropFromAlias:
+     *   has-child, append-placeholder, is-descendant, is-editable, tag-message,
+     *   tag-variant, search-term, selected-value, node-width.
+     * `treeitemDraggable` maps to the `draggable` attribute (TS reserved name).
+     * Note: the attribute `isDesendant` (typo) is preserved for legacy markup
+     * compatibility but the canonical property is `isDescendant`.
+     */
     interface HTMLSyTreeItemElement extends Components.SyTreeItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTreeItemElementEventMap>(type: K, listener: (this: HTMLSyTreeItemElement, ev: SyTreeItemCustomEvent<HTMLSyTreeItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4276,6 +4943,20 @@ declare global {
     interface HTMLSyTreeSelectElementEventMap {
         "changed": { selectedItem: { value: string; label: string }[]; isValid: boolean };
     }
+    /**
+     * sy-tree-select — dropdown selector backed by a tree (single or multi-select).
+     * Spec: design-system-specs/components/tree-select.yaml
+     * Form-associated: submits `name` → selected value(s) via ElementInternals.
+     * Validation follows the same pattern as sy-input / sy-select:
+     *   - `noNativeValidity=false` (default) → native browser popup on submit.
+     *     DO NOT preventDefault the invalid event.
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces slot UI visible.
+     * Props: nodes (TreeNode[]), checkable, clearable, defaultValue, disabled,
+     * status, expandable, expandAll, line, loading, maxTagCount, nodeWidth,
+     * placeholder, appendParent, readonly, required, name, noNativeValidity.
+     */
     interface HTMLSyTreeSelectElement extends Components.SyTreeSelect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTreeSelectElementEventMap>(type: K, listener: (this: HTMLSyTreeSelectElement, ev: SyTreeSelectCustomEvent<HTMLSyTreeSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5667,6 +6348,16 @@ declare namespace LocalJSX {
          */
         "width"?: string;
     }
+    /**
+     * sy-menu — portaled dropdown menu triggered by a parent element.
+     * Spec: design-system-specs/components/menu.yaml
+     * Children: sy-menu-item (leaf), sy-menu-sub (nested submenu), sy-menu-group
+     * (labeled section). The menu is portaled to escape clipping and re-positioned
+     * on window scroll/resize.
+     * Props: open, disabled, checkable, loading, position (4 corners),
+     * trigger (click | hover | contextmenu), direction (left | right for submenus).
+     * Events: opened (boolean), itemSelected, itemChecked.
+     */
     interface SyMenu {
         /**
           * @default false
@@ -5680,6 +6371,11 @@ declare namespace LocalJSX {
           * @default false
          */
         "disabled"?: boolean;
+        /**
+          * Spinner overlay while items are being fetched (spec-aligned).
+          * @default false
+         */
+        "loading"?: boolean;
         "onItemChecked"?: (event: SyMenuCustomEvent<any>) => void;
         "onItemSelected"?: (event: SyMenuCustomEvent<any>) => void;
         "onOpened"?: (event: SyMenuCustomEvent<boolean>) => void;
@@ -5702,6 +6398,18 @@ declare namespace LocalJSX {
          */
         "menuGroupTitle"?: string;
     }
+    /**
+     * sy-menu-item — a single item inside sy-menu.
+     * Spec: design-system-specs/components/menu.yaml (menu-item anatomy).
+     * Props:
+     *   - value     (payload emitted with itemSelected / itemChecked)
+     *   - disabled
+     *   - selectable (item becomes highlightable/checkable individually)
+     *   - checkable  (force checkbox UI; implies selectable)
+     *   - select    (controlled: visually mark as currently selected)
+     * Events: itemSelected {value,label}, itemChecked {value,label,checked}.
+     * Both bubble to the containing sy-menu which re-emits them as menu events.
+     */
     interface SyMenuItem {
         /**
           * @default false
@@ -5739,7 +6447,30 @@ declare namespace LocalJSX {
           * @default false
          */
         "open"?: boolean;
+        /**
+          * @default 'hover'
+         */
+        "trigger"?: 'click' | 'hover';
     }
+    /**
+     * sy-modal — centered modal dialog with optional maximize/drag.
+     * Spec: design-system-specs/components/modal.yaml
+     * Variants:
+     *   - `dialog` — simple centered confirmation/form modal.
+     *   - `modal`  — draggable + optionally resizable window with maximize support
+     *               via `enableModalMaximize`.
+     * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+     *   - open, closable, variant
+     *   - cancelText ↔ `cancel-text`, okText ↔ `ok-text`
+     *   - enableModalMaximize ↔ `enable-modal-maximize`
+     *   - hideFooter ↔ `hide-footer`, maskClosable ↔ `mask-closable`
+     *   - width (px, 0 = auto), height (px, 0 = auto, `modal` variant)
+     *   - top, left (px, '-1' or unset = auto-center)
+     * Slots: header, body, footer — each replaces the default when supplied.
+     * Methods: setOpen(), setClose(value?), setCancel(value?), setOk(value?),
+     * setMaximum() (variant=modal only).
+     * Event: closed — { event: 'ok'|'cancel'|'close', value, maximized, position }.
+     */
     interface SyModal {
         /**
           * @default ''
@@ -5754,6 +6485,11 @@ declare namespace LocalJSX {
          */
         "enableModalMaximize"?: boolean;
         /**
+          * Custom height in pixels (`modal` variant only). 0 = auto.
+          * @default 0
+         */
+        "height"?: number;
+        /**
           * @default false
          */
         "hideFooter"?: boolean;
@@ -5766,9 +6502,22 @@ declare namespace LocalJSX {
          */
         "maskClosable"?: boolean;
         /**
+          * @default false
+         */
+        "maskless"?: boolean;
+        /**
           * @default ''
          */
         "okText"?: string;
+        /**
+          * Fires when the modal closes. `detail.event` distinguishes ok / cancel / close.
+         */
+        "onClosed"?: (event: SyModalCustomEvent<{
+    event: 'ok' | 'cancel' | 'close';
+    value: any;
+    maximized: boolean;
+    position: { top: string; left: string };
+  }>) => void;
         /**
           * @default false
          */
@@ -5786,6 +6535,25 @@ declare namespace LocalJSX {
          */
         "width"?: number;
     }
+    /**
+     * sy-modeless — non-modal floating window (draggable/resizable/minimize/maximize).
+     * Spec: design-system-specs/components/modeless.yaml
+     * Unlike sy-modal, a modeless window does NOT block the underlying page: users
+     * can interact with content outside it. Typically used for tool palettes,
+     * inspectors, and persistent helpers. Multiple modeless instances can be
+     * managed by a parent `sy-modeless-group` for z-index / focus coordination.
+     * Props (spec-aligned + legacy aliases):
+     *   - open, closable, minimizable, maximizable, resizable, edge
+     *   - draggable
+     *   - minimum, maximum (current state flags; set via setMinimum/setMaximum)
+     *   - width, height (initial size); top, left (initial position)
+     *   - minWidth ↔ `min-width`, minHeight ↔ `min-height`
+     * Methods: setOpen(), setClose(), setMaximum(), setMinimum(), setRestore().
+     * Events:
+     *   - closed          { id }
+     *   - statusChanged   { id, status: 'maximum' | 'minimum' | 'restore' }
+     *   - positionChanged { id, position: {top,left,width,height} }
+     */
     interface SyModeless {
         /**
           * @default false
@@ -5800,9 +6568,10 @@ declare namespace LocalJSX {
          */
         "height"?: number;
         /**
+          * When true, the header is shown and the user can drag the modeless by it. The public attribute is `draggable`, but the JS-side prop is named `isDraggable` to avoid shadowing `HTMLElement.prototype.draggable` (which would trigger the Stencil "reserved public name" warning and risk cross-browser surprises). A `dragstart` handler on the host suppresses the native HTML5 drag that the `draggable` attribute would otherwise enable, so only the custom mousedown-driven drag runs.
           * @default false
          */
-        "isdraggable"?: boolean;
+        "isDraggable"?: boolean;
         /**
           * @default undefined
          */
@@ -5851,12 +6620,23 @@ declare namespace LocalJSX {
          */
         "width"?: number;
     }
+    /**
+     * sy-modeless-group — imperative manager for multiple sy-modeless windows.
+     * Spec: design-system-specs/components/modeless.yaml
+     * API is method-driven (no slotted markup): the app calls `create(id, title,
+     * content, option)` and receives a new sy-modeless appended to this host.
+     * `closeAll()` tears them all down — used in storybook page transitions so
+     * old windows don't linger across navigations.
+     * Children are tracked in `modelessList` so the group can coordinate z-index
+     * / focus among them.
+     */
     interface SyModelessGroup {
     }
     /**
-     * sy-nav (Stencil port, light DOM, scoped)
-     * - Renders slotted navigation items
-     * - Manages active states and disabled propagation
+     * sy-nav — vertical navigation list. Hosts sy-nav-item / sy-nav-sub / sy-nav-group children.
+     * Spec: design-system-specs/components/nav.yaml
+     * Props: `disabled` (propagates to all children via invokeChildMethod).
+     * Events: bubbles `selected` from children and updates the current active item.
      */
     interface SyNav {
         /**
@@ -5972,6 +6752,18 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    /**
+     * sy-pagination — page navigation with size selector and jumper.
+     * Spec: design-system-specs/components/pagination.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - activePage   ↔ `active-page`
+     *   - pageSize     ↔ `page-size`
+     *   - pageSizeOptions (comma-separated string, e.g. "10,20,50") ↔ `page-size-options`
+     *   - totalItems   ↔ `total-items`
+     *   - hideonSingle ↔ `hideon-single`
+     *   - disabled, jumper, total
+     * Events: pageChanged (number), pageSizeChanged (number).
+     */
     interface SyPagination {
         /**
           * @default 1
@@ -6005,6 +6797,19 @@ declare namespace LocalJSX {
          */
         "totalItems"?: number;
     }
+    /**
+     * sy-popconfirm — confirm/cancel popover anchored to a parent trigger.
+     * Spec: design-system-specs/components/popconfirm.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - position (12 directions), trigger (click | none)
+     *   - arrow, closable, sticky
+     *   - opendelay, closedelay
+     *   - confirmText ↔ `confirm-text`, cancelText ↔ `cancel-text`
+     * Events:
+     *   - visibleChanged (boolean — popup open state)
+     *   - selected ('ok' | 'cancel' — which button was pressed)
+     * Methods: setOpen(), setClose().
+     */
     interface SyPopconfirm {
         /**
           * @default false
@@ -6046,8 +6851,15 @@ declare namespace LocalJSX {
         "trigger"?: 'click' | 'none';
     }
     /**
-     * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
-     * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+     * sy-popover — overlay anchored to a parent trigger element.
+     * Spec: design-system-specs/components/popover.yaml
+     * Props:
+     *   - position (12 directions: top/bottom/left/right + corner variants)
+     *   - trigger (hover | click | focus | null)
+     *   - open, opendelay (ms), closedelay (ms)
+     *   - arrow (show pointer), sticky (disable auto-close)
+     * The popover is portaled to document.body so it escapes parent overflow/
+     * stacking contexts. Global scroll/resize listeners keep it positioned.
      */
     interface SyPopover {
         /**
@@ -6079,6 +6891,17 @@ declare namespace LocalJSX {
          */
         "trigger"?: 'hover' | 'click' | 'focus' | 'null';
     }
+    /**
+     * sy-progress-bar — linear progress indicator with optional segmentation.
+     * Spec: design-system-specs/components/progress-bar.yaml
+     * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+     *   - percent, status, indeterminate
+     *   - valuePosition (camelCase prop) ↔ `value-position` (legacy attribute)
+     *   - hidePercent                    ↔ `hide-percent`
+     *   - tooltipTitle                   ↔ `tooltip-title`
+     *   - segment — JSON array string of { percent, status } entries
+     * role="progressbar" + aria-valuenow are applied for screen reader support.
+     */
     interface SyProgressBar {
         /**
           * @default false
@@ -6113,6 +6936,15 @@ declare namespace LocalJSX {
          */
         "valuePosition"?: 'progress-left' | 'progress-center' | 'progress-right' | 'center' | 'left' | 'right';
     }
+    /**
+     * sy-progress-circular — circular progress indicator with optional segments.
+     * Spec: design-system-specs/components/progress-circular.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - percent, status, size, indeterminate
+     *   - hideText     ↔ `hide-text`
+     *   - tooltipTitle ↔ `tooltip-title`
+     *   - segment — JSON string with ascending cumulative percent stops.
+     */
     interface SyProgressCircular {
         /**
           * @default false
@@ -6162,6 +6994,13 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    /**
+     * sy-radio-button — segmented-button style radio item used inside sy-radio-group.
+     * Spec: design-system-specs/components/radio-button.yaml
+     * Props: value (required), checked, disabled, size, variant (outlined | solid).
+     * Size and variant are pushed down from the sy-radio-group parent.
+     * Clicking emits `selected` with the value; the group aggregates.
+     */
     interface SyRadioButton {
         /**
           * @default false
@@ -6182,6 +7021,19 @@ declare namespace LocalJSX {
          */
         "variant"?: 'outlined' | 'solid';
     }
+    /**
+     * sy-radio-group — form-associated wrapper for sy-radio / sy-radio-button children.
+     * Spec: design-system-specs/components/radio.yaml
+     * Validation follows the same pattern as sy-input:
+     *   - `noNativeValidity=false` (default) → browser native popup on submit.
+     *     We do NOT preventDefault() the invalid event.
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     is the error UI.
+     *   - `setCustomError()` → programmatic; forces the slot UI visible.
+     * Props (spec-aligned + legacy aliases):
+     *   - defaultValue ↔ `default-value`, noNativeValidity ↔ `no-native-validity`
+     *   - disabled, readonly, required, size, position, variant, name
+     */
     interface SyRadioGroup {
         /**
           * @default ''
@@ -6244,6 +7096,18 @@ declare namespace LocalJSX {
         "rangeend"?: { year: number, month: number, day: number };
         "rangestart"?: { year: number, month: number, day: number };
     }
+    /**
+     * sy-select — dropdown select with single/multi selection and form-association.
+     * Spec: design-system-specs/components/select.yaml
+     * Validation follows the same pattern as sy-input / sy-textarea:
+     *   - `noNativeValidity=false` (default) → browser native popup on submit.
+     *     DO NOT preventDefault() the invalid event (HTML spec: a single
+     *     preventDefaulted invalid suppresses popups on the entire form).
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces slot UI visible
+     *     (touched + hasSlotErrorMessage set).
+     */
     interface SySelect {
         /**
           * @default false
@@ -6321,6 +7185,14 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium' | 'large';
     }
+    /**
+     * sy-skeleton — content placeholder with shimmer animation.
+     * Spec: design-system-specs/components/skeleton.yaml
+     * Props: type, rows, width, disabled.
+     * Spec's canonical name is `gallery` but the code-canonical value is the
+     * legacy `gallary` (typo preserved to avoid breaking existing consumers).
+     * Both spellings are accepted at runtime.
+     */
     interface SySkeleton {
         /**
           * @default false
@@ -6333,12 +7205,22 @@ declare namespace LocalJSX {
         /**
           * @default 'text'
          */
-        "type"?: 'text' | 'avatar' | 'image' | 'gallary' | 'button' | 'table' | 'tree';
+        "type"?: 'text' | 'avatar' | 'image' | 'gallary' | 'gallery' | 'button' | 'table' | 'tree';
         /**
           * @default '100%'
          */
         "width"?: string;
     }
+    /**
+     * sy-slider — numeric slider with single/range/marks support.
+     * Spec: design-system-specs/components/slider.yaml
+     * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+     *   - min, max, step, value
+     *   - range (toggles to dual-thumb) + rangeValue (initial [min,max] pair)
+     *   - marks map, hideMarks, snapToMarks
+     *   - showTooltip (default | always | never), tooltipPlacement
+     *   - hideTrackFill, reverse, vertical, label, disabled, readonly
+     */
     interface SySlider {
         /**
           * @default false
@@ -6409,6 +7291,19 @@ declare namespace LocalJSX {
          */
         "vertical"?: boolean;
     }
+    /**
+     * sy-spinner — loading indicator.
+     * Spec: design-system-specs/components/spinner.yaml
+     * Props (spec-aligned):
+     *   - size          (small | medium | large | xlarge)
+     *   - inline        (horizontal vs stacked layout)
+     *   - description   (caption text next to / below the spinner)
+     *   - delay         (ms before appearing — suppresses flash on fast loads)
+     *   - hidden        (hides the spinner entirely; reflects to attribute)
+     * The host is `display: contents` so the spinner sits inside its parent
+     * without affecting layout. The parent is given `position: relative` on
+     * connect so the absolute-positioned overlay fills the parent.
+     */
     interface SySpinner {
         /**
           * @default 0
@@ -6431,6 +7326,16 @@ declare namespace LocalJSX {
          */
         "size"?: 'small' | 'medium' | 'large' | 'xlarge';
     }
+    /**
+     * sy-split-panel — two-pane container with a drag handle to resize the split.
+     * Spec: design-system-specs/components/split-panel.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - ratio (left/top pane share, 0-100)
+     *   - minRatio ↔ `min-ratio` (floor for both panes)
+     *   - type (horizontal | vertical)
+     *   - disabled, hideDivider ↔ `hide-divider`
+     * Events: horizontalChanged / verticalChanged (emitted while the divider moves).
+     */
     interface SySplitPanel {
         /**
           * @default false
@@ -6515,6 +7420,15 @@ declare namespace LocalJSX {
          */
         "type"?: "horizontal" | "vertical";
     }
+    /**
+     * sy-steps — step progress indicator containing multiple sy-step items.
+     * Spec: design-system-specs/components/steps.yaml
+     * Props: current, clickable, complete, type (horizontal | vertical),
+     * size (small | medium), startIndex.
+     * The parent propagates size/type/clickable to each sy-step child via
+     * attribute push, and each child reports clicks through a `selected` event
+     * that bubbles up to update `current` here.
+     */
     interface SySteps {
         /**
           * @default false
@@ -6541,6 +7455,21 @@ declare namespace LocalJSX {
          */
         "type"?: "horizontal" | "vertical";
     }
+    /**
+     * sy-switch — binary on/off toggle with form-association.
+     * Spec: design-system-specs/components/switch.yaml
+     * Form-associated: participates in <form> via ElementInternals. Submits the
+     * `value` (default `"on"`) under `name` only when checked, matching native
+     * checkbox convention. When `required` is set the switch must be checked or
+     * the form is invalid.
+     * Error UI: there is no native popup for sy-switch — every invalid state
+     * (required-failed, setCustomError) renders the same slot/text below the
+     * switch. Authors can supply `[slot="error"]` for custom copy; otherwise a
+     * default message is rendered.
+     * Props: checked, disabled, readonly, loading, size (small | medium), label,
+     * name, value, required.
+     * Events: `changed` — emitted with the new checked boolean.
+     */
     interface SySwitch {
         /**
           * @default false
@@ -6550,6 +7479,9 @@ declare namespace LocalJSX {
           * @default false
          */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "label"?: string;
         /**
           * @default false
@@ -6565,9 +7497,18 @@ declare namespace LocalJSX {
          */
         "readonly"?: boolean;
         /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
           * @default 'medium'
          */
         "size"?: 'small' | 'medium';
+        /**
+          * Value submitted as the form value when checked. Defaults to `"on"` (native convention).
+          * @default 'on'
+         */
+        "value"?: string;
     }
     interface SyTab {
         /**
@@ -6656,9 +7597,10 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * When true, tabs can be reordered by drag-and-drop. The public attribute is `draggable`, but the JS-side prop is named `isDraggable` to avoid shadowing `HTMLElement.prototype.draggable` (which would trigger the Stencil "reserved public name" warning and risk cross-browser surprises).
           * @default false
          */
-        "isdraggable"?: boolean;
+        "isDraggable"?: boolean;
         "onClosed"?: (event: SyTabGroupCustomEvent<any>) => void;
         "onOrdered"?: (event: SyTabGroupCustomEvent<HTMLSyTabElement[]>) => void;
         "onSelected"?: (event: SyTabGroupCustomEvent<any>) => void;
@@ -6682,6 +7624,14 @@ declare namespace LocalJSX {
          */
         "type"?: "card" | "line";
     }
+    /**
+     * sy-tag — compact label with optional selectable / removable behavior.
+     * Spec: design-system-specs/components/tag.yaml
+     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+     * Events: selected (toggle), removed (X click).
+     * When `selectable` is enabled, the visual variant is forced to `purple` to
+     * distinguish interactive tags from static ones.
+     */
     interface SyTag {
         /**
           * @default false
@@ -6714,6 +7664,22 @@ declare namespace LocalJSX {
          */
         "variant"?: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red';
     }
+    /**
+     * sy-textarea — multi-line text input with form-association and slot-based custom error.
+     * Spec: design-system-specs/components/textarea.yaml
+     * Validation model (same pattern as sy-input / sy-input-number):
+     *   - `noNativeValidity=false` (default) → browser shows native constraint
+     *     popup on submit. DO NOT call preventDefault() on the invalid event —
+     *     per HTML spec a single preventDefaulted invalid event suppresses
+     *     popups on the entire form.
+     *   - `noNativeValidity=true` → native popup suppressed; `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces the slot UI visible
+     *     (touched=true, hasSlotErrorMessage=true).
+     * Props: value, min (minlength), max (maxlength), rows, counter, borderless,
+     * clearable, resize, size, status, required, readonly, disabled, name,
+     * noNativeValidity, placeholder, label.
+     */
     interface SyTextarea {
         /**
           * @default false
@@ -6819,6 +7785,16 @@ declare namespace LocalJSX {
          */
         "timeSeparator"?: string;
     }
+    /**
+     * sy-toast — toast manager. Programmatic factory for sy-toast-item popups.
+     * Spec: design-system-specs/components/toast.yaml
+     * Usage: call `createToast(variant, options)` or the variant-specific helpers
+     * (`createSuccessToast`, etc.). Each call spawns a new `sy-toast-item`
+     * appended to document.body; stacking is governed by `latestTop`.
+     * Props:
+     *   - duration   (ms, default auto-dismiss window for spawned toasts)
+     *   - latestTop  (new toasts appear above older ones) — legacy `latest-top`
+     */
     interface SyToast {
         /**
           * @default 3000
@@ -6852,6 +7828,17 @@ declare namespace LocalJSX {
          */
         "variant"?: 'neutral' | 'success' | 'error' | 'info' | 'warning';
     }
+    /**
+     * sy-tooltip — contextual tooltip anchored to a trigger element.
+     * Spec: design-system-specs/components/tooltip.yaml
+     * Props (spec-aligned + legacy aliases):
+     *   - content, position (12 directions), trigger (hover|click|focus|none)
+     *   - open, opendelay, closedelay
+     *   - hideArrow    ↔ `hide-arrow`
+     *   - maxWidth     ↔ `max-width`
+     * The tooltip is portaled to document.body so it escapes parent
+     * `overflow: hidden` / stacking contexts.
+     */
     interface SyTooltip {
         /**
           * Delay in milliseconds before closing the tooltip after trigger event ends
@@ -6894,6 +7881,23 @@ declare namespace LocalJSX {
          */
         "trigger"?: 'hover' | 'click' | 'focus' | 'none';
     }
+    /**
+     * sy-tree — hierarchical tree view with optional check/click/drag/edit support.
+     * Spec: design-system-specs/components/tree.yaml
+     * Data model: pass a `nodes` array of TreeNode objects. Each node can declare
+     * local overrides (disabled, fixed, editable…) that take precedence over the
+     * tree-level defaults.
+     * Props (spec-aligned + legacy attribute aliases via fnAssignPropFromAlias):
+     *   - nodes, line, expandable, checkable, clickable, editable
+     *   - expandAll    ↔ `expand-all`
+     *   - manualAdd    ↔ `manual-add`, manualRemove ↔ `manual-remove`
+     *   - nodeWidth    ↔ `node-width`
+     *   - selectedValue ↔ `selected-value`, searchTerm ↔ `search-term`
+     *   - isTreeSelect (internal integration flag used by sy-tree-select)
+     *   - treeDraggable (attribute `draggable`; TS can't use `draggable` as prop name)
+     * Events: nodesChanged, itemChecked, itemSelected.
+     * Methods include programmatic add/remove/update plus clearAllSelectedItem().
+     */
     interface SyTree {
         /**
           * @default false
@@ -6955,6 +7959,19 @@ declare namespace LocalJSX {
          */
         "treeDraggable"?: boolean;
     }
+    /**
+     * sy-tree-item — leaf renderer used internally by sy-tree.
+     * Spec: design-system-specs/components/tree.yaml (tree-item anatomy).
+     * Not meant to be authored directly — sy-tree materializes items from its
+     * `nodes` data. Extensive props exist so the parent can push per-node state
+     * (expanded, checked, editing, dragging, tag labels, etc.) down.
+     * Legacy attribute aliases resolved via fnAssignPropFromAlias:
+     *   has-child, append-placeholder, is-descendant, is-editable, tag-message,
+     *   tag-variant, search-term, selected-value, node-width.
+     * `treeitemDraggable` maps to the `draggable` attribute (TS reserved name).
+     * Note: the attribute `isDesendant` (typo) is preserved for legacy markup
+     * compatibility but the canonical property is `isDescendant`.
+     */
     interface SyTreeItem {
         /**
           * @default 'New item'
@@ -7079,6 +8096,20 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    /**
+     * sy-tree-select — dropdown selector backed by a tree (single or multi-select).
+     * Spec: design-system-specs/components/tree-select.yaml
+     * Form-associated: submits `name` → selected value(s) via ElementInternals.
+     * Validation follows the same pattern as sy-input / sy-select:
+     *   - `noNativeValidity=false` (default) → native browser popup on submit.
+     *     DO NOT preventDefault the invalid event.
+     *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+     *     becomes the error UI.
+     *   - `setCustomError()` → programmatic; forces slot UI visible.
+     * Props: nodes (TreeNode[]), checkable, clearable, defaultValue, disabled,
+     * status, expandable, expandAll, line, loading, maxTagCount, nodeWidth,
+     * placeholder, appendParent, readonly, required, name, noNativeValidity.
+     */
     interface SyTreeSelect {
         /**
           * @default false
@@ -7543,17 +8574,88 @@ declare module "@stencil/core" {
              */
             "sy-input-number": LocalJSX.SyInputNumber & JSXBase.HTMLAttributes<HTMLSyInputNumberElement>;
             "sy-label": LocalJSX.SyLabel & JSXBase.HTMLAttributes<HTMLSyLabelElement>;
+            /**
+             * sy-menu — portaled dropdown menu triggered by a parent element.
+             * Spec: design-system-specs/components/menu.yaml
+             * Children: sy-menu-item (leaf), sy-menu-sub (nested submenu), sy-menu-group
+             * (labeled section). The menu is portaled to escape clipping and re-positioned
+             * on window scroll/resize.
+             * Props: open, disabled, checkable, loading, position (4 corners),
+             * trigger (click | hover | contextmenu), direction (left | right for submenus).
+             * Events: opened (boolean), itemSelected, itemChecked.
+             */
             "sy-menu": LocalJSX.SyMenu & JSXBase.HTMLAttributes<HTMLSyMenuElement>;
             "sy-menu-group": LocalJSX.SyMenuGroup & JSXBase.HTMLAttributes<HTMLSyMenuGroupElement>;
+            /**
+             * sy-menu-item — a single item inside sy-menu.
+             * Spec: design-system-specs/components/menu.yaml (menu-item anatomy).
+             * Props:
+             *   - value     (payload emitted with itemSelected / itemChecked)
+             *   - disabled
+             *   - selectable (item becomes highlightable/checkable individually)
+             *   - checkable  (force checkbox UI; implies selectable)
+             *   - select    (controlled: visually mark as currently selected)
+             * Events: itemSelected {value,label}, itemChecked {value,label,checked}.
+             * Both bubble to the containing sy-menu which re-emits them as menu events.
+             */
             "sy-menu-item": LocalJSX.SyMenuItem & JSXBase.HTMLAttributes<HTMLSyMenuItemElement>;
             "sy-menu-sub": LocalJSX.SyMenuSub & JSXBase.HTMLAttributes<HTMLSyMenuSubElement>;
+            /**
+             * sy-modal — centered modal dialog with optional maximize/drag.
+             * Spec: design-system-specs/components/modal.yaml
+             * Variants:
+             *   - `dialog` — simple centered confirmation/form modal.
+             *   - `modal`  — draggable + optionally resizable window with maximize support
+             *               via `enableModalMaximize`.
+             * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+             *   - open, closable, variant
+             *   - cancelText ↔ `cancel-text`, okText ↔ `ok-text`
+             *   - enableModalMaximize ↔ `enable-modal-maximize`
+             *   - hideFooter ↔ `hide-footer`, maskClosable ↔ `mask-closable`
+             *   - width (px, 0 = auto), height (px, 0 = auto, `modal` variant)
+             *   - top, left (px, '-1' or unset = auto-center)
+             * Slots: header, body, footer — each replaces the default when supplied.
+             * Methods: setOpen(), setClose(value?), setCancel(value?), setOk(value?),
+             * setMaximum() (variant=modal only).
+             * Event: closed — { event: 'ok'|'cancel'|'close', value, maximized, position }.
+             */
             "sy-modal": LocalJSX.SyModal & JSXBase.HTMLAttributes<HTMLSyModalElement>;
+            /**
+             * sy-modeless — non-modal floating window (draggable/resizable/minimize/maximize).
+             * Spec: design-system-specs/components/modeless.yaml
+             * Unlike sy-modal, a modeless window does NOT block the underlying page: users
+             * can interact with content outside it. Typically used for tool palettes,
+             * inspectors, and persistent helpers. Multiple modeless instances can be
+             * managed by a parent `sy-modeless-group` for z-index / focus coordination.
+             * Props (spec-aligned + legacy aliases):
+             *   - open, closable, minimizable, maximizable, resizable, edge
+             *   - draggable
+             *   - minimum, maximum (current state flags; set via setMinimum/setMaximum)
+             *   - width, height (initial size); top, left (initial position)
+             *   - minWidth ↔ `min-width`, minHeight ↔ `min-height`
+             * Methods: setOpen(), setClose(), setMaximum(), setMinimum(), setRestore().
+             * Events:
+             *   - closed          { id }
+             *   - statusChanged   { id, status: 'maximum' | 'minimum' | 'restore' }
+             *   - positionChanged { id, position: {top,left,width,height} }
+             */
             "sy-modeless": LocalJSX.SyModeless & JSXBase.HTMLAttributes<HTMLSyModelessElement>;
+            /**
+             * sy-modeless-group — imperative manager for multiple sy-modeless windows.
+             * Spec: design-system-specs/components/modeless.yaml
+             * API is method-driven (no slotted markup): the app calls `create(id, title,
+             * content, option)` and receives a new sy-modeless appended to this host.
+             * `closeAll()` tears them all down — used in storybook page transitions so
+             * old windows don't linger across navigations.
+             * Children are tracked in `modelessList` so the group can coordinate z-index
+             * / focus among them.
+             */
             "sy-modeless-group": LocalJSX.SyModelessGroup & JSXBase.HTMLAttributes<HTMLSyModelessGroupElement>;
             /**
-             * sy-nav (Stencil port, light DOM, scoped)
-             * - Renders slotted navigation items
-             * - Manages active states and disabled propagation
+             * sy-nav — vertical navigation list. Hosts sy-nav-item / sy-nav-sub / sy-nav-group children.
+             * Spec: design-system-specs/components/nav.yaml
+             * Props: `disabled` (propagates to all children via invokeChildMethod).
+             * Events: bubbles `selected` from children and updates the current active item.
              */
             "sy-nav": LocalJSX.SyNav & JSXBase.HTMLAttributes<HTMLSyNavElement>;
             /**
@@ -7575,26 +8677,175 @@ declare module "@stencil/core" {
              */
             "sy-nav-sub": LocalJSX.SyNavSub & JSXBase.HTMLAttributes<HTMLSyNavSubElement>;
             "sy-option": LocalJSX.SyOption & JSXBase.HTMLAttributes<HTMLSyOptionElement>;
+            /**
+             * sy-pagination — page navigation with size selector and jumper.
+             * Spec: design-system-specs/components/pagination.yaml
+             * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+             *   - activePage   ↔ `active-page`
+             *   - pageSize     ↔ `page-size`
+             *   - pageSizeOptions (comma-separated string, e.g. "10,20,50") ↔ `page-size-options`
+             *   - totalItems   ↔ `total-items`
+             *   - hideonSingle ↔ `hideon-single`
+             *   - disabled, jumper, total
+             * Events: pageChanged (number), pageSizeChanged (number).
+             */
             "sy-pagination": LocalJSX.SyPagination & JSXBase.HTMLAttributes<HTMLSyPaginationElement>;
+            /**
+             * sy-popconfirm — confirm/cancel popover anchored to a parent trigger.
+             * Spec: design-system-specs/components/popconfirm.yaml
+             * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+             *   - position (12 directions), trigger (click | none)
+             *   - arrow, closable, sticky
+             *   - opendelay, closedelay
+             *   - confirmText ↔ `confirm-text`, cancelText ↔ `cancel-text`
+             * Events:
+             *   - visibleChanged (boolean — popup open state)
+             *   - selected ('ok' | 'cancel' — which button was pressed)
+             * Methods: setOpen(), setClose().
+             */
             "sy-popconfirm": LocalJSX.SyPopconfirm & JSXBase.HTMLAttributes<HTMLSyPopconfirmElement>;
             /**
-             * 팝오버 컴포넌트 - 다른 요소에 부가 정보를 표시하는 오버레이 요소
-             * 마우스 호버, 클릭, 포커스 등의 트리거로 활성화됩니다.
+             * sy-popover — overlay anchored to a parent trigger element.
+             * Spec: design-system-specs/components/popover.yaml
+             * Props:
+             *   - position (12 directions: top/bottom/left/right + corner variants)
+             *   - trigger (hover | click | focus | null)
+             *   - open, opendelay (ms), closedelay (ms)
+             *   - arrow (show pointer), sticky (disable auto-close)
+             * The popover is portaled to document.body so it escapes parent overflow/
+             * stacking contexts. Global scroll/resize listeners keep it positioned.
              */
             "sy-popover": LocalJSX.SyPopover & JSXBase.HTMLAttributes<HTMLSyPopoverElement>;
+            /**
+             * sy-progress-bar — linear progress indicator with optional segmentation.
+             * Spec: design-system-specs/components/progress-bar.yaml
+             * Props (spec-aligned + legacy aliases via fnAssignPropFromAlias):
+             *   - percent, status, indeterminate
+             *   - valuePosition (camelCase prop) ↔ `value-position` (legacy attribute)
+             *   - hidePercent                    ↔ `hide-percent`
+             *   - tooltipTitle                   ↔ `tooltip-title`
+             *   - segment — JSON array string of { percent, status } entries
+             * role="progressbar" + aria-valuenow are applied for screen reader support.
+             */
             "sy-progress-bar": LocalJSX.SyProgressBar & JSXBase.HTMLAttributes<HTMLSyProgressBarElement>;
+            /**
+             * sy-progress-circular — circular progress indicator with optional segments.
+             * Spec: design-system-specs/components/progress-circular.yaml
+             * Props (spec-aligned + legacy aliases):
+             *   - percent, status, size, indeterminate
+             *   - hideText     ↔ `hide-text`
+             *   - tooltipTitle ↔ `tooltip-title`
+             *   - segment — JSON string with ascending cumulative percent stops.
+             */
             "sy-progress-circular": LocalJSX.SyProgressCircular & JSXBase.HTMLAttributes<HTMLSyProgressCircularElement>;
             "sy-radio": LocalJSX.SyRadio & JSXBase.HTMLAttributes<HTMLSyRadioElement>;
+            /**
+             * sy-radio-button — segmented-button style radio item used inside sy-radio-group.
+             * Spec: design-system-specs/components/radio-button.yaml
+             * Props: value (required), checked, disabled, size, variant (outlined | solid).
+             * Size and variant are pushed down from the sy-radio-group parent.
+             * Clicking emits `selected` with the value; the group aggregates.
+             */
             "sy-radio-button": LocalJSX.SyRadioButton & JSXBase.HTMLAttributes<HTMLSyRadioButtonElement>;
+            /**
+             * sy-radio-group — form-associated wrapper for sy-radio / sy-radio-button children.
+             * Spec: design-system-specs/components/radio.yaml
+             * Validation follows the same pattern as sy-input:
+             *   - `noNativeValidity=false` (default) → browser native popup on submit.
+             *     We do NOT preventDefault() the invalid event.
+             *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+             *     is the error UI.
+             *   - `setCustomError()` → programmatic; forces the slot UI visible.
+             * Props (spec-aligned + legacy aliases):
+             *   - defaultValue ↔ `default-value`, noNativeValidity ↔ `no-native-validity`
+             *   - disabled, readonly, required, size, position, variant, name
+             */
             "sy-radio-group": LocalJSX.SyRadioGroup & JSXBase.HTMLAttributes<HTMLSyRadioGroupElement>;
             "sy-range-calendar": LocalJSX.SyRangeCalendar & JSXBase.HTMLAttributes<HTMLSyRangeCalendarElement>;
+            /**
+             * sy-select — dropdown select with single/multi selection and form-association.
+             * Spec: design-system-specs/components/select.yaml
+             * Validation follows the same pattern as sy-input / sy-textarea:
+             *   - `noNativeValidity=false` (default) → browser native popup on submit.
+             *     DO NOT preventDefault() the invalid event (HTML spec: a single
+             *     preventDefaulted invalid suppresses popups on the entire form).
+             *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+             *     becomes the error UI.
+             *   - `setCustomError()` → programmatic; forces slot UI visible
+             *     (touched + hasSlotErrorMessage set).
+             */
             "sy-select": LocalJSX.SySelect & JSXBase.HTMLAttributes<HTMLSySelectElement>;
+            /**
+             * sy-skeleton — content placeholder with shimmer animation.
+             * Spec: design-system-specs/components/skeleton.yaml
+             * Props: type, rows, width, disabled.
+             * Spec's canonical name is `gallery` but the code-canonical value is the
+             * legacy `gallary` (typo preserved to avoid breaking existing consumers).
+             * Both spellings are accepted at runtime.
+             */
             "sy-skeleton": LocalJSX.SySkeleton & JSXBase.HTMLAttributes<HTMLSySkeletonElement>;
+            /**
+             * sy-slider — numeric slider with single/range/marks support.
+             * Spec: design-system-specs/components/slider.yaml
+             * Props (spec-aligned + legacy aliases resolved via fnAssignPropFromAlias):
+             *   - min, max, step, value
+             *   - range (toggles to dual-thumb) + rangeValue (initial [min,max] pair)
+             *   - marks map, hideMarks, snapToMarks
+             *   - showTooltip (default | always | never), tooltipPlacement
+             *   - hideTrackFill, reverse, vertical, label, disabled, readonly
+             */
             "sy-slider": LocalJSX.SySlider & JSXBase.HTMLAttributes<HTMLSySliderElement>;
+            /**
+             * sy-spinner — loading indicator.
+             * Spec: design-system-specs/components/spinner.yaml
+             * Props (spec-aligned):
+             *   - size          (small | medium | large | xlarge)
+             *   - inline        (horizontal vs stacked layout)
+             *   - description   (caption text next to / below the spinner)
+             *   - delay         (ms before appearing — suppresses flash on fast loads)
+             *   - hidden        (hides the spinner entirely; reflects to attribute)
+             * The host is `display: contents` so the spinner sits inside its parent
+             * without affecting layout. The parent is given `position: relative` on
+             * connect so the absolute-positioned overlay fills the parent.
+             */
             "sy-spinner": LocalJSX.SySpinner & JSXBase.HTMLAttributes<HTMLSySpinnerElement>;
+            /**
+             * sy-split-panel — two-pane container with a drag handle to resize the split.
+             * Spec: design-system-specs/components/split-panel.yaml
+             * Props (spec-aligned + legacy aliases):
+             *   - ratio (left/top pane share, 0-100)
+             *   - minRatio ↔ `min-ratio` (floor for both panes)
+             *   - type (horizontal | vertical)
+             *   - disabled, hideDivider ↔ `hide-divider`
+             * Events: horizontalChanged / verticalChanged (emitted while the divider moves).
+             */
             "sy-split-panel": LocalJSX.SySplitPanel & JSXBase.HTMLAttributes<HTMLSySplitPanelElement>;
             "sy-step": LocalJSX.SyStep & JSXBase.HTMLAttributes<HTMLSyStepElement>;
+            /**
+             * sy-steps — step progress indicator containing multiple sy-step items.
+             * Spec: design-system-specs/components/steps.yaml
+             * Props: current, clickable, complete, type (horizontal | vertical),
+             * size (small | medium), startIndex.
+             * The parent propagates size/type/clickable to each sy-step child via
+             * attribute push, and each child reports clicks through a `selected` event
+             * that bubbles up to update `current` here.
+             */
             "sy-steps": LocalJSX.SySteps & JSXBase.HTMLAttributes<HTMLSyStepsElement>;
+            /**
+             * sy-switch — binary on/off toggle with form-association.
+             * Spec: design-system-specs/components/switch.yaml
+             * Form-associated: participates in <form> via ElementInternals. Submits the
+             * `value` (default `"on"`) under `name` only when checked, matching native
+             * checkbox convention. When `required` is set the switch must be checked or
+             * the form is invalid.
+             * Error UI: there is no native popup for sy-switch — every invalid state
+             * (required-failed, setCustomError) renders the same slot/text below the
+             * switch. Authors can supply `[slot="error"]` for custom copy; otherwise a
+             * default message is rendered.
+             * Props: checked, disabled, readonly, loading, size (small | medium), label,
+             * name, value, required.
+             * Events: `changed` — emitted with the new checked boolean.
+             */
             "sy-switch": LocalJSX.SySwitch & JSXBase.HTMLAttributes<HTMLSySwitchElement>;
             "sy-tab": LocalJSX.SyTab & JSXBase.HTMLAttributes<HTMLSyTabElement>;
             "sy-tab-content": LocalJSX.SyTabContent & JSXBase.HTMLAttributes<HTMLSyTabContentElement>;
@@ -7614,14 +8865,103 @@ declare module "@stencil/core" {
              * see `updateOverflowTabs` early-return.
              */
             "sy-tab-group": LocalJSX.SyTabGroup & JSXBase.HTMLAttributes<HTMLSyTabGroupElement>;
+            /**
+             * sy-tag — compact label with optional selectable / removable behavior.
+             * Spec: design-system-specs/components/tag.yaml
+             * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+             * Events: selected (toggle), removed (X click).
+             * When `selectable` is enabled, the visual variant is forced to `purple` to
+             * distinguish interactive tags from static ones.
+             */
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
+            /**
+             * sy-textarea — multi-line text input with form-association and slot-based custom error.
+             * Spec: design-system-specs/components/textarea.yaml
+             * Validation model (same pattern as sy-input / sy-input-number):
+             *   - `noNativeValidity=false` (default) → browser shows native constraint
+             *     popup on submit. DO NOT call preventDefault() on the invalid event —
+             *     per HTML spec a single preventDefaulted invalid event suppresses
+             *     popups on the entire form.
+             *   - `noNativeValidity=true` → native popup suppressed; `[slot="error"]`
+             *     becomes the error UI.
+             *   - `setCustomError()` → programmatic; forces the slot UI visible
+             *     (touched=true, hasSlotErrorMessage=true).
+             * Props: value, min (minlength), max (maxlength), rows, counter, borderless,
+             * clearable, resize, size, status, required, readonly, disabled, name,
+             * noNativeValidity, placeholder, label.
+             */
             "sy-textarea": LocalJSX.SyTextarea & JSXBase.HTMLAttributes<HTMLSyTextareaElement>;
             "sy-timepicker": LocalJSX.SyTimepicker & JSXBase.HTMLAttributes<HTMLSyTimepickerElement>;
+            /**
+             * sy-toast — toast manager. Programmatic factory for sy-toast-item popups.
+             * Spec: design-system-specs/components/toast.yaml
+             * Usage: call `createToast(variant, options)` or the variant-specific helpers
+             * (`createSuccessToast`, etc.). Each call spawns a new `sy-toast-item`
+             * appended to document.body; stacking is governed by `latestTop`.
+             * Props:
+             *   - duration   (ms, default auto-dismiss window for spawned toasts)
+             *   - latestTop  (new toasts appear above older ones) — legacy `latest-top`
+             */
             "sy-toast": LocalJSX.SyToast & JSXBase.HTMLAttributes<HTMLSyToastElement>;
             "sy-toast-item": LocalJSX.SyToastItem & JSXBase.HTMLAttributes<HTMLSyToastItemElement>;
+            /**
+             * sy-tooltip — contextual tooltip anchored to a trigger element.
+             * Spec: design-system-specs/components/tooltip.yaml
+             * Props (spec-aligned + legacy aliases):
+             *   - content, position (12 directions), trigger (hover|click|focus|none)
+             *   - open, opendelay, closedelay
+             *   - hideArrow    ↔ `hide-arrow`
+             *   - maxWidth     ↔ `max-width`
+             * The tooltip is portaled to document.body so it escapes parent
+             * `overflow: hidden` / stacking contexts.
+             */
             "sy-tooltip": LocalJSX.SyTooltip & JSXBase.HTMLAttributes<HTMLSyTooltipElement>;
+            /**
+             * sy-tree — hierarchical tree view with optional check/click/drag/edit support.
+             * Spec: design-system-specs/components/tree.yaml
+             * Data model: pass a `nodes` array of TreeNode objects. Each node can declare
+             * local overrides (disabled, fixed, editable…) that take precedence over the
+             * tree-level defaults.
+             * Props (spec-aligned + legacy attribute aliases via fnAssignPropFromAlias):
+             *   - nodes, line, expandable, checkable, clickable, editable
+             *   - expandAll    ↔ `expand-all`
+             *   - manualAdd    ↔ `manual-add`, manualRemove ↔ `manual-remove`
+             *   - nodeWidth    ↔ `node-width`
+             *   - selectedValue ↔ `selected-value`, searchTerm ↔ `search-term`
+             *   - isTreeSelect (internal integration flag used by sy-tree-select)
+             *   - treeDraggable (attribute `draggable`; TS can't use `draggable` as prop name)
+             * Events: nodesChanged, itemChecked, itemSelected.
+             * Methods include programmatic add/remove/update plus clearAllSelectedItem().
+             */
             "sy-tree": LocalJSX.SyTree & JSXBase.HTMLAttributes<HTMLSyTreeElement>;
+            /**
+             * sy-tree-item — leaf renderer used internally by sy-tree.
+             * Spec: design-system-specs/components/tree.yaml (tree-item anatomy).
+             * Not meant to be authored directly — sy-tree materializes items from its
+             * `nodes` data. Extensive props exist so the parent can push per-node state
+             * (expanded, checked, editing, dragging, tag labels, etc.) down.
+             * Legacy attribute aliases resolved via fnAssignPropFromAlias:
+             *   has-child, append-placeholder, is-descendant, is-editable, tag-message,
+             *   tag-variant, search-term, selected-value, node-width.
+             * `treeitemDraggable` maps to the `draggable` attribute (TS reserved name).
+             * Note: the attribute `isDesendant` (typo) is preserved for legacy markup
+             * compatibility but the canonical property is `isDescendant`.
+             */
             "sy-tree-item": LocalJSX.SyTreeItem & JSXBase.HTMLAttributes<HTMLSyTreeItemElement>;
+            /**
+             * sy-tree-select — dropdown selector backed by a tree (single or multi-select).
+             * Spec: design-system-specs/components/tree-select.yaml
+             * Form-associated: submits `name` → selected value(s) via ElementInternals.
+             * Validation follows the same pattern as sy-input / sy-select:
+             *   - `noNativeValidity=false` (default) → native browser popup on submit.
+             *     DO NOT preventDefault the invalid event.
+             *   - `noNativeValidity=true` → native popup suppressed, `[slot="error"]`
+             *     becomes the error UI.
+             *   - `setCustomError()` → programmatic; forces slot UI visible.
+             * Props: nodes (TreeNode[]), checkable, clearable, defaultValue, disabled,
+             * status, expandable, expandAll, line, loading, maxTagCount, nodeWidth,
+             * placeholder, appendParent, readonly, required, name, noNativeValidity.
+             */
             "sy-tree-select": LocalJSX.SyTreeSelect & JSXBase.HTMLAttributes<HTMLSyTreeSelectElement>;
         }
     }

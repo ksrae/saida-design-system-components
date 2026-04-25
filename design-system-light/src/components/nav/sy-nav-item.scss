@@ -28,8 +28,12 @@
     li:hover {
       color: var(--nav-parent-text-hover);  
     }
+    /* JSX renders `disabled` as a class on <li>, and the host reflects the
+       `disabled` attribute. Match either so toggling the prop updates the
+       visual immediately. */
+    li.disabled,
     li[disabled] {
-      cursor:auto;
+      cursor: auto;
       color: var(--nav-parent-text-disabled);
     }
 }

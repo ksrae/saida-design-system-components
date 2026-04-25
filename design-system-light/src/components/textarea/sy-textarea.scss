@@ -133,6 +133,19 @@
             border: var(--border-small) var(--textarea-form-field-border-invaild);
         }
 
+        /* Status prop — manual visual cue independent of validation. */
+        &.textarea--error {
+            border: var(--border-small) var(--textarea-form-field-border-invaild);
+        }
+
+        &.textarea--warning {
+            border: var(--border-small) var(--border-extended-yellow-bold);
+        }
+
+        &.textarea--success {
+            border: var(--border-small) var(--textarea-form-field-border-vaild);
+        }
+
         &:hover {
             color: var(--textarea-form-field-text-hover);
             border: var(--border-small) var(--textarea-form-field-border-hover);

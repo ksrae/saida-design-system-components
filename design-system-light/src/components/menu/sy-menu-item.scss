@@ -3,14 +3,19 @@
 :host,
 :root {
     display: block;
+    min-width: max-content;
 
     li {
         cursor: pointer;
         padding: var(--spacing-3xsmall) var(--spacing-xsmall);
         color: var(--menu-menuitem-default-text-enabled);
         background-color: var(--menu-dropdownmenu-background-enabled);
+        min-width: max-content;
+        min-height: var(--component-medium);
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
         text-overflow: ellipsis;
-        display: flex;
         display: flex;
         align-items: center;
         gap: var(--spacing-3xsmall);
@@ -21,8 +26,8 @@
 
         &:active {
             color: var(--menu-menuitem-default-text-active);
-        }           
-        
+        }
+
         &.active {
             background-color: var(--menu-menuitem-default-background-active);
         }
@@ -32,7 +37,8 @@
             @include font.text-style-base-medium;
         }
 
-        &[disabled] {
+        &[disabled],
+        &.menu-item--disabled {
             cursor: auto;
             color: var(--menu-menuitem-default-text-disabled);
 

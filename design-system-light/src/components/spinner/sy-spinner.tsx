@@ -52,7 +52,17 @@ export class SySpinner {
   // [핵심] 렌더링 직전에 슬롯에 컨텐츠가 있는지 확인합니다.
   componentWillRender() {
     this.hasContent = Array.from(this.host.childNodes).some(
-      node => (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') || node.nodeType === Node.ELEMENT_NODE
+      node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return node.textContent.trim() !== '';
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) {
+          return false;
+        }
+
+        return !(node as HTMLElement).classList.contains('spinner-container');
+      }
     );
   }
 

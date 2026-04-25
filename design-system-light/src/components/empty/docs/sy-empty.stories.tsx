@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/web-components-vite";
+import { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { clearElements } from '../../clear-element';
 import { Empty, SyEmptyProps } from './sy-empty.main';
 

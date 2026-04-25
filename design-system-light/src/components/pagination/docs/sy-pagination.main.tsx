@@ -1,5 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { html, ifDefined } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyPaginationProps extends Components.SyPagination {
@@ -49,13 +48,32 @@ export const PaginationPageChanged = () => {
   `;
 };
 
-export const PaginationPageSizeChanged = () => {
+// PageSizeChanged needs a real page-size selector to fire against. The
+// component only renders the dropdown when `pageSizeOptions` is a non-empty
+// comma-separated string, so this story exposes that string (plus pageSize
+// and totalItems) as controls — without them the user has nothing to click.
+export const PaginationPageSizeChanged = (a: {
+  pageSizeOptions: string;
+  pageSize: number;
+  totalItems: number;
+}) => {
   const handle = (e: Event) => {
     const out = document.getElementById('pgPSResult');
     if (out) out.textContent = `pageSize: ${(e as CustomEvent).detail}`;
   };
   return html`
-    <sy-pagination .totalItems=${100} @pageSizeChanged=${handle}></sy-pagination>
+    <p>
+      Open the page-size dropdown (right side of the pager) and pick a different
+      value to fire <code>pageSizeChanged</code>. Edit
+      <code>pageSizeOptions</code> in the Controls panel to change which sizes
+      appear in the dropdown.
+    </p>
+    <sy-pagination
+      .totalItems=${a.totalItems}
+      .pageSize=${a.pageSize}
+      pageSizeOptions=${ifDefined(a.pageSizeOptions)}
+      @pageSizeChanged=${handle}
+    ></sy-pagination>
     <p id="pgPSResult">(idle)</p>
   `;
 };

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { NavItemDisabled } from '../../sy-nav-item.main';
 import navItemMeta from '../../sy-nav-item.stories';
 

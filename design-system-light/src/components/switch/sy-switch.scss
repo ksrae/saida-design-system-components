@@ -9,6 +9,50 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-2xsmall);
+    flex-wrap: wrap;
+}
+
+/* Wrapper around switch + label + error slot. Flex so switch and label sit
+   side-by-side, error slot wraps to a new line below. */
+.switch-wrapper {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-2xsmall);
+    width: 100%;
+}
+
+/* Required marker on the label, matching checkbox/textarea. */
+.switch-label .required {
+    color: var(--required, var(--input-form-field-border-invaild));
+    margin-right: var(--spacing-3xsmall);
+}
+
+/* Slot-driven error UI — hidden until the field has been touched or the form
+   has been submitted while invalid, then `.visible-error` reveals the slot
+   (or fallback default text). Switch has no native popup path. */
+.error-container {
+    width: 100%;
+    color: var(--required, var(--input-form-field-border-invaild));
+    font-size: 0.85rem;
+    margin-top: 4px;
+    box-sizing: border-box;
+    display: none;
+    flex-basis: 100%;
+}
+
+slot[name="error"] {
+    display: block;
+    width: 100%;
+}
+
+slot[name="error"] > * {
+    display: block;
+    width: 100%;
+}
+
+.visible-error {
+    display: block;
 }
 
 .switch {

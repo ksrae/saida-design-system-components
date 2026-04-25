@@ -1,6 +1,5 @@
-import { html } from 'lit';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import { html, ref, createRef, Ref } from '../../../../../utils/story-template';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 
 const render = () => {
   const modalRef: Ref<HTMLSyModalElement> = createRef();

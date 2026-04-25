@@ -57,7 +57,7 @@ for ($i = 0; $i -lt $Attrs.Count; $i++) {
   $titlePath = if ($SubTitleSeg) { "$TitleName/$SubTitleSeg/$display" } else { "$TitleName/Attributes/$display" }
 
   $storyContent = @"
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { $demoFn } from '../../$fileBase.main';
 import $storiesVarFinal from '../../$fileBase.stories';
 
@@ -111,7 +111,7 @@ for ($i = 0; $i -lt $Methods.Count; $i++) {
   $titlePath = if ($SubTitleSeg) { "$TitleName/$SubTitleSeg/$display" } else { "$TitleName/Methods/$display" }
 
   $storyContent = @"
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { $demoFn } from '../../$fileBase.main';
 
 const meta: Meta = {
@@ -161,7 +161,7 @@ for ($i = 0; $i -lt $Events.Count; $i++) {
   $titlePath = if ($SubTitleSeg) { "$TitleName/$SubTitleSeg/$display" } else { "$TitleName/Events/$display" }
 
   $storyContent = @"
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { $demoFn } from '../../$fileBase.main';
 
 const meta: Meta = {

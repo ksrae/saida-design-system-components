@@ -1,6 +1,5 @@
-import { html } from "lit";
+import { html, ifDefined, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 export interface SyMenuProps extends Components.SyMenu {
   slot?: any;
@@ -21,7 +20,7 @@ export interface SyMenuGroupProps extends Components.SyMenuGroup {
   slot?: any;
 }
 
-export const Menu = ({ checkable, open, position, trigger, slot }: SyMenuProps) => {
+export const Menu = ({ checkable, open, position, trigger, disabled, direction, loading, slot }: SyMenuProps) => {
   return html`
   <style>
     .container {
@@ -45,8 +44,11 @@ export const Menu = ({ checkable, open, position, trigger, slot }: SyMenuProps) 
       <sy-menu
         ?checkable=${checkable}
         ?open=${open}
-        position=${position}
-        trigger=${trigger}>
+        ?disabled=${!!disabled}
+        ?loading=${!!loading}
+        position=${ifDefined(position)}
+        trigger=${ifDefined(trigger)}
+        direction=${ifDefined(direction)}>
        ${unsafeHTML(slot)}
     </sy-menu>
     </div>
@@ -75,7 +77,7 @@ export const MenuSub = ({ disabled, open, menuSubTitle, slot }: SyMenuSubProps) 
     <div class="container">
       <span>Sub Menu</span>
       <sy-menu>
-        <sy-menu-sub ?disabled=${disabled} menuSubTitle=${menuSubTitle} ?open=${open}>
+        <sy-menu-sub ?disabled=${disabled} title=${ifDefined(menuSubTitle)} ?open=${open}>
           ${unsafeHTML(slot)}
         </sy-menu-sub>
       </sy-menu>
@@ -104,7 +106,7 @@ export const MenuGroup = ({menuGroupTitle, slot}: SyMenuGroupProps) => {
     <div class="container">
       <span>Menu Group</span>
       <sy-menu>
-        <sy-menu-group menuGroupTitle=${menuGroupTitle}>
+        <sy-menu-group title=${ifDefined(menuGroupTitle)}>
           ${unsafeHTML(slot)}
         </sy-menu-group>
       </sy-menu>
@@ -575,7 +577,7 @@ export const MenuDirection = (args: { direction: 'left' | 'right' }) => html`
   <div class="container">
     <span>Menu</span>
     <sy-menu trigger="click" direction=${args.direction}>
-      <sy-menu-sub menuSubTitle="Submenu">
+      <sy-menu-sub title="Submenu">
         <sy-menu-item value="1">Item 1</sy-menu-item>
         <sy-menu-item value="2">Item 2</sy-menu-item>
       </sy-menu-sub>

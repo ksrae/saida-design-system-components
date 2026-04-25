@@ -1,6 +1,7 @@
 import type { Preview } from '@stencil/storybook-plugin';
 import { withThemeByClassName } from '@storybook/addon-themes';
-import { defineCustomElements } from '../loader/index.js';
+import { defineCustomElements } from '../dist/esm/loader.js';
+import { clearElements } from '../src/components/clear-element';
 import '../src/assets/style/global.scss';
 import './preview.css';
 
@@ -88,10 +89,10 @@ const preview: Preview = {
           'Spinner', ['Overview', '*'],
           'SplitPanel', ['Overview', '*'],
           'Steps', ['Overview', 'Item Overview', '*'],
-          'Switch', ['Overview', '*'],
+          'Switch', ['Overview', 'Attributes', 'Events', 'Methods', '*'],
           'Tab', ['Overview', 'Item Overview', 'Content Overview', '*'],
           'Tag', ['Overview', '*'],
-          'Textarea', ['Overview', '*'],
+          'Textarea', ['Overview', 'Attributes', 'Events', 'Methods', '*'],
           'Toast', ['Overview', 'Item Overview', '*'],
           'Tooltip', ['Overview', '*'],
           'TreeSelect', ['Overview', '*'],
@@ -102,6 +103,14 @@ const preview: Preview = {
   },
 
   decorators: [
+    // Clear floating/portaled elements (modal, modeless, menu, popover, etc.)
+    // whenever the active story changes. Without this, navigating between
+    // attribute/method stories leaves prior portals in document.body and they
+    // pile up across renders.
+    (story, context) => {
+      clearElements(context.title || context.id);
+      return story();
+    },
     withThemeByClassName({
       defaultTheme: 'light',
       themes: {

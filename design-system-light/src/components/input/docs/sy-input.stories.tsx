@@ -1,5 +1,5 @@
 import { Input, SyInputProps } from './sy-input.main';
-import { Meta, StoryObj } from "@storybook/web-components-vite";
+import { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { clearElements } from '../../clear-element';
 
 const inputMeta: Meta<SyInputProps> = {

@@ -37,6 +37,7 @@ export class SyMenu {
 	private mouseY!: number;
 	private isUpdatingOpenState = false;
 	private isClosing = false;
+	private isReparenting = false;
 	private dropdownElement: HTMLSyDropdownElement | null = null;
 
 	@Prop({ reflect: true, mutable: true }) open: boolean = false;
@@ -70,14 +71,15 @@ export class SyMenu {
 	}
 
 	connectedCallback() {
+		this.rememberOriginalParent();
 		window.addEventListener('scroll', this.updateMenuPosition, true);
 		window.addEventListener('resize', this.updateMenuPosition, true);
+		this.addEvent();
+		this.addMenuEventListeners();
 	}
 
 	componentWillLoad() {
-		this.parentDom = this.host.parentElement;
-		this.originalParent = this.host.parentElement;
-		this.nextSibling = this.host.nextSibling;
+		this.rememberOriginalParent();
 		this.setDropdown();
 	}
 
@@ -87,35 +89,52 @@ export class SyMenu {
 		}
 		this.setCheckableAllItems();
 		this.addEvent();
-
-		// 이벤트 리스너 추가
-		this.host.addEventListener('itemSelected', this.itemSelectedHandler);
-		this.host.addEventListener('itemChecked', this.itemCheckedHandler);
-		// 메뉴 아이템 클릭 직접 감지
-		this.host.addEventListener('click', this.handleMenuItemClick, true);
+		this.addMenuEventListeners();
+		this.openIfParentHovered();
 	}
 
 	disconnectedCallback() {
+		if (this.isReparenting) return;
+
 		window.removeEventListener('resize', this.updateMenuPosition, true);
 		window.removeEventListener('scroll', this.updateMenuPosition, true);
 		document.removeEventListener('click', this.handleDocumentClick, true);
-		this.dropdownElement?.removeEventListener('keydown', this.handleDropdownKeydown);
+		this.removeParentEvents();
+		this.removeMenuEventListeners();
 
 		if (this.openTimer) clearTimeout(this.openTimer);
 		if (this.closeTimer) clearTimeout(this.closeTimer);
 
-		this.host.removeEventListener('itemSelected', this.itemSelectedHandler);
-		this.host.removeEventListener('itemChecked', this.itemCheckedHandler);
-		this.host.removeEventListener('click', this.handleMenuItemClick, true);
 	}
 
 	render() {
 		return (
-			<ul onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-				<slot></slot>
+			<ul
+				role="menu"
+				aria-busy={this.loading ? 'true' : 'false'}
+				class={{ 'menu-list': true, 'menu-list--loading': this.loading }}
+				onMouseEnter={this.handleMouseEnter}
+				onMouseLeave={this.handleMouseLeave}
+			>
+				<slot onSlotchange={this.handleSlotChange}></slot>
+				{this.loading && (
+					<li class="menu-loading" aria-disabled="true">
+						<sy-spinner size="small"></sy-spinner>
+					</li>
+				)}
 			</ul>
 		);
 	}
+
+	private handleSlotChange = () => {
+		this.setCheckableAllItems();
+		this.syncSubMenus();
+		this.openIfParentHovered();
+
+		if (this.open) {
+			requestAnimationFrame(() => this.updateMenuPosition());
+		}
+	};
 
 	@Watch('trigger')
 	watchTrigger() {
@@ -138,6 +157,13 @@ export class SyMenu {
 		this.setCheckableAllItems();
 	}
 
+	@Watch('loading')
+	watchLoading() {
+		if (this.open) {
+			requestAnimationFrame(() => this.updateMenuPosition());
+		}
+	}
+
 	@Watch('open')
 	watchOpen(newVal: boolean) {
 		if (this.isUpdatingOpenState) return;
@@ -151,6 +177,66 @@ export class SyMenu {
 		}
 	}
 
+	@Method()
+	async setOpen() {
+		if (this.disabled) return;
+		this.removeAllMenus();
+		this.showMenu();
+		this.opened.emit(true);
+	}
+
+	@Method()
+	async setClose() {
+		this.hideMenu();
+		this.opened.emit(false);
+	}
+
+	@Method()
+	async toggle() {
+		const isOpen = this.open && this.host.style.display !== 'none';
+		if (isOpen) {
+			await this.setClose();
+		} else {
+			await this.setOpen();
+		}
+	}
+
+	@Method()
+	async close() {
+		await this.setClose();
+	}
+
+	private rememberOriginalParent() {
+		if (this.originalParent || !this.host.parentElement || this.host.parentElement === document.body) return;
+		this.parentDom = this.host.parentElement;
+		this.originalParent = this.host.parentElement;
+		this.nextSibling = this.host.nextSibling;
+	}
+
+	private removeParentEvents() {
+		const parent = this.parentDom;
+		if (!parent) return;
+		parent.removeEventListener('mouseenter', this.parentMouseEnter);
+		parent.removeEventListener('mouseleave', this.parentMouseLeave);
+		parent.removeEventListener('click', this.parentClick);
+		parent.removeEventListener('contextmenu', this.parentContextMenu);
+	}
+
+	private addMenuEventListeners() {
+		this.removeMenuEventListeners();
+		this.host.addEventListener('itemSelected', this.itemSelectedHandler);
+		this.host.addEventListener('itemChecked', this.itemCheckedHandler);
+		this.host.addEventListener('click', this.handleMenuItemClick, true);
+		this.dropdownElement?.addEventListener('keydown', this.handleDropdownKeydown);
+	}
+
+	private removeMenuEventListeners() {
+		this.host.removeEventListener('itemSelected', this.itemSelectedHandler);
+		this.host.removeEventListener('itemChecked', this.itemCheckedHandler);
+		this.host.removeEventListener('click', this.handleMenuItemClick, true);
+		this.dropdownElement?.removeEventListener('keydown', this.handleDropdownKeydown);
+	}
+
 	private setDropdown() {
 		const dropdownElement = this.host.closest('sy-dropdown') as HTMLSyDropdownElement;
 		this.dropdownElement = dropdownElement ?? null;
@@ -159,7 +245,6 @@ export class SyMenu {
 			this.position = dropdownElement.position;
 			this.trigger = dropdownElement.trigger;
 			this.disabled = dropdownElement.disabled;
-			dropdownElement.addEventListener('keydown', this.handleDropdownKeydown);
 		}
 	}
 
@@ -177,10 +262,7 @@ export class SyMenu {
 	private addEvent() {
 		const parent = this.parentDom;
 		if (parent) {
-			parent.removeEventListener('mouseenter', this.parentMouseEnter);
-			parent.removeEventListener('mouseleave', this.parentMouseLeave);
-			parent.removeEventListener('click', this.parentClick);
-			parent.removeEventListener('contextmenu', this.parentContextMenu);
+			this.removeParentEvents();
 
 			if (this.trigger === 'hover' && !this.disabled) {
 				parent.addEventListener('mouseenter', this.parentMouseEnter);
@@ -191,12 +273,35 @@ export class SyMenu {
 				parent.addEventListener('contextmenu', this.parentContextMenu);
 			}
 		}
+		this.syncSubMenus();
+		this.openIfParentHovered();
+	}
+
+	private openIfParentHovered() {
+		if (this.trigger !== 'hover' || this.disabled || this.open || this.isClosing || !this.parentDom?.matches?.(':hover')) return;
+		requestAnimationFrame(() => {
+			if (this.trigger === 'hover' && !this.disabled && !this.open && !this.isClosing && this.parentDom?.matches?.(':hover')) {
+				this.parentMouseEnter();
+			}
+		});
+	}
+
+	private syncSubMenus() {
+		const submenuTrigger = this.trigger === 'click' ? 'click' : 'hover';
+		const subMenus = Array.from(this.host.querySelectorAll('sy-menu-sub')) as HTMLSyMenuSubElement[];
+		subMenus.forEach((subMenu) => {
+			(subMenu as any).trigger = submenuTrigger;
+		});
 	}
 
 	private showMenu() {
 		if ((this.open && this.host.parentNode === document.body && this.host.style.display !== 'none') || this.isClosing) {
 			return;
 		}
+
+		this.rememberOriginalParent();
+		this.addEvent();
+		this.addMenuEventListeners();
 
 		// 플래그 리셋
 		this.isClosing = false;
@@ -207,7 +312,12 @@ export class SyMenu {
 
 		this.openTimer = setTimeout(() => {
 			if (this.host.parentNode !== document.body) {
-				document.body.appendChild(this.host);
+				this.isReparenting = true;
+				try {
+					document.body.appendChild(this.host);
+				} finally {
+					this.isReparenting = false;
+				}
 			}
 
 			this.host.style.removeProperty('display');
@@ -257,10 +367,15 @@ export class SyMenu {
 		// 원래 위치로 복원
 		setTimeout(() => {
 			if (this.originalParent && this.host.parentNode === document.body) {
-				if (this.nextSibling) {
-					this.originalParent.insertBefore(this.host, this.nextSibling);
-				} else {
-					this.originalParent.appendChild(this.host);
+				this.isReparenting = true;
+				try {
+					if (this.nextSibling) {
+						this.originalParent.insertBefore(this.host, this.nextSibling);
+					} else {
+						this.originalParent.appendChild(this.host);
+					}
+				} finally {
+					this.isReparenting = false;
 				}
 			}
 			this.host.classList.remove('closing');
@@ -384,6 +499,8 @@ export class SyMenu {
 
 	// 메뉴 아이템 클릭 직접 처리
 	private handleMenuItemClick = (event: any) => {
+		if (this.disabled || this.loading) return;
+
 		const clickedMenuItem = event.target?.closest('sy-menu-item');
 
 		if (clickedMenuItem && this.host.contains(clickedMenuItem)) {
@@ -503,9 +620,7 @@ export class SyMenu {
 
 	@Method()
 	async setSelectableAllItems() {
-		const ul = this.host.querySelector('ul');
-		if (!ul) return;
-		const items = Array.from(ul.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
+		const items = Array.from(this.host.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
 		if (items.length) {
 			items.forEach((item) => item.selectable = true);
 		}
@@ -513,18 +628,14 @@ export class SyMenu {
 
 	@Method()
 	async clearSelectedItem() {
-		const ul = this.host.querySelector('ul');
-		if (!ul) return;
-		const itemsClear = Array.from(ul.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
+		const itemsClear = Array.from(this.host.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
 		if (itemsClear.length) {
 			itemsClear.forEach((item) => item.select = false);
 		}
 	}
 
 	private setCheckableAllItems() {
-		const ul = this.host.querySelector('ul');
-		if (!ul) return;
-		const itemsCheck = Array.from(ul.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
+		const itemsCheck = Array.from(this.host.querySelectorAll('sy-menu-item')) as HTMLSyMenuItemElement[];
 		if (itemsCheck.length) {
 			itemsCheck.forEach((item) => {
 				item.checkable = this.checkable;
@@ -535,12 +646,16 @@ export class SyMenu {
 	// Event handlers - 이벤트 전달만 담당
 	private itemSelectedHandler = (e: Event) => {
 		const customEvent = e as CustomEvent;
+		if (customEvent.target === this.host) return;
+		customEvent.stopPropagation();
 		this.itemSelected.emit(customEvent.detail);
 		// 닫기는 handleMenuItemClick에서 처리
 	};
 
 	private itemCheckedHandler = (e: Event) => {
 		const customEvent = e as CustomEvent;
+		if (customEvent.target === this.host) return;
+		customEvent.stopPropagation();
 		this.itemChecked.emit(customEvent.detail);
 		// checkable 메뉴는 열린 상태 유지
 	};

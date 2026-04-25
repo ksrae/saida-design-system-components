@@ -15,6 +15,13 @@
         width: 100%;
         box-sizing: border-box;
         padding: var(--spacing-3xsmall) var(--spacing-xsmall);
+        /* Lock the row height so loading / empty rows (which only render a
+           small spinner / empty icon) match the height of a regular text
+           option. Without this the loading row collapsed to barely the
+           spinner's height (~16px) and looked tiny relative to its
+           siblings. `--component-medium` is the standard form-control
+           row height used by sy-input / sy-select etc. */
+        min-height: var(--component-medium);
         @include font.text-style-base-regular();
         overflow: hidden;
         text-overflow: ellipsis;

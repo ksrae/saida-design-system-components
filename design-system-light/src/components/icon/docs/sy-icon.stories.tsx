@@ -1,5 +1,5 @@
 import { Icon, SyIconProps } from './sy-icon.main';
-import { Meta, StoryObj } from "@storybook/web-components-vite";
+import { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { clearElements } from '../../clear-element';
 
 const iconMeta: Meta<SyIconProps> = {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { CollapseGhost } from '../../sy-collapse.main';
 import collapseMeta from '../../sy-collapse.stories';
 

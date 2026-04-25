@@ -1,8 +1,19 @@
-// src/components/sy-empty/sy-empty.scss (수정본)
+// src/components/sy-empty/sy-empty.scss
 
-// :host 래퍼를 제거합니다. Stencil의 scoped 옵션이 자동으로 범위를 지정해줍니다.
+// Make the host fill its container's width and behave as a block. Without
+// this the host defaulted to inline display, so when sy-empty was dropped
+// inside a flex parent like sy-option (`.select-item { display: flex;
+// justify-content: start; }`) the sy-empty took only its content width and
+// got pinned to the left of the row — the icon ended up jammed against
+// the option's left padding instead of sitting in the middle of the
+// dropdown. With width:100% the wrapper below has the full row to center
+// its icon + text within.
+:host {
+    display: block;
+    width: 100%;
+}
+
 .empty-wrapper {
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;

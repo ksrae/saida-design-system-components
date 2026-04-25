@@ -1,4 +1,4 @@
-import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import { Canvas, Controls, Meta } from '@storybook/addon-docs/blocks';
 import * as ForStories from './sy-label-for.stories';
 
 <Meta of={ForStories} />
@@ -8,3 +8,5 @@ import * as ForStories from './sy-label-for.stories';
 The `for` attribute links the label to the input whose `id` matches — clicking the label focuses the input.
 
 <Canvas of={ForStories.Default} />
+
+<Controls of={ForStories.Default} />

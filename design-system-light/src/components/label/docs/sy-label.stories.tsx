@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/web-components-vite";
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { Label, SyLabelProps } from './sy-label.main';
 import { clearElements } from "../../clear-element";
 
@@ -20,9 +20,9 @@ const labelMeta: Meta<SyLabelProps> = {
       },
     },
     htmlFor: {
-      name: 'htmlfor',
+      name: 'for',
       control: "text",
-      description: "Sets the id of the element that the label is bound to. `for` is a reserved word in JS/TS, so the attribute is `htmlfor` (HTML is case-insensitive, so `htmlFor` in markup also works).",
+      description: "Sets the id of the element that the label is bound to. The Stencil property is `htmlFor`, and the HTML attribute is `for`.",
       table: {
         category: "Parameter",
         defaultValue: { summary: "" },

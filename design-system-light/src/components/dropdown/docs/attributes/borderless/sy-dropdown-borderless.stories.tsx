@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { DropdownBorderless } from '../../sy-dropdown.main';
 import dropdownMeta from '../../sy-dropdown.stories';
 

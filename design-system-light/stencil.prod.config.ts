@@ -2,6 +2,7 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 import { angularOutputTarget, ValueAccessorConfig } from '@stencil/angular-output-target';
 import { reactOutputTarget } from '@stencil/react-output-target';
+import { vueOutputTarget } from '@stencil/vue-output-target';
 
 const angularValueAccessorBindings: ValueAccessorConfig[] = [
   {
@@ -26,6 +27,7 @@ const angularValueAccessorBindings: ValueAccessorConfig[] = [
 
 export const config: Config = {
   namespace: 'design-system-light',
+  tsconfig: 'tsconfig.build.json',
   plugins: [
     sass({
       injectGlobalPaths: [
@@ -56,7 +58,7 @@ export const config: Config = {
         },
       ],
       externalRuntime: false,
-      generateTypeDeclarations: true  
+      generateTypeDeclarations: true
     },
     {
       type: 'www',
@@ -90,6 +92,31 @@ export const config: Config = {
       stencilPackageName: '@dc/synergy',
       outDir: '../react-library/lib/components/cjs',
       esModules: false,
+    }),
+    // vue
+    vueOutputTarget({
+      componentCorePackage: '@dc/synergy',
+      proxiesFile: '../vue-library/lib/components.ts',
+      componentModels: [
+        {
+          elements: ['sy-input'],
+          event: 'changed',
+          targetAttr: 'value',
+          eventAttr: 'detail.value',
+        },
+        {
+          elements: ['sy-input-number'],
+          event: 'changed',
+          targetAttr: 'value',
+          eventAttr: 'detail.value',
+        },
+        {
+          elements: ['sy-checkbox'],
+          event: 'changed',
+          targetAttr: 'checked',
+          eventAttr: 'detail.checked',
+        },
+      ],
     }),
   ],
 

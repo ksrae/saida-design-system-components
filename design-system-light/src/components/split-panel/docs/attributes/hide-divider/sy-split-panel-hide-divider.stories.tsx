@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SplitPanelHideDivider } from '../../sy-split-panel.main';
 import splitPanelMeta from '../../sy-split-panel.stories';
 

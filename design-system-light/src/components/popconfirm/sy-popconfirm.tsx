@@ -1,4 +1,4 @@
-import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch } from '@stencil/core';
+import { Component, Prop, Element, Method, h, Event, EventEmitter, Watch, forceUpdate } from '@stencil/core';
 import { fnAssignPropFromAlias } from '../../utils/utils';
 
 /**
@@ -59,10 +59,46 @@ export class SyPopconfirm {
     }
   }
 
+  // Force a re-render when the button-label props change while the popup is
+  // already open. Stencil's auto-render on @Prop change normally handles
+  // this, but the popup is portaled to document.body and the label updates
+  // were not reliably reaching the buttons in practice — explicitly
+  // scheduling forceUpdate here guarantees the rendered text matches the
+  // latest prop value live, without having to close and reopen.
+  @Watch('confirmText')
+  @Watch('cancelText')
+  handleLabelChanges() {
+    forceUpdate(this);
+  }
+
   // 라이프사이클 메서드
+  // connectedCallback fires both on the initial mount AND every time the
+  // host is re-attached to the DOM. appendToRoot() moves the host to
+  // document.body, which disconnects it from its original parent (firing
+  // disconnectedCallback, which removes our outside-click + parent-click
+  // listeners) and then reconnects it under document.body. Without this
+  // hook the listeners would be permanently lost the moment the popup
+  // opens — outside-click close (closable=true) and click-trigger toggle
+  // would silently stop working after the first open.
+  connectedCallback() {
+    // Re-add the document outside-click listener. removeEventListener is
+    // idempotent so this is safe on the first connect even though
+    // disconnectedCallback hasn't run yet.
+    document.removeEventListener("click", this.handleOutsideClick, true);
+    document.addEventListener("click", this.handleOutsideClick, true);
+
+    // Re-attach the parent-click listener if parentDom is already known
+    // (i.e. on subsequent reconnects). On the very first connect, parentDom
+    // hasn't been captured yet — componentWillLoad runs after this and
+    // componentDidLoad will call addEvent() to wire it up.
+    if (this.parentDom && this.trigger === 'click') {
+      this.parentDom.removeEventListener("click", this.parentClick);
+      this.parentDom.addEventListener("click", this.parentClick);
+    }
+  }
+
   componentWillLoad() {
     this.parentDom = this.host.parentElement as HTMLElement;
-    document.addEventListener("click", this.handleOutsideClick, true);
     // Use utility to read legacy alias attributes and only assign when present.
     // 두개의 alias를 모두 여기서 지원할 수도 있고, 둘 중 하나는 Prop({ attribute: ... })로 지정하고 여기에서는 다른 하나만 지원하는 방식을 취해도 됩니다.
     // 명시적으로는 Prop에서 attribute를 camelCase를 사용하고, alias로 snake-case를 지원하는 방식을 권장합니다.
@@ -154,6 +190,11 @@ export class SyPopconfirm {
 
   // 이벤트 핸들러
   private addEvent() {
+    // Idempotent: remove first so callers (componentDidLoad and
+    // connectedCallback) don't double-attach the same listener.
+    if (this.parentDom) {
+      this.parentDom.removeEventListener("click", this.parentClick);
+    }
     if (this.trigger === "click" && this.parentDom) {
       this.parentDom.addEventListener("click", this.parentClick);
     }
@@ -189,7 +230,12 @@ export class SyPopconfirm {
 
   private handleKeydown = (e: KeyboardEvent) => {
     e.stopPropagation();
-    if (e.code === "Escape") {
+    // Gate Escape on `closable` so the prop has an observable effect: with
+    // closable=false the popup stays open on outside-click AND on Escape;
+    // with closable=true both dismiss it. Previously Escape always closed,
+    // which made closable=true look identical to closable=false during
+    // testing (because the Escape path bypassed the flag entirely).
+    if (e.code === "Escape" && this.closable) {
       this.eventEmit("cancel");
     }
   }

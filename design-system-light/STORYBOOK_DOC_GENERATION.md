@@ -65,7 +65,7 @@ ComponentName/
 파일: `<dir>/sy-<comp>-<kebab-prop>.stories.tsx`
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { <DemoFunctionName> } from '../../sy-<comp>.main';
 import <compMeta> from '../../sy-<comp>.stories';
 
@@ -89,7 +89,7 @@ export const Default: Story = {};
 ```
 
 **주의사항:**
-- `import type` 은 `@storybook/web-components-vite` 에서
+- `import type` 은 `@stencil/storybook-plugin` 에서
 - 기존 stories.tsx/.ts 파일의 default export (meta object)를 `<compMeta>` 로 가져와 `argTypes` 를 재사용
 - `import` 경로 레벨: attributes 폴더는 `../../sy-<comp>.main` (2 단계 위)
 - **boolean prop**: Lit 템플릿에서 `?propName=${value}` 사용 (단, camelCase 속성명이 Stencil에서 kebab-case로 매핑될 경우 `.propName=${value}` 프로퍼티 바인딩 사용 필요)
@@ -130,7 +130,7 @@ import * as <Name>Stories from './...';
 ### 2-3. Story for Method/Event (args 없음)
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { <DemoFunctionName> } from '../../sy-<comp>.main';
 
 const meta: Meta = {
@@ -354,7 +354,7 @@ card, flex, global-header, inline-message, modeless, nav, pagination, popconfirm
 ```
 <comp>/
 └── docs/
-    ├── sy-<comp>.main.tsx        ← Lit 템플릿 demo 함수들
+    ├── sy-<comp>.main.tsx        ← Stencil story-template demo 함수들
     ├── sy-<comp>.stories.tsx     ← Storybook meta (Overview)
     └── sy-<comp>.main.mdx        ← Overview 문서 페이지
 ```
@@ -364,9 +364,8 @@ card, flex, global-header, inline-message, modeless, nav, pagination, popconfirm
 참고 예시: `src/components/badge/docs/sy-badge.main.tsx`
 
 ```typescript
-import { html } from 'lit';
+import { html, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js'; // slot이 있으면
 
 export interface Sy<Comp>Props extends Components.Sy<Comp> {
   slot?: any;
@@ -398,7 +397,7 @@ export const <Comp>Methods = () => html`...`;
 참고 예시: `src/components/badge/docs/sy-badge.stories.tsx`
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { Sy<Comp>Props, <Comp> } from './sy-<comp>.main';
 import { clearElements } from '../../clear-element';
 
@@ -595,9 +594,8 @@ src/components/tag/docs/
 
 **Step 3**: `sy-tag.main.tsx` demo 함수 포함
 ```typescript
-import { html } from 'lit';
+import { html, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 export interface SyTagProps extends Components.SyTag {
   slot?: any;
@@ -635,7 +633,7 @@ export const TagClosed = () => html`
 
 **Step 4**: `sy-tag.stories.tsx` overview meta
 ```typescript
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyTagProps, Tag } from './sy-tag.main';
 import { clearElements } from '../../clear-element';
 
@@ -721,7 +719,7 @@ mkdir -p attributes/closable attributes/color attributes/size events/closed
 **Don't:**
 - ❌ docs/에 있는 기존 파일을 덮어쓰지 마세요 (기존 Overview meta는 그대로 둡니다)
 - ❌ 새 파일을 `.ts`로 만들지 마세요 (`.tsx`)
-- ❌ `from '@storybook/web-components'` ↔ `'@storybook/web-components-vite'` 혼용 주의 (둘 다 유효하나 새 파일은 후자 권장)
+- ❌ 구 Storybook web-components 렌더러나 Lit import를 새 파일에 쓰지 마세요
 - ❌ `<<something>>` placeholder 남기지 마세요
 
 **Do:**

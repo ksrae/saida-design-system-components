@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyDatepickerProps extends Components.SyDatepicker {
@@ -102,32 +100,39 @@ export const DatepickerChanged = () => {
 
 export const DatepickerSetCustomError = () => {
   const elRef: Ref<HTMLSyDatepickerElement> = createRef();
-
-  const writeStatus = async () => {
-    const out = document.getElementById('datepickerCustomErrorOut');
-    const el = elRef.value;
-    if (!el || !out) return;
-    const valid = await el.checkValidity();
-    const status = await (el as any).getValidStatus();
-    const message = (el as any).validationMessage ?? '';
-    out.textContent = `valid=${valid}, status=${status || 'ok'}, message="${message}"`;
+  const submitResultId = `dpSubmitResult_${Math.random().toString(36).slice(2, 8)}`;
+  let submitFired = false;
+  const handleSubmitClick = () => {
+    submitFired = false;
+    requestAnimationFrame(() => {
+      const out = document.getElementById(submitResultId);
+      if (!out) return;
+      if (submitFired) {
+        out.textContent = 'Submit succeeded ✓';
+        out.style.color = 'var(--success-text, #2e7d32)';
+      } else {
+        out.textContent = 'Submit blocked ✗ (custom error active)';
+        out.style.color = 'var(--required, #c0392b)';
+      }
+    });
   };
+  const handleSubmit = (e: Event) => { e.preventDefault(); submitFired = true; };
 
   return html`
-    <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
-      <sy-datepicker ${ref(elRef)} placeholder="Pick a date…">
+    <form @submit=${handleSubmit} style="display:flex; flex-direction:column; gap:12px; width:360px;">
+      <p>Click <strong>Force setCustomError()</strong> then <strong>Submit</strong> &mdash; submit is blocked. Click <strong>clearCustomError()</strong> then <strong>Submit</strong> &mdash; submit succeeds.</p>
+      <sy-datepicker ${ref(elRef)} .noNativeValidity=${true} placeholder="Pick a date…">
         <div slot="error">
           <p style="color:#c0392b; margin:4px 0 0;">🚫 Custom error: this date is blocked by the app.</p>
         </div>
       </sy-datepicker>
       <div style="display:flex; gap:8px;">
-        <sy-button variant="primary"
-          @click=${() => elRef.value?.setCustomError().then(writeStatus)}>Force setCustomError()</sy-button>
-        <sy-button variant="secondary"
-          @click=${() => elRef.value?.clearCustomError().then(writeStatus)}>clearCustomError()</sy-button>
+        <sy-button variant="primary" @click=${() => elRef.value?.setCustomError()}>Force setCustomError()</sy-button>
+        <sy-button variant="secondary" @click=${() => elRef.value?.clearCustomError()}>clearCustomError()</sy-button>
+        <sy-button type="submit" variant="primary" @mouseDown=${handleSubmitClick}>Submit</sy-button>
       </div>
-      <p>Result: <span id="datepickerCustomErrorOut">(idle)</span></p>
-    </div>
+      <p id=${submitResultId}>(idle)</p>
+    </form>
   `;
 };
 

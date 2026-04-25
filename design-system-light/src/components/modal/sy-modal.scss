@@ -62,9 +62,14 @@
         .header-button-container {
             display: flex;
             color: var(--modal-header-icon-enabled);
+            cursor: pointer;
 
             &:hover {
                 color: var(--modal-header-icon-hover);
+            }
+
+            sy-icon {
+                cursor: pointer;
             }
         }
     }
@@ -103,106 +108,98 @@
     }
 }
 
-/* Modal Dialog */
+/* Modal variant — draggable + resizable window. */
+/* Selectors are class-based (not `:host(...)`) because the component runs in
+   scoped/light-DOM mode, where `:host()` does not match. */
 
-:host(sy-modal[variant="modal"]) {
-    .resize-handle {
-        position: absolute;
-        z-index: 10;
-    }
-
-    .resize-handle.bottom-right {
-        position: absolute;
-        z-index: 10;
-        right: 0;
-        bottom: 0;
-        width: 15px;
-        height: 15px;
-        cursor: se-resize;
-    }
-
-    .resize-handle.bottom-left {
-        position: absolute;
-        z-index: 10;
-        left: 0;
-        bottom: 0;
-        width: 15px;
-        height: 15px;
-        cursor: sw-resize;
-    }
-
-    .resize-handle.top-right {
-        position: absolute;
-        z-index: 10;
-        right: 0;
-        top: 0;
-        width: 15px;
-        height: 15px;
-        cursor: ne-resize;
-    }
-
-    .resize-handle.top-left {
-        position: absolute;
-        z-index: 10;
-        left: 0;
-        top: 0;
-        width: 15px;
-        height: 15px;
-        cursor: nw-resize;
-    }
-
-    .resize-handle.top {
-        left: 15px;
-        top: 0;
-        width: calc(100% - 30px);
-        height: 8px;
-        cursor: n-resize;
-    }
-
-    .resize-handle.bottom {
-        left: 15px;
-        bottom: 0;
-        width: calc(100% - 30px);
-        height: 8px;
-        cursor: s-resize;
-    }
-
-    .resize-handle.left {
-        left: 0;
-        top: 15px;
-        width: 8px;
-        height: calc(100% - 30px);
-        cursor: w-resize;
-    }
-
-    .resize-handle.right {
-        right: 0;
-        top: 15px;
-        width: 8px;
-        height: calc(100% - 30px);
-        cursor: e-resize;
-    }
-
-    // 모달 리사이징 시 footer 위치 유지 및 body 크기 조정
-    .modal-container {
+:root,
+:host {
+    .modal-container--modal {
         display: flex;
         flex-direction: column;
-    }
 
-    .modal-header {
-        flex-shrink: 0;
-        /* 헤더 크기 고정 */
-    }
+        .modal-header {
+            flex-shrink: 0;
+        }
 
-    .modal-body {
-        flex: 1 1 auto;
-        overflow: auto;
-        min-height: 50px;
-    }
+        .modal-body {
+            flex: 1 1 auto;
+            overflow: auto;
+            min-height: 50px;
+        }
 
-    .modal-footer {
-        flex-shrink: 0;
-        /* footer 크기 고정 */
+        .modal-footer {
+            flex-shrink: 0;
+        }
+
+        .resize-handle {
+            position: absolute;
+            z-index: 10;
+        }
+
+        .resize-handle.bottom-right {
+            right: 0;
+            bottom: 0;
+            width: 15px;
+            height: 15px;
+            cursor: se-resize;
+        }
+
+        .resize-handle.bottom-left {
+            left: 0;
+            bottom: 0;
+            width: 15px;
+            height: 15px;
+            cursor: sw-resize;
+        }
+
+        .resize-handle.top-right {
+            right: 0;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            cursor: ne-resize;
+        }
+
+        .resize-handle.top-left {
+            left: 0;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            cursor: nw-resize;
+        }
+
+        .resize-handle.top {
+            left: 15px;
+            top: 0;
+            width: calc(100% - 30px);
+            height: 8px;
+            cursor: n-resize;
+        }
+
+        .resize-handle.bottom {
+            left: 15px;
+            bottom: 0;
+            width: calc(100% - 30px);
+            height: 8px;
+            cursor: s-resize;
+        }
+
+        .resize-handle.left {
+            left: 0;
+            top: 15px;
+            width: 8px;
+            height: calc(100% - 30px);
+            cursor: w-resize;
+        }
+
+        .resize-handle.right {
+            right: 0;
+            top: 15px;
+            width: 8px;
+            height: calc(100% - 30px);
+            cursor: e-resize;
+        }
     }
 }
 

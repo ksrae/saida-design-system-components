@@ -1,5 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { html, ifDefined } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyStepsProps extends Components.SySteps { slot?: any; }
@@ -47,7 +46,7 @@ export const StepsClickable  = (a: { clickable: boolean }) => html`<sy-steps ?cl
 export const StepsComplete   = (a: { complete: boolean })  => html`<sy-steps ?complete=${!!a.complete}>${defaultSteps}</sy-steps>`;
 export const StepsType       = (a: { type: 'horizontal' | 'vertical' }) => html`<sy-steps type=${ifDefined(a.type)}>${defaultSteps}</sy-steps>`;
 export const StepsSize       = (a: { size: 'small' | 'medium' }) => html`<sy-steps size=${ifDefined(a.size)}>${defaultSteps}</sy-steps>`;
-export const StepsStartIndex = (a: { startIndex: number }) => html`<sy-steps .startIndex=${a.startIndex}>${defaultSteps}</sy-steps>`;
+export const StepsStartIndex = (a: { startIndex: number; current: number }) => html`<sy-steps .startIndex=${a.startIndex} .current=${a.current}>${defaultSteps}</sy-steps>`;
 
 export const StepDescription   = (a: { description: string })   => html`<sy-steps><sy-step description=${ifDefined(a.description)}>Step</sy-step></sy-steps>`;
 export const StepDisabled      = (a: { disabled: boolean })     => html`<sy-steps><sy-step ?disabled=${!!a.disabled}>Step</sy-step></sy-steps>`;

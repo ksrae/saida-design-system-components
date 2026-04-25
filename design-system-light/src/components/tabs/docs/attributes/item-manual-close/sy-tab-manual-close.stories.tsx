@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { TabManualClose } from '../../sy-tab.main';
 import tabMeta from '../../sy-tab.stories';
 

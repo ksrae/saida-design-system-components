@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyAutocompleteProps extends Components.SyAutocomplete {
@@ -135,23 +133,30 @@ export const AutocompleteSetCustomError = () => {
     (elRef as any).value = el;
   };
 
-  const writeStatus = async () => {
-    const out = document.getElementById('autocompleteCustomErrorOut');
-    const el = elRef.value;
-    if (!el || !out) return;
-    const valid = await el.checkValidity();
-    const status = await (el as any).getValidStatus();
-    // validationMessage is a plain TS getter on the class, not a @Method — it
-    // doesn't appear on the generated HTMLSyAutocompleteElement interface, so
-    // we read it through `any`.
-    const message = (el as any).validationMessage ?? '';
-    out.textContent = `valid=${valid}, status=${status || 'ok'}, message="${message}"`;
+  const submitResultId = `acSubmitResult_${Math.random().toString(36).slice(2, 8)}`;
+  let submitFired = false;
+  const handleSubmitClick = () => {
+    submitFired = false;
+    requestAnimationFrame(() => {
+      const out = document.getElementById(submitResultId);
+      if (!out) return;
+      if (submitFired) {
+        out.textContent = 'Submit succeeded ✓';
+        out.style.color = 'var(--success-text, #2e7d32)';
+      } else {
+        out.textContent = 'Submit blocked ✗ (custom error active)';
+        out.style.color = 'var(--required, #c0392b)';
+      }
+    });
   };
+  const handleSubmit = (e: Event) => { e.preventDefault(); submitFired = true; };
 
   return html`
-    <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
+    <form @submit=${handleSubmit} style="display:flex; flex-direction:column; gap:12px; width:360px;">
+      <p>Click <strong>Force setCustomError()</strong> then <strong>Submit</strong> &mdash; submit is blocked because the field is in a custom-error state. Click <strong>clearCustomError()</strong> then <strong>Submit</strong> &mdash; submit succeeds.</p>
       <sy-autocomplete
         ${ref(setRefs)}
+        .noNativeValidity=${true}
         placeholder="Click 'Force setCustomError()' below"
       >
         <div slot="error">
@@ -159,11 +164,12 @@ export const AutocompleteSetCustomError = () => {
         </div>
       </sy-autocomplete>
       <div style="display:flex; gap:8px;">
-        <sy-button variant="primary" @click=${() => elRef.value?.setCustomError().then(writeStatus)}>Force setCustomError()</sy-button>
-        <sy-button variant="secondary" @click=${() => elRef.value?.clearCustomError().then(writeStatus)}>clearCustomError()</sy-button>
+        <sy-button variant="primary" @click=${() => elRef.value?.setCustomError()}>Force setCustomError()</sy-button>
+        <sy-button variant="secondary" @click=${() => elRef.value?.clearCustomError()}>clearCustomError()</sy-button>
+        <sy-button type="submit" variant="primary" @mouseDown=${handleSubmitClick}>Submit</sy-button>
       </div>
-      <p>Result: <span id="autocompleteCustomErrorOut">(idle)</span></p>
-    </div>
+      <p id=${submitResultId}>(idle)</p>
+    </form>
   `;
 };
 

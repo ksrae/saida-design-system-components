@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, unsafeHTML, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyCheckboxProps extends Components.SyCheckbox {
@@ -166,36 +164,43 @@ export const CheckboxForm = () => {
  *   3. el.clearCustomError() restores native-only validation.
  * ============================================================================ */
 
-/* Programmatic setCustomError demo with slot-declared message + result panel. */
+/* Programmatic setCustomError demo: force-error → submit blocked; clear → submit succeeds. */
 export const CheckboxSetCustomError = () => {
   const elRef: Ref<HTMLSyCheckboxElement> = createRef();
-
-  const writeStatus = async () => {
-    const out = document.getElementById('chkCustomErrorOut');
-    const el = elRef.value;
-    if (!el || !out) return;
-    const valid = await el.checkValidity();
-    const status = await (el as any).getValidStatus();
-    const message = (el as any).validationMessage ?? '';
-    out.textContent = `valid=${valid}, status=${status || 'ok'}, message="${message}"`;
+  const submitResultId = `chkSubmitResult_${Math.random().toString(36).slice(2, 8)}`;
+  let submitFired = false;
+  const handleSubmitClick = () => {
+    submitFired = false;
+    requestAnimationFrame(() => {
+      const out = document.getElementById(submitResultId);
+      if (!out) return;
+      if (submitFired) {
+        out.textContent = 'Submit succeeded ✓';
+        out.style.color = 'var(--success-text, #2e7d32)';
+      } else {
+        out.textContent = 'Submit blocked ✗ (custom error active)';
+        out.style.color = 'var(--required, #c0392b)';
+      }
+    });
   };
+  const handleSubmit = (e: Event) => { e.preventDefault(); submitFired = true; };
 
   return html`
-    <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
-      <sy-checkbox ${ref(elRef)}>
+    <form @submit=${handleSubmit} style="display:flex; flex-direction:column; gap:12px; width:360px;">
+      <p>Click <strong>Force setCustomError()</strong> then <strong>Submit</strong> &mdash; submit is blocked. Click <strong>clearCustomError()</strong> then <strong>Submit</strong> &mdash; submit succeeds.</p>
+      <sy-checkbox ${ref(elRef)} .noNativeValidity=${true}>
         I agree to the custom rule
         <div slot="error">
           <p style="color:#c0392b; margin:4px 0 0;">🚫 Custom error: this selection was rejected by the app.</p>
         </div>
       </sy-checkbox>
       <div style="display:flex; gap:8px;">
-        <sy-button variant="primary"
-          @click=${() => elRef.value?.setCustomError().then(writeStatus)}>Force setCustomError()</sy-button>
-        <sy-button variant="secondary"
-          @click=${() => elRef.value?.clearCustomError().then(writeStatus)}>clearCustomError()</sy-button>
+        <sy-button variant="primary" @click=${() => elRef.value?.setCustomError()}>Force setCustomError()</sy-button>
+        <sy-button variant="secondary" @click=${() => elRef.value?.clearCustomError()}>clearCustomError()</sy-button>
+        <sy-button type="submit" variant="primary" @mouseDown=${handleSubmitClick}>Submit</sy-button>
       </div>
-      <p>Result: <span id="chkCustomErrorOut">(idle)</span></p>
-    </div>
+      <p id=${submitResultId}>(idle)</p>
+    </form>
   `;
 };
 

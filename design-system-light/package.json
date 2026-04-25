@@ -56,19 +56,17 @@
   "devDependencies": {
     "@stencil/angular-output-target": "^1.1.1",
     "@stencil/core": "^4.38.1",
-    "@stencil/react-output-target": "^1.2.0",
+    "@stencil/react-output-target": "^1.5.1",
     "@stencil/sass": "^3.2.2",
     "@stencil/storybook-plugin": "^0.4.2",
+    "@stencil/vue-output-target": "^0.13.1",
     "@storybook/addon-docs": "^9.1.10",
     "@storybook/addon-links": "^9.1.10",
     "@storybook/addon-themes": "^9.1.10",
-    "@storybook/web-components": "^9.1.16",
-    "@storybook/web-components-vite": "^9.1.16",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.5",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
-    "lit": "^3.3.1",
     "puppeteer": "^24.3.0"
   },
   "license": "MIT"

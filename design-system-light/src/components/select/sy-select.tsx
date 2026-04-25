@@ -129,6 +129,24 @@ export class SySelect {
       });
       this.resizeObserver.observe(selectContainer);
     }
+
+    // Apply `defaultValue` on first mount. The @Watch('defaultValue') hook
+    // only fires for subsequent value changes, and handleSlotChange isn't
+    // reliably triggered for initial slot content in scoped-slot mode, so
+    // without an explicit call here a `<sy-select default-value="apple">`
+    // would never push "apple" into selectedOptions / the input.
+    this.applyDefaultValue();
+
+    // Sync the placeholder state now that `inputEl` is bound AND
+    // selectedOptions has been seeded from defaultValue. updatePlaceholder
+    // reads selectedOptions, so it must run after applyDefaultValue.
+    this.updatePlaceholder();
+
+    // Seed `internals.validity` so form-level validation (checkValidity /
+    // reportValidity / native submit popup) reflects the real state from the
+    // first render. Without this, `<sy-select required>` with no selection
+    // would default to "valid" and Submit would silently succeed.
+    this.updateValidityState();
   }
 
   @Watch('isOpen')
@@ -636,8 +654,17 @@ export class SySelect {
   private updatePlaceholder() {
     if (this.inputEl) {
       if (this.mode === 'searchable') {
-        this.inputEl.value = this.inputValue;
-        this.inputPlaceholder = !this.selectedOptions?.length ? this.placeholder : this.selectedOptions[0]?.label ?? '';
+        // Show the selected label as the input value when the user isn't
+        // actively searching. Previously this branch only set
+        // `this.inputValue` (typed-text state), so when `defaultValue` /
+        // setValue() picked an option the input was visibly empty (the
+        // selected label only surfaced as placeholder text), which read
+        // as "the prop did nothing." Falling back to the selected label
+        // keeps the chosen option visible while still letting `inputValue`
+        // win as soon as the user types.
+        const selectedLabel = this.selectedOptions[0]?.label ?? '';
+        this.inputEl.value = this.inputValue || selectedLabel;
+        this.inputPlaceholder = selectedLabel ? '' : this.placeholder;
       } else if (this.mode === 'default') {
         this.inputPlaceholder = !this.selectedOptions?.length ? this.placeholder : '';
         this.inputEl.value = this.selectedOptions?.length ? this.selectedOptions[0]?.label ?? '' : '';
@@ -1237,7 +1264,11 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
           this.optionsContainer.style.display = 'block';
           this.optionsContainer.style.position = 'absolute';
           this.optionsContainer.style.boxSizing = 'border-box';
-          this.optionsContainer.style.marginTop = '4px';
+          // Pin the dropdown directly to the trigger's bottom border. The
+          // previous 4px margin produced a visible gap with the canvas
+          // bleeding through, and any text/elements positioned in that
+          // strip showed through the seam.
+          this.optionsContainer.style.marginTop = '0px';
           this.optionsContainer.style.maxHeight = '300px';
           this.optionsContainer.style.width = `${selectContainerRect.width}px`;
           this.optionsContainer.style.overflowY = 'hidden';
@@ -1418,12 +1449,22 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
   }
 
   private updateValidityState() {
+    // The third argument to setValidity is the validation anchor — the
+    // element the browser focuses + anchors the native popup to. Without
+    // an anchor the popup tries to anchor on the form-associated host,
+    // but `<sy-select>` itself isn't focusable (no tabindex) so the popup
+    // either doesn't show or shows in a weird spot. Pointing the anchor
+    // at the inner `<input>` (which is focusable) makes the native popup
+    // appear right on the trigger when reportValidity() / form submit
+    // fires it.
+    const anchor = this.inputEl;
+
     // (1) Programmatic custom error takes priority — use slot text as the
     // validity message so reportValidity surfaces the same copy that's on
     // screen. Matches autocomplete's setCustomError flow.
     if (this.validStatus === 'custom' && !this.isValid) {
       const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || 'Custom validation error';
-      this.internals.setValidity({ customError: true }, msg);
+      this.internals.setValidity({ customError: true }, msg, anchor);
       return;
     }
 
@@ -1438,9 +1479,9 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
     if (!this.isValid) {
       if (this.hasSlotErrorMessage) {
         const slotText = this.getSlotErrorText() || validityMessage || ' ';
-        this.internals.setValidity({ customError: true }, slotText);
+        this.internals.setValidity({ customError: true }, slotText, anchor);
       } else {
-        this.internals.setValidity({ [this.validStatus]: true }, validityMessage);
+        this.internals.setValidity({ [this.validStatus]: true }, validityMessage, anchor);
       }
     } else {
       this.internals.setValidity({});
@@ -1550,8 +1591,13 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
             open: this.isOpen,
             disabled: this.disabled,
             'status-error': this.error,
-            // 'this.form-submitted' -> 'this.formSubmitted' 오타 수정
-            'status-invalid': (this.formSubmitted || this.touched) && this.required && !this.isValid,
+            // Show the invalid border for ANY validity failure once the
+            // user has interacted (touched) or tried to submit
+            // (formSubmitted), not just `required`. The previous condition
+            // gated on `this.required`, so setCustomError() set the
+            // internal flags but the border stayed default — making the
+            // method look like it did nothing visually.
+            'status-invalid': (this.formSubmitted || this.touched) && !this.isValid,
             'size-small': this.size === 'small',
             'size-medium': this.size === 'medium',
             'size-large': this.size === 'large',
@@ -1584,7 +1630,16 @@ private handleTagRemove(event: CustomEvent, itemToRemove: { value: string; label
               disabled={this.disabled || this.readonly}
               readOnly={this.mode === 'default'}
               placeholder={this.inputPlaceholder}
-              value={this.mode === 'default' ? (this.selectedOptions[0]?.label ?? '') : this.inputValue}
+              value={
+                this.mode === 'default'
+                  ? (this.selectedOptions[0]?.label ?? '')
+                  : this.mode === 'searchable'
+                    ? (this.inputValue || (this.selectedOptions[0]?.label ?? ''))
+                    /* multiple / tag modes: input is for typing chip queries —
+                       leave the value blank so chips render in the tag-group
+                       and the input is empty for search input. */
+                    : this.inputValue
+              }
               onFocus={this.handleSearchInputFocus}
               onBlur={this.handleSearchInputBlur}
               onInput={this.handleSearchInputChanged}

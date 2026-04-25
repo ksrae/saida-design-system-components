@@ -21,22 +21,30 @@ describe('sy-menu', () => {
     });
 
     const dropdown = page.doc.createElement('sy-dropdown');
+    const parent = page.doc.createElement('div');
     const removeWindowSpy = jest.spyOn(window, 'removeEventListener');
     const removeDocumentSpy = jest.spyOn(page.doc, 'removeEventListener');
     const dropdownRemoveSpy = jest.spyOn(dropdown, 'removeEventListener');
+    const parentRemoveSpy = jest.spyOn(parent, 'removeEventListener');
     const hostRemoveSpy = jest.spyOn(page.root, 'removeEventListener');
 
     (page.rootInstance as any).dropdownElement = dropdown;
+    (page.rootInstance as any).parentDom = parent;
     (page.rootInstance as any).disconnectedCallback();
 
     expect(removeWindowSpy).toHaveBeenCalledWith('scroll', (page.rootInstance as any).updateMenuPosition, true);
     expect(removeDocumentSpy).toHaveBeenCalledWith('click', (page.rootInstance as any).handleDocumentClick, true);
     expect(dropdownRemoveSpy).toHaveBeenCalledWith('keydown', (page.rootInstance as any).handleDropdownKeydown);
+    expect(parentRemoveSpy).toHaveBeenCalledWith('mouseenter', (page.rootInstance as any).parentMouseEnter);
+    expect(parentRemoveSpy).toHaveBeenCalledWith('mouseleave', (page.rootInstance as any).parentMouseLeave);
+    expect(parentRemoveSpy).toHaveBeenCalledWith('click', (page.rootInstance as any).parentClick);
+    expect(parentRemoveSpy).toHaveBeenCalledWith('contextmenu', (page.rootInstance as any).parentContextMenu);
     expect(hostRemoveSpy).toHaveBeenCalledWith('click', (page.rootInstance as any).handleMenuItemClick, true);
 
     removeWindowSpy.mockRestore();
     removeDocumentSpy.mockRestore();
     dropdownRemoveSpy.mockRestore();
+    parentRemoveSpy.mockRestore();
     hostRemoveSpy.mockRestore();
   });
 });

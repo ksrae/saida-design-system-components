@@ -1,6 +1,7 @@
 :root,
 :host {
-    display: flex;
+    display: block;
+    min-width: max-content;
     position: relative;
 
     .submenu {
@@ -36,7 +37,8 @@
     // }
     .submenu {
         position: absolute;
-        width: fit-content;        
+        width: max-content;
+        min-width: max-content;
         top: 0;
         left: 100%;
         padding: var(--spacing-3xsmall) 0;
@@ -51,13 +53,14 @@
         align-items: center;
         height: var(--component-medium);
         padding-left: var(--spacing-xsmall);
-        padding-right: var(--spacing-xsmall)                       ;
+        padding-right: var(--spacing-xsmall);
         color: var(--menu-menuitem-default-text-enabled);
         justify-content: space-between;
         white-space: nowrap;
         // background-color: var(--menu-dropdownmenu-background-enabled);
         cursor: pointer;
-        width:100%;
+        width: 100%;
+        min-width: max-content;
         box-sizing: border-box;
         sy-icon{
             color:var(--menu-menuitem-icon-enabled); 

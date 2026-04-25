@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyInlineMessageProps, InlineMessage } from './sy-inline-message.main';
 import { clearElements } from '../../clear-element';
 

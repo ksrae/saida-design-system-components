@@ -1,0 +1,19 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodStories from './sy-switch-reportValidity.stories';
+
+<Meta of={MethodStories} />
+
+# reportValidity()
+
+Same boolean return as `checkValidity()`, but **shows** the browser's native
+validity popup when invalid — exactly the same UI the form would show on a
+failed submit. Use this when you want to surface the error without going
+through a real submit.
+
+```js
+const valid = await el.reportValidity();
+// false while required && !checked → native popup appears
+// true once toggled on
+```
+
+<Canvas of={MethodStories.Default} />

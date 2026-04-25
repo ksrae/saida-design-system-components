@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SkeletonDisabled } from '../../sy-skeleton.main';
 import skeletonMeta from '../../sy-skeleton.stories';
 

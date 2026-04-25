@@ -1,7 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { html, ifDefined, unsafeHTML, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyModelessProps extends Components.SyModeless {
@@ -16,28 +13,73 @@ export interface SyModelessGroupProps extends Components.SyModelessGroup {
 
 const titleSlot = html`<span slot="title">Title</span>`;
 
-export const Modeless = (a: SyModelessProps) => html`
-  <sy-modeless
-    ?open=${!!a.open}
-    ?resizable=${!!a.resizable}
-    ?closable=${!!a.closable}
-    ?minimizable=${!!a.minimizable}
-    ?maximizable=${!!a.maximizable}
-    ?edge=${!!(a as any).edge}
-    ?maximum=${!!(a as any).maximum}
-    ?minimum=${!!(a as any).minimum}
-    .isdraggable=${(a as any).isdraggable}
-    .top=${a.top as any}
-    .left=${a.left as any}
-    .width=${a.width as any}
-    .height=${a.height as any}
-    .minWidth=${a.minWidth as any}
-    .minHeight=${a.minHeight as any}
-  >
-    <span slot="title">Modeless</span>
-    <div slot="content">Modeless body content</div>
-  </sy-modeless>
-`;
+/**
+ * Shared renderer for every individual sy-modeless attribute story.
+ *
+ * Stories used to render `<sy-modeless open ...>` directly, which meant every
+ * args change triggered a re-render that appended a fresh modeless to the
+ * document body — leftovers piled up across renders and made testing
+ * impossible. This helper instead defers opening to an explicit button click,
+ * mirroring the modal pattern so the same instance is reused across renders.
+ */
+const renderModelessDemo = (
+  args: Partial<SyModelessProps>,
+  content = html`<div slot="content">Modeless body content</div>`,
+) => {
+  const modelessRef: Ref<HTMLSyModelessElement> = createRef();
+  return html`
+    <sy-modeless
+      ${ref(modelessRef)}
+      ?open=${!!args.open}
+      ?closable=${!!args.closable}
+      ?minimizable=${!!args.minimizable}
+      ?maximizable=${!!args.maximizable}
+      ?resizable=${!!args.resizable}
+      ?draggable=${!!(args as any).draggable}
+      ?edge=${!!(args as any).edge}
+      ?maximum=${!!(args as any).maximum}
+      ?minimum=${!!(args as any).minimum}
+      .top=${args.top as any}
+      .left=${args.left as any}
+      .width=${args.width as any}
+      .height=${args.height as any}
+      .minWidth=${args.minWidth as any}
+      .minHeight=${args.minHeight as any}
+    >
+      ${titleSlot}
+      ${content}
+    </sy-modeless>
+    <sy-button @click=${() => modelessRef.value?.setOpen()}>Click to Open</sy-button>
+  `;
+};
+
+export const Modeless = (a: SyModelessProps) => {
+  const modelessRef: Ref<HTMLSyModelessElement> = createRef();
+  return html`
+    <sy-modeless
+      ${ref(modelessRef)}
+      ?open=${!!a.open}
+      ?resizable=${!!a.resizable}
+      ?closable=${!!a.closable}
+      ?minimizable=${!!a.minimizable}
+      ?maximizable=${!!a.maximizable}
+      ?edge=${!!(a as any).edge}
+      ?maximum=${!!(a as any).maximum}
+      ?minimum=${!!(a as any).minimum}
+      ?draggable=${!!(a as any).draggable}
+      .top=${a.top as any}
+      .left=${a.left as any}
+      .width=${a.width as any}
+      .height=${a.height as any}
+      .minWidth=${a.minWidth as any}
+      .minHeight=${a.minHeight as any}
+    >
+      <span slot="title">Modeless</span>
+      <div slot="content">Modeless body content</div>
+    </sy-modeless>
+    <sy-button @click=${() => modelessRef.value?.setOpen()}>Click to Open</sy-button>
+  `;
+};
 
 export const ModelessGroup = (_a: SyModelessGroupProps) => {
   const groupRef: Ref<HTMLSyModelessGroupElement> = createRef();
@@ -59,75 +101,69 @@ export const ModelessGroup = (_a: SyModelessGroupProps) => {
   `;
 };
 
-export const ModelessOpen = (a: { open: boolean }) => html`
-  <div style="position:relative;height:220px">
-    <sy-modeless ?open=${!!a.open}>${titleSlot}<div slot="content">Content</div></sy-modeless>
-  </div>
-`;
-
-export const ModelessIsdraggable = (a: { isdraggable: boolean }) => html`<sy-modeless open .isdraggable=${a.isdraggable}>${titleSlot}<div slot="content">Drag me</div></sy-modeless>`;
-export const ModelessResizable    = (a: { resizable: boolean })    => html`<sy-modeless open ?resizable=${!!a.resizable}>${titleSlot}<div slot="content">Resize me</div></sy-modeless>`;
-export const ModelessClosable     = (a: { closable: boolean })     => html`<sy-modeless open ?closable=${!!a.closable}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessMinimizable  = (a: { minimizable: boolean })  => html`<sy-modeless open ?minimizable=${!!a.minimizable}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessMaximizable  = (a: { maximizable: boolean })  => html`<sy-modeless open ?maximizable=${!!a.maximizable}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessEdge         = (a: { edge: boolean })         => html`<sy-modeless open ?edge=${!!a.edge}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessMaximum      = (a: { maximum: boolean })      => html`<sy-modeless open ?maximum=${!!a.maximum}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessMinimum      = (a: { minimum: boolean })      => html`<sy-modeless open ?minimum=${!!a.minimum}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessTop          = (a: { top: number })           => html`<sy-modeless open .top=${a.top}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessLeft         = (a: { left: number })          => html`<sy-modeless open .left=${a.left}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessWidth        = (a: { width: number })         => html`<sy-modeless open .width=${a.width}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessHeight       = (a: { height: number })        => html`<sy-modeless open .height=${a.height}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessMinWidth     = (a: { minWidth: number })      => html`<sy-modeless open resizable .minWidth=${a.minWidth}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
-export const ModelessMinHeight    = (a: { minHeight: number })     => html`<sy-modeless open resizable .minHeight=${a.minHeight}>${titleSlot}<div slot="content">Content</div></sy-modeless>`;
+// All attribute stories default to `closable: true` so the user can dismiss
+// the open modeless during testing. The Edge story additionally defaults to
+// `draggable: true` because edge-clamping is only observable while dragging.
+export const ModelessOpen        = (a: { open: boolean })          => renderModelessDemo({ open: a.open, closable: true });
+export const ModelessDraggable   = (a: { draggable: boolean })     => renderModelessDemo({ draggable: a.draggable, closable: true } as any, html`<div slot="content">Drag me by the header</div>`);
+export const ModelessResizable   = (a: { resizable: boolean })     => renderModelessDemo({ resizable: a.resizable, closable: true }, html`<div slot="content">Resize from the edges</div>`);
+export const ModelessClosable    = (a: { closable: boolean })      => renderModelessDemo({ closable: a.closable });
+export const ModelessMinimizable = (a: { minimizable: boolean })   => renderModelessDemo({ minimizable: a.minimizable, closable: true });
+export const ModelessMaximizable = (a: { maximizable: boolean })   => renderModelessDemo({ maximizable: a.maximizable, closable: true });
+export const ModelessEdge        = (a: { edge: boolean })          => renderModelessDemo({ edge: a.edge, draggable: true, closable: true } as any, html`<div slot="content">Drag stays inside the viewport when edge=true</div>`);
+export const ModelessMaximum     = (a: { maximum: boolean })       => renderModelessDemo({ maximum: a.maximum, maximizable: true, closable: true } as any);
+export const ModelessMinimum     = (a: { minimum: boolean })       => renderModelessDemo({ minimum: a.minimum, minimizable: true, closable: true } as any);
+export const ModelessTop         = (a: { top: number })            => renderModelessDemo({ top: a.top, closable: true } as any);
+export const ModelessLeft        = (a: { left: number })           => renderModelessDemo({ left: a.left, closable: true } as any);
+export const ModelessWidth       = (a: { width: number })          => renderModelessDemo({ width: a.width, closable: true } as any);
+export const ModelessHeight      = (a: { height: number })         => renderModelessDemo({ height: a.height, closable: true } as any);
+export const ModelessMinWidth    = (a: { minWidth: number })       => renderModelessDemo({ minWidth: a.minWidth, resizable: true, closable: true } as any);
+export const ModelessMinHeight   = (a: { minHeight: number })      => renderModelessDemo({ minHeight: a.minHeight, resizable: true, closable: true } as any);
 
 const eventLogger = (resultId: string, name: string) => (e: Event) => {
   const out = document.getElementById(resultId);
   if (out) out.textContent = `${name}: ${JSON.stringify((e as CustomEvent).detail)}`;
 };
 
-const renderEventDemo = (resultId: string, name: string, handlerProp: string) => html`
-  <sy-modeless open closable minimizable maximizable .${unsafeHTML('')}=${''} @${unsafeHTML(name)}=${eventLogger(resultId, name)}>
-    ${titleSlot}
-    <div slot="content">Trigger ${name}</div>
-  </sy-modeless>
-  <p id=${resultId}>(idle)</p>
-`;
-
-// inline event demos (avoid dynamic event-name templating to keep lit happy)
-export const ModelessClosed = () => {
-  const handle = eventLogger('mClResult', 'closed');
+const renderEventDemo = (resultId: string, name: 'closed' | 'statusChanged' | 'positionChanged') => {
+  const mRef: Ref<HTMLSyModelessElement> = createRef();
+  const handler = eventLogger(resultId, name);
   return html`
-    <sy-modeless open closable minimizable maximizable @closed=${handle}>
-      ${titleSlot}<div slot="content">Trigger closed</div>
+    <sy-modeless
+      ${ref(mRef)}
+      closable
+      minimizable
+      maximizable
+      draggable
+      resizable
+      @closed=${name === 'closed' ? handler : null}
+      @statusChanged=${name === 'statusChanged' ? handler : null}
+      @positionChanged=${name === 'positionChanged' ? handler : null}
+    >
+      ${titleSlot}
+      <div slot="content">Trigger ${name}</div>
     </sy-modeless>
-    <p id="mClResult">(idle)</p>
+    <sy-button @click=${() => mRef.value?.setOpen()}>Click to Open</sy-button>
+    <p id=${resultId}>(idle)</p>
   `;
 };
 
-export const ModelessStatusChanged = () => {
-  const handle = eventLogger('mSCResult', 'statusChanged');
-  return html`
-    <sy-modeless open closable minimizable maximizable @statusChanged=${handle}>
-      ${titleSlot}<div slot="content">Trigger statusChanged</div>
-    </sy-modeless>
-    <p id="mSCResult">(idle)</p>
-  `;
-};
+export const ModelessClosed           = () => renderEventDemo('mClResult', 'closed');
+export const ModelessStatusChanged    = () => renderEventDemo('mSCResult', 'statusChanged');
+export const ModelessPositionChanged  = () => renderEventDemo('mPCResult', 'positionChanged');
 
-export const ModelessPositionChanged = () => {
-  const handle = eventLogger('mPCResult', 'positionChanged');
-  return html`
-    <sy-modeless open closable minimizable maximizable @positionChanged=${handle}>
-      ${titleSlot}<div slot="content">Trigger positionChanged</div>
-    </sy-modeless>
-    <p id="mPCResult">(idle)</p>
-  `;
-};
-
-const renderModelessMethod = (label: string, action: (el: HTMLSyModelessElement) => Promise<void> | void) => {
+// setOpen() is the one method whose entire purpose is opening, so it keeps a
+// single button. The other set* methods need an already-open modeless to act
+// on, so they expose two buttons: setOpen() to put the modeless on screen,
+// and the method under test (setClose / setMaximum / setMinimum / setRestore).
+// Tests previously chained `setOpen` and the method together inside a single
+// click, which made it impossible to observe the method against an already-
+// open modeless (e.g. you couldn't see setClose actually closing something).
+const renderModelessMethod = (label: string, instructions: unknown, action: (el: HTMLSyModelessElement) => Promise<void> | void) => {
   const mRef: Ref<HTMLSyModelessElement> = createRef();
   return html`
-    <sy-modeless ${ref(mRef)} closable minimizable maximizable>
+    ${instructions}
+    <sy-modeless ${ref(mRef)} closable minimizable maximizable draggable resizable>
       ${titleSlot}
       <div slot="content">Content</div>
     </sy-modeless>
@@ -139,60 +175,288 @@ const renderModelessMethod = (label: string, action: (el: HTMLSyModelessElement)
   `;
 };
 
-export const ModelessSetOpen     = () => renderModelessMethod('setOpen()',    (el) => el.setOpen());
-export const ModelessSetClose    = () => renderModelessMethod('setClose()',   async (el) => { await el.setOpen(); await el.setClose(); });
-export const ModelessSetMaximum  = () => renderModelessMethod('setMaximum()', async (el) => { await el.setOpen(); await el.setMaximum(); });
-export const ModelessSetRestore  = () => renderModelessMethod('setRestore()', async (el) => { await el.setOpen(); await el.setMaximum(); await el.setRestore(); });
-export const ModelessSetMinimum  = () => renderModelessMethod('setMinimum()', async (el) => { await el.setOpen(); await el.setMinimum(); });
-
-const renderGroupMethod = (label: string, action: (g: HTMLSyModelessGroupElement) => Promise<void> | void) => {
-  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+const renderModelessMethodWithOpen = (label: string, instructions: unknown, action: (el: HTMLSyModelessElement) => Promise<void> | void) => {
+  const mRef: Ref<HTMLSyModelessElement> = createRef();
   return html`
-    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    ${instructions}
+    <sy-modeless ${ref(mRef)} closable minimizable maximizable draggable resizable>
+      ${titleSlot}
+      <div slot="content">Content</div>
+    </sy-modeless>
+    <sy-button @click=${() => mRef.value?.setOpen()}>setOpen()</sy-button>
     <sy-button
       @click=${async () => {
-        if (gRef.value) await action(gRef.value);
+        if (mRef.value) await action(mRef.value);
       }}
     >${label}</sy-button>
   `;
 };
 
-export const ModelessGroupCreate = () =>
-  renderGroupMethod('create(id,...)', (g) =>
-    g.create('w1', 'Window', '<p>Hello</p>', { closable: true, draggable: true } as any),
+export const ModelessSetOpen = () =>
+  renderModelessMethod(
+    'setOpen()',
+    html`
+      <h4>How to test</h4>
+      <p>Click <strong>setOpen()</strong> to open the modeless. Calling it again while it is already open is a no-op.</p>
+    `,
+    (el) => el.setOpen(),
   );
 
-export const ModelessGroupUpdateContent = () =>
-  renderGroupMethod('updateContent', async (g) => {
-    await g.create('wuc', 'W', '<p>Old</p>', { closable: true } as any);
-    await g.updateContent('wuc', '<strong>New content</strong>');
-  });
+export const ModelessSetClose = () =>
+  renderModelessMethodWithOpen(
+    'setClose()',
+    html`
+      <h4>How to test</h4>
+      <ol>
+        <li>Click <strong>setOpen()</strong> first to put the modeless on screen.</li>
+        <li>Click <strong>setClose()</strong> &mdash; the open modeless will close.</li>
+      </ol>
+      <p><em>Note:</em> calling <code>setClose()</code> while nothing is open does nothing because there is no target to close.</p>
+    `,
+    (el) => el.setClose(),
+  );
 
-export const ModelessGroupUpdateTitle = () =>
-  renderGroupMethod('updateTitle', async (g) => {
-    await g.create('wut', 'Old', '<p>Content</p>', { closable: true } as any);
-    await g.updateTitle('wut', 'New Title');
-  });
+export const ModelessSetMaximum = () =>
+  renderModelessMethodWithOpen(
+    'setMaximum()',
+    html`
+      <h4>How to test</h4>
+      <ol>
+        <li>Click <strong>setOpen()</strong> first to put the modeless on screen.</li>
+        <li>Click <strong>setMaximum()</strong> &mdash; the modeless will fill the viewport.</li>
+      </ol>
+      <p><strong>Warning:</strong> calling <code>setMaximum()</code> before <code>setOpen()</code> has no effect &mdash; the modeless must already be open.</p>
+    `,
+    (el) => el.setMaximum(),
+  );
 
-export const ModelessGroupUpdateOption = () =>
-  renderGroupMethod('updateOption', async (g) => {
-    await g.create('wuo', 'W', '<p>Content</p>', { closable: true } as any);
-    await g.updateOption('wuo', { resizable: true, draggable: true } as any);
-  });
+export const ModelessSetMinimum = () =>
+  renderModelessMethodWithOpen(
+    'setMinimum()',
+    html`
+      <h4>How to test</h4>
+      <ol>
+        <li>Click <strong>setOpen()</strong> first to put the modeless on screen.</li>
+        <li>Click <strong>setMinimum()</strong> &mdash; the modeless will collapse to the bottom of the viewport.</li>
+      </ol>
+      <p><strong>Warning:</strong> calling <code>setMinimum()</code> before <code>setOpen()</code> has no effect.</p>
+    `,
+    (el) => el.setMinimum(),
+  );
 
-export const ModelessGroupClose = () =>
-  renderGroupMethod('close(id)', async (g) => {
-    await g.create('wc', 'W', '<p>Content</p>', { closable: true } as any);
-    await g.close('wc');
-  });
+export const ModelessSetRestore = () =>
+  renderModelessMethodWithOpen(
+    'setRestore()',
+    html`
+      <h4>How to test</h4>
+      <ol>
+        <li>Click <strong>setOpen()</strong> to open the modeless.</li>
+        <li>Maximize or minimize it &mdash; either by clicking the header icon, or by calling <code>setMaximum()</code> / <code>setMinimum()</code>.</li>
+        <li>Click <strong>setRestore()</strong> &mdash; the modeless returns to its previous size and position.</li>
+      </ol>
+      <p><em>Note:</em> calling <code>setRestore()</code> while already in the restore state is a no-op.</p>
+    `,
+    (el) => el.setRestore(),
+  );
 
-export const ModelessGroupCloseAll = () =>
-  renderGroupMethod('closeAll()', async (g) => {
-    await g.create('w1', 'W1', '<p>1</p>');
-    await g.create('w2', 'W2', '<p>2</p>');
-    await g.closeAll();
-  });
+// Group method demos — the `id` (and title/content where relevant) come from
+// Storybook controls so the user can target a specific window. Each story
+// has a "Create modeless" button to seed an instance and a second button
+// that calls the method under test against the same id, so close/update
+// methods can be observed against an already-open modeless. CloseAll seeds
+// multiple unique ids on each click so the user can visually verify several
+// windows being closed at once.
+const renderGroupCreate = (args: { id: string; title: string; content: string }) => {
+  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+  return html`
+    <h4>How to test</h4>
+    <ol>
+      <li>Edit <code>id</code>, <code>title</code>, and <code>content</code> in the Controls panel.</li>
+      <li>
+        Click <strong>create("${args.id}", ...)</strong>.
+        A new modeless is created with that id and opens on screen.
+      </li>
+    </ol>
+    <p>
+      <em>Tip:</em> clicking again with the same id stacks another modeless on top.
+      To open several at once, change the <code>id</code> between clicks.
+    </p>
+
+    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.create(args.id, args.title, args.content, { closable: true, draggable: true } as any);
+      }}
+    >create("${args.id}", ...)</sy-button>
+  `;
+};
+
+const renderGroupUpdateContent = (args: { id: string; content: string }) => {
+  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+  return html`
+    <h4>How to test</h4>
+    <ol>
+      <li>
+        Click <strong>Create modeless</strong> first to open a modeless with
+        <code>id="${args.id}"</code> (its body shows "Old content").
+      </li>
+      <li>Edit <code>content</code> in the Controls panel to any HTML you like.</li>
+      <li>
+        Click <strong>updateContent("${args.id}", ...)</strong>.
+        The body of the modeless with that id is replaced with the new value.
+      </li>
+    </ol>
+    <p><strong>Warning:</strong> calling <code>updateContent</code> with an id that does not exist is a no-op &mdash; there is no target to update.</p>
+
+    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.create(args.id, `Window ${args.id}`, '<p>Old content</p>', { closable: true, draggable: true } as any);
+      }}
+    >Create modeless</sy-button>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.updateContent(args.id, args.content);
+      }}
+    >updateContent("${args.id}", ...)</sy-button>
+  `;
+};
+
+const renderGroupUpdateTitle = (args: { id: string; title: string }) => {
+  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+  return html`
+    <h4>How to test</h4>
+    <ol>
+      <li>
+        Click <strong>Create modeless</strong> first to open a modeless with
+        <code>id="${args.id}"</code> (its header reads "Old title").
+      </li>
+      <li>Edit <code>title</code> in the Controls panel.</li>
+      <li>
+        Click <strong>updateTitle("${args.id}", ...)</strong>.
+        The header of that modeless is replaced with the new title.
+      </li>
+    </ol>
+
+    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.create(args.id, 'Old title', '<p>Content</p>', { closable: true, draggable: true } as any);
+      }}
+    >Create modeless</sy-button>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.updateTitle(args.id, args.title);
+      }}
+    >updateTitle("${args.id}", ...)</sy-button>
+  `;
+};
+
+const renderGroupUpdateOption = (args: { id: string }) => {
+  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+  return html`
+    <h4>How to test</h4>
+    <ol>
+      <li>
+        Click <strong>Create modeless</strong> first to open a modeless with
+        <code>id="${args.id}"</code> (it starts with resizable and draggable both off).
+      </li>
+      <li>
+        Click <strong>updateOption("${args.id}", ...)</strong>.
+        Its options are updated to <code>&#123; resizable: true, draggable: true &#125;</code>:
+        you can now drag it by the header and resize it from any edge or corner.
+      </li>
+    </ol>
+
+    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.create(args.id, `Window ${args.id}`, '<p>Content</p>', { closable: true } as any);
+      }}
+    >Create modeless</sy-button>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.updateOption(args.id, { resizable: true, draggable: true } as any);
+      }}
+    >updateOption("${args.id}", &#123;resizable, draggable&#125;)</sy-button>
+  `;
+};
+
+const renderGroupClose = (args: { id: string }) => {
+  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+  return html`
+    <h4>How to test</h4>
+    <ol>
+      <li>
+        Click <strong>Create modeless</strong> first to open a modeless with
+        <code>id="${args.id}"</code>.
+      </li>
+      <li>
+        Click <strong>close("${args.id}")</strong>.
+        Only the modeless with that id is closed.
+      </li>
+    </ol>
+    <p>
+      <em>Tip:</em> to verify that <code>close</code> targets a single id, change <code>id</code>
+      in the Controls panel and alternate between Create and close to open several windows
+      and dismiss them one by one.
+    </p>
+
+    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.create(args.id, `Window ${args.id}`, '<p>Content</p>', { closable: true, draggable: true } as any);
+      }}
+    >Create modeless</sy-button>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.close(args.id);
+      }}
+    >close("${args.id}")</sy-button>
+  `;
+};
+
+const renderGroupCloseAll = () => {
+  const gRef: Ref<HTMLSyModelessGroupElement> = createRef();
+  let counter = 0;
+  return html`
+    <h4>How to test</h4>
+    <ol>
+      <li>
+        Click <strong>Create modeless</strong> several times to spawn
+        multiple windows (<code>w1</code>, <code>w2</code>, <code>w3</code>, ...).
+      </li>
+      <li>
+        Click <strong>closeAll()</strong>.
+        Every modeless registered to the group is closed at once.
+      </li>
+    </ol>
+    <p><em>Note:</em> the counter resets after closeAll, so the next Create starts again at <code>w1</code>.</p>
+
+    <sy-modeless-group ${ref(gRef)}></sy-modeless-group>
+    <sy-button
+      @click=${async () => {
+        counter += 1;
+        const id = `w${counter}`;
+        await gRef.value?.create(id, `Window ${id}`, `<p>Content ${id}</p>`, { closable: true, draggable: true } as any);
+      }}
+    >Create modeless</sy-button>
+    <sy-button
+      @click=${async () => {
+        await gRef.value?.closeAll();
+        counter = 0;
+      }}
+    >closeAll()</sy-button>
+  `;
+};
+
+export const ModelessGroupCreate         = (a: { id: string; title: string; content: string }) => renderGroupCreate(a);
+export const ModelessGroupUpdateContent  = (a: { id: string; content: string })                => renderGroupUpdateContent(a);
+export const ModelessGroupUpdateTitle    = (a: { id: string; title: string })                  => renderGroupUpdateTitle(a);
+export const ModelessGroupUpdateOption   = (a: { id: string })                                  => renderGroupUpdateOption(a);
+export const ModelessGroupClose          = (a: { id: string })                                  => renderGroupClose(a);
+export const ModelessGroupCloseAll       = ()                                                   => renderGroupCloseAll();
 
 // keep helper exports unused-safe
 void ifDefined;
-void renderEventDemo;
+void unsafeHTML;

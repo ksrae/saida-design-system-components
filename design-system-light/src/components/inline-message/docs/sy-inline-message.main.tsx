@@ -1,6 +1,5 @@
-import { html } from 'lit';
+import { html, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { clearElements } from '../../clear-element';
 
 export interface SyInlineMessageProps extends Components.SyInlineMessage {

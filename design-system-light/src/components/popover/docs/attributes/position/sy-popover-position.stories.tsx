@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { PopoverPosition } from '../../sy-popover.main';
 import popoverMeta from '../../sy-popover.stories';
 

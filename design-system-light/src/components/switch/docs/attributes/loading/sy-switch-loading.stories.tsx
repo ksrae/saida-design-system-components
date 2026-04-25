@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SwitchLoading } from '../../sy-switch.main';
 import switchMeta from '../../sy-switch.stories';
 

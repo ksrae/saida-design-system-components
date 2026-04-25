@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyModelessGroupProps, ModelessGroup } from './sy-modeless.main';
 import { clearElements } from '../../clear-element';
 

@@ -51,8 +51,20 @@ export class SyProgressBar {
     this.hidePercent = fnAssignPropFromAlias(this.host, 'hide-percent') ?? this.hidePercent;
     this.tooltipTitle = fnAssignPropFromAlias(this.host, 'tooltip-title') ?? this.tooltipTitle;
 
-    this.setValuePosition();
+    // Honor whatever valuePosition the user requested for the very first
+    // render. The auto-fallback to 'progress-left' (when the filled bar is
+    // too narrow for the label) used to be applied here too, but the host
+    // has no layout yet at this point so getBoundingClientRect().width is
+    // always 0 — the check would always resolve to 'progress-left' and
+    // permanently override the user's valuePosition. setValuePosition()
+    // now runs in componentDidLoad / on prop changes, when the host has a
+    // real measured width.
+    this.innerValuePosition = this.valuePosition;
     this.parseSegmentsAttr();
+  }
+
+  componentDidLoad() {
+    this.setValuePosition();
   }
 
   componentWillRender() {
@@ -62,6 +74,16 @@ export class SyProgressBar {
   @Watch('segment')
   watchSegment() {
     this.parseSegmentsAttr();
+  }
+
+  @Watch('valuePosition')
+  @Watch('percent')
+  watchValuePosition() {
+    // Re-evaluate the auto-fallback whenever the requested position or the
+    // filled-bar width changes. Without this, switching valuePosition to
+    // 'progress-center' / 'progress-right' on a live component would not
+    // take effect (innerValuePosition would still hold the stale value).
+    this.setValuePosition();
   }
 
   private parseSegmentsAttr() {
@@ -132,22 +154,27 @@ export class SyProgressBar {
     }
   }
 
+  // Inline style helpers below combine the horizontal positioning (left /
+  // right / center) WITH the vertical centering transform. The base CSS
+  // sets `top: 50%; transform: translateY(-50%)` for vertical centering;
+  // for `center` positions we override `transform` with a combined
+  // translate(-50%, -50%) so the X-axis -50% shift stacks with the Y-axis
+  // centering. For `left` / `right` positions we DON'T set a transform —
+  // the CSS translateY(-50%) is left intact.
   private get progressBarLabelPositionStyle() {
-    if (this.innerValuePosition.startsWith('progress')) {
-      if (this.innerValuePosition === 'progress-center') {
-        return { left: `50%`, transform: 'translate(-50%)' } as any;
-      } else if (this.innerValuePosition === 'progress-left') {
-        return { left: `var(--spacing-xsmall)` } as any;
-      } else if (this.innerValuePosition === 'progress-right') {
-        return { right: `var(--spacing-xsmall)` } as any;
-      }
+    if (this.innerValuePosition === 'progress-center') {
+      return { left: '50%', transform: 'translate(-50%, -50%)' } as any;
+    } else if (this.innerValuePosition === 'progress-left') {
+      return { left: 'var(--spacing-xsmall)' } as any;
+    } else if (this.innerValuePosition === 'progress-right') {
+      return { right: 'var(--spacing-xsmall)' } as any;
     }
     return {} as any;
   }
 
   private get totalWidthLabelStyle() {
     if (this.innerValuePosition === 'center') {
-      return { left: '50%', transform: 'translate(-50%)' } as any;
+      return { left: '50%', transform: 'translate(-50%, -50%)' } as any;
     } else if (this.innerValuePosition === 'left') {
       return { left: 'var(--spacing-xsmall)' } as any;
     } else if (this.innerValuePosition === 'right') {

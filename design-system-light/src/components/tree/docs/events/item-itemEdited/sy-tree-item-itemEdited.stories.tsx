@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { TreeItemItemEdited } from '../../sy-tree-item.main';
 
 const meta: Meta = {

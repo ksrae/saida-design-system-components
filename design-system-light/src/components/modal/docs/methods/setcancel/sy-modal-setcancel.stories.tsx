@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
-import { ModalTriggerButtons } from '../../sy-modal.main';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
+import { ModalSetCancel } from '../../sy-modal.main';
 
 const meta: Meta = {
   title: 'Modal/Methods/setCancel',
   component: 'sy-modal',
   tags: [],
-  render: () => ModalTriggerButtons(),
+  render: () => ModalSetCancel(),
 };
 export default meta;
 type Story = StoryObj;

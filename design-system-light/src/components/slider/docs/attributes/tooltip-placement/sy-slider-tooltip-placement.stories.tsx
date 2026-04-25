@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SliderTooltipPlacement } from '../../sy-slider.main';
 import sliderMeta from '../../sy-slider.stories';
 

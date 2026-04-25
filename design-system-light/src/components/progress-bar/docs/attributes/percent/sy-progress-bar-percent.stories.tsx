@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { ProgressBarPercent } from '../../sy-progress-bar.main';
 import progressBarMeta from '../../sy-progress-bar.stories';
 

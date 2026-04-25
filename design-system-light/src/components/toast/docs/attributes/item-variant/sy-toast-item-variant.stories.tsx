@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { ToastItemVariant } from '../../sy-toast-item.main';
 import toastItemMeta from '../../sy-toast-item.stories';
 

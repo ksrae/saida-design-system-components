@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyGlobalHeaderProps, GlobalHeader } from './sy-global-header.main';
 import { clearElements } from '../../clear-element';
 

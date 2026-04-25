@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/web-components-vite";
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { Modal, SyModalProps } from './sy-modal.main';
 import { clearElements } from "../../clear-element";
 

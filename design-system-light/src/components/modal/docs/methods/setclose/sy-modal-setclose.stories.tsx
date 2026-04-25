@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
-import { ModalTriggerButtons } from '../../sy-modal.main';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
+import { ModalSetClose } from '../../sy-modal.main';
 
 const meta: Meta = {
   title: 'Modal/Methods/setClose',
   component: 'sy-modal',
   tags: [],
-  render: () => ModalTriggerButtons(),
+  render: () => ModalSetClose(),
 };
 export default meta;
 type Story = StoryObj;

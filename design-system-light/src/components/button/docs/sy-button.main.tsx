@@ -1,7 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, unsafeHTML, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyButtonProps extends Components.SyButton {

@@ -45,6 +45,29 @@ describe('sy-modal', () => {
     expect(page.root.querySelector('.resize-handle.top')).not.toBeNull();
     expect(page.root.querySelector('.resize-handle.right')).not.toBeNull();
   });
+
+  it('keeps a non-closable modal connected so it can reopen after closing', async () => {
+    const page = await newSpecPage({
+      components: [SyModal],
+      html: '<sy-modal><div slot="body">Body</div></sy-modal>',
+    });
+    const modal = page.root as unknown as HTMLSyModalElement;
+
+    expect(modal.closable).toBe(false);
+
+    await modal.setOpen();
+    await page.waitForChanges();
+    await modal.setCancel();
+    await page.waitForChanges();
+
+    expect(modal.isConnected).toBe(true);
+
+    await modal.setOpen();
+    await page.waitForChanges();
+
+    expect(modal.open).toBe(true);
+    expect(modal.querySelector('.modal-wrapper')?.classList.contains('modal-wrapper--open')).toBe(true);
+  });
 });
 
 describe('sy-select', () => {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { BadgeHidden } from '../../sy-badge.main';
 import badgeMeta from '../../sy-badge.stories';
 

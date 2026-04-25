@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SyCollapsePanelProps, CollapsePanel } from './sy-collapse-panel.main';
 import { clearElements } from '../../clear-element';
 

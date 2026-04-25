@@ -1,8 +1,5 @@
-import { html } from 'lit';
+import { html, ifDefined, unsafeHTML, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
 
 export interface SyInputProps extends Components.SyInput {
   slotPrefix?: string;
@@ -296,16 +293,36 @@ export const InputReportValidity = () => {
 
 export const InputSetCustomError = () => {
   const elRef: Ref<HTMLSyInputElement> = createRef();
+  const resultId = `inputSubmitResult_${Math.random().toString(36).slice(2, 8)}`;
+  let submitFired = false;
+  const handleSubmitClick = () => {
+    submitFired = false;
+    requestAnimationFrame(() => {
+      const out = document.getElementById(resultId);
+      if (!out) return;
+      if (submitFired) {
+        out.textContent = 'Submit succeeded ✓';
+        out.style.color = 'var(--success-text, #2e7d32)';
+      } else {
+        out.textContent = 'Submit blocked ✗ (custom error active)';
+        out.style.color = 'var(--required, #c0392b)';
+      }
+    });
+  };
+  const handleSubmit = (e: Event) => { e.preventDefault(); submitFired = true; };
   return html`
-    <div style="width:300px;">
-      <sy-input ${ref(elRef)} placeholder="Input">
+    <form @submit=${handleSubmit} style="width:300px;">
+      <p>Click <strong>setCustomError()</strong> then <strong>Submit</strong> &mdash; submit is blocked. Click <strong>clearCustomError()</strong> then <strong>Submit</strong> &mdash; submit succeeds.</p>
+      <sy-input ${ref(elRef)} .noNativeValidity=${true} placeholder="Input">
         <span slot="error">Something went wrong</span>
       </sy-input>
       <div style="display:flex; gap:8px; margin-top:8px;">
         <sy-button variant="primary" @click=${() => elRef.value?.setCustomError()}>setCustomError()</sy-button>
         <sy-button @click=${() => elRef.value?.clearCustomError()}>clearCustomError()</sy-button>
+        <sy-button type="submit" variant="primary" @mouseDown=${handleSubmitClick}>Submit</sy-button>
       </div>
-    </div>
+      <p id=${resultId}>(idle)</p>
+    </form>
   `;
 };
 

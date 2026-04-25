@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { TreeSelectName } from '../../sy-tree-select.main';
 import treeSelectMeta from '../../sy-tree-select.stories';
 

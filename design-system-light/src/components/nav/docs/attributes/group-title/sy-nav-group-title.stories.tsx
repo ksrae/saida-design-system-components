@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { NavGroupTitle } from '../../sy-nav-group.main';
 import navGroupMeta from '../../sy-nav-group.stories';
 
@@ -8,7 +8,7 @@ const meta: Meta = {
   tags: [],
   render: (args) => NavGroupTitle(args as { title: string }),
   argTypes: { title: navGroupMeta?.argTypes?.title },
-  args: { title: '' },
+  args: { title: 'Settings' },
 };
 
 export default meta;

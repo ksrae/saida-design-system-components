@@ -28,7 +28,6 @@ export class SyRadioGroup {
   // --- Element References ---
   @Element() host: HTMLSyRadioGroupElement;
   private internals: ElementInternals;
-  private slot!: HTMLSlotElement;
   private radioList: HTMLSyRadioElement[] = [];
   private radioButtonList: any[] = [];
   private initialValue: string = '';
@@ -324,24 +323,24 @@ export class SyRadioGroup {
   }
 
   private setRadioList() {
-    if (!this.slot) return;
-
-    const assignedElements = this.slot.assignedElements();
+    // Query the host's light-DOM children directly. We were previously using
+    // `this.slot.assignedElements()`, but this component runs in
+    // `shadow: false, scoped: true` mode — the rendered <slot> is a real
+    // <slot> element without a shadow root, and per HTML spec
+    // `assignedElements()` on a slot outside shadow DOM returns an empty
+    // array. That left `radioList` permanently empty, which broke every
+    // group-level operation: defaultValue couldn't preselect any radio,
+    // toggling `disabled` couldn't propagate to children, and selecting one
+    // radio couldn't uncheck the previously-selected one.
     this.radioList = [];
     this.radioButtonList = [];
 
-    assignedElements.forEach((element) => {
-      const tagName = element.tagName?.toLowerCase();
-      if (tagName === 'sy-radio') {
-        this.radioList.push(element as HTMLSyRadioElement);
-      } else if (tagName === 'sy-radio-button') {
-        this.radioButtonList.push(element);
-      }
+    this.host.querySelectorAll<HTMLSyRadioElement>('sy-radio').forEach((el) => {
+      this.radioList.push(el);
     });
-
-    // [수정] 여기서 isButtonGroup 상태를 변경하는 코드를 제거합니다.
-    // 상태는 componentWillLoad에서 한 번만 설정하는 것으로 충분합니다.
-    // this.isButtonGroup = this.radioButtonList.length > 0;
+    this.host.querySelectorAll('sy-radio-button').forEach((el) => {
+      this.radioButtonList.push(el as any);
+    });
   }
 
   private setDefaultSelectedValue() {
@@ -480,10 +479,7 @@ export class SyRadioGroup {
     return (
       <div class="radio-group-container">
         <fieldset role="radiogroup" class={fieldsetClasses}>
-          <slot
-            ref={(el) => (this.slot = el as HTMLSlotElement)}
-            onSlotchange={this.handleSlotChange}
-          />
+          <slot onSlotchange={this.handleSlotChange} />
         </fieldset>
         <div class={errorContainerClasses}>
           <slot name="error" onSlotchange={this.handleCustomErrorSlot} />

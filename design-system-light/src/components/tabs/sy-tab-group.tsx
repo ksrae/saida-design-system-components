@@ -31,9 +31,21 @@ export class SyTabGroup {
   @Element() host!: HTMLSyTabGroupElement;
 
   @Prop({ mutable: true }) active?: number;
-  @Prop({ reflect: true, mutable: true }) align: 'center' | 'left' = 'left';
+  // NOT reflected. The HTML `align` attribute on the host triggers the
+  // user-agent stylesheet cascade (`[align="center"] → text-align: -webkit-center`)
+  // which inherits down to the panel content, centering the tab body — exactly
+  // what `align` is *not* supposed to control. We accept `align="..."` as input
+  // (read once in componentWillLoad / handled by the alias path) and then strip
+  // it from the host so nothing in the UA stylesheet can latch onto it.
+  @Prop({ mutable: true }) align: 'center' | 'left' = 'left';
   @Prop() disabled = false;
-  @Prop({ attribute: 'draggable' }) isdraggable = false;
+  /**
+   * When true, tabs can be reordered by drag-and-drop. The public attribute is
+   * `draggable`, but the JS-side prop is named `isDraggable` to avoid
+   * shadowing `HTMLElement.prototype.draggable` (which would trigger the
+   * Stencil "reserved public name" warning and risk cross-browser surprises).
+   */
+  @Prop({ attribute: 'draggable' }) isDraggable = false;
   @Prop({ reflect: true, mutable: true }) position: "top" | "bottom" | "left" | "right" = "top";
   @Prop({ reflect: true }) type: "card" | "line" = "line";
   @Prop({ reflect: true }) size: "small" | "medium" | "large" = "medium";
@@ -70,6 +82,14 @@ export class SyTabGroup {
   isUpdateComplete = false;
   parentRect: DOMRect | undefined;
   private _updateInProgress = false;
+  // Tracks whether updateOverflowTabs is mutating tab visibility right now.
+  // When true, ResizeObserver callbacks are ignored — otherwise the
+  // parent (if auto-sized to children) shrinks/grows as we hide/show tabs
+  // in left/right layouts and the observer re-fires updateOverflowTabs in a
+  // tight loop, causing visible shaking in Storybook.
+  private _suppressResize = false;
+  private _resizeRafId: number | null = null;
+  private _lastParentSize: { width: number; height: number } = { width: 0, height: 0 };
 
   @Listen('selected')
   handleTabSelected(e: CustomEvent) {
@@ -90,6 +110,18 @@ export class SyTabGroup {
   }
 
   componentWillLoad() {
+    // Strip the host `align` attribute BEFORE first paint so the UA
+    // stylesheet's `[align=...]` cascade (which inherits text-align down to
+    // the panel content) never gets a target to match. The prop value still
+    // drives the rendered `.align-center` / `.align-left` classes on the
+    // tab-group-container internally — we just don't want the legacy HTML
+    // attribute sitting on the host.
+    const alignAttr = this.host.getAttribute('align');
+    if (alignAttr === 'center' || alignAttr === 'left') {
+      this.align = alignAttr;
+    }
+    if (alignAttr !== null) this.host.removeAttribute('align');
+
     // Accept spec-aligned attribute aliases without breaking legacy markup.
     const placementAlias = fnAssignPropFromAlias<'top' | 'bottom' | 'left' | 'right'>(this.host, 'placement');
     if (placementAlias) this.position = placementAlias;
@@ -126,44 +158,42 @@ export class SyTabGroup {
     // and mount sy-tab-content children so the active tab's content shows.
     const hasGlobalHeaderChild = host.querySelector('sy-global-header') !== null;
 
-    const tabs: HTMLSyTabElement[] = [];
-    const contents: HTMLSyTabContentElement[] = [];
+    // Collect by querySelectorAll so we pick up tabs/contents regardless of
+    // how the caller wrapped them — direct children, [slot="tabs"] wrappers,
+    // story-template's `.sb-story-wrapper` multi-child shim, etc. Exclude
+    // anything inside a nested sy-global-header (the header owns its row).
+    const allTabs = Array.from(host.querySelectorAll('sy-tab')) as HTMLSyTabElement[];
+    const allContents = Array.from(host.querySelectorAll('sy-tab-content')) as HTMLSyTabContentElement[];
 
-    const walk = (root: Element) => {
-      Array.from(root.children).forEach((child) => {
-        const tag = child.tagName;
-        // Skip anything inside the header — its tabs/contents are managed there.
-        if (tag === 'SY-GLOBAL-HEADER') return;
-        if (tag === 'SY-TAB' && child.getAttribute('slot') !== 'extra') {
-          if (!hasGlobalHeaderChild) tabs.push(child as HTMLSyTabElement);
-        } else if (tag === 'SY-TAB-CONTENT') {
-          contents.push(child as HTMLSyTabContentElement);
-        } else if (child.getAttribute('slot') === 'tabs' || child.getAttribute('slot') === 'contents') {
-          // Descend into user-provided slot wrappers.
-          walk(child);
-        }
-      });
-    };
-    walk(host);
+    const tabs = hasGlobalHeaderChild
+      ? []
+      : allTabs.filter((t) => !t.closest('sy-global-header') && t.getAttribute('slot') !== 'extra');
+    const contents = allContents.filter((c) => !c.closest('sy-global-header'));
 
     this.pendingTabs = tabs;
     this.pendingContents = contents;
 
-    // Remove any empty slot wrappers the user left around so we don't end
-    // up with stray div.slot="tabs" nodes fighting with our rendered .tabs.
+    // Pull captured nodes out of wherever they currently sit so the upcoming
+    // render starts from a clean slate; mountCapturedChildren puts them
+    // back in the proper containers after first render.
+    tabs.forEach((t) => t.parentElement?.removeChild(t));
+    contents.forEach((c) => c.parentElement?.removeChild(c));
+
+    // Remove leftover wrappers that fed children into us so they can't
+    // resurface as direct host children rendered by the default <slot/>.
+    // Targets: explicit `[slot="tabs"]` / `[slot="contents"]` wrappers, and
+    // the story-template `.sb-story-wrapper` multi-child shim.
     Array.from(host.children).forEach((child) => {
       const slot = child.getAttribute('slot');
+      const isStoryWrapper = (child as HTMLElement).classList?.contains('sb-story-wrapper');
       if (slot === 'tabs' && !hasGlobalHeaderChild) {
         host.removeChild(child);
       } else if (slot === 'contents') {
         host.removeChild(child);
+      } else if (isStoryWrapper && child.children.length === 0) {
+        host.removeChild(child);
       }
     });
-
-    // Also remove now-orphan tabs/contents that were captured — we'll
-    // reinsert them into the rendered containers after first render.
-    tabs.forEach((t) => t.parentElement?.removeChild(t));
-    contents.forEach((c) => c.parentElement?.removeChild(c));
   }
 
   private mountCapturedChildren() {
@@ -178,6 +208,7 @@ export class SyTabGroup {
       tabsContainer.style.display = 'flex';
       tabsContainer.style.flexDirection = isVertical ? 'column' : 'row';
       tabsContainer.style.alignItems = isVertical ? 'stretch' : 'center';
+      tabsContainer.style.justifyContent = this.align === 'center' ? 'center' : 'flex-start';
       tabsContainer.style.flex = '1 1 auto';
       tabsContainer.style.minWidth = '0';
       tabsContainer.style.minHeight = '0';
@@ -208,6 +239,7 @@ export class SyTabGroup {
     tabsContainer.style.display = 'flex';
     tabsContainer.style.flexDirection = isVertical ? 'column' : 'row';
     tabsContainer.style.alignItems = isVertical ? 'stretch' : 'center';
+    tabsContainer.style.justifyContent = this.align === 'center' ? 'center' : 'flex-start';
     tabsContainer.style.flex = '1 1 auto';
     tabsContainer.style.minWidth = '0';
     tabsContainer.style.minHeight = '0';
@@ -249,7 +281,7 @@ export class SyTabGroup {
     this.isUpdateComplete = true;
     this.refreshTabs();
 
-    if (this.isdraggable && !this.disabled) {
+    if (this.isDraggable && !this.disabled) {
       this.enableDragAndDrop();
     }
 
@@ -264,9 +296,28 @@ export class SyTabGroup {
 
     // Observe parent element resize
     if (this.host.parentElement) {
-      this.resizeObserver = new ResizeObserver(() => {
-        this.updateParentRect();
-        this.updateOverflowTabs();
+      this.resizeObserver = new ResizeObserver((entries) => {
+        // Ignore echoes from our own DOM mutations (hiding/showing tabs in
+        // left/right layouts can shrink an auto-sized parent and re-fire
+        // this observer, producing a visible shake).
+        if (this._suppressResize) return;
+        const entry = entries[0];
+        if (!entry) return;
+        const { width, height } = entry.contentRect;
+        const isVertical = this.position === 'left' || this.position === 'right';
+        const last = this._lastParentSize;
+        const lastRelevant = isVertical ? last.height : last.width;
+        const newRelevant = isVertical ? height : width;
+        // Sub-pixel jitter is meaningless for overflow math.
+        if (Math.abs(newRelevant - lastRelevant) < 1) return;
+        this._lastParentSize = { width, height };
+        // Coalesce bursts into a single update per frame.
+        if (this._resizeRafId !== null) cancelAnimationFrame(this._resizeRafId);
+        this._resizeRafId = requestAnimationFrame(() => {
+          this._resizeRafId = null;
+          this.updateParentRect();
+          this.updateOverflowTabs();
+        });
       });
       this.resizeObserver.observe(this.host.parentElement);
     }
@@ -278,6 +329,10 @@ export class SyTabGroup {
     // Cleanup resize observer
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
+    }
+    if (this._resizeRafId !== null) {
+      cancelAnimationFrame(this._resizeRafId);
+      this._resizeRafId = null;
     }
   }
 
@@ -302,10 +357,10 @@ export class SyTabGroup {
     }
   }
 
-  @Watch('isdraggable')
+  @Watch('isDraggable')
   watchDraggable() {
     if (this.isUpdateComplete) {
-      if (this.isdraggable && !this.disabled) {
+      if (this.isDraggable && !this.disabled) {
         this.enableDragAndDrop();
       } else {
         this.disableDragAndDrop();
@@ -324,6 +379,13 @@ export class SyTabGroup {
       // Flip the inline flex-direction on the rendered .tabs container
       // when switching between horizontal (top/bottom) and vertical
       // (left/right) layouts.
+      this.reapplyTabsAxis();
+    }
+  }
+
+  @Watch('align')
+  watchAlign() {
+    if (this.isUpdateComplete) {
       this.reapplyTabsAxis();
     }
   }
@@ -607,9 +669,12 @@ private updateOverflowTabs() {
 
   if (this._updateInProgress) return;
   this._updateInProgress = true;
+  // Suppress ResizeObserver echoes triggered by the display mutations below.
+  this._suppressResize = true;
 
-  if (!tabs.length || !this.parentRect) {
+  if (!tabs.length) {
     this._updateInProgress = false;
+    this._suppressResize = false;
     return;
   }
 
@@ -623,42 +688,58 @@ private updateOverflowTabs() {
 
   requestAnimationFrame(() => {
     try {
-      // light DOM에서 extra-area 찾기
+      const isHorizontal = this.position === 'top' || this.position === 'bottom';
+
+      // Measure the host directly. The host is `width:100%` / `height:100%`
+      // of its parent, so this captures the actual available space — and
+      // unlike the previous `parentRect` path it works when the parent has
+      // `display: contents` (e.g. Storybook's sb-story-wrapper for
+      // multi-child stories), where parent.getBoundingClientRect() can
+      // collapse to 0×0 and push every tab into the overflow menu.
+      const hostRect = this.host.getBoundingClientRect();
+      const totalSpace = isHorizontal ? hostRect.width : hostRect.height;
+
+      // Host hasn't been sized yet (typically pre-layout). Don't hide any
+      // tabs — wait for the ResizeObserver to fire with a real size.
+      if (totalSpace <= 0) {
+        this.overflowTabs = [];
+        tabs.forEach((tab) => { tab.style.display = 'flex'; });
+        return;
+      }
+
       const tabExtraArea = this.host.querySelector(".extra-area") as HTMLElement;
       const tabExtraRect = tabExtraArea?.getBoundingClientRect();
-      this.tabExtraAreaSize = tabExtraRect ?
-        (this.position === 'top' || this.position === 'bottom') ?
-          tabExtraRect.width :
-          tabExtraRect.height
+      this.tabExtraAreaSize = tabExtraRect
+        ? (isHorizontal ? tabExtraRect.width : tabExtraRect.height)
         : 0;
 
-      // 사용 가능한 총 공간 계산
-      const availableSpace = (this.position === 'top' || this.position === 'bottom') ?
-        (this.parentRect as any).width - this.tabExtraAreaSize - this.tabMoreAreaSize :
-        (this.parentRect as any).height - this.tabExtraAreaSize - this.tabMoreAreaSize;
-
-      let accumulatedWidth = 0;
-      let overflowIndex = -1;
-
-      // 탭 크기 계산 및 오버플로우 지점 찾기
-      for (let i = 0; i < tabs.length; i++) {
-        const tab = tabs[i];
-        const tabRect = tab.getBoundingClientRect();
-        const tabWidth = (this.position === 'top' || this.position === 'bottom') ?
-          tabRect.width : tabRect.height;
-
+      // Pre-measure every tab once.
+      const tabSizes = tabs.map((tab) => {
+        const r = tab.getBoundingClientRect();
         const styles = window.getComputedStyle(tab);
-        const margin = (this.position === 'top' || this.position === 'bottom') ?
-          parseFloat(styles.marginRight) :
-          parseFloat(styles.marginBottom);
+        const margin = isHorizontal
+          ? parseFloat(styles.marginRight)
+          : parseFloat(styles.marginBottom);
+        return (isHorizontal ? r.width : r.height) + margin;
+      });
 
-        const totalWidth = tabWidth + margin;
+      const baseSpace = totalSpace - this.tabExtraAreaSize;
+      const totalTabSize = tabSizes.reduce((a, b) => a + b, 0);
 
-        if (accumulatedWidth + totalWidth > availableSpace) {
-          overflowIndex = i;
-          break;
-        } else {
-          accumulatedWidth += totalWidth;
+      // First pass: do all tabs fit without reserving room for the
+      // more-menu? If yes, no overflow — show every tab and skip the
+      // menu reservation entirely. Otherwise reserve `tabMoreAreaSize` and
+      // recompute which tabs fit alongside the menu.
+      let overflowIndex = -1;
+      if (totalTabSize > baseSpace) {
+        const availableSpace = baseSpace - this.tabMoreAreaSize;
+        let accumulated = 0;
+        for (let i = 0; i < tabs.length; i++) {
+          if (accumulated + tabSizes[i] > availableSpace) {
+            overflowIndex = i;
+            break;
+          }
+          accumulated += tabSizes[i];
         }
       }
 
@@ -704,6 +785,14 @@ private updateOverflowTabs() {
       menu?.clearSelectedItem();
     } finally {
       this._updateInProgress = false;
+      // Hold the suppression for two more frames so the ResizeObserver
+      // entries the browser queues from this frame's display:none mutations
+      // are dropped before we resume listening.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this._suppressResize = false;
+        });
+      });
     }
   });
 }

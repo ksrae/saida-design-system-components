@@ -1,7 +1,5 @@
-import { html } from "lit";
+import { html, ifDefined, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface SyBreadcrumbProps extends Components.SyBreadcrumb {
   slot?: string;

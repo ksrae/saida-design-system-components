@@ -1,0 +1,18 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodStories from './sy-switch-checkValidity.stories';
+
+<Meta of={MethodStories} />
+
+# checkValidity()
+
+Returns `true` if the switch satisfies its constraints, `false` otherwise.
+Does **not** show the browser's native validity popup — use `reportValidity()`
+when you want the popup, or read the boolean and drive your own UI.
+
+```js
+const valid = await el.checkValidity();
+// false while required && !checked
+// true once toggled on
+```
+
+<Canvas of={MethodStories.Default} />

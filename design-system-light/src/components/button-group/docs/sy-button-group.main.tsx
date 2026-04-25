@@ -1,6 +1,5 @@
+import { html, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { html } from 'lit';
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 export interface SyButtonGroupProps extends Components.SyButtonGroup {
   slot?: any;

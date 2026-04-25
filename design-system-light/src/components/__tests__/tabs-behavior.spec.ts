@@ -86,4 +86,22 @@ describe('sy-tab-group', () => {
     expect(group.querySelector('.tab-group-container')).toBeNull();
     expect(group.querySelector('.extra-area')).not.toBeNull();
   });
+
+  it('applies centered alignment to the rendered tabs container', async () => {
+    const page = await newSpecPage({
+      components: [SyTabGroup],
+      html: `
+        <sy-tab-group align="center">
+          <sy-tab tabkey="one">One</sy-tab>
+          <sy-tab tabkey="two">Two</sy-tab>
+          <sy-tab-content name="one">Content 1</sy-tab-content>
+          <sy-tab-content name="two">Content 2</sy-tab-content>
+        </sy-tab-group>
+      `,
+    });
+
+    const tabs = page.root.querySelector('.tabs') as HTMLElement;
+
+    expect(tabs.style.justifyContent).toBe('center');
+  });
 });

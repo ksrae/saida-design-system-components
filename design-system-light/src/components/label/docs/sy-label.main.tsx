@@ -1,6 +1,5 @@
+import { html, ifDefined } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
 
 export interface SyLabelProps extends Components.SyLabel {
   slot?: string;
@@ -11,7 +10,7 @@ export const Label = ({ disabled, htmlFor, required, requiredPosition = 'right',
     <sy-label
       ?disabled=${!!disabled}
       ?required=${!!required}
-      htmlFor=${ifDefined(htmlFor)}
+      for=${ifDefined(htmlFor)}
       requiredPosition=${ifDefined(requiredPosition)}
       value=${ifDefined(value)}
       valuePosition=${ifDefined(valuePosition)}
@@ -23,19 +22,19 @@ export const Label = ({ disabled, htmlFor, required, requiredPosition = 'right',
   </sy-flex>
 `;
 
-export const LabelFor = () => {
+export const LabelFor = ({ htmlFor = 'label-for-input' }: Pick<SyLabelProps, 'htmlFor'> = {}) => {
   return html`
   <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
     <sy-flex align="center">
       <sy-label
-        htmlFor="label-for-input"
+        for=${ifDefined(htmlFor)}
         value="Label"
         valuePosition="left"
         width="50px">
       </sy-label>
     </sy-flex>
     <sy-flex align="center" style="flex:1">
-      <sy-input id="label-for-input" placeholder="Input"></sy-input>
+      <sy-input id=${ifDefined(htmlFor)} placeholder="Input"></sy-input>
     </sy-flex>
   </sy-flex>
   `;
@@ -46,7 +45,7 @@ export const LabelDisabled = (args: { disabled: boolean }) => {
 <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
     <sy-flex align="center">
         <sy-label
-          htmlFor="explicit-input"
+          for="explicit-input"
           ?disabled=${args.disabled}
           value="Label"
           valuePosition="left"
@@ -65,7 +64,7 @@ export const LabelRequired = (args: { required: boolean, requiredPosition: 'left
 <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
     <sy-flex align="center">
         <sy-label
-          htmlFor="explicit-input"
+          for="explicit-input"
           ?required=${args.required}
           requiredPosition=${args.requiredPosition}
           value="Label"
@@ -85,7 +84,7 @@ export const LabelValue = (args: { value: string, valuePosition: 'left' | 'right
     <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
       <sy-flex align="center">
         <sy-label
-          htmlFor="label-input"
+          for="label-input"
           value=${args.value}
           valuePosition=${args.valuePosition}
           width="50px">
@@ -104,7 +103,7 @@ export const LabelWidth = (args: { width: string }) => {
     <sy-flex align="center" columngap="small" rowgap="medium" padding="none" justify="start" direction="horizontal" width="100%">
       <sy-flex align="center">
         <sy-label
-          htmlFor="label-width-input"
+          for="label-width-input"
           value="Label"
           width=${args.width}
           valuePosition="left">

@@ -92,7 +92,17 @@ export class SyRadio {
           checked={this.checked}
           onChange={this.handleInputChange}
         />
-        <span class="radio-checkmark" tabindex="0"></span>
+        <span class="radio-checkmark" tabindex="0">
+          {/*
+            Real <span> for the inner dot instead of a `::after` pseudo. We
+            chased pseudo-element centering through a half-dozen tricks
+            (margin, transform, flex on the parent, `inset:0; margin:auto`)
+            and the user kept seeing the dot off-center. With a real span
+            child of a flex container we control alignment directly with
+            no pseudo-element rendering quirks. Visible only when checked.
+          */}
+          <span class="radio-checkmark__dot"></span>
+        </span>
         <slot></slot>
       </label>
     );

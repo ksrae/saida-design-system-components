@@ -22,19 +22,11 @@
     input:checked~.radio-checkmark {
         background-color: var(--radio-solid-background-readonly);
         border: var(--border-small) var(--radio-solid-border-readonly);
-
-        &:after {
-            background-color: var(--radio-solid-icon-readonly);
-        }
     }
 
     input~.radio-checkmark {
         background-color: var(--radio-default-background-disabled);
         border: var(--border-small) var(--radio-default-border-readonly);
-
-        &:after {
-            background-color: var(--radio-default-icon-readonly);
-        }
 
         &:focus,
         &:focus-visible {
@@ -73,10 +65,10 @@
 
 /* Custom radio button design */
 :host .radio-checkmark {
-    top: 0;
-    left: 0;
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
     margin-right: var(--spacing-3xsmall);
     height: var(--radio-size-medium);
@@ -113,15 +105,10 @@
     border: var(--border-small) var(--radio-solid-border-enabled);
 }
 
-/* checkmark style */
-:host .radio-checkmark:after {
-    content: "";
-    position: absolute;
+/* Inner dot */
+:host .radio-checkmark__dot {
     display: none;
-    top: 50%;
-    left: 50%;
-    margin-left: -5px;
-    margin-top: -5px;
+    flex: 0 0 auto;
     width: calc(var(--radio-size-medium) / 2 + 2px);
     height: calc(var(--radio-size-medium) / 2 + 2px);
     border-radius: 50%;
@@ -130,6 +117,17 @@
 }
 
 /* Radio icon when selected radio button */
-:host input:checked~.radio-checkmark:after {
+:host input:checked~.radio-checkmark .radio-checkmark__dot {
     display: block;
+}
+
+/* Disabled / readonly dot color */
+:host([readonly]) input:checked ~ .radio-checkmark .radio-checkmark__dot,
+:host([disabled]) input:checked ~ .radio-checkmark .radio-checkmark__dot {
+    background-color: var(--radio-solid-icon-readonly);
+}
+
+:host([readonly]) input ~ .radio-checkmark .radio-checkmark__dot,
+:host([disabled]) input ~ .radio-checkmark .radio-checkmark__dot {
+    background-color: var(--radio-default-icon-readonly);
 }

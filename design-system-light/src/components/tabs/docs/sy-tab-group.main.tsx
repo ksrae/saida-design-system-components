@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyTabGroupProps extends Components.SyTabGroup {
@@ -37,7 +35,7 @@ const closableTabs = html`
 export const TabGroup = (a: SyTabGroupProps) => html`
   <sy-tab-group
     .active=${a.active}
-    .isdraggable=${(a as any).isdraggable}
+    ?draggable=${!!(a as any).draggable}
     ?disabled=${!!a.disabled}
     align=${ifDefined(a.align)}
     position=${ifDefined(a.position)}
@@ -59,9 +57,6 @@ export const Tab = (a: SyTabProps) => html`
       .currentDisabledStatus=${a.currentDisabledStatus}
       .index=${a.index}
       .inHeader=${a.inHeader}
-      type=${ifDefined(a.type)}
-      size=${ifDefined(a.size)}
-      position=${ifDefined(a.position)}
     >Tab</sy-tab>
     <sy-tab-content name=${ifDefined(a.tabkey)}>Tab content</sy-tab-content>
   </sy-tab-group>
@@ -78,7 +73,7 @@ export const TabContent = (a: SyTabContentProps) => html`
 export const TabGroupActive       = (a: { active: number })       => html`<sy-tab-group .active=${a.active}>${tabsContent}</sy-tab-group>`;
 export const TabGroupAlign        = (a: { align: any })           => html`<sy-tab-group align=${ifDefined(a.align)}>${tabsContent}</sy-tab-group>`;
 export const TabGroupDisabled     = (a: { disabled: boolean })    => html`<sy-tab-group ?disabled=${!!a.disabled}>${tabsContent}</sy-tab-group>`;
-export const TabGroupIsdraggable  = (a: { isdraggable: boolean }) => html`<sy-tab-group .isdraggable=${a.isdraggable}>${tabsContent}</sy-tab-group>`;
+export const TabGroupDraggable    = (a: { draggable: boolean })   => html`<sy-tab-group ?draggable=${!!a.draggable}>${tabsContent}</sy-tab-group>`;
 export const TabGroupPosition     = (a: { position: any })        => html`<sy-tab-group position=${ifDefined(a.position)}>${tabsContent}</sy-tab-group>`;
 export const TabGroupType         = (a: { type: any })            => html`<sy-tab-group type=${ifDefined(a.type)}>${tabsContent}</sy-tab-group>`;
 export const TabGroupSize         = (a: { size: any })            => html`<sy-tab-group size=${ifDefined(a.size)}>${tabsContent}</sy-tab-group>`;
@@ -95,21 +90,21 @@ const renderGroupEvent = (resultId: string, name: string, handler: (e: CustomEve
 export const TabGroupSelected = () => {
   const handle = renderGroupEvent('tgSResult', 'selected', (e) => JSON.stringify(e.detail?.tabkey ?? e.detail));
   return html`
-    <sy-tab-group .isdraggable=${true} @selected=${handle}>${closableTabs}</sy-tab-group>
+    <sy-tab-group ?draggable=${true} @selected=${handle}>${closableTabs}</sy-tab-group>
     <p id="tgSResult">(idle)</p>
   `;
 };
 export const TabGroupClosed = () => {
   const handle = renderGroupEvent('tgCResult', 'closed', (e) => JSON.stringify(e.detail?.tabkey ?? e.detail));
   return html`
-    <sy-tab-group .isdraggable=${true} @closed=${handle}>${closableTabs}</sy-tab-group>
+    <sy-tab-group ?draggable=${true} @closed=${handle}>${closableTabs}</sy-tab-group>
     <p id="tgCResult">(idle)</p>
   `;
 };
 export const TabGroupOrdered = () => {
   const handle = renderGroupEvent('tgOResult', 'ordered', (e) => JSON.stringify(e.detail));
   return html`
-    <sy-tab-group .isdraggable=${true} @ordered=${handle}>${closableTabs}</sy-tab-group>
+    <sy-tab-group ?draggable=${true} @ordered=${handle}>${closableTabs}</sy-tab-group>
     <p id="tgOResult">(idle)</p>
   `;
 };
@@ -135,60 +130,66 @@ export const TabTabkey               = (a: { tabkey: string })                =>
 /**
  * Manual-close story demonstrates the `manualClose` opt-out:
  * clicking the X on the tab does NOT auto-remove it. Instead the group fires
- * `closed` with `isManualClose: true` and the host app decides what to do. Here
- * we surface a confirmation button — clicking it calls `setClose(true)` with
- * the force flag so the tab is removed. Clicking "Cancel" just hides the prompt.
+ * `closed` with `isManualClose: true`, and the host app decides what to do.
+ *
+ * Here we open a `sy-modal` confirmation: pressing OK force-closes the tab via
+ * `tab.setClose(true)`; pressing Cancel (or the close icon / ESC) leaves the
+ * tab open. The pending tabkey is stashed in a closure variable and cleared
+ * once the modal resolves so a stale value can't drift into the next attempt.
  */
 export const TabManualClose = (a: { manualClose: boolean }) => {
-  const state = { pendingKey: '' as string };
+  const groupRef: Ref<HTMLSyTabGroupElement> = createRef();
+  const modalRef: Ref<HTMLSyModalElement> = createRef();
+  const bodyRef: Ref<HTMLDivElement> = createRef();
+  const pendingKey = { current: '' };
 
   const onClosed = (e: CustomEvent) => {
-    if (!e.detail?.isManualClose) return; // only the manual-close path asks for confirmation
-    state.pendingKey = e.detail.tabkey;
-    const prompt = document.getElementById('tmcPrompt');
-    const label = document.getElementById('tmcLabel');
-    if (label) label.textContent = `Close tab "${e.detail.tabkey}"?`;
-    if (prompt) prompt.style.display = 'flex';
+    if (!e.detail?.isManualClose) return;
+    pendingKey.current = e.detail.tabkey;
+    if (bodyRef.value) bodyRef.value.textContent = `Close tab "${e.detail.tabkey}"?`;
+    modalRef.value?.setOpen();
   };
 
-  const confirmClose = async () => {
-    const tab = document.querySelector(`sy-tab[tabkey="${state.pendingKey}"]`) as any;
-    if (tab?.setClose) await tab.setClose(true); // force-close past the manualClose gate
-    const prompt = document.getElementById('tmcPrompt');
-    if (prompt) prompt.style.display = 'none';
-  };
-
-  const cancelClose = () => {
-    const prompt = document.getElementById('tmcPrompt');
-    if (prompt) prompt.style.display = 'none';
+  const onModalClosed = async (e: CustomEvent) => {
+    const key = pendingKey.current;
+    pendingKey.current = '';
+    if (e.detail?.event !== 'ok' || !key || !groupRef.value) return;
+    const tab = groupRef.value.querySelector(`sy-tab[tabkey="${key}"]`) as any;
+    if (tab?.setClose) await tab.setClose(true);
   };
 
   return html`
-    <sy-tab-group @closed=${onClosed}>
-      <sy-tab tabkey="one" closable .manualClose=${a.manualClose}>One</sy-tab>
-      <sy-tab tabkey="two" closable .manualClose=${a.manualClose}>Two</sy-tab>
-      <sy-tab-content name="one">Tab one content</sy-tab-content>
-      <sy-tab-content name="two">Tab two content</sy-tab-content>
-    </sy-tab-group>
-    <div
-      id="tmcPrompt"
-      style="display:none; margin-top:12px; gap:8px; align-items:center; padding:8px 12px; border:1px solid #ccc; border-radius:4px;"
-    >
-      <span id="tmcLabel" style="flex:1;">Close tab?</span>
-      <sy-button size="small" variant="primary" @click=${confirmClose}>Confirm close</sy-button>
-      <sy-button size="small" @click=${cancelClose}>Cancel</sy-button>
+    <div style="display:flex; flex-direction:column; gap:12px; height:280px;">
+      <div style="flex:1 1 auto; min-height:0;">
+        <sy-tab-group ${ref(groupRef)} @closed=${onClosed}>
+          <sy-tab tabkey="one" closable .manualClose=${a.manualClose}>One</sy-tab>
+          <sy-tab tabkey="two" closable .manualClose=${a.manualClose}>Two</sy-tab>
+          <sy-tab-content name="one">Tab one content</sy-tab-content>
+          <sy-tab-content name="two">Tab two content</sy-tab-content>
+        </sy-tab-group>
+      </div>
+      <p style="margin:0; color:#666; font-size:12px;">
+        With <code>manualClose</code> enabled, clicking the X opens a confirm modal —
+        OK closes the tab, Cancel keeps it open.
+      </p>
+      <sy-modal
+        ${ref(modalRef)}
+        variant="dialog"
+        closable
+        okText="OK"
+        cancelText="Cancel"
+        @closed=${onModalClosed}
+      >
+        <div slot="header">Close tab</div>
+        <div slot="body" ${ref(bodyRef)}>Close tab?</div>
+      </sy-modal>
     </div>
-    <p style="margin-top:8px; color:#666; font-size:12px;">
-      With <code>manualClose</code> enabled, clicking the X on a tab does NOT remove it — the group fires
-      <code>closed</code> with <code>isManualClose: true</code> and the app is responsible for the final step.
-    </p>
   `;
 };
 export const TabActive               = (a: { active: boolean })               => html`<sy-tab-group><sy-tab tabkey="x" ?active=${!!a.active}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabParentDisabled       = (a: { parentDisabled: boolean })       => html`<sy-tab-group><sy-tab tabkey="x" .parentDisabled=${a.parentDisabled}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabCurrentDisabledStatus = (a: { currentDisabledStatus: boolean }) => html`<sy-tab-group><sy-tab tabkey="x" .currentDisabledStatus=${a.currentDisabledStatus}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabIndex                = (a: { index: number })                 => html`<sy-tab-group><sy-tab tabkey="x" .index=${a.index}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
-export const TabType                 = (a: { type: any })                     => html`<sy-tab-group><sy-tab tabkey="x" type=${ifDefined(a.type)}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabSize                 = (a: { size: any })                     => html`<sy-tab-group><sy-tab tabkey="x" size=${ifDefined(a.size)}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabPosition             = (a: { position: any })                 => html`<sy-tab-group><sy-tab tabkey="x" position=${ifDefined(a.position)}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
 export const TabInHeader             = (a: { inHeader: boolean })             => html`<sy-tab-group><sy-tab tabkey="x" .inHeader=${a.inHeader}>Tab</sy-tab><sy-tab-content name="x">C</sy-tab-content></sy-tab-group>`;
@@ -228,7 +229,3 @@ export const TabSetClose = () => {
   `;
 };
 
-// tab-content attrs
-export const TabContentActive   = (a: { active: boolean })   => html`<sy-tab-group><sy-tab tabkey="x">Tab</sy-tab><sy-tab-content ?active=${!!a.active} name="x">C</sy-tab-content></sy-tab-group>`;
-export const TabContentDisabled = (a: { disabled: boolean }) => html`<sy-tab-group><sy-tab tabkey="x">Tab</sy-tab><sy-tab-content ?disabled=${!!a.disabled} name="x">C</sy-tab-content></sy-tab-group>`;
-export const TabContentName     = (a: { name: string })      => html`<sy-tab-group><sy-tab tabkey=${ifDefined(a.name)}>Tab</sy-tab><sy-tab-content name=${ifDefined(a.name)}>C</sy-tab-content></sy-tab-group>`;

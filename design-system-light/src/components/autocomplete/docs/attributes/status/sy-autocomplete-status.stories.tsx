@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { AutocompleteStatus } from '../../sy-autocomplete.main';
 import autocompleteMeta from '../../sy-autocomplete.stories';
 

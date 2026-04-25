@@ -1,7 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import { ref, createRef, Ref } from 'lit/directives/ref.js';
+import { html, ifDefined, unsafeHTML, ref, createRef, Ref } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 export interface SyModalProps extends Components.SyModal {
@@ -49,6 +46,7 @@ export const Modal = (args: SyModalProps) => {
       ?enableModalMaximize=${!!args.enableModalMaximize}
       ?hideFooter=${!!args.hideFooter}
       ?maskClosable=${!!args.maskClosable}
+      ?maskless=${!!(args as any).maskless}
       ?open=${!!args.open}
       cancelText=${ifDefined(args.cancelText)}
       okText=${ifDefined(args.okText)}
@@ -83,15 +81,17 @@ export const ModalOpen = (args: { open: boolean }) => html`
   </sy-modal>
 `;
 
-export const ModalSlot = (args: { slotHeader: any; slotBody: any; slotFooter: any }) =>
-  renderModalDemo(
-    { closable: true },
-    html`
-      <div slot="header">${args.slotHeader}</div>
-      <div slot="body">${args.slotBody}</div>
-      <div slot="footer">${args.slotFooter}</div>
-    `,
-  );
+export const ModalSlot = (args: { slotHeader: any; slotBody: any; slotFooter: any }) => {
+  const modalRef: Ref<HTMLSyModalElement> = createRef();
+  return html`
+    <sy-modal ${ref(modalRef)} ?closable=${true}>
+      <div slot="header">${unsafeHTML(String(args.slotHeader ?? ''))}</div>
+      <div slot="body">${unsafeHTML(String(args.slotBody ?? ''))}</div>
+      <div slot="footer">${unsafeHTML(String(args.slotFooter ?? ''))}</div>
+    </sy-modal>
+    <sy-button @click=${() => modalRef.value?.setOpen()}>Click to Open</sy-button>
+  `;
+};
 
 export const ModalTriggerButtons = () => {
   const modalRef: Ref<HTMLSyModalElement> = createRef();
@@ -115,6 +115,40 @@ export const ModalTriggerButtons = () => {
     <p id="modalTriggerResult">(idle)</p>
   `;
 };
+
+const renderSingleTrigger = (
+  method: 'setOk' | 'setCancel' | 'setClose',
+  label: string,
+  variant: 'primary' | 'secondary' | undefined,
+  resultId: string,
+) => {
+  const modalRef: Ref<HTMLSyModalElement> = createRef();
+  const handleClosed = (e: Event) => {
+    const out = document.getElementById(resultId);
+    const detail = (e as CustomEvent).detail ?? {};
+    let text = `${detail.event} is selected.`;
+    if (detail.value) text += ` value (${detail.value}) is included.`;
+    if (out) out.textContent = text;
+  };
+  const value = `${method.replace('set', '').toLowerCase()} value`;
+  return html`
+    <sy-modal ${ref(modalRef)} @closed=${handleClosed}>
+      <div slot="body">
+        Calls <code>${method}()</code> on the modal.<br/>
+        <sy-button
+          variant=${ifDefined(variant)}
+          @click=${() => (modalRef.value as any)?.[method]?.(value)}
+        >${label}</sy-button>
+      </div>
+    </sy-modal>
+    <sy-button @click=${() => modalRef.value?.setOpen()}>Click Open</sy-button>
+    <p id=${resultId}>(idle)</p>
+  `;
+};
+
+export const ModalSetOk     = () => renderSingleTrigger('setOk',     'Click Ok',     'secondary', 'modalSetOkResult');
+export const ModalSetCancel = () => renderSingleTrigger('setCancel', 'Click Cancel', undefined,   'modalSetCancelResult');
+export const ModalSetClose  = () => renderSingleTrigger('setClose',  'Click Close',  'primary',   'modalSetCloseResult');
 
 export const ModalClosed = () => {
   const modalRef: Ref<HTMLSyModalElement> = createRef();

@@ -1,11 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { MenuItemChecked } from '../../sy-menu.main';
+import { clearElements } from '../../../../clear-element';
 
 const meta: Meta = {
   title: 'Menu/Events/Item Checked',
   component: 'sy-menu',
   tags: [],
-  render: () => MenuItemChecked(),
+  render: () => {
+    clearElements(meta.title);
+    return MenuItemChecked();
+  },
 };
 export default meta;
 type Story = StoryObj;

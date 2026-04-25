@@ -7,7 +7,7 @@
     /* 위치 조정을 위해 추가 */
     left: -9999px;
     top: -9999px;
-    z-index: var(--z-index-menu);
+    z-index: var(--z-index-dropdown, var(--z-index-menu));
     margin: 0px;
     padding: 0px;
     background-color: var(--menu-dropdownmenu-background-enabled);
@@ -54,9 +54,24 @@ a ul {
 // }
 
 ul {
-    width: auto;
+    position: relative;
+    width: max-content;
+    min-width: max-content;
     padding: var(--spacing-3xsmall) 0;
     margin: 0px;
     list-style: none;
+}
+
+.menu-loading {
+    width: 100%;
+    min-width: max-content;
+    min-height: calc(var(--component-medium) - var(--spacing-xsmall));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xsmall) var(--spacing-xsmall);
+    box-sizing: border-box;
+    background-color: var(--menu-dropdownmenu-background-enabled);
+    pointer-events: none;
 }
 

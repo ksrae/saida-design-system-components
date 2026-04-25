@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { PaginationActivePage } from '../../sy-pagination.main';
 import paginationMeta from '../../sy-pagination.stories';
 

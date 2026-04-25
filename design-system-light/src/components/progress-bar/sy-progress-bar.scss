@@ -10,7 +10,12 @@
     border-radius: 3px;
     overflow: hidden;
     position: relative;
-    height: 12px;
+    /* Bumped from 12px to 20px so the percentage label has room to render
+       legibly. With a 12px bar and 11px text, the glyphs filled the entire
+       height with no breathing room above or below — every attempt at
+       vertical centering looked "stuck to the top" because there was
+       nowhere for the text to actually sit centered. */
+    height: 20px;
     border-radius: var(--border-radius-full);
 
     &.progress-bar--error {
@@ -28,16 +33,28 @@
 
 .progress-bar--label {
     position: absolute;
-    align-content: center;
-    align-items: center;
+    /* Vertical centering via top:50% + translateY(-50%). For `center` /
+       `progress-center` valuePosition the JSX adds an inline
+       `transform: translate(-50%, -50%)` which combines X and Y. For
+       `left` / `right` / `progress-left` / `progress-right` no inline
+       transform is set and the CSS translateY(-50%) handles vertical. */
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 12px;
-    font-weight: bold;
+    line-height: 1;
+    font-weight: 700;
+    white-space: nowrap;
     z-index: 1;
-    color: white;
-    // color: var(--progress-line-inprogress-inner-text-enabled);
-    height: 12px;
-    line-height: 11px;
-    text-shadow: var(--text-shadow);
+    /* White text with a soft dark shadow halo. The label sits over both
+       the bright filled portion AND the lighter unfilled track, so we
+       need a color that works on both. The previous `var(--text-default)`
+       (alpha-86 black) blended into the blue filled bar and the white
+       halo it carried from `--text-shadow` was too subtle to rescue it.
+       White text + dark blurred shadow stays readable everywhere. */
+    color: #ffffff;
+    text-shadow:
+        0 0 2px rgba(0, 0, 0, 0.85),
+        0 1px 2px rgba(0, 0, 0, 0.55);
 }
 
 .progress-bar--value-position-center .progress-bar--label {

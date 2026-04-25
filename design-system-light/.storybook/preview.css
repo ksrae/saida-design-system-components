@@ -19,4 +19,11 @@
       top: 101px;
     }
 
-
+    /* Layout-transparent wrapper used by src/utils/story-template.ts when a
+       story returns multiple top-level vnodes. Without `display: contents`
+       the wrapper would intercept the parent flex layout (e.g. break
+       sy-radio-group's fieldset row layout). Inline style on the wrapper
+       caused renderer errors, so the class is matched here instead. */
+    .sb-story-wrapper {
+      display: contents;
+    }

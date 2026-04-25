@@ -1,5 +1,5 @@
 import { SyButtonGroupProps, ButtonGroup } from './sy-button-group.main';
-import type { Meta, StoryObj } from '@storybook/web-components';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { clearElements } from '../../clear-element';
 
 const buttonGroupMeta: Meta<SyButtonGroupProps> = {

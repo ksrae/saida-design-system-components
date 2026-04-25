@@ -1,4 +1,4 @@
-import { Component, Prop, State, h, Element } from '@stencil/core';
+import { Component, Prop, State, h, Element, Watch } from '@stencil/core';
 
 @Component({
   tag: 'sy-menu-sub',
@@ -16,6 +16,7 @@ export class SyMenuSub {
   @Prop() disabled: boolean = false;
   @Prop({ mutable: true }) open: boolean = false;
   @Prop({ attribute: 'title' }) menuSubTitle: string = '';
+  @Prop({ mutable: true }) trigger: 'click' | 'hover' = 'hover';
 
   // queries
   // private get submenuTitle(): HTMLElement | null {
@@ -25,7 +26,6 @@ export class SyMenuSub {
     return this.host.querySelector('.submenu');
   }
 
-  @State() private trigger: 'click' | 'hover' = 'hover';
   @State() private opendelay: number = this.DefaultOpendelay;
   @State() private closedelay: number = this.DefaultClosedelay;
   @State() private innerOpen = false;
@@ -55,6 +55,7 @@ export class SyMenuSub {
       this.host.removeEventListener('mouseenter', this.openOnMouseEnter);
       this.host.removeEventListener('mouseleave', this.closeOnMouseLeave);
     }
+    this.host.removeEventListener('click', this.toggleOnClick);
     if (this.menuObserver) this.menuObserver.disconnect();
   }
 
@@ -63,21 +64,35 @@ export class SyMenuSub {
   };
 
   private updateAttribute() {
-    const closestMenu = this.host.closest('sy-menu');
+    const closestMenu = this.host.closest('sy-menu') as HTMLSyMenuElement | null;
     if (closestMenu) {
-      // leave attributes in place for now
+      this.trigger = closestMenu.trigger === 'click' ? 'click' : 'hover';
+      this.parentDirection = closestMenu.direction ?? this.parentDirection;
     }
   }
 
   private applyEventListeners() {
+    this.host.removeEventListener('mouseenter', this.openOnMouseEnter);
+    this.host.removeEventListener('mouseleave', this.closeOnMouseLeave);
+    this.host.removeEventListener('click', this.toggleOnClick);
+
     if (this.trigger !== 'click') {
       this.host.addEventListener('mouseenter', this.openOnMouseEnter);
       this.host.addEventListener('mouseleave', this.closeOnMouseLeave);
-      this.host.removeEventListener('click', this.toggleOnClick);
+    }
+  }
+
+  @Watch('trigger')
+  watchTrigger() {
+    this.applyEventListeners();
+  }
+
+  @Watch('open')
+  watchOpen(newVal: boolean) {
+    if (newVal) {
+      this.setOpen();
     } else {
-      this.host.removeEventListener('mouseenter', this.openOnMouseEnter);
-      this.host.removeEventListener('mouseleave', this.closeOnMouseLeave);
-      this.host.addEventListener('click', this.toggleOnClick);
+      this.setClose();
     }
   }
 
@@ -149,8 +164,12 @@ export class SyMenuSub {
     );
   }
 
-  private toggleOnClick() {
-    if (this.trigger === 'click') this.setTrigger();
+  private toggleOnClick(event?: Event) {
+    if (this.trigger === 'click') {
+      event?.preventDefault();
+      event?.stopPropagation();
+      this.setTrigger();
+    }
   }
 
   private openOnMouseEnter() {
@@ -170,12 +189,14 @@ export class SyMenuSub {
     setTimeout(() => {
       this.adjustSubMenuPosition();
       this.innerOpen = true;
+      this.open = true;
     }, this.opendelay);
   }
 
   private setClose() {
     setTimeout(() => {
       this.innerOpen = false;
+      this.open = false;
       const children = Array.from(this.host.children);
       children?.forEach(child => {
         if (child.tagName === 'SY-MENU-SUB') {

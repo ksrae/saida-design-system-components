@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { InlineMessageSticky } from '../../sy-inline-message.main';
 import inlineMessageMeta from '../../sy-inline-message.stories';
 

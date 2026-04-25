@@ -1,0 +1,28 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+import * as MethodStories from './sy-switch-setCustomError.stories';
+
+<Meta of={MethodStories} />
+
+# setCustomError() / clearCustomError()
+
+Both methods drive the slot error UI. Use them to demonstrate the three submit
+flows on the form below:
+
+| Action | Result |
+| --- | --- |
+| Click **Submit** as-is | Submit succeeded ✓ |
+| Click **clearCustomError()** then **Submit** | Submit succeeded ✓ |
+| Click **setCustomError()** then **Submit** | Submit blocked ✗, slotted error shown |
+
+```js
+// Business rule decides something is wrong
+el.setCustomError();   // → next submit fails
+
+// Rule is satisfied again
+el.clearCustomError(); // → next submit succeeds
+```
+
+The error message lives in the markup (`<span slot="error">`), not in JS. JS
+only decides *when* to surface it.
+
+<Canvas of={MethodStories.Default} />

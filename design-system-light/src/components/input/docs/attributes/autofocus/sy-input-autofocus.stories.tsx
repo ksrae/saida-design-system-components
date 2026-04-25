@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { InputAutofocus } from '../../sy-input.main';
 import inputMeta from '../../sy-input.stories';
 

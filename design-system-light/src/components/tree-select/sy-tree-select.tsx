@@ -252,16 +252,6 @@ export class SyTreeSelect {
     this.isValid = false;
   }
 
-  @Method()
-  async checkValidity(): Promise<boolean> {
-    return this.internals.checkValidity();
-  }
-
-  @Method()
-  async reportValidity(): Promise<boolean> {
-    return this.internals.reportValidity();
-  }
-
   // --- Render ---
   render() {
     return (

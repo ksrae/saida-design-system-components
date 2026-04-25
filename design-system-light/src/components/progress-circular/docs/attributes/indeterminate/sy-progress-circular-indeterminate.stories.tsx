@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { ProgressCircularIndeterminate } from '../../sy-progress-circular.main';
 import progressCircularMeta from '../../sy-progress-circular.stories';
 

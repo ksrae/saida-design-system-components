@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { GlobalHeaderInformation } from '../../sy-global-header.main';
 import globalHeaderMeta from '../../sy-global-header.stories';
 

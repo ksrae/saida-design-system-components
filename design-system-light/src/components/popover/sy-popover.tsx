@@ -173,8 +173,12 @@ export class SyPopover {
    */
   @Method()
   public async setOpen() {
-    // 부모가 disabled이거나 readonly이면 팝업을 열지 않음
-    if (this.isParentDisabledOrReadonly() || this.trigger !== 'null') {
+    // 부모가 disabled / readonly 이면 팝업을 열지 않음.
+    // 이전 구현에는 `this.trigger !== 'null'` 가드도 있었는데,
+    // 이는 setOpen 의 본래 의도(트리거 무시 강제 오픈) 와 정반대로
+    // hover/click/focus 어떤 트리거에서도 setOpen 이 무력화되는
+    // 버그였다. 트리거 종류와 무관하게 강제로 오픈하도록 가드 제거.
+    if (this.isParentDisabledOrReadonly()) {
       return;
     }
 

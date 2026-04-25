@@ -1,6 +1,5 @@
+import { html, ifDefined } from '../../../utils/story-template';
 import { Components } from '../../../components';
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
 
 export interface SyDividerProps extends Components.SyDivider {}
 

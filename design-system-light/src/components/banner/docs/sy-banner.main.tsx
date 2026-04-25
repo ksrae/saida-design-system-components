@@ -1,6 +1,4 @@
-import { html } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { html, ifDefined, unsafeHTML } from '../../../utils/story-template';
 import { Components } from '../../../components';
 
 // Stencil generates `SyBannerMessage` from the fixed tag `sy-banner-message`.

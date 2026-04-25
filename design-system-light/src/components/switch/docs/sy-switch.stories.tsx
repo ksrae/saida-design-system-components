@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components-vite';
+import type { Meta, StoryObj } from '@stencil/storybook-plugin';
 import { SySwitchProps, Switch } from './sy-switch.main';
 import { clearElements } from '../../clear-element';
 
@@ -42,10 +42,10 @@ const switchMeta: Meta<SySwitchProps> = {
       description: 'Switch size.',
       table: { category: 'Parameter', defaultValue: { summary: 'medium' }, type: { summary: 'small | medium' } },
     },
-    name: {
-      control: 'text',
-      description: 'Form field name.',
-      table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } },
+    required: {
+      control: 'boolean',
+      description: 'Switch must be checked for the form to be valid.',
+      table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } },
     },
     changed: {
       type: 'function',
@@ -59,5 +59,5 @@ export default switchMeta;
 type Story = StoryObj<SySwitchProps>;
 
 export const Default: Story = {
-  args: { checked: false, disabled: false, label: 'Switch', loading: false, readonly: false, size: 'medium', name: '' },
+  args: { checked: false, disabled: false, label: 'Switch', loading: false, readonly: false, size: 'medium', required: false },
 };

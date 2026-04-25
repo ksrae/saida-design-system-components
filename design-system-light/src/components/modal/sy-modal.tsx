@@ -41,6 +41,7 @@ export class SyModal {
   @Prop({ attribute: 'enableModalMaximize', mutable: true }) enableModalMaximize: boolean = false;
   @Prop({ attribute: 'hideFooter', mutable: true }) hideFooter: boolean = false;
   @Prop({ attribute: 'maskClosable', mutable: true }) maskClosable: boolean = false;
+  @Prop({ mutable: true }) maskless: boolean = false;
   @Prop({ attribute: 'okText', mutable: true }) okText: string = '';
   @Prop({ mutable: true }) open: boolean = false;
   @Prop() width: number = 0;
@@ -48,7 +49,7 @@ export class SyModal {
   @Prop() height: number = 0;
   @Prop() top: string = '-1';
   @Prop() left: string = '-1';
-  @Prop() variant: 'modal' | 'dialog' = 'dialog';
+  @Prop({ reflect: true }) variant: 'modal' | 'dialog' = 'dialog';
 
   /** Fires when the modal closes. `detail.event` distinguishes ok / cancel / close. */
   @Event() closed!: EventEmitter<{
@@ -76,6 +77,8 @@ export class SyModal {
   private startTop: number = 0;
   private resizeHandle: DOMTokenList | null = null;
   private addedToBody: boolean = false;
+  private originalParent: Node | null = null;
+  private originalNextSibling: Node | null = null;
   private scrollsize: number = 15;
   private minWidth: number = 100;
   private minHeight: number = 1;
@@ -98,7 +101,7 @@ export class SyModal {
       this.left = '-1';
     }
 
-    // Don't check slots here - wait for after render
+    this.modalWidth = this.width > 0 ? `${this.width}px` : 'auto';
   }
 
   componentDidLoad() {
@@ -109,6 +112,13 @@ export class SyModal {
     setTimeout(() => {
       this.updateSlotContents();
     }, 10);
+
+    // If `open` was set to true initially, the @Watch decorator does not fire
+    // for the initial value, so we need to trigger setOpen() ourselves to
+    // append the modal to document.body and position it.
+    if (this.open) {
+      this.setOpen();
+    }
   }
 
   private slotObserver: MutationObserver | null = null;
@@ -231,7 +241,9 @@ export class SyModal {
   }
 
   private appendToRoot = () => {
-    if (this.host.isConnected && !this.addedToBody) {
+    if (!this.addedToBody) {
+      this.originalParent = this.host.parentNode;
+      this.originalNextSibling = this.host.nextSibling;
       document.body.appendChild(this.host);
       this.addedToBody = true;
 
@@ -276,8 +288,12 @@ export class SyModal {
   private removeModal = () => {
     if (this.host.isConnected && this.addedToBody) {
       try {
-        document.body.removeChild(this.host);
         this.open = false;
+        if (this.originalParent?.isConnected) {
+          this.originalParent.insertBefore(this.host, this.originalNextSibling?.parentNode === this.originalParent ? this.originalNextSibling : null);
+        } else {
+          document.body.removeChild(this.host);
+        }
         this.addedToBody = false;
       } catch (err: any) {
         // console.log({err});
@@ -557,12 +573,16 @@ export class SyModal {
           'modal-wrapper': true,
           'modal-wrapper--open': this.open,
           'modal-wrapper--maximize': this.maximized && this.variant === 'modal',
-          'mask': true,
+          'mask': !this.maskless,
         }}
         onClick={this.handleWrapperClick}
       >
         <div
-          class="modal-container"
+          class={{
+            'modal-container': true,
+            'modal-container--modal': this.variant === 'modal',
+            'modal-container--dialog': this.variant === 'dialog',
+          }}
           style={{ width: this.modalWidth }}
           onClick={(e: Event) => e.stopPropagation()}
         >
