@@ -8,7 +8,7 @@ const meta: Meta = {
   tags: [],
   render: (args) => TreeSelectMaxTagCount(args as { maxTagCount: number }),
   argTypes: { maxTagCount: treeSelectMeta?.argTypes?.maxTagCount },
-  args: { maxTagCount: 0 },
+  args: { maxTagCount: 1 },
 };
 
 export default meta;

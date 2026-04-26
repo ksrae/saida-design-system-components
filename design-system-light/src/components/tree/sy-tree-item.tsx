@@ -173,6 +173,14 @@ export class SyTreeItem {
   // --- Render ---
   render() {
     const isEditableActive = this.isEditable && !this.disabled && this.hovered;
+    // While the user is mid-edit or mid-add, hide the row's hover-action
+    // buttons (Edit / + / Remove). Two reasons:
+    //   1) UX — those actions conflict with the current operation.
+    //   2) Tooltip cleanup — when add is confirmed via keyboard (Enter), the
+    //      mouse never leaves the + button, so its "Add" sy-tooltip stays
+    //      open forever. Removing the button from the DOM lets sy-tooltip's
+    //      parent-removal MutationObserver close the tooltip automatically.
+    const showRowActions = isEditableActive && !this.isAdding && !this.isEditing;
 
     const treeItemListClasses = {
       'tree-item-list': true,
@@ -241,7 +249,7 @@ export class SyTreeItem {
           "tree-editable": true,
           "edit-on": isEditableActive
         }}>
-          {isEditableActive && this.editable ? (
+          {showRowActions && this.editable ? (
             <sy-button size="small" variant="borderless" onClick={this.startEditing.bind(this)}>
               <sy-icon size="small">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -251,7 +259,7 @@ export class SyTreeItem {
               <sy-tooltip position="top" content="Edit" id="editTooltip"></sy-tooltip>
             </sy-button>
           ) : null}
-          {isEditableActive && this.appendable ? (
+          {showRowActions && this.appendable ? (
             <sy-button size="small" variant="borderless" onClick={this.startAdding.bind(this)}>
               <sy-icon size="small">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -261,7 +269,7 @@ export class SyTreeItem {
               <sy-tooltip position="top" content="Add" id="addTooltip"></sy-tooltip>
             </sy-button>
           ) : null}
-          {isEditableActive && this.removable ? (
+          {showRowActions && this.removable ? (
             <sy-button size="small" variant="borderless" onClick={this.removeItem.bind(this)}>
               <sy-icon size="small">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -546,6 +554,15 @@ export class SyTreeItem {
     e.preventDefault();
     e.stopPropagation();
 
+    // Force-close any open Edit/Add/Remove tooltips on this row before the
+    // host buttons unmount. sy-tooltip's MutationObserver-based auto-close
+    // fires on parent removal in theory, but it has been unreliable under
+    // Stencil's batched re-renders here (the tooltip ends up portaled in
+    // <body> with no live anchor and no close trigger). Dispatching
+    // mouseleave on each button takes the deterministic parentMouseLeave →
+    // open=false → removeTooltip path in sy-tooltip.
+    this.dismissActionTooltips();
+
     const { htmlParts, pureText } = this.extractHtmlAndText(this.label);
     this.originalHtmlParts = htmlParts;
     this.editingLabel = pureText;
@@ -609,10 +626,39 @@ export class SyTreeItem {
 
   private startAdding(e: Event) {
     e.stopPropagation();
+
+    // Same fix as startEditing — close the hover tooltips synchronously so
+    // they don't get orphaned in <body> when the buttons unmount.
+    this.dismissActionTooltips();
+
     this.isAdding = true;
     this.newChildLabel = '';
     this.updatingEmit();
     this.addingDocumentKeydownEvent();
+  }
+
+  // Force-close any tooltip that's currently visible before entering
+  // edit/add mode. We've found sy-tooltip's MutationObserver-based cleanup
+  // AND its parentMouseLeave path can both miss this transition under
+  // Stencil's batched re-renders, leaving stale "Edit"/"Add" bubbles parked
+  // in <body>. Two-step cleanup that does NOT rely on sy-tooltip's lifecycle:
+  //
+  //   1) Dispatch mouseleave on each row action button — for any tooltip
+  //      whose listener still fires, this takes the documented close path.
+  //   2) Detach every sy-tooltip currently portaled as a direct child of
+  //      <body>. These are the open ones. They're orphaned by removal, but
+  //      sy-tooltip's appendToRoot will re-attach a fresh instance on the
+  //      next mouseenter when the user comes back to a re-rendered button.
+  //
+  // Only one row's action tooltips can be open at a time (you can't hover
+  // two rows simultaneously), so the body-wide sweep is safe in this scope.
+  private dismissActionTooltips() {
+    this.host.querySelectorAll('.tree-editable sy-button').forEach(btn => {
+      btn.dispatchEvent(new MouseEvent('mouseleave', { bubbles: false }));
+    });
+    Array.from(document.body.children).forEach(el => {
+      if (el.tagName.toLowerCase() === 'sy-tooltip') el.remove();
+    });
   }
 
   private handleNewChildDocumentKeydown = (e: KeyboardEvent) => {
@@ -680,6 +726,10 @@ export class SyTreeItem {
 
   private removeItem(e: Event) {
     e.stopPropagation();
+    // Same tooltip cleanup as startEditing/startAdding — the row is about to
+    // unmount (the parent tree drops this node in handleRemoveItem), so any
+    // open "Remove" tooltip would otherwise be left stuck in <body>.
+    this.dismissActionTooltips();
     this.itemRemoved.emit({ value: this.value, label: this.label });
   }
 

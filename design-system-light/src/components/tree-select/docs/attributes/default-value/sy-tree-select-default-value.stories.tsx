@@ -8,7 +8,7 @@ const meta: Meta = {
   tags: [],
   render: (args) => TreeSelectDefaultValue(args as { defaultValue: string }),
   argTypes: { defaultValue: treeSelectMeta?.argTypes?.defaultValue },
-  args: { defaultValue: '' },
+  args: { defaultValue: 'apple' },
 };
 
 export default meta;

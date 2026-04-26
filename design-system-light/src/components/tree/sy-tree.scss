@@ -3,34 +3,32 @@
 :host {
      display: block;
      overflow: auto;
-     
 
+
+    // Drop indicator strip between siblings. Originally 3px + a `:after`
+    // pseudo-element keyed off `[data-dragging="above"|"below"]`. Two issues
+    // stacked, neither of which surfaced individually as a clear failure:
+    //
+    //   1) 3px is too small to hover during a drag — bumped to 4px.
+    //   2) Stencil's scoped CSS pipeline rewrites `[attr="value"]:after`
+    //      compounds in a way that sometimes ends up not matching the
+    //      actual rendered drop-zone (the scope class lands in a position
+    //      that breaks the selector). Switching to plain class names
+    //      (`.drag-above` etc.) sidesteps that — class selectors get the
+    //      scope class appended cleanly. Painting straight on the
+    //      drop-zone background also drops the :after dependency.
     .drop-zone {
-      height: 3px;
+      height: 4px;
       position: relative;
-    }
-    .drop-zone:after {
-      content: '';
-      position: absolute;
-      top:2px;
-      left: 0;
-      right: 0;
-      height: 1px;
       background: transparent;
     }
-    .drop-zone[data-dragging="above"]:after {
-      top: 0;
-      left:0px;
-      width:100%;
-      height: 1px;
+    .drop-zone.drag-above,
+    .drop-zone.drag-below {
       background: var(--tree-line-border-enabled);
     }
-    .drop-zone[data-dragging="below"]:after {
-      bottom: 0;
-      left:0px;
-      width:100%;
-      height: 1px;
-      background: var(--tree-line-border-enabled);
+    .drop-zone.drag-not-allowed {
+      background: var(--text-error, #c0392b);
+      opacity: 0.4;
     }
     // .add-item {
     //   cursor: pointer;

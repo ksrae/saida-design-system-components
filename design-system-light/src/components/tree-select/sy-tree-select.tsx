@@ -74,6 +74,40 @@ export class SyTreeSelect {
   // --- Events ---
   @Event() changed: EventEmitter<{ selectedItem: { value: string; label: string }[]; isValid: boolean }>;
 
+  get value(): string {
+    return this.selectedItem.map(item => item.value).join(',');
+  }
+
+  get validity(): ValidityState {
+    if (!this.isValid && (this.validStatus === 'custom' || this.hasSlotErrorMessage)) {
+      return {
+        badInput: false,
+        customError: this.validStatus === 'custom' || this.hasSlotErrorMessage,
+        patternMismatch: false,
+        rangeOverflow: false,
+        rangeUnderflow: false,
+        stepMismatch: false,
+        tooLong: false,
+        tooShort: false,
+        typeMismatch: false,
+        valid: false,
+        valueMissing: this.validStatus === 'valueMissing',
+      } as ValidityState;
+    }
+    return this.internals?.validity;
+  }
+
+  get validationMessage(): string {
+    if (!this.isValid && (this.validStatus === 'custom' || this.hasSlotErrorMessage)) {
+      return this.getSlotErrorText() || this.getErrorMessage(this.validStatus);
+    }
+    return this.internals?.validationMessage;
+  }
+
+  get willValidate(): boolean {
+    return this.internals?.willValidate;
+  }
+
   // --- Lifecycle Methods ---
   connectedCallback() {
     document.addEventListener("click", this.handleOutsideClick, true);
@@ -91,6 +125,12 @@ export class SyTreeSelect {
 
     // Set mode based on checkable
     this.mode = this.checkable ? 'tag' : 'searchable';
+
+    // Mirror placeholder to the @State copy on first load. The watcher only
+    // syncs on subsequent prop changes, so a placeholder set declaratively
+    // (e.g. in JSX or via attribute) was never propagated to the inner
+    // sy-select on the first render.
+    this.treePlaceHolder = this.placeholder;
 
     // 모든 초기화 로직을 여기로 이동
     if (this.defaultValue) {
@@ -124,6 +164,14 @@ export class SyTreeSelect {
         (this.selectElement as any).setValue(selectLabels);
       }
     }
+    // Apply nodeWidth on first paint — otherwise the host stays at its
+    // default block width and the watcher only kicks in on subsequent
+    // changes, leaving initial render at the wrong size.
+    this.applyNodeWidth();
+
+    // Re-seed validity after sy-select has rendered so ElementInternals gets
+    // a real focusable anchor for native reportValidity / submit popups.
+    this.updateValidityState();
   }
 
   disconnectedCallback() {
@@ -137,33 +185,42 @@ export class SyTreeSelect {
   }
 
   // --- Watchers ---
+  // defaultValue and nodes used to share one watcher that always re-ran
+  // initializeDefaultValue when EITHER changed. That broke checkable mode:
+  // every checkbox toggle emits nodesChanged → tree-select reassigns
+  // this.nodes → watcher fires → initializeDefaultValue forces nodes in
+  // defaultValue back to checked=true → user's uncheck snaps back. Splitting
+  // the two watchers means nodes change re-derives selection from the
+  // tree's actual checked state without resetting to defaultValue.
   @Watch('defaultValue')
-  @Watch('nodes')
-  handleDefaultValueOrNodesChange() {
+  handleDefaultValuePropChange() {
     if (this.defaultValue) {
       this.initializeDefaultValue();
     }
-    else if (this.checkable && this.nodes?.length) {
-      this.updateSelectedFromChecked(this.nodes);
+  }
 
-      // select 컴포넌트 업데이트
+  @Watch('nodes')
+  handleNodesPropChange() {
+    if (this.checkable && this.nodes?.length) {
+      this.updateSelectedFromChecked(this.nodes);
       if (this.selectElement) {
         (this.selectElement as any).selectedOptions = [...this.selectedItem];
-        // checkable 모드에서는 setValue 호출하지 않음
-        if (!this.checkable) {
-          const selectLabels = this.selectedItem.map(item => item.label).join(',');
-          (this.selectElement as any).setValue(selectLabels);
-        }
       }
     }
-
-    // Update tree element if popup is open
+    // Push to popup tree if open.
     if (this.popupContainer) {
       const treeElement = this.popupContainer.querySelector('sy-tree') as HTMLSyTreeElement;
       if (treeElement) {
         treeElement.nodes = this.nodes;
       }
     }
+  }
+
+  @Watch('required')
+  handleRequiredChange() {
+    // No watcher previously meant Storybook toggles of `required` left
+    // internals.setValidity stale until the next selection change.
+    this.updateValidityState();
   }
 
   @Watch('checkable')
@@ -193,6 +250,30 @@ export class SyTreeSelect {
   @Watch('placeholder')
   handlePlaceholderChange() {
     this.treePlaceHolder = this.placeholder;
+  }
+
+  @Watch('nodeWidth')
+  handleNodeWidthChange() {
+    // nodeWidth on tree-select is the WIDTH OF THE WHOLE COMPONENT (trigger
+    // and popup) — not a per-item label cap. Capping individual items
+    // produced the user-reported bug: labels were truncated arbitrarily
+    // even when the popup itself had plenty of horizontal room left, so the
+    // ellipsis looked random. Now nodeWidth resizes the host (and therefore
+    // the popup, which inherits the trigger's rect width), and labels
+    // truncate naturally because the container is narrow — matching the
+    // user's mental model of "if I asked for 80px, give me an 80px box."
+    this.applyNodeWidth();
+    if (this.popupContainer) {
+      this.updateTreeSelectPosition();
+    }
+  }
+
+  private applyNodeWidth() {
+    if (this.nodeWidth !== null && this.nodeWidth > 0) {
+      this.host.style.width = `${this.nodeWidth}px`;
+    } else {
+      this.host.style.width = '';
+    }
   }
 
   @Watch('isOpen')
@@ -248,8 +329,18 @@ export class SyTreeSelect {
   // --- Public Methods ---
   @Method()
   async setCustomValidity(message: string) {
-    this.internals.setValidity({ customError: true }, message);
-    this.isValid = false;
+    if (message) {
+      this.isValid = false;
+      this.validStatus = 'custom';
+      this.touched = true;
+      this.internals.setValidity({ customError: true }, message, this.getValidationAnchor());
+    } else {
+      if (this.validStatus === 'custom') {
+        this.validStatus = '';
+        this.isValid = true;
+      }
+      this.updateValidityState();
+    }
   }
 
   // --- Render ---
@@ -269,7 +360,12 @@ export class SyTreeSelect {
             disabled={this.disabled}
             readonly={this.readonly}
             error={this.status === 'error' || ((this.touched || this.formSubmitted) && !this.isValid)}
-            required={this.required}
+            // Intentionally NOT forwarding `required` to the inner sy-select.
+            // Both sy-tree-select and sy-select are form-associated; if both
+            // declare `required`, the form ends up with two invalid controls
+            // and reportValidity() anchored its native popup at sy-select
+            // (the inner one) — far from where the user expected. Tree-select
+            // owns validation here; sy-select is just the visual surface.
             maxTagCount={this.maxTagCount}
             selectedOptions={this.selectedItem}
             onInputChanged={(e: Event) => this.handleSearchInputChanged(e)}
@@ -293,7 +389,6 @@ export class SyTreeSelect {
                 expandable={this.expandable}
                 line={this.line}
                 selectedValue={this.selectedItem?.length ? this.selectedItem.map(item => item.value).join(',') : this.defaultValue}
-                nodeWidth={this.nodeWidth !== null && this.nodeWidth > 0 ? this.nodeWidth : null}
                 searchTerm={this.searchTerm}
                 expandAll={this.expandAll}
                 isTreeSelect={true}
@@ -374,8 +469,15 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       this.popupContainer.style.border = '1px solid var(--border-color, #d9d9d9)';
       this.popupContainer.style.borderRadius = '4px';
       this.popupContainer.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
-      this.popupContainer.style.maxHeight = '300px';
-      this.popupContainer.style.overflowY = 'auto';
+      // Inline padding because Stencil's scoped CSS doesn't reach this popup
+      // — it's created via document.createElement and appended to <body>, so
+      // it never gets the `sc-sy-tree-select` scope class. Class-based
+      // padding rules in the .scss file therefore don't match. Without this,
+      // checkbox/label items rendered against the popup's left edge with no
+      // breathing room.
+      this.popupContainer.style.padding = 'var(--spacing-3xsmall, 8px) var(--spacing-xsmall, 12px)';
+      // Intentionally NOT setting maxHeight/overflowY: the popup grows to fit
+      // all nodes so users see the full tree without an inner scrollbar.
       document.body.appendChild(this.popupContainer);
     }
 
@@ -428,7 +530,10 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
     this.treeElement.expandable = this.expandable;
     this.treeElement.line = this.line;
     this.treeElement.selectedValue = this.selectedItem?.length ? this.selectedItem.map(item => item.value).join(',') : this.defaultValue;
-    this.treeElement.nodeWidth = this.nodeWidth !== null && this.nodeWidth > 0 ? this.nodeWidth : null;
+    // Intentionally NOT setting tree.nodeWidth — tree-select's nodeWidth is
+    // a host-width concept (whole component), not a per-tree-item cap. The
+    // popup width comes from the trigger's bounding rect, so labels
+    // truncate naturally to the popup width.
     this.treeElement.searchTerm = this.searchTerm;
     this.treeElement.expandAll = this.expandAll;
     this.treeElement.isTreeSelect = true;
@@ -612,6 +717,20 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
     }
 
     this.selectedItem = [];
+
+    // Wipe the inner sy-select's displayed text. selectedItem clearing alone
+    // doesn't drop the input value because sy-select stores it in its own
+    // `inputValue` state — without setValue('')/clearValue() the user-visible
+    // label stayed and clearable looked broken.
+    if (this.selectElement) {
+      (this.selectElement as any).selectedOptions = [];
+      (this.selectElement as any).setValue?.('');
+      (this.selectElement as any).clearValue?.();
+    }
+
+    this.updateValidityState();
+    this.updateFormValue();
+    this.emitChangeEvent();
   }
 
   private handleTreeItemClick(event: any) {
@@ -646,22 +765,25 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
   }
 
   private handleNodesChanged(event: any) {
+    // Reassign nodes — fires @Watch('nodes') which re-derives selectedItem
+    // from the new check states. (Previously the watcher ALSO re-applied
+    // defaultValue, snapping unchecked items back to checked; that watcher
+    // is now split so this path no longer fights the user's clicks.)
     this.nodes = event.detail.nodes;
 
     if (this.checkable) {
       this.updateSelectedFromChecked(this.nodes);
-
       if (this.selectElement) {
         (this.selectElement as any).selectedOptions = [...this.selectedItem];
-        // checkable 모드에서는 setValue 호출하지 않음
-        if (!this.checkable) {
-          const selectDefaultValue = this.selectedItem?.map(item => item.label).join(',');
-          (this.selectElement as any).setValue(selectDefaultValue);
-        }
       }
-
       this.searchTerm = '';
       this.filterAndExpandNodes();
+      // Form integration was missing — without these the host's form value /
+      // validity / `changed` event never moved when the user toggled a
+      // checkbox, so nothing downstream knew the selection had changed.
+      this.updateValidityState();
+      this.updateFormValue();
+      this.emitChangeEvent();
     }
   }
 
@@ -694,31 +816,24 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
   }
 
   private updateSelectedFromChecked(nodes: TreeNode[]) {
+    // Parent-collapse: when a parent is checked (either explicitly or because
+    // all its children are), return the parent as a single tag and stop
+    // recursing. When the parent isn't checked but some children are,
+    // return just those checked children. This mirrors typical tree-select
+    // UX — "all under Fruits" reads as Fruits, not Apple+Banana+...
     const selected: { value: string; label: string }[] = [];
 
-    // Lit 코드의 알고리즘 그대로 적용
-    const collectCheckedValues = (node: TreeNode): { value: string, label: string }[] => {
-      // 부모가 체크된 경우 - 자식 확인하지 않고 바로 리턴
+    const collect = (node: TreeNode) => {
       if (node.checked) {
-        return [{ value: node.value, label: node.label ?? node.value }];
+        selected.push({ value: node.value, label: node.label ?? node.value });
+        return;
       }
-
-      // 부모가 체크되지 않은 경우에만 자식들 확인
-      const values: { value: string, label: string }[] = [];
       if (node.children) {
-        for (const child of node.children) {
-          const childCheckedValues = collectCheckedValues(child);
-          values.push(...childCheckedValues);
-        }
+        node.children.forEach(collect);
       }
-      return values;
     };
 
-    // 모든 노드에 대해 수집
-    for (const node of nodes) {
-      selected.push(...collectCheckedValues(node));
-    }
-
+    nodes.forEach(collect);
     this.selectedItem = selected;
   }
 
@@ -726,32 +841,116 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
     if (!this.defaultValue) return;
 
     const values = this.defaultValue.split(',').map(v => v.trim());
-    const selected: { value: string; label: string }[] = [];
 
-    const findNodes = (nodeList: TreeNode[]) => {
+    // Mark matching nodes as checked. For checkable mode we also propagate
+    // the auto-check state up to parents so the rendered tree's checkboxes
+    // match what the user expects (parent gets checked when all children
+    // are checked, indeterminate otherwise). Without this propagation the
+    // initial UI would show every leaf as ticked but the parent looking
+    // unchecked, then snap to the propagated state on first interaction
+    // — bug #2's flicker.
+    const markChecked = (nodeList: TreeNode[]) => {
       for (const node of nodeList) {
-        if (values.includes(node.value)) {
-          selected.push({ value: node.value, label: node.label });
-          if (this.checkable) {
-            node.checked = true;
-          }
+        if (values.includes(node.value) && this.checkable) {
+          node.checked = true;
         }
         if (node.children) {
-          findNodes(node.children);
+          markChecked(node.children);
         }
       }
     };
+    markChecked(this.nodes);
 
-    findNodes(this.nodes);
+    if (this.checkable) {
+      // Down-propagate first so a defaultValue pointing at a branch (e.g.
+      // 'fruits') auto-checks all of its descendants. Then up-propagate so
+      // a parent reflects "all children checked" → checked, otherwise
+      // indeterminate.
+      this.propagateCheckedDown(this.nodes);
+      this.propagateCheckedUp(this.nodes);
+      // Collect leaves only — same algorithm as runtime selection so the
+      // initial render's tag list and post-interaction tag list use one
+      // source of truth. (Was previously "literal defaultValue values"
+      // which mismatched the post-interaction collection and produced the
+      // flicker reported in bug #2.)
+      this.updateSelectedFromChecked(this.nodes);
+    } else {
+      // Single-select: defaultValue is a single value, find that node.
+      const selected: { value: string; label: string }[] = [];
+      const findNodes = (nodeList: TreeNode[]) => {
+        for (const node of nodeList) {
+          if (values.includes(node.value)) {
+            selected.push({ value: node.value, label: node.label });
+          }
+          if (node.children) findNodes(node.children);
+        }
+      };
+      findNodes(this.nodes);
+      this.selectedItem = selected;
+    }
 
-    this.selectedItem = selected;
     this.updateFormValue();
   }
 
+  // Top-down propagation of `checked` so a defaultValue pointing at a
+  // branch (e.g. 'fruits') auto-checks all of its descendants. Without
+  // this, defaultValue='fruits' would mark Fruits.checked=true but its
+  // children would stay unchecked, then propagateCheckedUp would even
+  // *uncheck* Fruits because none of its children were checked.
+  private propagateCheckedDown(nodes: TreeNode[]) {
+    const process = (node: TreeNode) => {
+      const children = node.children;
+      if (!children || children.length === 0) return;
+      if (node.checked) {
+        children.forEach(child => {
+          child.checked = true;
+          child.indeterminate = false;
+          process(child);
+        });
+      } else {
+        children.forEach(process);
+      }
+    };
+    nodes.forEach(process);
+  }
+
+  // Bottom-up propagation of `checked` / `indeterminate` so the visual tree
+  // matches the user's mental model when defaultValue selects multiple
+  // leaves under the same parent.
+  private propagateCheckedUp(nodes: TreeNode[]) {
+    const process = (node: TreeNode) => {
+      const children = node.children;
+      if (!children || children.length === 0) return;
+      children.forEach(process);
+      const allChecked = children.every(c => c.checked);
+      const someChecked = children.some(c => c.checked || c.indeterminate);
+      if (allChecked) {
+        node.checked = true;
+        node.indeterminate = false;
+      } else if (someChecked) {
+        node.checked = false;
+        node.indeterminate = true;
+      } else {
+        node.checked = false;
+        node.indeterminate = false;
+      }
+    };
+    nodes.forEach(process);
+  }
+
   private updateFormValue() {
-    const value = this.selectedItem.map(item => item.value).join(',');
-    this.internals.setFormValue(value);
+    this.internals.setFormValue(this.value || null);
     this.updateValidityState();
+  }
+
+  private getValidationAnchor(): HTMLElement | undefined {
+    // Stencil-generated host types (HTMLSySelectElement, HTMLSyTreeSelectElement)
+    // don't carry every HTMLElement member (e.g. `autocorrect`), so TS
+    // refuses the direct assignment. Route through `unknown` — these ARE
+    // HTMLElements at runtime, the gap is only in the generated d.ts.
+    const inputEl = this.selectElement?.querySelector('input');
+    if (inputEl) return inputEl as HTMLElement;
+    return (this.selectElement as unknown as HTMLElement | undefined) ?? (this.host as unknown as HTMLElement);
   }
 
   private getSlotErrorText(): string {
@@ -760,12 +959,14 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
   }
 
   private updateValidityState() {
+    const anchor = this.getValidationAnchor();
+
     // (1) Programmatic custom error takes priority — use the slot text as
     // the validity message so reportValidity surfaces the same copy shown
-    // on screen. Mirrors autocomplete's setCustomError flow.
+    // on screen.
     if (this.validStatus === 'custom' && !this.isValid) {
       const msg = this.getSlotErrorText() || this.getErrorMessage('custom') || ' ';
-      this.internals?.setValidity({ customError: true }, msg);
+      this.internals?.setValidity({ customError: true }, msg, anchor);
       return;
     }
 
@@ -775,9 +976,9 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       this.validStatus = 'valueMissing';
       if (this.hasSlotErrorMessage) {
         const slotText = this.getSlotErrorText() || this.getErrorMessage('valueMissing') || ' ';
-        this.internals.setValidity({ customError: true }, slotText);
+        this.internals.setValidity({ customError: true }, slotText, anchor);
       } else {
-        this.internals.setValidity({ valueMissing: true }, this.getErrorMessage('valueMissing'));
+        this.internals.setValidity({ valueMissing: true }, this.getErrorMessage('valueMissing'), anchor);
       }
     } else {
       this.isValid = true;
@@ -846,7 +1047,7 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
       e.stopPropagation();
       this.hasSlotErrorMessage = slotHasContent;
       if (slotHasContent) {
-        this.internals.setValidity({ customError: true }, ' ');
+        this.internals.setValidity({ customError: true }, ' ', this.getValidationAnchor());
       }
     } else {
       this.hasSlotErrorMessage = false;
@@ -888,44 +1089,19 @@ private expandPathToNode(nodes: TreeNode[], targetValue: string): boolean {
   }
 
   private handleCustomErrorSlot() {
-    const errorSlot = this.host.querySelector('slot[name="error"]') as HTMLSlotElement;
-    if (!errorSlot) return;
+    const errorSlot = this.host.querySelector('[slot="error"]') as HTMLElement | null;
+    if (!errorSlot) {
+      this.hasPopupErrorComponent = false;
+      this.hasSlotErrorMessage = false;
+      return;
+    }
 
-    const errorNodes = errorSlot.assignedNodes();
+    this.hasPopupErrorComponent = !!errorSlot.querySelector(
+      'sy-tooltip, sy-popover, sy-popconfirm, sy-inline-message'
+    ) || ['sy-tooltip', 'sy-popover', 'sy-popconfirm', 'sy-inline-message'].includes(errorSlot.tagName.toLowerCase());
 
-    this.hasPopupErrorComponent = errorNodes.some(node => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const element = node as Element;
-        const tagName = element.tagName?.toLowerCase() || '';
-
-        if (tagName === 'sy-tooltip' ||
-          tagName === 'sy-popover' ||
-          tagName === 'sy-popconfirm' ||
-          tagName === 'sy-inline-message') {
-          return true;
-        }
-
-        return !!element.querySelector(
-          'sy-tooltip, sy-popover, sy-popconfirm, sy-inline-message'
-        );
-      }
-      return false;
-    });
-
-    // Track whether the slot has any user-supplied error content. The
-    // `updateValidityState()` / `handleInvalidEvent()` flows use this to
-    // decide whether to drive customError with slot text or fall back to
-    // the default valueMissing message.
-    this.hasSlotErrorMessage = errorNodes.some(node => {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-        return true;
-      }
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const element = node as Element;
-        return !!(element.textContent?.trim() || element.children.length > 0);
-      }
-      return false;
-    });
+    this.hasSlotErrorMessage =
+      (errorSlot.textContent?.trim().length ?? 0) > 0 || errorSlot.children.length > 0;
   }
 
   private getErrorMessage(type: 'valueMissing' | 'custom' | '') {

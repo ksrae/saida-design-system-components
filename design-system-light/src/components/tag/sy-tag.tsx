@@ -1,14 +1,19 @@
-import { Component, h, Prop, State, Watch, Event, EventEmitter, Element } from '@stencil/core';
+import { Component, h, Prop, State, Watch, Event, EventEmitter, Element, Method } from '@stencil/core';
 
 /**
  * sy-tag — compact label with optional selectable / removable behavior.
  *
  * Spec: design-system-specs/components/tag.yaml
  *
- * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+ * Props: variant (color), size, selectable, removable, rounded, disabled, readonly, manualClose.
  * Events: selected (toggle), removed (X click).
+ * Methods: setRemove(isForce) — programmatic remove, bypasses manualClose when force=true.
  * When `selectable` is enabled, the visual variant is forced to `purple` to
  * distinguish interactive tags from static ones.
+ *
+ * `manualClose` mirrors sy-tab's opt-out: when true, clicking the X fires
+ * `removed` with `isManualRemove: true` but does NOT auto-remove the tag —
+ * the host app decides whether to call `setRemove(true)` to actually remove it.
  */
 @Component({
   tag: 'sy-tag',
@@ -26,13 +31,14 @@ export class SyTag {
   @Prop({ reflect: true }) selectable = false;
   @Prop({ reflect: true }) size: 'small' | 'medium' | 'large' = 'medium';
   @Prop({ reflect: true, mutable: true }) variant: 'gray' | 'purple' | 'blue' | 'green' | 'cyan' | 'yellow' | 'orange' | 'red' = 'gray';
+  @Prop() manualClose = false;
 
   // Lit의 `checked` state와 동일
   @State() private checked = false;
 
   // Stencil의 이벤트 발송 방식
   @Event() selected: EventEmitter<{ tag: HTMLSyTagElement }>;
-  @Event() removed: EventEmitter<{ tag: HTMLSyTagElement }>;
+  @Event() removed: EventEmitter<{ tag: HTMLSyTagElement; isManualRemove: boolean }>;
 
   // Lit의 `updated` 라이프사이클 훅을 @Watch로 대체
   @Watch('selectable')
@@ -56,15 +62,28 @@ export class SyTag {
   };
 
   private handleRemoveClick = (event: Event) => {
-    event.stopPropagation(); // 이벤트 버블링 중지
-
-    if (this.removable && !this.disabled && !this.readonly) {
-      // 'removed' 이벤트를 발송
-      this.removed.emit({ tag: this.host });
-
-      this.host.remove(); // 이 줄을 제거하여 부모가 렌더링을 담당하도록 함
-    }
+    event.stopPropagation();
+    this.removeEvent();
   };
+
+  /**
+   * Programmatically remove the tag. `isForce=true` bypasses the
+   * `manualClose` opt-out so the tag is removed even when manualClose was set
+   * (use this from your confirmation handler).
+   */
+  @Method()
+  async setRemove(isForce: boolean = false) {
+    this.removeEvent(isForce);
+  }
+
+  private removeEvent(isForceRemove: boolean = false) {
+    if (!this.removable || this.disabled || this.readonly) return;
+    const isManualRemove = isForceRemove ? false : this.manualClose;
+    this.removed.emit({ tag: this.host, isManualRemove });
+    if (!isManualRemove) {
+      this.host.remove();
+    }
+  }
 
   render() {
     const tagClasses = {

@@ -24,6 +24,7 @@ export class SyButton {
   @AttachInternals() internals!: ElementInternals;
 
   private formSubmitGuard?: (e: Event) => void;
+  private firstInvalidCustomControl?: HTMLElement;
 
   // --- Public Properties (spec: attributes) ---
   @Prop({ reflect: true }) disabled: boolean = false;
@@ -138,6 +139,7 @@ export class SyButton {
         e.stopPropagation();
         e.stopImmediatePropagation();
         form.reportValidity();
+        void (this.firstInvalidCustomControl as any)?.reportValidity?.();
       }
     };
     document.addEventListener('submit', this.formSubmitGuard, true);
@@ -170,6 +172,7 @@ export class SyButton {
 
         if (!this.formnovalidate && !this.isFormValid(form)) {
           form.reportValidity();
+          void (this.firstInvalidCustomControl as any)?.reportValidity?.();
           break;
         }
         const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
@@ -191,25 +194,30 @@ export class SyButton {
    * defensive sweep — belt-and-braces so required controls always block submission.
    */
   private isFormValid(form: HTMLFormElement): boolean {
+    this.firstInvalidCustomControl = undefined;
     let valid = form.checkValidity();
     if (!valid) return false;
 
     const customControls = form.querySelectorAll<HTMLElement>(
-      'sy-checkbox, sy-radio, sy-input, sy-input-number, sy-textarea, sy-select, sy-switch, sy-autocomplete, sy-datepicker'
+      'sy-checkbox, sy-radio, sy-input, sy-input-number, sy-textarea, sy-select, sy-tree-select, sy-switch, sy-autocomplete, sy-datepicker'
     );
     customControls.forEach((el) => {
       const required = (el as any).required === true || el.hasAttribute('required');
       if (!required) return;
       const checked = (el as any).checked === true;
       const indeterminate = (el as any).indeterminate === true;
-      const value = (el as any).value;
+      const selectedOptions = (el as any).selectedOptions;
+      const value = (el as any).value ?? (Array.isArray(selectedOptions) ? selectedOptions.map(option => option?.value).join(',') : undefined);
       const isEmpty =
         (el.tagName === 'SY-CHECKBOX' && !checked && !indeterminate) ||
         (el.tagName === 'SY-RADIO' && !checked) ||
         (el.tagName === 'SY-SWITCH' && !checked) ||
         ((el.tagName !== 'SY-CHECKBOX' && el.tagName !== 'SY-RADIO' && el.tagName !== 'SY-SWITCH') &&
           (value === undefined || value === null || value === ''));
-      if (isEmpty) valid = false;
+      if (isEmpty) {
+        valid = false;
+        this.firstInvalidCustomControl ??= el;
+      }
     });
     return valid;
   }

@@ -140,6 +140,12 @@ export class SyTree {
   @Method()
   async manualRemoveNode(value: string) {
     this.removeNode(value);
+    // removeNode mutates updatedNodes in place (no reassignment), so Stencil
+    // can't detect the change. Reassign here AND emit nodesChanged so the
+    // method mirrors manualAddChildNode's full lifecycle and the tree
+    // actually re-renders after the removal.
+    this.updatedNodes = [...this.updatedNodes];
+    this.emitNodesChanged();
   }
 
   @Method()
@@ -175,6 +181,13 @@ export class SyTree {
 
   componentDidLoad() {
     this.emitNodesChanged();
+    // @Watch('nodeWidth') only fires on subsequent changes — items rendered
+    // with a non-null nodeWidth from the start would otherwise never run
+    // setOverflow, so their labels render at full width with no ellipsis and
+    // no overflow tooltip on hover. Trigger one pass after first paint.
+    if (this.nodeWidth) {
+      setTimeout(() => this.triggerOverflowCheckForAllItems(), 0);
+    }
   }
 
   // --- Watchers ---
@@ -488,6 +501,11 @@ export class SyTree {
           child.removable = child.removable ?? true;
 
           node.children.push(child);
+          // Auto-expand the parent so the freshly added child is visible.
+          // Without this, a tree with expandable=false and the parent in its
+          // default collapsed state hides the new child entirely, making it
+          // look like the add silently failed.
+          node.expanded = true;
 
           if (node.checked) {
             child.checked = true;
@@ -650,17 +668,31 @@ export class SyTree {
 
     e.dataTransfer!.dropEffect = 'move';
 
+    // currentTarget is always the .drop-zone (where the listener was bound).
+    const dropZone = e.currentTarget as HTMLElement;
+    // Reset previous state classes before applying the new one — keeps the
+    // drop-zone clean across the dragenter/leave/over churn.
+    dropZone.classList.remove('drag-above', 'drag-below', 'drag-not-allowed');
+
+    // Guard against drags initiated outside the tree where draggNode hasn't
+    // been captured. Without this, `this.draggNode.value` threw TypeError
+    // and the indicator class was never applied. Skip descendant validation
+    // (handleDrop validates against dataTransfer payload anyway).
+    if (!this.draggNode) {
+      dropZone.classList.add(`drag-${position}`);
+      return;
+    }
+
     const { node: draggedNode } = this.findNodeAndParent(this.updatedNodes, this.draggNode.value);
     const { node: targetNode } = this.findNodeAndParent(this.updatedNodes, nodeKey);
     const isDescendant = this.isDescendant(draggedNode, targetNode);
 
     if (draggedNode && targetNode && isDescendant) {
-      (e.target as any).dataset.dragging = 'not-allowed';
+      dropZone.classList.add('drag-not-allowed');
       return;
     }
 
-    const dropZone = e.target as HTMLElement;
-    dropZone.dataset.dragging = position;
+    dropZone.classList.add(`drag-${position}`);
   }
 
   private handleItemDragOver(e: DragEvent, node: TreeNode) {
@@ -704,8 +736,8 @@ export class SyTree {
     if (!this.treeDraggable) return;
 
     e.preventDefault();
-    const dropZone = e.target as HTMLElement;
-    dropZone.dataset.dragging = '';
+    const dropZone = e.currentTarget as HTMLElement;
+    dropZone.classList.remove('drag-above', 'drag-below', 'drag-not-allowed');
     dropZone.style.marginLeft = '0';
 
     const dragData = e.dataTransfer?.getData('application/json');
@@ -750,8 +782,8 @@ export class SyTree {
   }
 
   private handleDragLeave(e: DragEvent) {
-    const dropZone = e.target as HTMLElement;
-    dropZone.dataset.dragging = '';
+    const dropZone = e.currentTarget as HTMLElement;
+    dropZone.classList.remove('drag-above', 'drag-below', 'drag-not-allowed');
     dropZone.style.marginLeft = '0';
   }
 

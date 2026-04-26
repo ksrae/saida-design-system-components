@@ -8,7 +8,7 @@ const meta: Meta = {
   tags: [],
   render: (args) => TreeManualRemove(args as { manualRemove: boolean }),
   argTypes: { manualRemove: treeMeta?.argTypes?.manualRemove },
-  args: { manualRemove: false },
+  args: { manualRemove: true },
 };
 
 export default meta;

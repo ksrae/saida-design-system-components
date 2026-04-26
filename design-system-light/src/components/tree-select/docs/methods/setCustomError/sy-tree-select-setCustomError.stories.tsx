@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@stencil/storybook-plugin';
-import { TreeSelectSetCustomValidity } from '../../sy-tree-select.main';
+import { TreeSelectSetCustomError } from '../../sy-tree-select.main';
 
 const meta: Meta = {
-  title: 'TreeSelect/Methods/SetCustomValidity',
+  title: 'TreeSelect/Methods/SetCustomError',
   component: 'sy-tree-select',
   tags: [],
-  render: () => TreeSelectSetCustomValidity(),
+  render: () => TreeSelectSetCustomError(),
   argTypes: {},
   args: {},
 };

@@ -4,11 +4,19 @@
 :host {
   .loading-container,
   .empty-container{
-    display: none;   
+    display: none;
   }
+  // .sy-tree-select-inner is the positioning context for the inline option
+  // container (appendParent=true). It must be the *inner* wrapper, not the
+  // outer container — the outer also holds the error-container, so anchoring
+  // the popup to it would put `top: 100%` below the error message instead
+  // of right under the trigger.
+  // The portaled popup (appendParent=false) is positioned imperatively in
+  // JS against the select's bounding rect, so it doesn't depend on this.
   .sy-tree-select-inner{
-    display: flex;
-  }  
+    display: block;
+    position: relative;
+  }
   .search-container {
     display: flex;
     flex-direction: column;
@@ -16,12 +24,25 @@
   }
   .sy-tree-select-option-container {
     display: none;
-  }
-  .sy-tree-select-option-container {
-      padding: var(--spacing-3xsmall) var(--spacing-xsmall);
+    padding: var(--spacing-3xsmall) var(--spacing-xsmall);
+
+    // appendParent=true case — the option container is rendered as a
+    // child of <sy-tree-select> (declared in JSX). We still want it to
+    // appear below the trigger like a popup, not as a flex sibling next
+    // to the input (the previous `position: relative` + flex parent put
+    // the dropdown beside the select, producing the squished side-by-side
+    // layout users were seeing).
     &.visible{
       display: block;
-      position: relative; 
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: var(--z-index-select, 800);
+      background: var(--treeselect-background-enabled, #fff);
+      border: 1px solid var(--border-color, #d9d9d9);
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       .loading-container,
       .empty-container{
         display: none;
@@ -30,29 +51,29 @@
     &.loading{
       sy-tree{
         display: none;
-      }       
+      }
       .loading-container{
         width: 100%;
         display: flex;
         min-height: 60px;
         align-items: center;
-        justify-content: center;     
-        background-color: var(--treeselect-background-enabled);                  
-      }     
+        justify-content: center;
+        background-color: var(--treeselect-background-enabled);
+      }
     }
     &.empty{
       sy-tree{
         display: none;
-      }   
+      }
       .empty-container{
         width: 100%;
         display: flex;
         min-height: 60px;
         align-items: center;
-        justify-content: center;  
-        background-color: var(--treeselect-background-enabled);       
-      }                 
-    }      
+        justify-content: center;
+        background-color: var(--treeselect-background-enabled);
+      }
+    }
   }
   .empty-container {
     display: none;
@@ -62,6 +83,17 @@
   }
 }
 
+// Mirrors sy-textarea / sy-input pattern: error-container is hidden by
+// default and only shows on .visible-error (set when touched/submitted +
+// invalid). Without `display: none` the slotted error message was rendering
+// the moment the slot existed — even on a perfectly valid form — making
+// noNativeValidity look broken because the "error" appeared without any
+// validation having failed.
 .error-container {
     color: var(--required);
+    display: none;
+
+    &.visible-error {
+      display: block;
+    }
 }

@@ -40,7 +40,7 @@ export const Textarea = (a: SyTextareaProps) => html`
 // =============================================================================
 
 export const TextareaAutofocus  = (args: { autofocus: boolean })   => html`<div><sy-textarea ?autofocus=${!!args.autofocus}></sy-textarea></div>`;
-export const TextareaBorderless = (args: { borderless: boolean })  => html`<div><sy-textarea ?borderless=${!!args.borderless}></sy-textarea></div>`;
+export const TextareaBorderless = (args: { borderless: boolean })  => html`<div><sy-textarea ?borderless=${!!args.borderless} placeholder="Enter here"></sy-textarea></div>`;
 export const TextareaClearable  = (args: { clearable: boolean })   => html`<div><sy-textarea ?clearable=${!!args.clearable} .value=${'type to clear'}></sy-textarea></div>`;
 export const TextareaCounter    = (args: { counter: boolean })     => html`<div><sy-textarea ?counter=${!!args.counter} .max=${100}></sy-textarea></div>`;
 export const TextareaDisabled   = (args: { disabled: boolean })    => html`<div><sy-textarea ?disabled=${!!args.disabled}></sy-textarea></div>`;
@@ -59,15 +59,17 @@ export const TextareaValue      = (args: { value: string })        => html`<div>
 // Form-related stories — share one helper. Real <form> + <sy-button type="submit">
 // so the browser actually performs validation; an optional `extraButtons`
 // slot lets stories add method-driven buttons on top of the submit flow.
-// =============================================================================
-
+//
 // Submit feedback: each form has a status line below it that flips between
 //   "Submit succeeded ✓"  ← @submit fires (form passed validation)
-//   "Submit blocked ✗"    ← @submit didn't fire by next frame (validation failed)
-// The click-to-rAF gap is the cleanest way to know whether the submit went
-// through, without depending on `invalid` events (they don't bubble, so
-// onInvalid on the <form> wouldn't catch field-level invalidity in the
-// story-template renderer that has no capture-phase listener support).
+//   "Submit blocked ✗"    ← @submit didn't fire AND the textarea is invalid
+//
+// Why @mouseDown (not @click) on the Submit button:
+//   sy-button[type=submit] runs its own click handler at the inner-button
+//   target phase and calls event.stopPropagation(), so a @click on the outer
+//   <sy-button> never fires. mouseDown fires *before* click and isn't blocked,
+//   so we use it to reset `submitFired` and schedule the rAF check.
+// =============================================================================
 
 const renderFormStory = (
   attrs: { required?: boolean; noNativeValidity?: boolean; min?: number; max?: number; counter?: boolean; slotError?: string; defaultValue?: string },
@@ -77,12 +79,43 @@ const renderFormStory = (
   const tRef: Ref<HTMLSyTextareaElement> = createRef();
   const resultId = `taSubmitResult_${Math.random().toString(36).slice(2, 8)}`;
   let submitFired = false;
-  const handleClick = () => {
+  const resetBlockedResult = () => {
+    const out = document.getElementById(resultId);
+    if (!out?.textContent?.startsWith('Submit blocked')) return;
+    out.textContent = '(idle)';
+    out.style.color = '';
+  };
+  const isTextareaInvalid = async () => {
+    const el = tRef.value;
+    if (!el) return !submitFired;
+    const status = await el.getStatus();
+    return !!status || el.matches(':invalid');
+  };
+  // Keep the slotted error in lockstep with the textarea state. sy-textarea's
+  // internal validity tracking can lag the visual `value` state by a frame
+  // (same race we hit on sy-switch), so we drive the slot span's display
+  // directly off getStatus(). Synced on every keystroke (@changed) and on
+  // every submit attempt (mouseDown + @submit) — the changed hook covers UX
+  // while the submit hooks defeat the re-render race.
+  const syncSlotError = async (resetResultWhenValid = false) => {
+    const el = tRef.value;
+    if (!el) return;
+    const slot = el.querySelector('[slot="error"]') as HTMLElement | null;
+    if (!slot) return;
+    const status = await el.getStatus();
+    const shouldShow = !!status;
+    slot.style.display = shouldShow ? '' : 'none';
+    if (resetResultWhenValid && !shouldShow) resetBlockedResult();
+  };
+  const armSubmitDetector = () => {
     submitFired = false;
-    requestAnimationFrame(() => {
+    void syncSlotError();
+    requestAnimationFrame(async () => {
+      await syncSlotError();
       const out = document.getElementById(resultId);
       if (!out) return;
-      if (submitFired) {
+      const blocked = !submitFired && await isTextareaInvalid();
+      if (!blocked) {
         out.textContent = 'Submit succeeded ✓';
         out.style.color = 'var(--success-text, #2e7d32)';
       } else {
@@ -94,6 +127,7 @@ const renderFormStory = (
   const handleSubmit = (e: Event) => {
     e.preventDefault();
     submitFired = true;
+    void syncSlotError();
   };
   return html`
     <div>
@@ -106,13 +140,14 @@ const renderFormStory = (
           .min=${attrs.min ?? 0}
           .max=${attrs.max ?? Number.MAX_SAFE_INTEGER}
           .value=${attrs.defaultValue ?? ''}
-          .noNativeValidity=${attrs.noNativeValidity}>
+          .noNativeValidity=${attrs.noNativeValidity}
+          @changed=${() => { void syncSlotError(true); }}>
           ${attrs.slotError
             ? html`<span slot="error">${attrs.slotError}</span>`
             : ''}
         </sy-textarea>
         <br/>
-        <sy-button type="submit" variant="primary" @mouseDown=${handleClick}>Submit</sy-button>
+        <sy-button type="submit" variant="primary" @mouseDown=${armSubmitDetector}>Submit</sy-button>
         ${extraButtons ? extraButtons(tRef) : ''}
         <p id=${resultId}>(idle)</p>
       </form>
@@ -122,8 +157,8 @@ const renderFormStory = (
 
 export const TextareaRequired = (a: { required: boolean }) =>
   renderFormStory(
-    { required: a.required },
-    html`<p>Toggle <code>required</code> in Controls. Click <strong>Submit</strong> with the field empty &mdash; with <code>required=true</code> the browser blocks submission and shows the native validity popup.</p>`,
+    { required: a.required, slotError: 'Please write a message before submitting.' },
+    html`<p>Toggle <code>required</code> in Controls. Click <strong>Submit</strong> with the field empty &mdash; with <code>required=true</code> the submit is blocked, the browser shows its native validity popup, and the slotted error appears below the textarea. Type any text and submit succeeds &mdash; the error disappears.</p>`,
   );
 
 export const TextareaNoNativeValidity = (a: { noNativeValidity: boolean }) =>
@@ -205,7 +240,7 @@ export const TextareaSetBlur  = () => renderMethodStandalone('setBlur()',  (el) 
 
 export const TextareaCheckValidity = () =>
   renderFormStory(
-    { required: true },
+    { required: true, slotError: 'Please write a message before submitting.' },
     html`<p>The textarea is <code>required</code>. Click <strong>checkValidity()</strong> &mdash; it returns <code>false</code> while empty (no popup), and <code>true</code> once you've typed something.</p>`,
     (tRef) => html`
       <sy-button @click=${async () => {
@@ -220,8 +255,8 @@ export const TextareaCheckValidity = () =>
 
 export const TextareaReportValidity = () =>
   renderFormStory(
-    { required: true },
-    html`<p>The textarea is <code>required</code>. Click <strong>reportValidity()</strong> while empty &mdash; the browser shows its native validity popup just like the Submit path.</p>`,
+    { required: true, slotError: 'Please write a message before submitting.' },
+    html`<p>The textarea is <code>required</code>. Click <strong>reportValidity()</strong> while empty &mdash; the browser shows its native validity popup and the slotted error appears below the textarea, just like the Submit path.</p>`,
     (tRef) => html`
       <sy-button @click=${() => tRef.value?.reportValidity()}>reportValidity()</sy-button>
     `,
@@ -239,8 +274,8 @@ export const TextareaSetCustomError = () =>
 
 export const TextareaGetStatus = () =>
   renderFormStory(
-    { required: true, min: 5 },
-    html`<p>The textarea is <code>required</code> with <code>min=5</code>. Click <strong>getStatus()</strong> at different points: empty &rarr; <code>valueMissing</code>; with 1&ndash;4 chars &rarr; <code>tooShort</code>; with 5+ &rarr; empty string.</p>`,
+    { required: true, min: 5, slotError: 'Please write at least 5 characters.' },
+    html`<p>The textarea is <code>required</code> with <code>min=5</code>. Click <strong>getStatus()</strong> at different points: empty &rarr; <code>valueMissing</code>; with 1&ndash;4 chars &rarr; <code>tooShort</code>; with 5+ &rarr; empty string. The slotted error stays in lockstep &mdash; it disappears once you reach 5+ characters.</p>`,
     (tRef) => html`
       <sy-button @click=${async () => {
         if (!tRef.value) return;

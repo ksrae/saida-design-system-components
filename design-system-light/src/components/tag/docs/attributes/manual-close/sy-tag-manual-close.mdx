@@ -1,0 +1,14 @@
+import { Canvas, Meta, Controls } from '@storybook/addon-docs/blocks';
+import * as AttrStories from './sy-tag-manual-close.stories';
+
+<Meta of={AttrStories} />
+
+# Manual Close
+
+The `manualClose` attribute. When `true`, clicking the X on a removable tag does
+NOT remove it automatically. Instead the `removed` event fires with
+`isManualRemove: true` and the host app decides whether to actually remove the
+tag — typically by calling `tag.setRemove(true)` after a confirmation step.
+
+<Canvas of={AttrStories.Default} />
+<Controls of={AttrStories.Default} />

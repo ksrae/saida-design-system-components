@@ -63,19 +63,25 @@
         padding-right: var(--spacing-4xsmall);
       }
 
-      &:overflow {
+      // Class hook (was `&:overflow`, an invalid pseudo-class that never
+      // matched). Container itself stays flex so siblings (icon/tag) align
+      // correctly — the ellipsis is on .item-content below.
+      &.overflow {
         overflow: hidden;
-        text-overflow: ellipsis;
-
       }
     }
 
     .item-content {
-      display: inline-flex;
+      // Was display:inline-flex, which wraps the text in an anonymous flex
+      // item and breaks text-overflow:ellipsis (the text overflows but the
+      // ellipsis never renders). inline-block handles ellipsis natively and
+      // still shrinks in the parent flex layout when min-width:0 lets it
+      // contract below its intrinsic size.
+      display: inline-block;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
       align-self: center;
-      align-items: center;
       line-height: normal;
       min-width: 0;
       padding-left: var(--spacing-4xsmall);

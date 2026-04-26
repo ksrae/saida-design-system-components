@@ -19,7 +19,7 @@ const tooltipMeta: Meta<SyTooltipProps> = {
     content: { control: 'text', description: 'Tooltip content text.', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
     position: { control: 'select', options: ['top', 'topLeft', 'topRight', 'right', 'rightTop', 'rightBottom', 'bottom', 'bottomLeft', 'bottomRight', 'left', 'leftTop', 'leftBottom'], description: 'Tooltip position.', table: { category: 'Parameter', defaultValue: { summary: 'top' }, type: { summary: 'top | topLeft | topRight | right | rightTop | rightBottom | bottom | bottomLeft | bottomRight | left | leftTop | leftBottom' } } },
     trigger: { control: 'select', options: ['hover', 'click', 'focus', 'none'], description: 'Tooltip trigger.', table: { category: 'Parameter', defaultValue: { summary: 'hover' }, type: { summary: 'hover | click | focus | none' } } },
-    slot: { control: 'text', description: 'Target element slot.', table: { category: 'Parameter', defaultValue: { summary: '' } } },
+    slot: { control: 'text', description: 'Inner content of the trigger sy-button.', table: { category: 'Parameter', defaultValue: { summary: 'Hover me' } } },
     close: { type: 'function', description: 'Closes the tooltip programmatically.', table: { category: 'Function', type: { summary: 'close()' } } },
   },
 };
@@ -37,6 +37,6 @@ export const Default: Story = {
     content: 'Tooltip content',
     position: 'top',
     trigger: 'hover',
-    slot: `<sy-button>Hover me</sy-button>`,
+    slot: 'Hover me',
   },
 };

@@ -2638,16 +2638,24 @@ export namespace Components {
     /**
      * sy-tag — compact label with optional selectable / removable behavior.
      * Spec: design-system-specs/components/tag.yaml
-     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly, manualClose.
      * Events: selected (toggle), removed (X click).
+     * Methods: setRemove(isForce) — programmatic remove, bypasses manualClose when force=true.
      * When `selectable` is enabled, the visual variant is forced to `purple` to
      * distinguish interactive tags from static ones.
+     * `manualClose` mirrors sy-tab's opt-out: when true, clicking the X fires
+     * `removed` with `isManualRemove: true` but does NOT auto-remove the tag —
+     * the host app decides whether to call `setRemove(true)` to actually remove it.
      */
     interface SyTag {
         /**
           * @default false
          */
         "disabled": boolean;
+        /**
+          * @default false
+         */
+        "manualClose": boolean;
         /**
           * @default false
          */
@@ -2664,6 +2672,10 @@ export namespace Components {
           * @default false
          */
         "selectable": boolean;
+        /**
+          * Programmatically remove the tag. `isForce=true` bypasses the `manualClose` opt-out so the tag is removed even when manualClose was set (use this from your confirmation handler).
+         */
+        "setRemove": (isForce?: boolean) => Promise<void>;
         /**
           * @default 'medium'
          */
@@ -4749,15 +4761,19 @@ declare global {
     };
     interface HTMLSyTagElementEventMap {
         "selected": { tag: HTMLSyTagElement };
-        "removed": { tag: HTMLSyTagElement };
+        "removed": { tag: HTMLSyTagElement; isManualRemove: boolean };
     }
     /**
      * sy-tag — compact label with optional selectable / removable behavior.
      * Spec: design-system-specs/components/tag.yaml
-     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly, manualClose.
      * Events: selected (toggle), removed (X click).
+     * Methods: setRemove(isForce) — programmatic remove, bypasses manualClose when force=true.
      * When `selectable` is enabled, the visual variant is forced to `purple` to
      * distinguish interactive tags from static ones.
+     * `manualClose` mirrors sy-tab's opt-out: when true, clicking the X fires
+     * `removed` with `isManualRemove: true` but does NOT auto-remove the tag —
+     * the host app decides whether to call `setRemove(true)` to actually remove it.
      */
     interface HTMLSyTagElement extends Components.SyTag, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSyTagElementEventMap>(type: K, listener: (this: HTMLSyTagElement, ev: SyTagCustomEvent<HTMLSyTagElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -7627,17 +7643,25 @@ declare namespace LocalJSX {
     /**
      * sy-tag — compact label with optional selectable / removable behavior.
      * Spec: design-system-specs/components/tag.yaml
-     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+     * Props: variant (color), size, selectable, removable, rounded, disabled, readonly, manualClose.
      * Events: selected (toggle), removed (X click).
+     * Methods: setRemove(isForce) — programmatic remove, bypasses manualClose when force=true.
      * When `selectable` is enabled, the visual variant is forced to `purple` to
      * distinguish interactive tags from static ones.
+     * `manualClose` mirrors sy-tab's opt-out: when true, clicking the X fires
+     * `removed` with `isManualRemove: true` but does NOT auto-remove the tag —
+     * the host app decides whether to call `setRemove(true)` to actually remove it.
      */
     interface SyTag {
         /**
           * @default false
          */
         "disabled"?: boolean;
-        "onRemoved"?: (event: SyTagCustomEvent<{ tag: HTMLSyTagElement }>) => void;
+        /**
+          * @default false
+         */
+        "manualClose"?: boolean;
+        "onRemoved"?: (event: SyTagCustomEvent<{ tag: HTMLSyTagElement; isManualRemove: boolean }>) => void;
         "onSelected"?: (event: SyTagCustomEvent<{ tag: HTMLSyTagElement }>) => void;
         /**
           * @default false
@@ -8868,10 +8892,14 @@ declare module "@stencil/core" {
             /**
              * sy-tag — compact label with optional selectable / removable behavior.
              * Spec: design-system-specs/components/tag.yaml
-             * Props: variant (color), size, selectable, removable, rounded, disabled, readonly.
+             * Props: variant (color), size, selectable, removable, rounded, disabled, readonly, manualClose.
              * Events: selected (toggle), removed (X click).
+             * Methods: setRemove(isForce) — programmatic remove, bypasses manualClose when force=true.
              * When `selectable` is enabled, the visual variant is forced to `purple` to
              * distinguish interactive tags from static ones.
+             * `manualClose` mirrors sy-tab's opt-out: when true, clicking the X fires
+             * `removed` with `isManualRemove: true` but does NOT auto-remove the tag —
+             * the host app decides whether to call `setRemove(true)` to actually remove it.
              */
             "sy-tag": LocalJSX.SyTag & JSXBase.HTMLAttributes<HTMLSyTagElement>;
             /**

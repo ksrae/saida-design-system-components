@@ -8,7 +8,7 @@ const meta: Meta = {
   tags: [],
   render: (args) => TreeManualAdd(args as { manualAdd: boolean }),
   argTypes: { manualAdd: treeMeta?.argTypes?.manualAdd },
-  args: { manualAdd: false },
+  args: { manualAdd: true },
 };
 
 export default meta;

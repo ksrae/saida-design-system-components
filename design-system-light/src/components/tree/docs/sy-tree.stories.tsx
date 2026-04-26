@@ -24,7 +24,6 @@ const treeMeta: Meta<SyTreeProps> = {
     nodeWidth: { control: 'number', description: 'Node width in px.', table: { category: 'Parameter', type: { summary: 'number | null' } } },
     selectedValue: { control: 'text', description: 'Currently selected value.', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
     searchTerm: { control: 'text', description: 'Search highlight term.', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
-    isTreeSelect: { control: 'boolean', description: 'Tree-select container flag.', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     nodesChanged: { type: 'function', description: 'Nodes changed event.', table: { category: 'Callback', type: { summary: `.addEventListener('nodesChanged', (e) => {})` } } },
     itemChecked: { type: 'function', description: 'Item checkbox toggled.', table: { category: 'Callback', type: { summary: `.addEventListener('itemChecked', (e) => {})` } } },
     itemSelected: { type: 'function', description: 'Item selected.', table: { category: 'Callback', type: { summary: `.addEventListener('itemSelected', (e) => {})` } } },
@@ -37,6 +36,6 @@ type Story = StoryObj<SyTreeProps>;
 export const Default: Story = {
   args: {
     checkable: false, clickable: true, editable: false, expandable: true, expandAll: false,
-    manualAdd: false, manualRemove: false, line: true, selectedValue: '', searchTerm: '', isTreeSelect: false,
+    manualAdd: false, manualRemove: false, line: true, selectedValue: '', searchTerm: '',
   },
 };

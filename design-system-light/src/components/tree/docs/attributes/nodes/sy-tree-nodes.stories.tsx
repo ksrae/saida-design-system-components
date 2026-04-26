@@ -8,7 +8,17 @@ const meta: Meta = {
   tags: [],
   render: (args) => TreeNodes(args as { nodes: any[] }),
   argTypes: { nodes: treeMeta?.argTypes?.nodes },
-  args: { nodes: [] },
+  args: {
+    nodes: [
+      { label: 'Fruits', value: 'fruits', children: [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+      ]},
+      { label: 'Vegetables', value: 'vegetables', children: [
+        { label: 'Carrot', value: 'carrot' },
+      ]},
+    ],
+  },
 };
 
 export default meta;

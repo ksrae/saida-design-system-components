@@ -22,12 +22,9 @@ const treeSelectMeta: Meta<SyTreeSelectProps> = {
     line: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     loading: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     maxTagCount: { control: 'number', table: { category: 'Parameter', defaultValue: { summary: 0 as any }, type: { summary: 'number' } } },
-    nodeWidth: { control: 'number', table: { category: 'Parameter', type: { summary: 'number | null' } } },
     placeholder: { control: 'text', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
-    appendParent: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     readonly: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     required: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
-    name: { control: 'text', table: { category: 'Parameter', defaultValue: { summary: '' }, type: { summary: 'string' } } },
     noNativeValidity: { control: 'boolean', table: { category: 'Parameter', defaultValue: { summary: false as any }, type: { summary: 'boolean' } } },
     changed: { type: 'function', table: { category: 'Callback', type: { summary: `.addEventListener('changed', (e) => {})` } } },
   },
@@ -40,6 +37,6 @@ export const Default: Story = {
   args: {
     checkable: false, clearable: false, defaultValue: '', disabled: false, status: 'default' as any,
     expandable: true, expandAll: false, line: true, loading: false, maxTagCount: 0,
-    placeholder: 'Select', appendParent: false, readonly: false, required: false, name: '', noNativeValidity: false,
+    placeholder: 'Select', readonly: false, required: false, noNativeValidity: false,
   },
 };
